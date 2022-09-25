@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
-using NRI.Validation;
-using NRI.D3D12;
+using Sedulous.NRI.Validation;
+using Sedulous.NRI.D3D12;
 using Sedulous.NRI;
 namespace NRI.Framework;
 
