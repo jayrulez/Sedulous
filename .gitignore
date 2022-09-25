@@ -1,4 +1,4 @@
-build/
-recovery/
+Code/build/
+Code/recovery/
+Code/BeefSpace_User.toml
 support/
-BeefSpace_User.toml
