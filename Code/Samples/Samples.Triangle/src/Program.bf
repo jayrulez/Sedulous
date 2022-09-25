@@ -1,5 +1,6 @@
 using NRI.Framework.SDL;
 using NRI;
+using Sedulous.NRI;
 namespace Samples.Triangle;
 
 class Program

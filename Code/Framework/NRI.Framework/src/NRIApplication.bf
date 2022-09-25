@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using NRI.Validation;
 using NRI.D3D12;
+using Sedulous.NRI;
 namespace NRI.Framework;
 
 public static
@@ -28,10 +29,10 @@ public static
 
 		if (deviceDesc.graphicsAPI == .VULKAN)
 		{
-			result = NRI.Vulkan.CreateDeviceVK(logger, allocator, deviceDesc, out device);
+			result = Sedulous.NRI.Vulkan.CreateDeviceVK(logger, allocator, deviceDesc, out device);
 		} else if (deviceDesc.graphicsAPI == .D3D12)
 		{
-			result = NRI.D3D12.CreateDeviceD3D12(logger, allocator, deviceDesc, out device);
+			result = Sedulous.NRI.D3D12.CreateDeviceD3D12(logger, allocator, deviceDesc, out device);
 		} else
 		{
 			Runtime.FatalError(scope $"GraphicsAPI {deviceDesc.graphicsAPI} is not supported.");

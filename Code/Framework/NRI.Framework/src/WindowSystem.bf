@@ -1,4 +1,5 @@
 using System;
+using Sedulous.NRI;
 namespace NRI.Framework;
 
 abstract class WindowSystem

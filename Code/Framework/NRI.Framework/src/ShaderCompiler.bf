@@ -3,6 +3,7 @@ using System.Collections;
 using Dxc_Beef;
 using System.IO;
 using System.Diagnostics;
+using Sedulous.NRI;
 using static System.Windows.COM_IUnknown;
 namespace NRI.Framework;
 

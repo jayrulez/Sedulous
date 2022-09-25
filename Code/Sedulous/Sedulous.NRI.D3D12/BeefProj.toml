@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.NRI" = "*", "Sedulous.NRI.D3DCommon" = "*", Win32 = "*", "Win32.WinPixEventRuntime" = "*"}
+
+[Project]
+Name = "Sedulous.NRI.D3D12"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.NRI.D3D12.Program"

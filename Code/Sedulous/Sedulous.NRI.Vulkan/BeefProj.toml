@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.NRI" = "*"}
+
+[Project]
+Name = "Sedulous.NRI.Vulkan"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.NRI.Vulkan.Program"

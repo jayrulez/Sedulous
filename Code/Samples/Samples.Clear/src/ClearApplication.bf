@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System;
 using NRI;
 using NRI.Framework;
+using Sedulous.NRI;
 namespace Samples.Clear;
 
 struct BackBuffer

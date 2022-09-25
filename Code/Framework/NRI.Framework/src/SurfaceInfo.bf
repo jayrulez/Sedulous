@@ -1,3 +1,4 @@
+using Sedulous.NRI;
 namespace NRI.Framework;
 
 struct SurfaceInfo

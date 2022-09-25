@@ -1,5 +1,6 @@
 using SDL2;
 using System;
+using Sedulous.NRI;
 namespace NRI.Framework.SDL;
 
 class SDLWindowSystem : WindowSystem

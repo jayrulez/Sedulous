@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", NRI = "*", Win32 = "*", "NRI.D3DCommon" = "*", "Win32.WinPixEventRuntime" = "*"}
-
-[Project]
-Name = "NRI.D3D12"
-TargetType = "BeefLib"
-StartupObject = "NRI.D3D12.Program"

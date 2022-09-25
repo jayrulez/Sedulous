@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", NRI = "*"}
-
-[Project]
-Name = "NRI.Validation"
-TargetType = "BeefLib"
-StartupObject = "NRI.Validation.Program"

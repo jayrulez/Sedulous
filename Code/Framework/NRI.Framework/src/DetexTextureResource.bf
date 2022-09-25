@@ -1,8 +1,10 @@
 using Detex;
 using System;
-using NRI.Helpers;
+using Sedulous.NRI.Helpers;
 using System.Collections;
 using System.Diagnostics;
+using Sedulous.NRI;
+using Sedulous.NRI.Helpers;
 namespace NRI.Framework;
 
 public static{
@@ -101,7 +103,7 @@ public static{
 		if (computeAvgColorAndAlphaMode)
 		{
 			// Alpha mode
-			if (texture.format == NRI.Format.BC1_RGBA_UNORM || texture.format == NRI.Format.BC1_RGBA_SRGB)
+			if (texture.format == Format.BC1_RGBA_UNORM || texture.format == Format.BC1_RGBA_SRGB)
 			{
 				bool hasTransparency = false;
 				for (int i = mipNum - 1; i >= 0 && !hasTransparency; i--)

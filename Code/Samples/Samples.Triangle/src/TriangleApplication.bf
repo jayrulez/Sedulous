@@ -4,10 +4,12 @@ using System.IO;
 using StbImageBeef;
 using System.Collections;
 using System.Diagnostics;
-using NRI.Helpers;
+using Sedulous.NRI.Helpers;
 using NRI;
 using Detex;
 using NRI.Framework;
+using Sedulous.NRI;
+using Sedulous.NRI.Helpers;
 namespace Samples.Triangle;
 
 internal static

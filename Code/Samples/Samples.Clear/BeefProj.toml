@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "NRI.Vulkan" = "*", "NRI.Framework.SDL" = "*", "NRI.D3D12" = "*"}
+Dependencies = {corlib = "*", "NRI.Framework.SDL" = "*"}
 
 [Project]
 Name = "Samples.Clear"

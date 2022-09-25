@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.NRI" = "*", Win32 = "*"}
+
+[Project]
+Name = "Sedulous.NRI.D3DCommon"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.NRI.D3DCommon.Program"

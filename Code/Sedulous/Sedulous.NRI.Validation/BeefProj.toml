@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.NRI" = "*"}
+
+[Project]
+Name = "Sedulous.NRI.Validation"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.NRI.Validation.Program"
