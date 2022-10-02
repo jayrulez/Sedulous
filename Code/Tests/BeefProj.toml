@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.Foundation.TestFramework"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Foundation.TestFramework.Program"

@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", Detex = "*", StbImageBeef = "*", Dxc-Beef = "*", "Sedulous.NRI" = "*", "Sedulous.NRI.D3D12" = "*", "Sedulous.NRI.Validation" = "*", "Sedulous.NRI.Vulkan" = "*"}
-
-[Project]
-Name = "NRI.Framework"
-TargetType = "BeefLib"
-StartupObject = "NRI.Framework.Program"

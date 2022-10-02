@@ -1,7 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", "NRI.Framework" = "*", SDL2 = "*"}
-
-[Project]
-Name = "NRI.Framework.SDL"
-TargetType = "BeefLib"
-StartupObject = "NRI.Framework.SDL.Program"

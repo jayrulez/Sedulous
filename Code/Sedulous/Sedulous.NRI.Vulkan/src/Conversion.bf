@@ -800,7 +800,7 @@ public static
 	}
 
 	public const VkLogicOp[(uint32)LogicFunc.MAX_NUM] LOGIC_OP = .(
-	    (.)0x7FFFFFFF,//.VK_LOGIC_OP_MAX_ENUM,       // NONE
+	    .VK_LOGIC_OP_CLEAR,//(.)0x7FFFFFFF,//.VK_LOGIC_OP_MAX_ENUM,       // NONE
 	    .VK_LOGIC_OP_CLEAR,          // CLEAR
 	    .VK_LOGIC_OP_AND,            // AND
 	    .VK_LOGIC_OP_AND_REVERSE,    // AND_REVERSE

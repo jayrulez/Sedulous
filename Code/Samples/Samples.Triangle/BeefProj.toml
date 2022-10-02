@@ -1,6 +1,0 @@
-FileVersion = 1
-Dependencies = {corlib = "*", "NRI.Framework.SDL" = "*", Dxc-Beef = "*", StbImageBeef = "*", Detex = "*"}
-
-[Project]
-Name = "Samples.Triangle"
-StartupObject = "Samples.Triangle.Program"
