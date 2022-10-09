@@ -266,9 +266,14 @@ abstract class Application : IMessageSubscriber<MessageID>, IContextComponent, I
 
 	private void Shutdown()
 	{
-		OnShutdown();
-
 		mContext.Updating.Unsubscribe(scope => this.OnUpdate);
 		mContext.PostUpdating.Unsubscribe(scope => this.OnPostUpdate);
+
+		OnShutdown();
+
+		mContext.Dispose();
+
+		delete mTimingLogic;
+		delete mContext;
 	}
 }

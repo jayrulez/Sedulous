@@ -83,7 +83,7 @@ public class ExpandingPool<T> : Pool<T>
 		if (watermarkAllocations + count == 0)
 			Runtime.FatalError("Pool Imbalance");
 
-		deallocator?.Invoke(instance);
+		//deallocator?.Invoke(instance);
 
 		if (count == 0)
 		{
@@ -101,7 +101,7 @@ public class ExpandingPool<T> : Pool<T>
 		if (watermarkAllocations + count == 0)
 			Runtime.FatalError("Pool Imbalance");
 
-		deallocator?.Invoke(instance);
+		//deallocator?.Invoke(instance);
 
 		if (count == 0)
 		{
@@ -196,7 +196,7 @@ public class ExpandingPool<T> : Pool<T>
 	private readonly delegate T() allocator ~ { if (_ != null) delete _; };
 	private readonly delegate void(T) deallocator ~ { if (_ != null) delete _; };
 	private readonly bool disposable;
-	private T[] storage;
+	private T[] storage ~ delete _;
 	private int32 count;
 	private int32 watermark;
 	private int32 watermarkAllocations;

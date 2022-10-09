@@ -48,6 +48,12 @@ internal class BackgroundWorker : Worker
 	{
 		while (true)
 		{
+			if (!mIsRunning)
+			{
+				mState = .Dead;
+				return;
+			}
+
 			ProcessJobs();
 		}
 	}

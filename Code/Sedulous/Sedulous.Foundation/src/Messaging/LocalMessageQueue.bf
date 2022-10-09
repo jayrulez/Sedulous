@@ -65,7 +65,7 @@ class LocalMessageQueue<TMessageType> : IMessageQueue<TMessageType> where TMessa
 	public this(int capacity)
 	{
 		mQueue = new Queue<EnqueuedMessage>(capacity);
-		mQueuePool = new ExpandingPool<EnqueuedMessage>((.)capacity, new () => new EnqueuedMessage(), new (queuePool) => { /*delete queuePool;*/ });
+		mQueuePool = new ExpandingPool<EnqueuedMessage>((.)capacity, new () => new EnqueuedMessage(), new (queuePool) => { delete queuePool; });
 	}
 
 	/// <summary>

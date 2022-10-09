@@ -162,12 +162,6 @@ internal abstract class Worker
 
 	protected void ProcessJobs()
 	{
-		if (!mIsRunning)
-		{
-			mState = .Dead;
-			return;
-		}
-
 		while (mJobs.Count > 0)
 		{
 			if (!mIsRunning)

@@ -97,6 +97,7 @@ class SubscriberCollection<TMessageType>
 		new (item) =>
 		{
 			item.Clear();
+			delete item;
 		}) ~ { _.Dispose(); delete _; };
 
 	private readonly Monitor mTempstoragePoolMonitor = new .() ~ delete _;

@@ -54,7 +54,7 @@ abstract class Context : IMessageSubscriber<MessageID>, IDisposable
 
 	// The context event queue.
 	public typealias MessageQueueType = LocalMessageQueue<MessageID>;
-	private readonly MessageQueueType mMessages;
+	private readonly MessageQueueType mMessages ~ delete _;
 
 	public bool IsRunningOnContextThread => Thread.CurrentThread == mThread;
 

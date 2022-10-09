@@ -16,7 +16,7 @@ sealed class ApplicationTimingLogic : IApplicationTimingLogic
 	private static readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);
 	private readonly ApplicationTimeTracker mTimeTrackerUpdate = new .() ~ delete _;
 	private readonly ApplicationTimeTracker mTimeTrackerPostUpdate = new .() ~ delete _;
-	private readonly System.Diagnostics.Stopwatch mTickTimer = new .();
+	private readonly System.Diagnostics.Stopwatch mTickTimer = new .() ~ delete _;
 	private int64 mAccumulatedElapsedTime;
 	private int32 mLagFrames;
 	private bool mRunningSlowly;

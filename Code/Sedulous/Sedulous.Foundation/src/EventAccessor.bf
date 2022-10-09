@@ -24,7 +24,7 @@ class EventAccessor<T> where T : Delegate
 		mEvent.Add(handler);
 	}
 
-	public Result<void> Unsubscribe(T handler, bool deleteDelegate = false)
+	public Result<void> Unsubscribe(T handler, bool deleteDelegate = true)
 	{
 		mMonitor?.Enter();
 		defer mMonitor?.Exit();

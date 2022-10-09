@@ -42,6 +42,14 @@ class SandboxApplication : Application
 				Thread.Sleep(5000);
 				mLogger.LogInformation("Loading on main thread finished.");
 			}, "Load Content", .RunOnMainThread);
+
+		Context.Jobs.AddJob(new () =>
+			{
+				mLogger.LogInformation("Stop application.");
+				Thread.Sleep(6000);
+				this.Exit();
+				mLogger.LogInformation("Stop application job completed.");
+			}, "Stopping application", .RunOnMainThread);
 	}
 
 	protected override void OnUpdate(Context context, ApplicationTime time)
