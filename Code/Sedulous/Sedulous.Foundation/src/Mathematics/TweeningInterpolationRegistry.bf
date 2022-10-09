@@ -25,7 +25,8 @@ namespace Sedulous.Foundation.Mathematics
 		/// </summary>
 		internal this()
 		{
-			miRegisterNullable = GetType().GetMethod("RegisterNullable", BindingFlags.NonPublic | BindingFlags.Instance);
+			// todo: Beef doesn't currently support reflection on generic methods
+			// miRegisterNullable = GetType().GetMethod("RegisterNullable", BindingFlags.NonPublic | BindingFlags.Instance);
 		}
 
 		/// <summary>
@@ -75,13 +76,14 @@ namespace Sedulous.Foundation.Mathematics
 		/// <param name="interpolator">The custom interpolator function to register for the specified type.</param>
 		public void Register<T>(Interpolator<T> interpolator)
 		{
-			interpolators[typeof(T)] = interpolator;
+			mInterpolators[typeof(T)] = interpolator;
 
 			if (typeof(T).IsValueType)
 			{
-				miRegisterNullable.Invoke(this, typeof(T), interpolator);
+				// todo: beef doesn't currently support reflection on generic methods
+				// miRegisterNullable.Invoke(this, typeof(T), interpolator);
 
-				//miRegisterNullable.MakeGenericMethod(typeof(T))
+				// miRegisterNullable.MakeGenericMethod(typeof(T))
 				//	.Invoke(this, new Object[] { interpolator });
 			}
 		}
@@ -93,7 +95,7 @@ namespace Sedulous.Foundation.Mathematics
 		/// <returns><see langword="true"/> if the specified type had a function that was unregistered; otherwise, <see langword="false"/>.</returns>
 		public bool Unregister<T>()
 		{
-			return interpolators.Remove(typeof(T));
+			return mInterpolators.Remove(typeof(T));
 		}
 
 		/// <summary>
@@ -103,7 +105,7 @@ namespace Sedulous.Foundation.Mathematics
 		/// <returns><see langword="true"/> if the specified type has a custom interpolation function; otherwise, <see langword="false"/>.</returns>
 		public bool Contains<T>()
 		{
-			return interpolators.ContainsKey(typeof(T));
+			return mInterpolators.ContainsKey(typeof(T));
 		}
 
 		/// <summary>
@@ -115,7 +117,7 @@ namespace Sedulous.Foundation.Mathematics
 		public bool TryGet<T>(out Interpolator<T> interpolator)
 		{
 			Object interpolatorObj;
-			if (interpolators.TryGetValue(typeof(T), out interpolatorObj))
+			if (mInterpolators.TryGetValue(typeof(T), out interpolatorObj))
 			{
 				interpolator = (Interpolator<T>)interpolatorObj;
 				return true;
@@ -123,7 +125,7 @@ namespace Sedulous.Foundation.Mathematics
 			else
 			{
 				RegisterDefault<T>();
-				if (interpolators.TryGetValue(typeof(T), out interpolatorObj))
+				if (mInterpolators.TryGetValue(typeof(T), out interpolatorObj))
 				{
 					interpolator = (Interpolator<T>)interpolatorObj;
 					return true;
@@ -142,7 +144,7 @@ namespace Sedulous.Foundation.Mathematics
 		{
 			if (interpolator == null)
 			{
-				interpolators[typeof(T?)] = null;
+				mInterpolators[typeof(T?)] = null;
 			}
 			else
 			{
@@ -153,13 +155,13 @@ namespace Sedulous.Foundation.Mathematics
 
 					return interpolator(valueStart.GetValueOrDefault(), valueEnd.GetValueOrDefault(), fn, t);
 				};
-				interpolators[typeof(T?)] = nullableInterpolator;
+				mInterpolators[typeof(T?)] = nullableInterpolator;
 			}
 		}
 
 		// State values.
-		private readonly MethodInfo miRegisterNullable;
-		private readonly Dictionary<Type, Object> interpolators =
+		private readonly MethodInfo mRegisterNullableMethodInfo;
+		private readonly Dictionary<Type, Object> mInterpolators =
 			new Dictionary<Type, Object>() ~
 			{
 				for (var entry in _)

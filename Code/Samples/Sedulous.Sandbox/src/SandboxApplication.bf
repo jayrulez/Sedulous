@@ -3,11 +3,16 @@ using System;
 using Sedulous.Foundation.Logging.Abstractions;
 using Sedulous.Foundation.Logging.Debug;
 using System.Threading;
+using Sedulous.Foundation.Mathematics;
+using Sedulous.SDL;
 namespace Sedulous.Sandbox;
 
 class SandboxApplication : Application
 {
 	private readonly ILogger mLogger = new DebugLogger(.Trace) ~ delete _;
+
+	private float mProgress = 0.0f;
+	private float mSpeed = 2;
 
 	public this() : base("Sandbox")
 	{
@@ -19,6 +24,9 @@ class SandboxApplication : Application
 			{
 				Logger = mLogger
 			};
+
+		configuration.FactoryInitializers.Add(new SDLFactoryInitializer());
+
 		return .Ok(new SandboxContext(this, configuration));
 	}
 
@@ -43,18 +51,28 @@ class SandboxApplication : Application
 				mLogger.LogInformation("Loading on main thread finished.");
 			}, "Load Content", .RunOnMainThread);
 
-		Context.Jobs.AddJob(new () =>
+		/*Context.Jobs.AddJob(new () =>
 			{
 				mLogger.LogInformation("Stop application.");
 				Thread.Sleep(6000);
 				this.Exit();
 				mLogger.LogInformation("Stop application job completed.");
-			}, "Stopping application", .RunOnMainThread);
+			}, "Stopping application", .RunOnMainThread);*/
 	}
 
 	protected override void OnUpdate(Context context, ApplicationTime time)
 	{
-		//mLogger.LogInformation("Update time: {}", time.ElapsedTime);
+		char8 char = Tweening.Lerp('a', 'z', mProgress);
+		mLogger.LogInformation("Letter: {}", char);
+		mLogger.LogInformation("Progress: {}", mProgress);
+
+
+		float dt = (float)time.ElapsedTime.Milliseconds / 1000 * mSpeed;
+		mProgress += dt;
+		if (mProgress >= 1.0f)
+		{
+			mProgress = 0;
+		}
 	}
 
 	protected override void OnPostUpdate(Context context, ApplicationTime time)

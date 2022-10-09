@@ -118,6 +118,11 @@ abstract class Context : IMessageSubscriber<MessageID>, IDisposable
 		mMessages = new LocalMessageQueue<MessageID>();
 
 		mMessages.Subscribe(this, CoreMessages.Quit);
+
+		for (var factoryInitializer in configuration.FactoryInitializers)
+		{
+			factoryInitializer.Initialize(this, mFactory);
+		}
 	}
 
 	public int GetHashCode()

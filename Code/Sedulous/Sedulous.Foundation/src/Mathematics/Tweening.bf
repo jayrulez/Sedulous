@@ -496,11 +496,11 @@ namespace Sedulous.Foundation.Mathematics
         /// </summary>
         public static TweeningInterpolationRegistry Interpolators
         {
-            get { return interpolators; }
+            get { return sInterpolators; }
         }
 
         // State values.
-        private static readonly TweeningInterpolationRegistry interpolators = 
+        private static readonly TweeningInterpolationRegistry sInterpolators = 
             new TweeningInterpolationRegistry() ~ delete _;
     }
 }
