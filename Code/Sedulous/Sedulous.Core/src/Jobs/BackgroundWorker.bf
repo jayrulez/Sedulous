@@ -51,6 +51,18 @@ internal class BackgroundWorker : Worker
 			if (!mIsRunning)
 			{
 				mState = .Dead;
+
+				// Return any pending jobs to the job system if the worker dies
+				using (mJobsMonitor.Enter())
+				{
+					while (mJobs.Count > 0)
+					{
+						var job = mJobs.PopFront();
+						mJobSystem.AddJob(job);
+						defer job.ReleaseRef();
+					}
+				}
+
 				return;
 			}
 

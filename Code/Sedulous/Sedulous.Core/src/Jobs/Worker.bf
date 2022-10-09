@@ -129,8 +129,13 @@ internal abstract class Worker
 		}
 	}
 
-	public void QueueJobs(Span<Job> jobs)
+	public Result<void> QueueJobs(Span<Job> jobs)
 	{
+		if (mState == .Dead)
+		{
+			return .Err;
+		}
+
 		if (mState == .Paused)
 			Resume();
 
@@ -142,10 +147,16 @@ internal abstract class Worker
 				job.AddRef();
 			}
 		}
+		return .Ok;
 	}
 
-	public void QueueJob(Job job)
+	public Result<void> QueueJob(Job job)
 	{
+		if (mState == .Dead)
+		{
+			return .Err;
+		}
+
 		if (mState == .Paused)
 			Resume();
 
@@ -154,6 +165,8 @@ internal abstract class Worker
 			mJobs.Add(job);
 			job.AddRef();
 		}
+
+		return .Ok;
 	}
 
 	public virtual void Update()

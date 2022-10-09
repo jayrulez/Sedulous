@@ -11,6 +11,7 @@ class JobSystem
 {
 	private readonly Context mContext = null;
 
+	private readonly int mMinimumBackgroundWorkers;
 	private readonly List<BackgroundWorker> mWorkers = new .() ~ delete _;
 	private readonly MainThreadWorker mMainThreadWorker = null;
 
@@ -35,18 +36,18 @@ class JobSystem
 
 		mContext = context;
 
-		workerCount = Math.Max(1, workerCount);
+		mMinimumBackgroundWorkers = Math.Max(1, workerCount);
 
 		BfpSystemResult result = .Ok;
 		int coreCount = Platform.BfpSystem_GetNumLogicalCPUs(&result);
 		if (result == .Ok)
 		{
-			workerCount = Math.Min(workerCount, coreCount - 1);
+			mMinimumBackgroundWorkers = Math.Min(mMinimumBackgroundWorkers, coreCount - 1);
 		}
 
 		mMainThreadWorker = new .(this, "Main Thread Worker");
 
-		for (int i = 0; i < workerCount; i++)
+		for (int i = 0; i < mMinimumBackgroundWorkers; i++)
 		{
 			BackgroundWorker worker = new .(this, scope $"Worker {i}");
 
@@ -156,10 +157,16 @@ class JobSystem
 
 		using (mJobsToRunMonitor.Enter())
 		{
-			int numJobsToRun = mJobsToRun.Count;
+			delegate void(Job) requeueJob = scope (job) =>
+				{
+					// We need to add a ref to the job to counter the previous release
+					// We need to add the job back to the front of the queue
+					job.AddRef();
+					mJobsToRun.AddFront(job);
+				};
 
 			// while there are jobs to run
-			while (numJobsToRun-- > 0)
+			while (mJobsToRun.Count > 0)
 			{
 				// get the first job
 				Job job = mJobsToRun.PopFront();
@@ -178,18 +185,25 @@ class JobSystem
 				// if it has the RunOnMainThread flag
 				if (job.Flags.HasFlag(.RunOnMainThread))
 				{
-					mMainThreadWorker.QueueJob(job);
+					if (mMainThreadWorker.QueueJob(job) case .Err)
+					{
+						Logger.LogError("Failed to queue job on worker '{}'.", mMainThreadWorker.Name);
+						// Failed to queue the job on the worker
+						// Requeue the job, the lambda adds a ref to job to counter the previous release
+						requeueJob(job);
+					}
 					continue;
 				}
 
 				// Try to get a worker to queue the job on
 				if (!GetAvailableWorker(var worker))
 				{
-					// We need to add a ref to the job to counter the previous release
-					// We need to add the job back to the front of the queue
+					// No available workers
 					// We need to break here if there are no available workers
-					job.AddRef();
-					mJobsToRun.AddFront(job);
+					// Requeue the job, the lambda adds a ref to job to counter the previous release
+					requeueJob(job);
+
+					// todo: determine if job can be run on main thread, if yes then do so and continue instead of requeueing, otherwise break
 					break;
 				}
 
@@ -201,7 +215,13 @@ class JobSystem
 					OnJobCompleted(job, null);
 					break;
 				default:
-					worker.QueueJob(job);
+					if (worker.QueueJob(job) case .Err)
+					{
+						Logger.LogError("Failed to queue job on worker '{}'.", worker.Name);
+						// Failed to queue the job on the worker
+						// Requeue the job, the lambda adds a ref to job to counter the previous release
+						requeueJob(job);
+					}
 					break;
 				}
 			}
@@ -221,6 +241,8 @@ class JobSystem
 		ClearCompletedJobs();
 
 		ClearCancelledJobs();
+
+		// todo: remove dead workers and replace them to satisfy minimum background worker count
 	}
 
 	public void AddJob(Job job)
