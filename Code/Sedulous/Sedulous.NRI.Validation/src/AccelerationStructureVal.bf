@@ -4,9 +4,11 @@ namespace Sedulous.NRI.Validation;
 class AccelerationStructureVal : AccelerationStructure,  DeviceObjectVal<AccelerationStructure>
 {
 	MemoryVal m_Memory = null;
+	bool m_IsBoundToMemory = false;
 
-	public this(DeviceVal device, AccelerationStructure accelerationStructure) : base(device, accelerationStructure)
+	public this(DeviceVal device, AccelerationStructure accelerationStructure, bool isBoundToMemory) : base(device, accelerationStructure)
 	{
+		m_IsBoundToMemory = isBoundToMemory;
 	}
 
 	public ~this()
@@ -18,10 +20,13 @@ class AccelerationStructureVal : AccelerationStructure,  DeviceObjectVal<Acceler
 	}
 
 	public bool IsBoundToMemory()
-		{ return m_Memory != null; }
+		{ return m_IsBoundToMemory; }
 
 	public void SetBoundToMemory(MemoryVal memory)
-		{ m_Memory = memory; }
+	{
+		m_Memory = memory;
+		m_IsBoundToMemory = true;
+	}
 
 	public void GetMemoryInfo(ref MemoryDesc memoryDesc)
 	{
@@ -41,10 +46,18 @@ class AccelerationStructureVal : AccelerationStructure,  DeviceObjectVal<Acceler
 
 	public uint64 GetHandle(uint32 physicalDeviceIndex)
 	{
-		RETURN_ON_FAILURE!(m_Device.GetLogger(), m_Memory != null, 0,
+		RETURN_ON_FAILURE!(m_Device.GetLogger(), IsBoundToMemory(), 0,
 			"Can't get AccelerationStructure handle: AccelerationStructure is not bound to memory.");
 
 		return m_ImplObject.GetHandle(physicalDeviceIndex);
+	}
+
+	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	{
+		RETURN_ON_FAILURE!(m_Device.GetLogger(), IsBoundToMemory(), 0,
+			"Can't get AccelerationStructure native object: AccelerationStructure is not bound to memory.");
+
+		return m_ImplObject.GetNativeObject(physicalDeviceIndex);
 	}
 
 	public Result CreateDescriptor(uint32 physicalDeviceIndex, out Descriptor descriptor)

@@ -813,7 +813,7 @@ class DeviceVal : Device
 		if (result == Result.SUCCESS)
 		{
 			RETURN_ON_FAILURE!(GetLogger(), accelerationStructureImpl != null, Result.FAILURE, "Unexpected error: 'accelerationStructureImpl' is NULL.");
-			accelerationStructure = (AccelerationStructure)Allocate!<AccelerationStructureVal>(GetAllocator(), this, accelerationStructureImpl);
+			accelerationStructure = (AccelerationStructure)Allocate!<AccelerationStructureVal>(GetAllocator(), this, accelerationStructureImpl, false);
 		}
 
 		return result;

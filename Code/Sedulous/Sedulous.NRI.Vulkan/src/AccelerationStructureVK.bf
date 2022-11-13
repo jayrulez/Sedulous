@@ -77,6 +77,7 @@ class AccelerationStructureVK : AccelerationStructure
 	private uint32 m_PhysicalDeviceMask = 0;
 	private VkAccelerationStructureTypeKHR m_Type = (VkAccelerationStructureTypeKHR)0;
 	private VkBuildAccelerationStructureFlagsKHR m_BuildFlags = (VkBuildAccelerationStructureFlagsKHR)0;
+	bool m_OwnsNativeObjects = false;
 
 	public this(DeviceVK device)
 	{
@@ -85,6 +86,9 @@ class AccelerationStructureVK : AccelerationStructure
 
 	public ~this()
 	{
+		if (!m_OwnsNativeObjects)
+			return;
+
 		for (uint32 i = 0; i < m_Handles.Count; i++)
 		{
 			if (m_Handles[i] != .Null)
@@ -99,6 +103,7 @@ class AccelerationStructureVK : AccelerationStructure
 
 	public Result Create(AccelerationStructureDesc accelerationStructureDesc)
 	{
+		m_OwnsNativeObjects = true;
 		m_Type = GetAccelerationStructureType(accelerationStructureDesc.type);
 		m_BuildFlags = GetAccelerationStructureBuildFlags(accelerationStructureDesc.flags);
 
@@ -121,6 +126,38 @@ class AccelerationStructureVK : AccelerationStructure
 		m_Buffer = (BufferVK)buffer;
 
 		return result;
+	}
+
+	public Result Create(AccelerationStructureVulkanDesc accelerationStructureDesc)
+	{
+		m_OwnsNativeObjects = false;
+		m_Type = (.)uint32.MaxValue; //.VK_ACCELERATION_STRUCTURE_TYPE_MAX_ENUM_KHR;
+		m_BuildFlags = 0;
+
+		uint32 physicalDeviceMask = GetPhysicalDeviceGroupMask(accelerationStructureDesc.physicalDeviceMask);
+
+		VkAccelerationStructureDeviceAddressInfoKHR deviceAddressInfo = .();
+		deviceAddressInfo.sType = .VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR;
+		deviceAddressInfo.accelerationStructure = (VkAccelerationStructureKHR)accelerationStructureDesc.vkAccelerationStructure;
+
+		readonly uint64 deviceAddress = VulkanNative.vkGetAccelerationStructureDeviceAddressKHR(m_Device, &deviceAddressInfo);
+
+		if (deviceAddress == 0)
+			return Result.FAILURE;
+
+		for (uint32 i = 0; i < m_Device.GetPhyiscalDeviceGroupSize(); i++)
+		{
+			if ((1 << i) & physicalDeviceMask != 0)
+			{
+				m_Handles[i] = (VkAccelerationStructureKHR)accelerationStructureDesc.vkAccelerationStructure;
+				m_DeviceAddresses[i] = deviceAddress;
+			}
+		}
+
+		m_BuildScratchSize = accelerationStructureDesc.buildScratchSize;
+		m_UpdateScratchSize = accelerationStructureDesc.updateScratchSize;
+
+		return Result.SUCCESS;
 	}
 
 	public Result FinishCreation()
@@ -192,5 +229,10 @@ class AccelerationStructureVK : AccelerationStructure
 	public uint64 GetNativeHandle(uint32 physicalDeviceIndex)
 	{
 		return m_DeviceAddresses[physicalDeviceIndex];
+	}
+
+	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	{
+		return GetHandle(physicalDeviceIndex);
 	}
 }

@@ -20,7 +20,23 @@ class AccelerationStructureD3D12 : AccelerationStructure
 			Deallocate!(m_Device.GetAllocator(), m_Buffer);
 	}
 
+	public static implicit operator ID3D12Resource*(Self self) => (ID3D12Resource*)self.m_Buffer;
+	public static implicit operator BufferD3D12(Self self) => self.m_Buffer;
+
 	public DeviceD3D12 GetDevice() => m_Device;
+
+	public Result Create(AccelerationStructureD3D12Desc accelerationStructureDesc)
+	{
+		m_PrebuildInfo.ScratchDataSizeInBytes = accelerationStructureDesc.scratchDataSizeInBytes;
+		m_PrebuildInfo.UpdateScratchDataSizeInBytes = accelerationStructureDesc.updateScratchDataSizeInBytes;
+		BufferD3D12Desc bufferDesc = .();
+		bufferDesc.d3d12Resource = (ID3D12Resource*)accelerationStructureDesc.d3d12Resource;
+
+		Buffer buffer = null;
+		Result result = m_Device.CreateBuffer(bufferDesc, out buffer);
+		m_Buffer = (BufferD3D12)buffer;
+		return result;
+	}
 
 	public Result Create(AccelerationStructureDesc accelerationStructureDesc)
 	{
@@ -92,5 +108,10 @@ class AccelerationStructureD3D12 : AccelerationStructure
 	public uint64 GetHandle(uint32 physicalDeviceIndex)
 	{
 		return m_Buffer.GetPointerGPU();
+	}
+
+	public uint64 GetNativeObject(uint32 physicalDeviceIndex)
+	{
+		return (uint64)(int)(void*)(ID3D12Resource*)this;
 	}
 }

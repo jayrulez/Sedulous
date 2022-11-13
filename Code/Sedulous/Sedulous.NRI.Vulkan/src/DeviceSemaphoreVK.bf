@@ -41,7 +41,7 @@ class DeviceSemaphoreVK : DeviceSemaphore
 		return Result.SUCCESS;
 	}
 
-	public Result Create(NRIVkSemaphore vkFence)
+	public Result Create(NRIVkFence vkFence)
 	{
 		m_OwnsNativeObjects = false;
 		m_Handle = (VkFence)vkFence;

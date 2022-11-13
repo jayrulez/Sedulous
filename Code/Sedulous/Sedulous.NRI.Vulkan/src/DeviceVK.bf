@@ -161,7 +161,11 @@ public static
 		if (callbackData.messageIdNumber == 738239446)
 			messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
 
-		char8* type;
+		// VUID-RuntimeSpirv-OpImageWrite-07112
+		if (callbackData.messageIdNumber == 1842853234)
+			messageSeverity = .VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+
+		char8* type = "unknown";
 		switch (messageSeverity)
 		{
 		case .VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT:
@@ -178,9 +182,7 @@ public static
 			type = "error";
 			isError = true;
 			break;
-		default:
-			type = "unknown";
-			break;
+		default: break;
 		}
 
 		if (!isWarning && !isError)
@@ -1678,12 +1680,12 @@ class DeviceVK : Device
 
 	public NRIVkPhysicalDevice GetVkPhysicalDevice()
 	{
-	    return (VkPhysicalDevice)((DeviceVK)this);
+		return (VkPhysicalDevice)((DeviceVK)this);
 	}
 
 	public NRIVkInstance GetVkInstance()
 	{
-	    return (VkInstance)((DeviceVK)this);
+		return (VkInstance)((DeviceVK)this);
 	}
 
 	public void SetDebugNameToTrivialObject(VkObjectType objectType, uint64 handle, char8* name)
@@ -1751,7 +1753,7 @@ class DeviceVK : Device
 
 	public void* GetDeviceNativeObject()
 	{
-	    return (VkDevice)((DeviceVK)this);
+		return (VkDevice)((DeviceVK)this);
 	}
 
 	public ref DeviceDesc GetDesc()
@@ -1868,6 +1870,11 @@ class DeviceVK : Device
 	}
 
 	public Result CreateAccelerationStructure(AccelerationStructureDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	{
+		return CreateImplementation<AccelerationStructureVK...>(out accelerationStructure, accelerationStructureDesc);
+	}
+
+	public Result CreateAccelerationStructure(AccelerationStructureVulkanDesc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
 	{
 		return CreateImplementation<AccelerationStructureVK...>(out accelerationStructure, accelerationStructureDesc);
 	}
@@ -2318,7 +2325,6 @@ public static
 
 		if (res == Result.SUCCESS)
 		{
-
 			device = implementation;
 			return Result.SUCCESS;
 		}

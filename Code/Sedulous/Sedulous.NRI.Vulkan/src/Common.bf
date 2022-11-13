@@ -11,6 +11,7 @@ typealias NRIVkSemaphore = uint64;
 typealias NRIVkFence = uint64;
 typealias NRIVkImageView = uint64;
 typealias NRIVkBufferView = uint64;
+typealias NRIVkAccelerationStructureKHR = uint64;
 
 typealias NRIVkInstance = void*;
 typealias NRIVkPhysicalDevice = void*;
@@ -35,6 +36,14 @@ typealias NRIVkFence          = void*;
 
 typealias NRIVkImageView      = void*;
 typealias NRIVkBufferView     = void*;*/
+
+struct AccelerationStructureVulkanDesc
+{
+    public NRIVkAccelerationStructureKHR vkAccelerationStructure;
+    public uint64 buildScratchSize;
+    public uint64 updateScratchSize;
+    public uint32 physicalDeviceMask;
+}
 
 struct DeviceCreationVulkanDesc
 {

@@ -145,7 +145,7 @@ abstract class Context : IMessageSubscriber<MessageID>, IDisposable
 	/// </summary>
 	/// <param name="type">The type of message that was received.</param>
 	/// <param name="data">The data for the message that was received.</param>
-	void IMessageSubscriber<MessageID>.ReceiveMessage(MessageID type, MessageData data)
+	private void IMessageSubscriber<MessageID>.ReceiveMessage(MessageID type, MessageData data)
 	{
 		Contract.EnsureNotDisposed(this, Disposed);
 

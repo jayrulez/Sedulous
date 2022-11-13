@@ -443,7 +443,7 @@ class DeviceD3D12 : Device
 			// GPU-based validation
 			/*ComPtr<ID3D12Debug1> debugController1 = default;
 			if (SUCCEEDED(debugController->QueryInterface(ID3D12Debug1.IID, (void**)(&debugController1))))
-			    debugController1->SetEnableGPUBasedValidation(TRUE);
+				debugController1->SetEnableGPUBasedValidation(TRUE);
 
 				debugController1.Dispose();*/
 			}
@@ -524,7 +524,7 @@ class DeviceD3D12 : Device
 		{
 			readonly LUID luid = m_Device->GetAdapterLuid();
 
-			using(ComPtr<IDXGIFactory4> DXGIFactory = default)
+			using (ComPtr<IDXGIFactory4> DXGIFactory = default)
 			{
 				HRESULT result = CreateDXGIFactory(IDXGIFactory4.IID, (void**)(&DXGIFactory));
 				RETURN_ON_BAD_HRESULT!(GetLogger(), result, "Failed to create IDXGIFactory4");
@@ -719,7 +719,7 @@ class DeviceD3D12 : Device
 
 	public void* GetDeviceNativeObject()
 	{
-	    return (DeviceD3D12)this;
+		return (DeviceD3D12)this;
 	}
 
 	public ref DeviceDesc GetDesc()
@@ -867,6 +867,10 @@ class DeviceD3D12 : Device
 		return CreateImplementation<AccelerationStructureD3D12...>(out accelerationStructure, accelerationStructureDesc);
 	}
 
+	public Result CreateAccelerationStructure(AccelerationStructureD3D12Desc accelerationStructureDesc, out AccelerationStructure accelerationStructure)
+	{
+		return CreateImplementation<AccelerationStructureD3D12...>(out accelerationStructure, accelerationStructureDesc);
+	}
 
 	public Result CreateCommandBuffer(CommandBufferD3D12Desc commandBufferDesc, out CommandBuffer commandBuffer)
 	{

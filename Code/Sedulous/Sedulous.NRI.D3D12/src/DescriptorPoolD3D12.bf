@@ -18,8 +18,8 @@ class DescriptorPoolD3D12 : DescriptorPool
 	private DescriptorHeapDesc[(.)DescriptorHeapType.MAX_NUM] m_DescriptorHeapDescs;
 	private uint32[(.)DescriptorHeapType.MAX_NUM] m_DescriptorNum = .();
 	private ID3D12DescriptorHeap*[(.)DescriptorHeapType.MAX_NUM] m_DescriptorHeaps = .();
-	private uint32 m_DescriptorHeapNum = 0;
 	private List<DescriptorSetD3D12> m_DescriptorSets;
+	private uint32 m_DescriptorHeapNum = 0;
 	private uint32 m_DescriptorSetNum = 0;
 
 	public this(DeviceD3D12 device)
@@ -30,19 +30,21 @@ class DescriptorPoolD3D12 : DescriptorPool
 	}
 	public ~this()
 	{
-		for (int i = 0; i < m_DescriptorSetNum; i++)
-			Deallocate!(m_Device.GetAllocator(), m_DescriptorSets[i]);
+		Reset();
+		m_DescriptorSets.Clear();
 
 		Deallocate!(m_Device.GetAllocator(), m_DescriptorSets);
 
-		for(var item in ref m_DescriptorHeapDescs){
+		for (var item in ref m_DescriptorHeapDescs)
+		{
 			item.Dispose();
 		}
 
-		for(var item in ref m_DescriptorHeaps){
-			if(item != null)
-		   		//item.Release();
-			item = null;
+		for (var item in ref m_DescriptorHeaps)
+		{
+			if (item != null)
+				   //item.Release();
+				item = null;
 		}
 	}
 

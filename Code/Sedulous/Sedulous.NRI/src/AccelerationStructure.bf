@@ -10,5 +10,6 @@ interface AccelerationStructure
 	public uint64 GetUpdateScratchBufferSize();
 	public uint64 GetBuildScratchBufferSize();
 	public uint64 GetHandle(uint32 physicalDeviceIndex);
+	public uint64 GetNativeObject(uint32 physicalDeviceIndex); // ID3D12Resource* or VkAccelerationStructureKHR
 
 }

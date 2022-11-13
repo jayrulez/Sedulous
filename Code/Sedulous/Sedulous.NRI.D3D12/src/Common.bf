@@ -19,6 +19,13 @@ struct DeviceCreationD3D12Desc
 	public bool enableAPIValidation;
 }
 
+struct AccelerationStructureD3D12Desc
+{
+    public ID3D12Resource* d3d12Resource;
+    public uint64 scratchDataSizeInBytes;
+    public uint64 updateScratchDataSizeInBytes;
+}
+
 struct CommandBufferD3D12Desc
 {
 	public ID3D12GraphicsCommandList* d3d12CommandList;
