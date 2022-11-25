@@ -1,7 +1,11 @@
 using Sedulous.Core;
 using Sedulous.Platform;
 using Sedulous.NRI;
+using Sedulous.Foundation;
+using System;
 namespace Sedulous.Graphics;
+
+typealias OnRenderDelegate = delegate void(CommandBuffer commandBuffer);
 
 class GraphicsPlugin : Plugin
 {
@@ -15,6 +19,8 @@ class GraphicsPlugin : Plugin
 	private EngineUpdateDelegateInfo mUpdateDelegateInfo;
 
 	public GraphicsSystem Graphics { get => mGraphicsSystem; }
+
+	public EventAccessor<OnRenderDelegate> OnRender = new .() ~ delete _;
 
 	public this(Window window, Device device)
 	{
@@ -58,8 +64,10 @@ class GraphicsPlugin : Plugin
 
 	private void Update(EngineTime engineTime)
 	{
-		mGraphicsSystem.PrepareFrame(mFrameCount);
-		mGraphicsSystem.RenderFrame(mFrameCount);
-		mFrameCount++;
+		var frame = ref mGraphicsSystem.BeginFrame(mFrameCount++);
+
+		OnRender.[Friend]mEvent(frame.commandBuffer);
+
+		mGraphicsSystem.EndFrame(ref frame);
 	}
 }

@@ -13,6 +13,7 @@ static
 			constantBufferOffset = 300,
 			storageTextureAndBufferOffset = 400
 		};
+
 	public const bool D3D11_COMMANDBUFFER_EMULATION = false;
 	public const uint32 DEFAULT_MEMORY_ALIGNMENT = 16;
 	public const uint32 BUFFERED_FRAME_MAX_NUM = 2;
@@ -49,6 +50,10 @@ class GraphicsSystem
 
 	private uint32 mSwapInterval = 0;
 
+	private uint32 mCurrentBackBufferIndex = 0;
+
+	public Window Window { get => mWindow; }
+
 	public this(Engine engine, Window window, Device device)
 	{
 		mEngine = engine;
@@ -67,72 +72,30 @@ class GraphicsSystem
 		DestroySwapChainResources();
 	}
 
-	public void PrepareFrame(uint32 frameIndex)
+	public ref BackBuffer GetCurrentBackBuffer()
 	{
+		return ref mSwapChainBuffers[mCurrentBackBufferIndex];
 	}
 
-	public void RenderFrame(uint32 frameIndex)
+	public ref Frame BeginFrame(uint32 frameIndex)
 	{
-		readonly uint32 windowWidth = mWindow.Width;
-		readonly uint32 windowHeight = mWindow.Height;
 		readonly uint32 bufferedFrameIndex = frameIndex % BUFFERED_FRAME_MAX_NUM;
-		readonly ref Frame frame = ref mFrames[bufferedFrameIndex];
+		ref Frame frame = ref mFrames[bufferedFrameIndex];
 
-		readonly uint32 backBufferIndex = mSwapChain.AcquireNextTexture(ref mAcquireSemaphore);
-		readonly ref BackBuffer backBuffer = ref mSwapChainBuffers[backBufferIndex];
+		mCurrentBackBufferIndex = mSwapChain.AcquireNextTexture(ref mAcquireSemaphore);
 
 		mCommandQueue.WaitForSemaphore(frame.deviceSemaphore);
 		frame.commandAllocator.Reset();
 
 		CommandBuffer commandBuffer = frame.commandBuffer;
 		commandBuffer.Begin(null, 0);
-		{
-			TextureTransitionBarrierDesc textureTransitionBarrierDesc = .();
-			{
-				textureTransitionBarrierDesc.texture = backBuffer.texture;
-				textureTransitionBarrierDesc.prevAccess = AccessBits.UNKNOWN;
-				textureTransitionBarrierDesc.nextAccess = AccessBits.COLOR_ATTACHMENT;
-				textureTransitionBarrierDesc.prevLayout = TextureLayout.UNKNOWN;
-				textureTransitionBarrierDesc.nextLayout = TextureLayout.COLOR_ATTACHMENT;
-				textureTransitionBarrierDesc.arraySize = 1;
-				textureTransitionBarrierDesc.mipNum = 1;
-			}
 
-			TransitionBarrierDesc transitionBarriers = .();
-			{
-				transitionBarriers.textureNum = 1;
-				transitionBarriers.textures = &textureTransitionBarrierDesc;
-			}
-			commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
+		return ref frame;
+	}
 
-			commandBuffer.BeginRenderPass(backBuffer.frameBuffer, RenderPassBeginFlag.NONE);
-			{
-				commandBuffer.BeginAnnotation("Clear");
-
-				ClearDesc clearDesc = .();
-				clearDesc.colorAttachmentIndex = 0;
-
-				clearDesc.value.rgba32f = .() { r = 1.0f, g = 0.0f, b = 0.0f, a = 1.0f };
-				Rect rect1 = .() { left = 0, top = 0, width = windowWidth, height = windowHeight / 3 };
-				commandBuffer.ClearAttachments(&clearDesc, 1, &rect1, 1);
-
-				clearDesc.value.rgba32f = .() { r = 0.0f, g = 1.0f, b = 0.0f, a = 1.0f };
-				Rect rect2 = .() { left = 0, top = (.)windowHeight / 3, width = windowWidth, height = windowHeight / 3 };
-				commandBuffer.ClearAttachments(&clearDesc, 1, &rect2, 1);
-
-				clearDesc.value.rgba32f = .() { r = 0.0f, g = 0.0f, b = 1.0f, a = 1.0f };
-				Rect rect3 = .() { left = 0, top = (.)(windowHeight * 2) / 3, width = windowWidth, height = windowHeight / 3 };
-				commandBuffer.ClearAttachments(&clearDesc, 1, &rect3, 1);
-			}
-			commandBuffer.EndRenderPass();
-			{
-				textureTransitionBarrierDesc.prevAccess = textureTransitionBarrierDesc.nextAccess;
-				textureTransitionBarrierDesc.nextAccess = AccessBits.UNKNOWN;
-				textureTransitionBarrierDesc.prevLayout = textureTransitionBarrierDesc.nextLayout;
-				textureTransitionBarrierDesc.nextLayout = TextureLayout.PRESENT;
-			}
-			commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
-		}
+	public void EndFrame(ref Frame frame)
+	{
+		CommandBuffer commandBuffer = frame.commandBuffer;
 		commandBuffer.End();
 
 		readonly CommandBuffer[] commandBuffers = scope .(commandBuffer);

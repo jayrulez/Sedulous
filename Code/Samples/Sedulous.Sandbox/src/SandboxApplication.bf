@@ -8,6 +8,7 @@ using Sedulous.SDL;
 using Sedulous.NRI;
 using Sedulous.NRI.Validation;
 using Sedulous.Graphics;
+using Sedulous.Platform;
 
 namespace Sedulous.Sandbox;
 
@@ -69,8 +70,6 @@ class SandboxApplication
 {
 	private readonly ILogger mLogger = new DebugLogger(.Trace) ~ delete _;
 
-
-
 	protected void OnInitialized(Engine engine)
 	{
 		engine.Jobs.AddJob(new () =>
@@ -101,6 +100,60 @@ class SandboxApplication
 			}, "Stopping application", .RunOnMainThread);*/
 	}
 
+	private void OnRender(Window window, GraphicsSystem graphics, CommandBuffer commandBuffer)
+	{
+		var backBuffer = graphics.GetCurrentBackBuffer();
+
+		var windowWidth = window.Width;
+		var windowHeight = window.Height;
+
+		TextureTransitionBarrierDesc textureTransitionBarrierDesc = .();
+		{
+			textureTransitionBarrierDesc.texture = backBuffer.texture;
+			textureTransitionBarrierDesc.prevAccess = AccessBits.UNKNOWN;
+			textureTransitionBarrierDesc.nextAccess = AccessBits.COLOR_ATTACHMENT;
+			textureTransitionBarrierDesc.prevLayout = TextureLayout.UNKNOWN;
+			textureTransitionBarrierDesc.nextLayout = TextureLayout.COLOR_ATTACHMENT;
+			textureTransitionBarrierDesc.arraySize = 1;
+			textureTransitionBarrierDesc.mipNum = 1;
+		}
+
+		TransitionBarrierDesc transitionBarriers = .();
+		{
+			transitionBarriers.textureNum = 1;
+			transitionBarriers.textures = &textureTransitionBarrierDesc;
+		}
+		commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
+
+		commandBuffer.BeginRenderPass(backBuffer.frameBuffer, RenderPassBeginFlag.NONE);
+		{
+			commandBuffer.BeginAnnotation("Clear");
+
+			ClearDesc clearDesc = .();
+			clearDesc.colorAttachmentIndex = 0;
+
+			clearDesc.value.rgba32f = .() { r = 1.0f, g = 0.0f, b = 0.0f, a = 1.0f };
+			Rect rect1 = .() { left = 0, top = 0, width = windowWidth, height = windowHeight / 3 };
+			commandBuffer.ClearAttachments(&clearDesc, 1, &rect1, 1);
+
+			clearDesc.value.rgba32f = .() { r = 0.0f, g = 1.0f, b = 0.0f, a = 1.0f };
+			Rect rect2 = .() { left = 0, top = (.)windowHeight / 3, width = windowWidth, height = windowHeight / 3 };
+			commandBuffer.ClearAttachments(&clearDesc, 1, &rect2, 1);
+
+			clearDesc.value.rgba32f = .() { r = 0.0f, g = 0.0f, b = 1.0f, a = 1.0f };
+			Rect rect3 = .() { left = 0, top = (.)(windowHeight * 2) / 3, width = windowWidth, height = windowHeight / 3 };
+			commandBuffer.ClearAttachments(&clearDesc, 1, &rect3, 1);
+		}
+		commandBuffer.EndRenderPass();
+		{
+			textureTransitionBarrierDesc.prevAccess = textureTransitionBarrierDesc.nextAccess;
+			textureTransitionBarrierDesc.nextAccess = AccessBits.UNKNOWN;
+			textureTransitionBarrierDesc.prevLayout = textureTransitionBarrierDesc.nextLayout;
+			textureTransitionBarrierDesc.nextLayout = TextureLayout.PRESENT;
+		}
+		commandBuffer.PipelineBarrier(&transitionBarriers, null, BarrierDependency.ALL_STAGES);
+	}
+
 	public void Run()
 	{
 		GraphicsAPI graphicsAPI = .VULKAN;
@@ -128,6 +181,11 @@ class SandboxApplication
 		}
 
 		var graphicsPlugin = scope GraphicsPlugin(primaryWindow, device);
+
+		graphicsPlugin.OnRender.Subscribe(new [&] (commandBuffer) =>
+			{
+				this.OnRender(primaryWindow, graphicsPlugin.Graphics, commandBuffer);
+			});
 
 		defer { DestroyDevice(device); }
 		{
