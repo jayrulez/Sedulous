@@ -66,13 +66,11 @@ internal abstract class Worker
 			mJobSystem.Logger.LogError("Stop called on a worker '{}' that is not running.", mName);
 			return;
 		}
-
-		Resume();
+		
+		mIsRunning = false;
 
 		// Ensure the last task is completed
 		WaitForIdle();
-
-		mIsRunning = false;
 
 		OnStopping();
 

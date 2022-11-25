@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.NRI" = "*"}
+
+[Project]
+Name = "Sedulous.Platform"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Platform.Program"

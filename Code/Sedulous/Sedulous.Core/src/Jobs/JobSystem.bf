@@ -9,7 +9,7 @@ using internal Sedulous.Core.Jobs;
 
 class JobSystem
 {
-	private readonly Context mContext = null;
+	private readonly Engine mEngine = null;
 
 	private readonly int mMinimumBackgroundWorkers;
 	private readonly List<BackgroundWorker> mWorkers = new .() ~ delete _;
@@ -28,13 +28,13 @@ class JobSystem
 
 	public int WorkerCount => mWorkers?.Count ?? 0;
 
-	public ILogger Logger => mContext.Logger;
+	public ILogger Logger => mEngine.Logger;
 
-	public this(Context context, int workerCount = 0)
+	public this(Engine engine, int workerCount = 0)
 	{
 		var workerCount;
 
-		mContext = context;
+		mEngine = engine;
 
 		mMinimumBackgroundWorkers = Math.Max(1, workerCount);
 
@@ -93,8 +93,6 @@ class JobSystem
 
 	public void Startup()
 	{
-		Runtime.Assert(mContext.IsRunningOnContextThread);
-
 		if (mIsRunning)
 		{
 			Logger.LogError("Startup called on JobSystem that is already running.");
@@ -113,8 +111,6 @@ class JobSystem
 
 	public void Shutdown()
 	{
-		Runtime.Assert(mContext.IsRunningOnContextThread);
-
 		if (!mIsRunning)
 		{
 			Logger.LogError("Shutdown called on JobSystem that is not running.");
@@ -123,6 +119,7 @@ class JobSystem
 
 		for (Worker worker in mWorkers)
 		{
+			worker.Resume();
 			worker.Stop();
 		}
 
@@ -145,8 +142,6 @@ class JobSystem
 
 	public void Update()
 	{
-		Runtime.Assert(mContext.IsRunningOnContextThread);
-
 		if (!mIsRunning)
 		{
 			Logger.LogError("Update called on JobSystem that is not running.");

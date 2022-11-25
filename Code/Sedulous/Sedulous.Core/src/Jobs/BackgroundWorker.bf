@@ -40,8 +40,7 @@ internal class BackgroundWorker : Worker
 
 	protected override void OnResuming()
 	{
-		if (mThread.ThreadState == .Suspended)
-			mThread.Resume();
+		mThread.Resume();
 	}
 
 	private void ProcessJobsAsync()
@@ -58,8 +57,8 @@ internal class BackgroundWorker : Worker
 					while (mJobs.Count > 0)
 					{
 						var job = mJobs.PopFront();
-						mJobSystem.AddJob(job);
 						defer job.ReleaseRef();
+						mJobSystem.AddJob(job);
 					}
 				}
 
