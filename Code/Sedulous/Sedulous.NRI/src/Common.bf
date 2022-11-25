@@ -1099,6 +1099,8 @@ struct InputAssemblyDesc
      public /*const*/ ClearValueDesc* depthStencilClearValue;
      public uint32 colorAttachmentNum;
      public uint32 physicalDeviceMask;
+     public uint16[2] size;
+     public uint16 layerNum;
  }
 
  struct QueryPoolDesc

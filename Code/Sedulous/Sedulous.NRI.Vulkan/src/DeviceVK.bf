@@ -1611,8 +1611,7 @@ class DeviceVK : Device
 	{
 		readonly VkMemoryPropertyFlags host = .VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | .VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 
-		VkMemoryPropertyFlags hostUnwantedFlags =
-			(memoryLocation == MemoryLocation.HOST_READBACK) ? .VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT : 0;
+		VkMemoryPropertyFlags hostUnwantedFlags = .VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
 		readonly VkMemoryPropertyFlags device = .VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 		readonly VkMemoryPropertyFlags deviceUnwantedFlags = 0;
@@ -1629,7 +1628,7 @@ class DeviceVK : Device
 		{
 			readonly bool isMemoryTypeSupported = memoryTypeMask & (1 << i) != 0;
 			readonly bool isPropSupported = (m_MemoryProps.memoryTypes[i].propertyFlags & flags) == flags;
-			readonly bool hasUnwantedProperties = (m_MemoryProps.memoryTypes[i].propertyFlags & unwantedFlags) == 0;
+			readonly bool hasUnwantedProperties = (m_MemoryProps.memoryTypes[i].propertyFlags & unwantedFlags) != 0;
 
 			if (isMemoryTypeSupported && isPropSupported && !hasUnwantedProperties)
 			{

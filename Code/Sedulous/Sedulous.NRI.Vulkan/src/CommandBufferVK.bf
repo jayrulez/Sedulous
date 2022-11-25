@@ -469,12 +469,13 @@ class CommandBufferVK : CommandBuffer
 			rectNum = clearDescNum;
 
 			readonly ref VkRect2D rect = ref m_CurrentFrameBuffer.GetRenderArea();
+			readonly uint32 layerNum = m_CurrentFrameBuffer.GetLayerNum();
 
 			for (uint32 i = 0; i < clearDescNum; i++)
 			{
 				ref VkClearRect clearRect = ref clearRects[i];
 				clearRect.baseArrayLayer = 0;
-				clearRect.layerCount = 1;
+				clearRect.layerCount = layerNum;
 				clearRect.rect = rect;
 			}
 		}

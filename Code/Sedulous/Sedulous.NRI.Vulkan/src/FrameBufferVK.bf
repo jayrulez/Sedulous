@@ -131,6 +131,7 @@ class FrameBufferVK : FrameBuffer
 	private VkRenderPass m_RenderPass = .Null;
 	private ClearValueDesc[ATTACHMENT_MAX_NUM] m_ClearValues = .();
 	private VkRect2D m_RenderArea = .();
+	private uint32 m_LayerNum = 0;
 	private uint32 m_AttachmentNum = 0;
 	private DeviceVK m_Device;
 
@@ -163,20 +164,21 @@ class FrameBufferVK : FrameBuffer
 		else if (frameBufferDesc.depthStencilAttachment != null)
 			descriptor = (DescriptorVK)frameBufferDesc.depthStencilAttachment;
 
-		VkExtent3D extent = .();
+		m_RenderArea = .();
+		m_RenderArea.extent.width = frameBufferDesc.size[0];
+		m_RenderArea.extent.height = frameBufferDesc.size[1];
+		m_LayerNum = frameBufferDesc.layerNum;
+		m_AttachmentNum = frameBufferDesc.colorAttachmentNum + (frameBufferDesc.depthStencilAttachment != null ? 1 : 0);
 
-		if (descriptor != null)
+		if (descriptor != null && m_RenderArea.extent.width == 0)
 		{
 			readonly TextureVK texture = descriptor.GetTexture();
 			readonly ref DescriptorTextureDesc descriptorDesc = ref descriptor.GetTextureDesc();
 
-			extent.width = texture.GetSize(0, descriptorDesc.imageMipOffset);
-			extent.height = texture.GetSize(1, descriptorDesc.imageMipOffset);
-			extent.depth = descriptorDesc.imageArraySize;
+			m_RenderArea.extent.width = texture.GetSize(0, descriptorDesc.imageMipOffset);
+			m_RenderArea.extent.height = texture.GetSize(1, descriptorDesc.imageMipOffset);
+			m_LayerNum = descriptorDesc.imageArraySize;
 		}
-
-		m_RenderArea = .() { offset = .(), extent = .() { width = extent.width, height = extent.height } };
-		m_AttachmentNum = frameBufferDesc.colorAttachmentNum + (frameBufferDesc.depthStencilAttachment != null ? 1 : 0);
 
 		Result result = SaveClearColors(frameBufferDesc);
 		if (result != Result.SUCCESS)
@@ -198,7 +200,7 @@ class FrameBufferVK : FrameBuffer
 				pAttachments = &imageViews,
 				width = m_RenderArea.extent.width,
 				height = m_RenderArea.extent.height,
-				layers = 1
+				layers = m_LayerNum
 			};
 
 		readonly uint32 physicalDeviceMask = GetPhysicalDeviceGroupMask(frameBufferDesc.physicalDeviceMask);
@@ -229,9 +231,18 @@ class FrameBufferVK : FrameBuffer
 	}
 
 	public VkFramebuffer GetHandle(uint32 physicalDeviceIndex) => m_Handles[physicalDeviceIndex];
+
+	public uint32 GetLayerNum()
+    {
+        return m_LayerNum;
+    }
+
 	public readonly ref VkRect2D GetRenderArea() => ref m_RenderArea;
+
 	public VkRenderPass GetRenderPass(RenderPassBeginFlag renderPassBeginFlag) => (renderPassBeginFlag == RenderPassBeginFlag.SKIP_FRAME_BUFFER_CLEAR) ? m_RenderPass : m_RenderPassWithClear;
+
 	public uint32 GetAttachmentNum() => m_AttachmentNum;
+
 	public void GetClearValues(VkClearValue* values)
 	{
 		Internal.MemCpy(values, &m_ClearValues, m_AttachmentNum * sizeof(VkClearValue));
