@@ -9,6 +9,10 @@ class GraphicsPlugin : Plugin
 	private readonly Device mDevice = null;
 	private Engine mEngine = null;
 	private GraphicsSystem mGraphicsSystem = null;
+	private uint32 mFrameCount = 0;
+
+	private EngineUpdateDelegate mGraphicsSystemUpdateDelegate = new => this.Update ~ delete _;
+	private EngineUpdateDelegateInfo mUpdateDelegateInfo;
 
 	public GraphicsSystem Graphics { get => mGraphicsSystem; }
 
@@ -30,15 +34,32 @@ class GraphicsPlugin : Plugin
 
 		mWindow.Resized.Subscribe(new => mGraphicsSystem.Resize);
 		mGraphicsSystem.Startup();
+
+		mUpdateDelegateInfo = .()
+			{
+				UpdatePhase = .PostUpdate,
+				UpdateDelegate = mGraphicsSystemUpdateDelegate
+			};
+
+		mEngine.RegisterUpdateDelegate(mUpdateDelegateInfo);
 	}
 
 	public override void OnShutdown()
 	{
+		mEngine.UnregisterUpdateDelegate(mUpdateDelegateInfo);
+
 		mWindow.Resized.Unsubscribe(scope => mGraphicsSystem.Resize);
 		mGraphicsSystem.Shutdown();
 
 		delete mGraphicsSystem;
 
 		mEngine = null;
+	}
+
+	private void Update(EngineTime engineTime)
+	{
+		mGraphicsSystem.PrepareFrame(mFrameCount);
+		mGraphicsSystem.RenderFrame(mFrameCount);
+		mFrameCount++;
 	}
 }

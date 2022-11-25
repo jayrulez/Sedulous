@@ -101,12 +101,6 @@ class SandboxApplication
 			}, "Stopping application", .RunOnMainThread);*/
 	}
 
-	protected void OnDraw(GraphicsSystem graphics, uint32 frameNum)
-	{
-		graphics.PrepareFrame(frameNum);
-		graphics.RenderFrame(frameNum);
-	}
-
 	public void Run()
 	{
 		GraphicsAPI graphicsAPI = .VULKAN;
@@ -145,14 +139,13 @@ class SandboxApplication
 				});
 
 			engine.Initialize();
-
-			OnInitialized(engine);
+			{
+				OnInitialized(engine);
+			}
 
 			windowSystem.RunMainLoop(scope () =>
 				{
-					uint32 frameNum = uint32.MaxValue;
 					engine.Update();
-					OnDraw(graphicsPlugin.Graphics, ++frameNum);
 				});
 
 			engine.Shutdown();
