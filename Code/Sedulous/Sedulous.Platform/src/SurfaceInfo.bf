@@ -4,5 +4,5 @@ namespace Sedulous.Platform;
 struct SurfaceInfo
 {
 	public WindowSystemType Type;
-	public using WindowHandle Handle;
+	public using public WindowHandle Handle;
 }

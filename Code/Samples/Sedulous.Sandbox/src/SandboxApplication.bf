@@ -13,18 +13,6 @@ namespace Sedulous.Sandbox;
 
 static
 {
-	public static SPIRVBindingOffsets SPIRV_BINDING_OFFSETS = .()
-		{
-			samplerOffset = 100,
-			textureOffset = 200,
-			constantBufferOffset = 300,
-			storageTextureAndBufferOffset = 400
-		};
-	public const bool D3D11_COMMANDBUFFER_EMULATION = false;
-	public const uint32 DEFAULT_MEMORY_ALIGNMENT = 16;
-	public const uint32 BUFFERED_FRAME_MAX_NUM = 2;
-	public const uint32 SWAP_CHAIN_TEXTURE_NUM = BUFFERED_FRAME_MAX_NUM;
-
 	public static Result CreateDevice(DeviceCreationDesc deviceDesc, out Device device)
 	{
 		Result result = .SUCCESS;
@@ -113,6 +101,12 @@ class SandboxApplication
 			}, "Stopping application", .RunOnMainThread);*/
 	}
 
+	protected void OnDraw(GraphicsSystem graphics, uint32 frameNum)
+	{
+		graphics.PrepareFrame(frameNum);
+		graphics.RenderFrame(frameNum);
+	}
+
 	public void Run()
 	{
 		GraphicsAPI graphicsAPI = .VULKAN;
@@ -139,7 +133,7 @@ class SandboxApplication
 			return;
 		}
 
-		var graphicsPlugin = scope GraphicsPlugin(primaryWindow);
+		var graphicsPlugin = scope GraphicsPlugin(primaryWindow, device);
 
 		defer { DestroyDevice(device); }
 		{
@@ -154,7 +148,12 @@ class SandboxApplication
 
 			OnInitialized(engine);
 
-			windowSystem.RunMainLoop(scope => engine.Update);
+			windowSystem.RunMainLoop(scope () =>
+				{
+					uint32 frameNum = uint32.MaxValue;
+					engine.Update();
+					OnDraw(graphicsPlugin.Graphics, ++frameNum);
+				});
 
 			engine.Shutdown();
 		}
