@@ -212,8 +212,8 @@ class Engine
 			mAccumulatedElapsedTime = MaxElapsedTime.Ticks;
 
 		int32 ticksToRun = 0;
-		var timeDeltaPostUpdate = default(TimeSpan);
 		var timeDeltaUpdate = default(TimeSpan);
+		var timeDeltaTick = default(TimeSpan);
 
 		if (IsFixedTimeStep)
 		{
@@ -227,8 +227,8 @@ class Engine
 				if (mLagFrames > 5)
 					mRunningSlowly = true;
 
-				timeDeltaUpdate = TargetElapsedTime;
-				timeDeltaPostUpdate = TimeSpan(ticksToRun * TargetElapsedTime.Ticks);
+				timeDeltaTick = TargetElapsedTime;
+				timeDeltaUpdate = TimeSpan(ticksToRun * TargetElapsedTime.Ticks);
 				mAccumulatedElapsedTime -= ticksToRun * TargetElapsedTime.Ticks;
 			}
 			else
@@ -246,13 +246,13 @@ class Engine
 			ticksToRun = 1;
 			if (mForceElapsedTimeToZero)
 			{
-				timeDeltaUpdate = TimeSpan.Zero;
+				timeDeltaTick = TimeSpan.Zero;
 				mForceElapsedTimeToZero = false;
 			}
 			else
 			{
-				timeDeltaUpdate = TimeSpan(elapsedTicks);
-				timeDeltaPostUpdate = timeDeltaUpdate;
+				timeDeltaTick = TimeSpan(elapsedTicks);
+				timeDeltaUpdate = timeDeltaTick;
 			}
 			mAccumulatedElapsedTime = 0;
 			mRunningSlowly = false;
@@ -267,7 +267,7 @@ class Engine
 
 		for (var i = 0; i < ticksToRun; i++)
 		{
-			var scenesUpdateTime = mTimeTrackerScenesUpdate.Increment(timeDeltaUpdate, mRunningSlowly);
+			var scenesUpdateTime = mTimeTrackerScenesUpdate.Increment(timeDeltaTick, mRunningSlowly);
 
 			// Scenes
 			{
@@ -277,7 +277,7 @@ class Engine
 			}
 		}
 
-		var postUpdateTime = mTimeTrackerPreUpdate.Increment(timeDeltaPostUpdate, mRunningSlowly);
+		var postUpdateTime = mTimeTrackerPreUpdate.Increment(timeDeltaUpdate, mRunningSlowly);
 		RunUpdateDelegates(.PostUpdate, postUpdateTime);
 	}
 
