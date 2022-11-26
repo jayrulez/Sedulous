@@ -9,6 +9,7 @@ using Sedulous.NRI;
 using Sedulous.NRI.Validation;
 using Sedulous.Graphics;
 using Sedulous.Platform;
+using Sedulous.Core.Scenes;
 
 namespace Sedulous.Sandbox;
 
@@ -205,9 +206,11 @@ class SandboxApplication
 
 			engine.Initialize();
 			defer engine.Shutdown();
-			{
-				OnInitialized(engine);
-			}
+
+			//
+			OnInitialized(engine);
+			Scene scene = engine.Scenes.CreateScene();
+			defer engine.Scenes.DestroyScene(scene);
 
 			windowSystem.RunMainLoop(scope () =>
 				{

@@ -34,7 +34,7 @@ struct EngineUpdateDelegateInfo
 
 static
 {
-	public static void ForEachUpdatePhase(delegate void(EngineUpdatePhase) action)
+	public static void ForEachEngineUpdatePhase(delegate void(EngineUpdatePhase) action)
 	{
 		for (var phase = Enum.GetMinValue<EngineUpdatePhase>(); phase <= Enum.GetMaxValue<EngineUpdatePhase>(); phase++)
 		{
@@ -120,7 +120,7 @@ class Engine
 	{
 		mLogger = logger;
 
-		ForEachUpdatePhase(scope (updatePhase) =>
+		ForEachEngineUpdatePhase(scope (updatePhase) =>
 			{
 				mUpdateDelegates.Add(updatePhase, new .());
 			});
@@ -143,7 +143,7 @@ class Engine
 		delete mResourceSystem;
 		delete mJobSystem;
 
-		ForEachUpdatePhase(scope (updatePhase) =>
+		ForEachEngineUpdatePhase(scope (updatePhase) =>
 			{
 				delete mUpdateDelegates[updatePhase];
 			});
@@ -272,7 +272,7 @@ class Engine
 			// Scenes
 			{
 				RunUpdateDelegates(.PreScenesUpdate, scenesUpdateTime);
-				mSceneSystem.Update();
+				mSceneSystem.Update(scenesUpdateTime);
 				RunUpdateDelegates(.PostScenesUpdate, scenesUpdateTime);
 			}
 		}

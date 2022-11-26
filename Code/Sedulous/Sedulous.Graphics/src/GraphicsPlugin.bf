@@ -4,6 +4,7 @@ using Sedulous.NRI;
 using Sedulous.Foundation;
 using System;
 using System.Collections;
+using Sedulous.Core.Scenes;
 namespace Sedulous.Graphics;
 
 typealias OnRenderDelegate = delegate void(GraphicsPlugin graphicsPlugin, EngineTime engineTime);
@@ -77,6 +78,11 @@ class GraphicsPlugin : Plugin
 	public override void OnInitialize(Engine engine)
 	{
 		mEngine = engine;
+
+		SceneModuleFactory.Instance.RegisterSceneModule<RenderableComponentManager>(new (scene) =>
+			{
+				return new RenderableComponentManager(scene);
+			});
 
 		mWindow.Resized.Subscribe(new => this.Resize);
 		CreateSwapChainResources();
