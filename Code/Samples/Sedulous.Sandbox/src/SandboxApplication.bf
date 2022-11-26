@@ -100,12 +100,15 @@ class SandboxApplication
 			}, "Stopping application", .RunOnMainThread);*/
 	}
 
-	private void OnRender(Window window, GraphicsSystem graphics, CommandBuffer commandBuffer)
+	private void OnRender(GraphicsPlugin graphics)
 	{
-		var backBuffer = graphics.GetCurrentBackBuffer();
+		var backBuffer = ref graphics.GetCurrentBackBuffer();
 
-		var windowWidth = window.Width;
-		var windowHeight = window.Height;
+		var windowWidth = graphics.Window.Width;
+		var windowHeight = graphics.Window.Height;
+
+		var frame = ref graphics.GetCurrentFrame();
+		var commandBuffer = frame.commandBuffer;
 
 		TextureTransitionBarrierDesc textureTransitionBarrierDesc = .();
 		{
@@ -179,17 +182,21 @@ class SandboxApplication
 		{
 			return;
 		}
-
-		var graphicsPlugin = scope GraphicsPlugin(primaryWindow, device);
-
-		graphicsPlugin.OnRender.Subscribe(new [&] (commandBuffer) =>
-			{
-				this.OnRender(primaryWindow, graphicsPlugin.Graphics, commandBuffer);
-			});
-
 		defer { DestroyDevice(device); }
+
+		//
 		{
 			var engine = scope Engine(mLogger);
+
+			var graphicsPlugin = scope GraphicsPlugin(primaryWindow, device);
+
+			OnRenderDelegate renderDelegate = new [&] (graphicsPlugin, engineTime) =>
+				{
+					this.OnRender(graphicsPlugin);
+				};
+
+			graphicsPlugin.OnRender.Subscribe(renderDelegate);
+			defer graphicsPlugin.OnRender.Unsubscribe(renderDelegate);
 
 			engine.Configure(scope (config) =>
 				{
@@ -197,6 +204,7 @@ class SandboxApplication
 				});
 
 			engine.Initialize();
+			defer engine.Shutdown();
 			{
 				OnInitialized(engine);
 			}
@@ -205,8 +213,6 @@ class SandboxApplication
 				{
 					engine.Update();
 				});
-
-			engine.Shutdown();
 		}
 	}
 }
