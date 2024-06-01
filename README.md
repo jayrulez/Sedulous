@@ -44,6 +44,7 @@ Below is a list of items that are currently being worked on.
 ### Foundation
 - [x] Collections
 - [x] Extensions
+- [x] Job System
 - [x] Logging
 - [x] Mathematics
 - [x] Utilities
@@ -52,7 +53,6 @@ Below is a list of items that are currently being worked on.
 ### Core
 - [ ] Context/Life Cycle
 - [ ] Subsystems
-- [ ] Job System
 - [ ] Asset System
 
 ### Platform
