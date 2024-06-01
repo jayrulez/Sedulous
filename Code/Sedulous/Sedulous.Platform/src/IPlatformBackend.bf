@@ -3,4 +3,5 @@ namespace Sedulous.Platform;
 
 interface IPlatformBackend : IContextHost
 {
+
 }
