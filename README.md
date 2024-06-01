@@ -51,8 +51,8 @@ Below is a list of items that are currently being worked on.
 - [x] Events
 
 ### Core
-- [ ] Context/Life Cycle
-- [ ] Subsystems
+- [x] Context/Life Cycle
+- [x] Subsystems
 - [ ] Asset System
 
 ### Platform
