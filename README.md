@@ -42,12 +42,12 @@ This library is in the very early stages of development and is not yet useful fo
 Below is a list of items that are currently being worked on.
 
 ### Foundation
-- [ ] Collections
-- [ ] Extensions
-- [ ] Logging
-- [ ] Mathematics
-- [ ] Utilities
-- [ ] Events
+- [x] Collections
+- [x] Extensions
+- [x] Logging
+- [x] Mathematics
+- [x] Utilities
+- [x] Events
 
 ### Core
 - [ ] Context/Life Cycle
