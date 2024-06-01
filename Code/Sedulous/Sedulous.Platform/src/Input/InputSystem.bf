@@ -1,7 +1,6 @@
 using Sedulous.Foundation;
 namespace Sedulous.Platform.Input;
 
-
 /// <summary>
 /// Represents the method that is called when a <see cref="KeyboardDevice"/> is registered
 /// with the context as a result of receiving input for the first time.
@@ -44,6 +43,8 @@ public delegate void TouchDeviceRegistrationEventHandler(TouchDevice device);
 /// </summary>
 abstract class InputSystem
 {
+	public abstract IPlatformBackend Backend { get; }
+
 	/// <summary>
 	/// Gets a value indicating whether the current platform supports
 	/// keyboard input.
@@ -246,8 +247,8 @@ abstract class InputSystem
 	/// </summary>
 	public abstract bool EmulateMouseWithTouchInput
 	{
-	    get;
-	    set;
+		get;
+		set;
 	}
 
 	/// <summary>
@@ -256,40 +257,40 @@ abstract class InputSystem
 	/// </summary>
 	public abstract bool IsMouseCursorAvailable
 	{
-	    get;            
+		get;
 	}
 
 	/// <summary>
 	/// Occurs when a keyboard device is registered as a result of receiving
 	/// user input for the first time.
 	/// </summary>
-	public abstract EventAccessor<KeyboardRegistrationEventHandler> KeyboardRegistered {get;}
+	public abstract EventAccessor<KeyboardRegistrationEventHandler> KeyboardRegistered { get; }
 
 	/// <summary>
 	/// Occurs when a mouse device is registered as a result of receiving
 	/// user input for the first time.
 	/// </summary>
-	public abstract EventAccessor<MouseRegistrationEventHandler> MouseRegistered{get;}
+	public abstract EventAccessor<MouseRegistrationEventHandler> MouseRegistered { get; }
 
 	/// <summary>
 	/// Occurs when a game pad is connected.
 	/// </summary>
-	public abstract EventAccessor<GamePadConnectionEventHandler> GamePadConnected{get;}
+	public abstract EventAccessor<GamePadConnectionEventHandler> GamePadConnected { get; }
 
 	/// <summary>
 	/// Occurs when a game pad is disconnected.
 	/// </summary>
-	public abstract EventAccessor<GamePadConnectionEventHandler> GamePadDisconnected{get;}
+	public abstract EventAccessor<GamePadConnectionEventHandler> GamePadDisconnected { get; }
 
 	/// <summary>
 	/// Occurs when a game pad device is registered as a result of receiving
 	/// user input for the first time.
 	/// </summary>
-	public abstract EventAccessor<GamePadRegistrationEventHandler> GamePadRegistered{get;}
+	public abstract EventAccessor<GamePadRegistrationEventHandler> GamePadRegistered { get; }
 
 	/// <summary>
 	/// Occurs when a touch device is registered as a result of receiving
 	/// user input for the first time.
 	/// </summary>
-	public abstract EventAccessor<TouchDeviceRegistrationEventHandler> TouchDeviceRegistered{get;}
+	public abstract EventAccessor<TouchDeviceRegistrationEventHandler> TouchDeviceRegistered { get; }
 }

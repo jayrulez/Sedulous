@@ -17,6 +17,8 @@ typealias ContextShuttingDownCallback = delegate void(IContext context);
 
 interface IContext
 {
+	Sedulous.Core.Platform Platform { get; }
+
 	public enum UpdateStage
 	{
 		PreUpdate,
@@ -67,6 +69,15 @@ interface IContext
 
 sealed class Context : IContext
 {
+	public Sedulous.Core.Platform Platform
+	{
+		get
+		{
+			// todo
+			return .Windows;
+		}
+	}
+
 	private List<Subsystem> mSubsystems = new .() ~ delete _;
 
 	public IContext.ContextState State { get; private set; } = .Stopped;

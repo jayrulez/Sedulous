@@ -13,6 +13,19 @@ extension Float
 	}
 }
 
+extension Double
+{
+	public static bool IsPositiveInfinity(double f)
+	{
+		return f == double.PositiveInfinity;
+	}
+
+	public static bool IsNegativeInfinity(double f)
+	{
+		return f == double.NegativeInfinity;
+	}
+}
+
 extension Runtime
 {
 	[NoReturn]
@@ -24,6 +37,18 @@ extension Runtime
 
 	[NoReturn]
 	public static void ArgumentError(String message, String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
+	{
+		Runtime.FatalError(message, filePath, line, 2);
+	}
+
+	[NoReturn]
+	public static void InvalidOperationError(String message = "Invalid Operation", String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
+	{
+		Runtime.FatalError(message, filePath, line, 2);
+	}
+
+	[NoReturn]
+	public static void NotSupportedError(String message, String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
 	{
 		Runtime.FatalError(message, filePath, line, 2);
 	}

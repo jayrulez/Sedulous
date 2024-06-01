@@ -16,12 +16,6 @@ namespace Sedulous.Platform
     public interface IWindowInfo : IEnumerable<IWindow>
     {
         /// <summary>
-        /// Designates the specified window as the primary window.
-        /// </summary>
-        /// <param name="window">The window to designate as the primary window, or <see langword="null"/> to clear the primary window.</param>
-        void DesignatePrimary(IWindow window);
-
-        /// <summary>
         /// Gets the window with the specified identifier.
         /// </summary>
         /// <param name="id">The identifier of the window to retrieve.</param>
@@ -50,14 +44,7 @@ namespace Sedulous.Platform
         /// <param name="height">The height of the window's client area in pixels.</param>
         /// <param name="flags">A set of <see cref="WindowFlags"/> values indicating how to create the window.</param>
         /// <returns>The window that was created.</returns>
-        IWindow Create(String caption, int32 x, int32 y, int32 width, int32 height, WindowFlags flags = WindowFlags.None);
-
-        /// <summary>
-        /// Creates a new window from the specified native window and attaches it to the current context.
-        /// </summary>
-        /// <param name="ptr">A pointer that represents the native window to attach to the context.</param>
-        /// <returns>The window that was created.</returns>
-        IWindow CreateFromNativePointer(void* ptr);
+        IWindow Create(StringView caption, int32 x, int32 y, int32 width, int32 height, WindowFlags flags = WindowFlags.None);
 
         /// <summary>
         /// Destroys the specified window.
@@ -90,25 +77,5 @@ namespace Sedulous.Platform
         /// Occurs when a window is about to be destroyed.
         /// </summary>
         EventAccessor<WindowInfoEventHandler> WindowDestroyed {get;}
-
-        /// <summary>
-        /// Occurs when the primary window is about to change.
-        /// </summary>
-        EventAccessor<WindowInfoEventHandler> PrimaryWindowChanging {get;}
-
-        /// <summary>
-        /// Occurs when the primary window changes.
-        /// </summary>
-        EventAccessor<WindowInfoEventHandler> PrimaryWindowChanged {get;}
-
-        /// <summary>
-        /// Occurs when the current window is about to change.
-        /// </summary>
-        EventAccessor<WindowInfoEventHandler> CurrentWindowChanging {get;}
-
-        /// <summary>
-        /// Occurs when the current window changes.
-        /// </summary>
-        EventAccessor<WindowInfoEventHandler> CurrentWindowChanged {get;}
     }
 }

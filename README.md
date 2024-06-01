@@ -56,12 +56,12 @@ Below is a list of items that are currently being worked on.
 - [ ] Asset System
 
 ### Platform
-- [ ] Windowing
-- [ ] Keyboard
-- [ ] Mouse
-- [ ] Game Pad
-- [ ] Touch
-- [ ] Desktop Backend
+- [x] Windowing
+- [x] Keyboard
+- [x] Mouse
+- [x] Game Pad
+- [x] Touch
+- [x] Desktop Backend
 - [ ] Web Backend
 
 ### RHI
@@ -82,6 +82,6 @@ Below is a list of items that are currently being worked on.
 
 ### SDL2
 - [x] Bindings
-- [ ] Windowing
-- [ ] Input
-- [ ] Context hosting
+- [x] Windowing
+- [x] Input
+- [x] Context hosting

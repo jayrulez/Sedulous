@@ -8,7 +8,7 @@ namespace Sedulous.Platform
     /// <para>A display mode encapsulates all of the parameters of a display device, 
     /// include its resolution, bit depth, and refresh rate.</para>
     /// </summary>
-    public sealed class DisplayMode
+    public sealed struct DisplayMode
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DisplayMode"/> class.
@@ -51,7 +51,7 @@ namespace Sedulous.Platform
         /// <param name="considerRefreshRate">A value indicating whether to compare the refresh rates of the two display modes.</param>
         /// <param name="considerDisplay">A value indicating whether to compare the preferred displays of the two display modes.</param>
         /// <returns><see langword="true"/> if the two display modes are equivalent; otherwise, <see langword="false"/>.</returns>
-        public bool IsEquivalentTo(DisplayMode other, 
+        public bool IsEquivalentTo(DisplayMode? other, 
             bool considerBitsPerPixel = true, 
             bool considerRefreshRate = true, 
             bool considerDisplay = false)
@@ -62,16 +62,16 @@ namespace Sedulous.Platform
             if (other == this)
                 return true;
 
-            if (other.Width != Width || other.Height != Height)
+            if (other.Value.Width != Width || other.Value.Height != Height)
                 return false;
 
-            if (considerBitsPerPixel && other.BitsPerPixel != BitsPerPixel)
+            if (considerBitsPerPixel && other.Value.BitsPerPixel != BitsPerPixel)
                 return false;
 
-            if (considerRefreshRate && other.RefreshRate != RefreshRate)
+            if (considerRefreshRate && other.Value.RefreshRate != RefreshRate)
                 return false;
 
-            if (considerDisplay && other.DisplayIndex != DisplayIndex)
+            if (considerDisplay && other.Value.DisplayIndex != DisplayIndex)
                 return false;
 
             return true;
@@ -83,7 +83,7 @@ namespace Sedulous.Platform
         public int32 Width
         {
             get;
-            private set;
+            private set mut;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Sedulous.Platform
         public int32 Height
         {
             get;
-            private set;
+            private set mut;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Sedulous.Platform
         public int32 BitsPerPixel
         {
             get;
-            private set;
+            private set mut;
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Sedulous.Platform
         public int32 RefreshRate
         {
             get;
-            private set;
+            private set mut;
         }
         
         /// <summary>
@@ -120,7 +120,7 @@ namespace Sedulous.Platform
         public int32? DisplayIndex
         {
             get;
-            private set;
+            private set mut;
         }
     }
 }

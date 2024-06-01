@@ -2,7 +2,7 @@ namespace Sedulous.Core;
 
 interface IContextHost
 {
-	Context Context { get; }
+	IContext Context { get; }
 
 	ContextInitializingCallback OnContextInitializing { get; }
 

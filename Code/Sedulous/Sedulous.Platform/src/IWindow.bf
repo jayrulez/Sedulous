@@ -53,7 +53,7 @@ namespace Sedulous.Platform
         /// </summary>
         /// <returns>The <see cref="DisplayMode"/> used when the window is in fullscreen mode, 
         /// or <see langword="null"/> if the window is using the desktop display mode.</returns>
-        DisplayMode GetFullscreenDisplayMode();
+        DisplayMode? GetFullscreenDisplayMode();
 
         /// <summary>
         /// Sets the window's bounds.
@@ -201,14 +201,6 @@ namespace Sedulous.Platform
         {
             get;
             set;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the window's underlying native resources have been released.
-        /// </summary>
-        bool Disposed
-        {
-            get;
         }
 
         /// <summary>

@@ -1,4 +1,3 @@
-﻿
 namespace Sedulous.Platform
 {
     /// <summary>
