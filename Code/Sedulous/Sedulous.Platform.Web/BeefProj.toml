@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.Platform.Web"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Platform.Web.Program"

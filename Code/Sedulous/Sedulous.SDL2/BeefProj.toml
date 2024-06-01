@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.SDL2"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.SDL2.Program"

@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.Platform.Desktop"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Platform.Desktop.Program"
