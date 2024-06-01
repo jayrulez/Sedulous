@@ -1,0 +1,18 @@
+FileVersion = 1
+
+[Project]
+Name = "SDL2Native"
+TargetType = "BeefLib"
+StartupObject = "SDL2Native.Program"
+
+[Configs.Debug.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/win32nt/*.dll\")"]
+
+[Configs.Release.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/win32nt/*.dll\")"]
+
+[Configs.Debug.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x86/win32nt/*.dll\")"]
+
+[Configs.Release.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x86/win32nt/*.dll\")"]

@@ -1,40 +1,39 @@
 # Sedulous
-***
 Sedulous is a framework that can be used to create games and other applications.
 It is designed to be modular, allowing you to use just the bits you want.
 
 Sedulous comprises of the following modules:
 
-## Sedulous.Foundation
+### Sedulous.Foundation
 This is a standalone library providing math, collections and logging utilities, as well as useful type extensions.
 
-## Sedulous.Core
+### Sedulous.Core
 This is the heart of the framework and builds on the foundation library. It houses the framework context and provides access to the framework lifecycle,  resources and systems.
 
-## Sedulous.RHI
+### Sedulous.RHI
 This is a library providing abstract low level access to graphics resources.
 
-## Sedulous.RHI.OpenGL
+### Sedulous.RHI.OpenGL
 The OpenGL implementation of the RHI abstractions.
 
-## Sedulous.Audio
+### Sedulous.Audio
 This library provides access to the audio device, audio resource management, and audio playback.
 
-## Sedulous.Audio.OpenAL
+### Sedulous.Audio.OpenAL
 The OpenAL implementation of the audio abtsractions.
 
-## Sedulous.Graphics
+### Sedulous.Graphics
 This is a high level graphics library built on top of the RHI. It supports PBR and is used for rendering meshes, sprites, particles, etc...
 
-## Sedulous.Platform
+### Sedulous.Platform
 This library is an abstraction over platform concerns like windowing, input, etc...
 These abstractions are expected to be implemented by a backend targeting a specific OS or platform.
 
-## Sedulous.SDL2
+### Sedulous.SDL2
 This library provides implementations for some platform abstractions. 
 It is expected that this library will be extended by another library that targets a specific platform class. E.g.: Desktop, Web, etc...
 
-## Sedulous.Platform.Desktop
+### Sedulous.Platform.Desktop
 The desktop implementation of platform. It makes use of the SDL2 support library for implementing most platform concerns.
 
 # Note
@@ -42,7 +41,7 @@ This library is in the very early stages of development and is not yet useful fo
 
 Below is a list of items that are currently being worked on.
 
-## Foundation
+### Foundation
 - [ ] Collections
 - [ ] Extensions
 - [ ] Logging
@@ -50,13 +49,13 @@ Below is a list of items that are currently being worked on.
 - [ ] Utilities
 - [ ] Events
 
-## Core
+### Core
 - [ ] Context/Life Cycle
 - [ ] Subsystems
 - [ ] Job System
 - [ ] Asset System
 
-## Platform
+### Platform
 - [ ] Windowing
 - [ ] Keyboard
 - [ ] Mouse
@@ -65,24 +64,24 @@ Below is a list of items that are currently being worked on.
 - [ ] Desktop Backend
 - [ ] Web Backend
 
-## RHI
+### RHI
 - [ ] Abstraction
 - [ ] Vulkan
 - [ ] OpenGL
 - [ ] DX12
 
-## Audio
+### Audio
 - [ ] Abstraction
 - [ ] OpenAL
 
-## Graphics
+### Graphics
 - [ ] Mesh Rendering
 - [ ] Font Rendering
 - [ ] Sprite Rendering
 - [ ] Particle Systems
 
-## SDL2
-- [ ] Bindings
+### SDL2
+- [x] Bindings
 - [ ] Windowing
 - [ ] Input
 - [ ] Context hosting
