@@ -98,11 +98,11 @@ namespace Sedulous.SDL2
 
 		public IContext Context => mContext;
 
-		public ContextInitializingCallback OnContextInitializing { get; private set; }
+		protected ContextInitializingCallback OnContextInitializing { get; set; }
 
-		public ContextInitializedCallback OnContextInitialized { get; private set; }
+		protected ContextInitializedCallback OnContextInitialized { get; set; }
 
-		public ContextShuttingDownCallback OnContextShuttingDown { get; private set; }
+		protected ContextShuttingDownCallback OnContextShuttingDown { get; set; }
 
 		public bool IsRunning { get; private set; }
 

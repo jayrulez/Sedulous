@@ -144,6 +144,10 @@ namespace Sedulous.SDL2
 
 			if(Primary == null)
 			{
+				// Set SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT so that enlisted windows
+				// will be OpenGL-enabled and set to the correct pixel format.
+				if (!SDL_SetHint(SDL_Hint.SDL_HINT_VIDEO_WINDOW_SHARE_PIXEL_FORMAT, scope $"{win:x8}"))
+				    Runtime.SDL2Error();
 				Primary = win;
 			}
 
@@ -157,7 +161,7 @@ namespace Sedulous.SDL2
         /// </summary>
         /// <param name="ptr">A pointer that represents the native window to attach to the context.</param>
         /// <returns>The window that was created.</returns>
-        public IWindow CreateFromNativePointer(SDL_Window* ptr)
+        public IWindow CreateFromNativePointer(void* ptr)
         {
             var sdlptr = SDL_CreateWindowFrom(ptr);
             if (sdlptr == null)

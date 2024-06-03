@@ -46,6 +46,13 @@ namespace Sedulous.Platform
         /// <returns>The window that was created.</returns>
         IWindow Create(StringView caption, int32 x, int32 y, int32 width, int32 height, WindowFlags flags = WindowFlags.None);
 
+		/// <summary>
+		/// Creates a new window from the specified native window and attaches it to the current context.
+		/// </summary>
+		/// <param name="ptr">A pointer that represents the native window to attach to the context.</param>
+		/// <returns>The window that was created.</returns>
+		IWindow CreateFromNativePointer(void* ptr);
+
         /// <summary>
         /// Destroys the specified window.
         /// </summary>
