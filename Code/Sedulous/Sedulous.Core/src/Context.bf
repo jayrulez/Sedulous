@@ -5,6 +5,7 @@ using System.Threading;
 using System.Collections;
 using Sedulous.Foundation.Logging.Debug;
 using Sedulous.Foundation.Jobs;
+using Sedulous.Foundation;
 
 namespace Sedulous.Core;
 
@@ -17,7 +18,7 @@ typealias ContextShuttingDownCallback = delegate void(IContext context);
 
 interface IContext
 {
-	Sedulous.Core.Platform Platform { get; }
+	PlatformType Platform { get; }
 
 	public enum UpdateStage
 	{
@@ -69,12 +70,11 @@ interface IContext
 
 sealed class Context : IContext
 {
-	public Sedulous.Core.Platform Platform
+	public PlatformType Platform
 	{
 		get
 		{
-			// todo
-			return .Windows;
+			return OperatingSystemHelper.GetCurrentPlatfom();
 		}
 	}
 

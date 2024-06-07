@@ -21,19 +21,6 @@ extension Array
 	}
 }
 
-public extension Array1<T> where T : IHashable
-{
-	public int GetHashCode()
-	{
-		int hash = 0;
-		for (int i = 0; i < mLength; i++)
-		{
-			hash = HashHelper.CombineHash(hash, this[i].GetHashCode());
-		}
-		return hash;
-	}
-}
-
 extension Array1<T>
 {
 	public bool SequenceEqual(T[] other)

@@ -1,45 +1,19 @@
-using Sedulous.Foundation.Utilities;
-namespace System;
-
-/*extension Span<T> where T : IHashable, class
+namespace System
 {
-	public int GetHashCode()
+	extension Span<T>
 	{
-		int hash = 0;
-		for (int i = 0; i < mLength; i++)
+		public bool SequenceEqual(Self other)
 		{
-			hash = HashHelper.CombineHash(hash, this[i].GetHashCode());
-		}
-		return hash;
-	}
-}
-
-extension Span<T> where T : IHashable, struct
-{
-	public int GetHashCode()
-	{
-		int hash = 0;
-		for (int i = 0; i < mLength; i++)
-		{
-			hash = HashHelper.CombineHash(hash, this[i].GetHashCode());
-		}
-		return hash;
-	}
-}*/
-
-extension Span<T>
-{
-	public bool SequenceEqual(Span<T> other) /*where T : IEquatable<T>*/
-	{
-		if (this.Length != other.Length)
-			return false;
-
-		for (int i = 0; i < this.Length; i++)
-		{
-			if (this[i] != other[i])
+			if(Length != other.Length)
 				return false;
-		}
 
-		return true;
+			for(int i = 0; i < Length; i++)
+			{
+				if(this[i] != other[i])
+					return false;
+			}
+
+			return true;
+		}
 	}
 }
