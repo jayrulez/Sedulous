@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Collections;
 using Sedulous.Foundation.Logging.Abstractions;
+using Sedulous.Foundation.Utilities;
 using static System.Platform;
 namespace Sedulous.Foundation.Jobs;
 
@@ -141,7 +142,7 @@ class JobSystem
 		mIsRunning = false;
 	}
 
-	internal void Update()
+	internal void Update(Time time)
 	{
 		if (!mIsRunning)
 		{

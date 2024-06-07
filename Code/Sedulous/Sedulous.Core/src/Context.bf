@@ -6,6 +6,7 @@ using System.Collections;
 using Sedulous.Foundation.Logging.Debug;
 using Sedulous.Foundation.Jobs;
 using Sedulous.Foundation;
+using Sedulous.Core.Resources;
 
 namespace Sedulous.Core;
 
@@ -53,7 +54,7 @@ interface IContext
 	ContextState State { get; }
 	ILogger Logger { get; }
 	JobSystem JobSystem { get; }
-	//ResourceSystem ResourceSystem { get; }
+	ResourceSystem ResourceSystem { get; }
 
 	void RegisterUpdateFunction(UpdateFunctionInfo info);
 
@@ -102,9 +103,9 @@ sealed class Context : IContext
 
 	public JobSystem JobSystem => mJobSystem;
 
-	//private readonly ResourceSystem mResourceSystem;
+	private readonly ResourceSystem mResourceSystem;
 
-	//public ResourceSystem ResourceSystem => mResourceSystem;
+	public ResourceSystem ResourceSystem => mResourceSystem;
 
 	// Current tick state.
 	private static readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);
@@ -142,7 +143,7 @@ sealed class Context : IContext
 
 		mJobSystem = new .(mLogger);
 
-		//mResourceSystem = new .();
+		mResourceSystem = new .(this);
 
 		Enum.MapValues<IContext.UpdateStage>(scope (member) =>
 			{
@@ -157,7 +158,7 @@ sealed class Context : IContext
 				delete mUpdateFunctions[member];
 			});
 
-		//delete mResourceSystem;
+		delete mResourceSystem;
 
 		delete mJobSystem;
 
@@ -220,7 +221,7 @@ sealed class Context : IContext
 
 		mJobSystem.Startup();
 
-		//mResourceSystem.Startup();
+		mResourceSystem.Startup();
 
 		//mResourceSystem.AddResourceManager<TextResource...>(mTextResourceManager);
 
@@ -237,7 +238,7 @@ sealed class Context : IContext
 
 		//mResourceSystem.RemoveResourceManager(mTextResourceManager);
 
-		//mResourceSystem.Shutdown();
+		mResourceSystem.Shutdown();
 
 		mJobSystem.Shutdown();
 
@@ -328,8 +329,8 @@ sealed class Context : IContext
 
 #endregion
 
-		mJobSystem.Update();
-		//mResourceSystem.Update();
+		mJobSystem.Update(time);
+		mResourceSystem.Update(time);
 
 		if (InactiveSleepTime.Ticks > 0 && mHost.IsSuspended)
 			Thread.Sleep(InactiveSleepTime);
