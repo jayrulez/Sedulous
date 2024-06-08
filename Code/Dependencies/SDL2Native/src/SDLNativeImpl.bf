@@ -3,6 +3,7 @@ namespace SDL2Native
 {
     public abstract class SDL2NativeImpl
     {
+		public abstract void SDL_GetVersion(SDL_version* version);
         public abstract char8* SDL_GetError();
         public abstract void SDL_ClearError();
         public abstract int32 SDL_Init(SDL_Init_Flags flags);

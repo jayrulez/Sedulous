@@ -5,6 +5,11 @@ namespace SDL2Native
 {
     internal sealed class SDL2NativeImpl_Android : SDL2NativeImpl
     {
+		[/*LibName("SDL2"), */CallingConvention(.Cdecl), LinkName("SDL_GetVersion")]
+		private static extern void INTERNAL_SDL_GetVersion(SDL_version* version);
+		[Inline]
+		public override void SDL_GetVersion(SDL_version* version) => INTERNAL_SDL_GetVersion(version);
+
         [/*LibName("SDL2"), */CallingConvention(.Cdecl), LinkName("SDL_GetError")]
         private static extern char8* INTERNAL_SDL_GetError();
         [Inline]

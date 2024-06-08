@@ -16,7 +16,7 @@ class ContextInitializer
 
 	}
 
-	public Result<void> AddSystem(Subsystem subsystem)
+	public Result<void> AddSubsystem(Subsystem subsystem)
 	{
 		if (mSubsystems.Contains(subsystem))
 		{

@@ -4,6 +4,6 @@ enum JobState
 {
 	Pending,
 	Running,
-	Completed,
+	Succeeded,
 	Canceled
 }

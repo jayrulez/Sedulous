@@ -2,6 +2,7 @@ using Sedulous.Platform.Desktop;
 using Sedulous.Foundation.Utilities;
 using Sedulous.Platform;
 using Sedulous.Core;
+using System;
 using static Sedulous.Core.IContext;
 namespace Sandbox;
 
@@ -22,9 +23,25 @@ class SandboxApplication
 		((IContextHost)mHost).Context.RegisterUpdateFunction(mUpdateFunctionInfo);
 	}
 
-	public void Update(UpdateInfo info)
+	public Result<void> Initializing(ContextInitializer initializer)
+	{
+		return .Ok;
+	}
+
+	public void Initialized(IContext context)
+	{
+		context.RegisterUpdateFunction(mUpdateFunctionInfo);
+	}
+
+	public void ShuttingDown(IContext context)
+	{
+		context.UnregisterUpdateFunction(mUpdateFunctionInfo);
+	}
+
+	private void Update(UpdateInfo info)
 	{
 		info.Context.Logger.LogInformation(scope $"{info.Time.ElapsedTime} : Application Update");
+
 		if(mHost.Input.GetKeyboard().IsKeyPressed(.Escape))
 		{
 			mHost.Exit();
@@ -40,12 +57,9 @@ class Program
 			{
 				PrimaryWindowConfiguration = .()
 					{
-						Title = "Sample"
+						Title = "Sandbox"
 					}
 			});
-
-		scope SandboxApplication(host);
-
 		/*
 		host.Input.GetKeyboard().KeyPressed.Subscribe(new (window, kb, key, ctrl, alt, shift, @repeat) =>
 			{
@@ -54,6 +68,12 @@ class Program
 			});
 		*/
 
-		host.Run();
+		var app = scope SandboxApplication(host);
+
+		host.Run(
+			initializingCallback: scope => app.Initializing,
+			initializedCallback: scope => app.Initialized,
+			shuttingDownCallback: scope => app.ShuttingDown
+			);
 	}
 }

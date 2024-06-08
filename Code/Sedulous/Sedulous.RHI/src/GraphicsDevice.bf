@@ -1,7 +1,7 @@
 using System;
 namespace Sedulous.RHI;
 
-abstract class Device
+abstract class GraphicsDevice
 {
 	public abstract Result<void> CreateBuffer(in BufferDescription description, out Buffer buffer);
 	public abstract void DestroyBuffer(ref Buffer buffer);

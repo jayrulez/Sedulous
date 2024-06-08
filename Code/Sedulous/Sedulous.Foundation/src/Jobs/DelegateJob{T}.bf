@@ -5,7 +5,11 @@ class DelegateJob<T> : Job<T>
 {
 	private delegate T() mJob = null ~ delete _;
 
-	public this(delegate T() job, StringView? name, JobFlags flags) : base(name, flags)
+	public this(delegate T() job,
+		StringView? name,
+		JobFlags flags,
+		delegate void(T result) onCompleted = null,
+		bool ownsOnCompletedDelegate = true) : base(name, flags, onCompleted, ownsOnCompletedDelegate)
 	{
 		mJob = job;
 	}

@@ -30,13 +30,14 @@ class JobSystem
 	private readonly ILogger mLogger;
 	public ILogger Logger => mLogger;
 
+	// todo: If platform does not support threading, then only main thread worker should be available
 	public this(ILogger logger, int workerCount = 0)
 	{
 		var workerCount;
 
 		mLogger = logger;
 
-		mMinimumBackgroundWorkers = Math.Max(1, workerCount);
+		mMinimumBackgroundWorkers = Math.Max(0, workerCount);
 
 		BfpSystemResult result = .Ok;
 		int coreCount = Platform.BfpSystem_GetNumLogicalCPUs(&result);
@@ -85,7 +86,7 @@ class JobSystem
 
 	internal void HandleProcessedJob(JobBase job, Worker worker)
 	{
-		if (job.State == .Completed)
+		if (job.State == .Succeeded)
 			OnJobCompleted(job, worker);
 		else if (job.State == .Canceled)
 			OnJobCancelled(job, worker);
@@ -179,8 +180,8 @@ class JobSystem
 				defer job.ReleaseRef();
 
 				// Queue the job on the main thread worker
-				// if it has the RunOnMainThread flag
-				if (job.Flags.HasFlag(.RunOnMainThread))
+				// if it has the RunOnMainThread flag or no background workers exist
+				if (job.Flags.HasFlag(.RunOnMainThread) || mWorkers?.Count == 0)
 				{
 					if (mMainThreadWorker.QueueJob(job) case .Err)
 					{
@@ -212,7 +213,7 @@ class JobSystem
 					OnJobCancelled(job, null);
 					break;
 
-				case .Completed:
+				case .Succeeded:
 					// If the job was completed by this point
 					OnJobCompleted(job, null);
 					break;
@@ -314,13 +315,17 @@ class JobSystem
 		AddJob(job);
 	}
 
-	public void AddJob<T>(delegate T() jobDelegate, StringView? jobName = null, JobFlags flags = .None)
+	public void AddJob<T>(delegate T() jobDelegate,
+		StringView? jobName = null,
+		JobFlags flags = .None,
+		delegate void(T result) onCompleted = null,
+		bool ownsOnCompletedDelegate = true)
 	{
 		if (!mIsRunning)
 		{
 			Runtime.FatalError("JobSystem is not running.");
 		}
-		DelegateJob<T> job = new DelegateJob<T>(jobDelegate, jobName, flags | .AutoRelease);
+		DelegateJob<T> job = new DelegateJob<T>(jobDelegate, jobName, flags | .AutoRelease, onCompleted, ownsOnCompletedDelegate);
 		AddJob(job);
 	}
 

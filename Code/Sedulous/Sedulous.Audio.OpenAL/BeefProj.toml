@@ -1,0 +1,19 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Audio" = "*"}
+
+[Project]
+Name = "Sedulous.Audio.OpenAL"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Audio.OpenAL.Program"
+
+[Configs.Debug.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win64/*.dll\")"]
+
+[Configs.Release.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win64/*.dll\")"]
+
+[Configs.Debug.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win32/*.dll\")"]
+
+[Configs.Release.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win32/*.dll\")"]

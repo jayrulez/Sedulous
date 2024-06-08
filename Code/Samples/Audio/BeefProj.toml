@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.Audio.OpenAL" = "*"}
+
+[Project]
+Name = "Audio"
+StartupObject = "Audio.Program"

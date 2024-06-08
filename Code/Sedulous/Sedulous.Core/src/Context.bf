@@ -141,7 +141,7 @@ sealed class Context : IContext
 			mOwnsLogger = false;
 		}
 
-		mJobSystem = new .(mLogger);
+		mJobSystem = new .(mLogger, mHost.SupportsMultipleThreads ? 1 : 0);
 
 		mResourceSystem = new .(this);
 
@@ -423,7 +423,7 @@ sealed class Context : IContext
 	{
 		for (var subsystem in mSubsystems)
 		{
-			if (typeof(T) == subsystem.GetType())
+			if (typeof(T).IsAssignableFrom(subsystem.GetType()))
 			{
 				return .Ok((T)subsystem);
 			}
@@ -435,7 +435,7 @@ sealed class Context : IContext
 	{
 		for (var subsystem in mSubsystems)
 		{
-			if (typeof(T) == subsystem.GetType())
+			if (typeof(T).IsAssignableFrom(subsystem.GetType()))
 			{
 				outSubsystem = (T)subsystem;
 				return true;

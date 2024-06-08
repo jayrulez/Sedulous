@@ -12,10 +12,6 @@ namespace SDL2Native
 
 		private static readonly NativeLibrary lib;
 
-		/*public static void Init()
-		{
-		}*/
-
 		static this()
 		{
 			switch (Environment.OSVersion.Platform)
@@ -41,6 +37,13 @@ namespace SDL2Native
 		public this()
 		{
 		}
+
+
+		[CallingConvention(.Cdecl)]
+		private function void SDL_GetVersionDelegate(SDL_version* version);
+		private readonly SDL_GetVersionDelegate pSDL_GetVersion = lib.LoadFunction<SDL_GetVersionDelegate>("SDL_GetVersion", .. ?, sInvokeErrorCallback);
+		[Inline]
+		public override void SDL_GetVersion(SDL_version* version) => pSDL_GetVersion(version);
 
 
 		[CallingConvention(.Cdecl)]

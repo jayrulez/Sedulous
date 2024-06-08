@@ -57,7 +57,7 @@ abstract class JobBase : RefCounted
 	{
 		for (JobBase dependency in mDependencies)
 		{
-			if (dependency.mState != .Completed)
+			if (dependency.mState != .Succeeded)
 				return false;
 		}
 
@@ -66,7 +66,7 @@ abstract class JobBase : RefCounted
 
 	public virtual void Cancel()
 	{
-		if (mState != .Completed && mState != .Canceled)
+		if (mState != .Succeeded && mState != .Canceled)
 		{
 			mState = .Canceled;
 
@@ -77,7 +77,16 @@ abstract class JobBase : RefCounted
 		}
 	}
 
+	public virtual bool IsCompleted()
+	{
+		return mState == .Canceled || mState == .Succeeded;
+	}
+
 	protected virtual void Execute()
+	{
+	}
+
+	protected virtual void OnCompleted()
 	{
 
 	}
@@ -96,6 +105,8 @@ abstract class JobBase : RefCounted
 
 		// Job could have been canceled in execute method.
 		if (mState != .Canceled)
-			mState = .Completed;
+			mState = .Succeeded;
+
+		OnCompleted();
 	}
 }

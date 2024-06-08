@@ -249,6 +249,7 @@ namespace Sedulous.SDL2
 
 			Update(updateTime);
 			mContext.Update(updateTime);
+			mWindows.Draw(updateTime);
 		}
 
 		protected void StopMainLoop(ContextShuttingDownCallback shuttingDownCallback)

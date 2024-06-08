@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Null" = "*"}
+
+[Project]
+Name = "RHI"
+StartupObject = "RHI.Program"

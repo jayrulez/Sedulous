@@ -31,6 +31,9 @@ namespace SDL2Native
 		public const int32 SDL_ENABLE = 1;
 
 		[Inline]
+		public static void SDL_GetVersion(SDL_version* version) => impl.SDL_GetVersion(version);
+
+		[Inline]
 		public static char8* SDL_GetError() => impl.SDL_GetError();
 
 		[Inline]

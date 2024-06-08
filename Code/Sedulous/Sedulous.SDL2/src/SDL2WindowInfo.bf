@@ -217,6 +217,14 @@ namespace Sedulous.SDL2
             return windows.Count == 0;
         }
 
+		public void Draw(Time time)
+		{
+			for(var window in windows)
+			{
+				((SDL2Window)window).Draw(time);
+			}
+		}
+
         /// <summary>
         /// Gets the collection's enumerator.
         /// </summary>
