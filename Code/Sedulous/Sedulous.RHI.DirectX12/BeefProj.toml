@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Vulkan" = "*", Win32 = "*", "Win32.WinPixEventRuntime" = "*"}
+
+[Project]
+Name = "Sedulous.RHI.DirectX12"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.RHI.DirectX12.Program"

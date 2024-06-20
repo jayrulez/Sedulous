@@ -8,12 +8,12 @@ class GraphicsSubsystem : Subsystem
 {
 	public override StringView Name => "Graphics";
 
-	private readonly GraphicsDevice mGraphicsDevice;
+	private readonly GraphicsContext mGraphicsContext;
 	private readonly IWindow mPrimaryWindow;
 
-	public this(GraphicsDevice graphicsDevice, IWindow primaryWindow)
+	public this(GraphicsContext graphicsContext, IWindow primaryWindow)
 	{
-		mGraphicsDevice = graphicsDevice;
+		mGraphicsContext = graphicsContext;
 		mPrimaryWindow = primaryWindow;
 	}
 

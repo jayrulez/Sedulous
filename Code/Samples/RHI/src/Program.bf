@@ -4,7 +4,7 @@ using Sedulous.Platform;
 using Sedulous.Core;
 using System;
 using Sedulous.RHI;
-using Sedulous.RHI.Null;
+using Sedulous.RHI.Vulkan;
 using static Sedulous.Core.IContext;
 namespace RHI;
 
@@ -17,7 +17,7 @@ class RHIApplication
 			Stage = .FixedUpdate
 		} ~ delete _.Function;
 
-	private readonly NullGraphicsDevice mGraphicsContext = new .() ~ delete _;
+	private readonly VKGraphicsContext mGraphicsContext = new .() ~ delete _;
 
 	private readonly IPlatformBackend mHost;
 
