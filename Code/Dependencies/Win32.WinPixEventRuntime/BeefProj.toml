@@ -1,0 +1,39 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Win32 = "*", corlib = "*"}
+
+[Project]
+Name = "Win32.WinPixEventRuntime"
+TargetType = "BeefLib"
+StartupObject = "Win32.WinPixEventRuntime.Program"
+
+[Configs.Debug.Win32]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Debug.Win64]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Release.Win32]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Release.Win64]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Paranoid.Win32]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Paranoid.Win64]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Test.Win32]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
+
+[Configs.Test.Win64]
+LibPaths = ["$(ProjectDir)/dist/x64/WinPixEventRuntime.lib"]
+PreBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.dll\")", "CopyToDependents(\"$(ProjectDir)/dist/x64/WinPixEventRuntime.lib\")"]
