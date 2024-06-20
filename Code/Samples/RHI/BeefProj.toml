@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Vulkan" = "*"}
+Dependencies = {corlib = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.Vulkan" = "*", "Sedulous.ShaderCompiler" = "*"}
 
 [Project]
 Name = "RHI"
