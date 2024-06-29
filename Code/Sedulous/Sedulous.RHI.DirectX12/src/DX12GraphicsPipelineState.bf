@@ -157,7 +157,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		D3D12_BLEND_DESC  nativeDescription = default(D3D12_BLEND_DESC );
 		nativeDescription.AlphaToCoverageEnable = description.AlphaToCoverageEnable ? TRUE : FALSE;
 		nativeDescription.IndependentBlendEnable = description.IndependentBlendEnable ? TRUE : FALSE;
-		BlendStateRenderTargetDescription* renderTargets = &description.RenderTarget0;
+		BlendStateRenderTargetDescription* renderTargets = &description.RenderTargets[0];
 		for (int32 i = 0; i < 8; i++)
 		{
 			nativeDescription.RenderTarget[i].BlendEnable = renderTargets[i].BlendEnable ? TRUE : FALSE;

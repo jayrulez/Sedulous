@@ -7,7 +7,7 @@ using internal Sedulous.RHI;
 /// <summary>
 /// Performs primitive-based rendering, creates resources, handles system-level variables, adjusts gamma ramp levels, and creates shaders.
 /// </summary>
-abstract class GraphicsContext : IDisposable, IGetNativePointers
+abstract class GraphicsContext : IDisposable
 {
 	/// <summary>
 	/// the rate at which the GPU timestamp counter increments.

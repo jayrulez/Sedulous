@@ -80,7 +80,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 		pipelineInfo.pRasterizationState = &rasterizerState;
 		int32 renderTargetCount = (int32)description.Outputs.ColorAttachments.Count;
 		VkPipelineColorBlendAttachmentState* colorBlendAttachments = scope VkPipelineColorBlendAttachmentState[renderTargetCount]*;
-		BlendStateRenderTargetDescription renderTarget = description.RenderStates.BlendState.RenderTarget0;
+		BlendStateRenderTargetDescription renderTarget = description.RenderStates.BlendState.RenderTargets[0];
 		BlendStateRenderTargetDescription* renderTargetBlendState = &renderTarget;
 		for (int i = 0; i < renderTargetCount; i++)
 		{

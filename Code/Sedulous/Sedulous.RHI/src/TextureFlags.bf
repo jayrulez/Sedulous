@@ -3,7 +3,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Identifies how to bing a texture.
+/// Identifies how to bind a texture.
 /// </summary>
 //[Flags]
 enum TextureFlags : uint8

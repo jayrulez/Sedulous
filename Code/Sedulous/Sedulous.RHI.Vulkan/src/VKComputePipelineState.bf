@@ -72,7 +72,7 @@ public class VKComputePipelineState : ComputePipelineState
 		VulkanNative.vkCreatePipelineLayout(context.VkDevice, &layoutInfo, null, &newPipelineLayout);
 		NativePipelineLayout = newPipelineLayout;
 		pipelineInfo.layout = NativePipelineLayout;
-		VkPipelineShaderStageCreateInfo shaderInfo = (description.shaderDescription.ComputeShader as VKShader).ShaderStateInfo;
+		VkPipelineShaderStageCreateInfo shaderInfo = (description.ShaderDescription.ComputeShader as VKShader).ShaderStateInfo;
 		pipelineInfo.stage = shaderInfo;
 		VkPipeline newPipeline = default(VkPipeline);
 		VulkanNative.vkCreateComputePipelines(context.VkDevice, VkPipelineCache.Null, 1, &pipelineInfo, null, &newPipeline);

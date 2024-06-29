@@ -3,7 +3,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Identifies how to bing a buffer.
+/// Identifies how to bind a buffer.
 /// </summary>
 //[Flags]
 enum BufferFlags

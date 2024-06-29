@@ -10,7 +10,7 @@ using internal Sedulous.RHI;
 /// A command buffer stores commands until the buffer is committed for execution by the GPU.
 /// CommandBuffers are transient single-use objects and do not support reuse.
 /// </summary>
-abstract class CommandBuffer : IDisposable, IGetNativePointers
+abstract class CommandBuffer : IDisposable
 {
 	/// <summary>
 	/// Available states for a command buffer.

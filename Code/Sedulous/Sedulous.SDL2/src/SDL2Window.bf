@@ -18,7 +18,7 @@ namespace Sedulous.SDL2
 	{
 		private readonly SDL2PlatformBackend mBackend;
 
-		public SurfaceInfo SurfaceInfo { get; private set; }
+		public ref SurfaceInfo SurfaceInfo { get; private set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SDL2Window"/> class.

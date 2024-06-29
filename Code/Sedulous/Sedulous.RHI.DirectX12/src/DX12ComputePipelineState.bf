@@ -46,7 +46,7 @@ public class DX12ComputePipelineState : ComputePipelineState
 		rootSignature = context.DefaultComputeSignature;
 		D3D12_COMPUTE_PIPELINE_STATE_DESC nativePipelineStateDescription = D3D12_COMPUTE_PIPELINE_STATE_DESC()
 		{
-			CS = (description.shaderDescription.ComputeShader as DX12Shader).NativeShader,
+			CS = (description.ShaderDescription.ComputeShader as DX12Shader).NativeShader,
 			Flags = .D3D12_PIPELINE_STATE_FLAG_NONE,
 			pRootSignature = rootSignature
 		};

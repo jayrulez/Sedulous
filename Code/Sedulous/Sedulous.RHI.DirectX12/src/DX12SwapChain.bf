@@ -3,6 +3,7 @@ using Sedulous.RHI;
 using Win32.Graphics.Dxgi;
 using Win32.Foundation;
 using Win32;
+using Sedulous.Platform;
 
 namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;

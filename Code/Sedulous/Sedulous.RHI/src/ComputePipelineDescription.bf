@@ -15,7 +15,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// <summary>
 	/// Gets or sets the compute shader program.
 	/// </summary>
-	public ComputeShaderStateDescription shaderDescription;
+	public ComputeShaderStateDescription ShaderDescription;
 
 	/// <summary>
 	/// The X dimension of the thread group size.
@@ -43,7 +43,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	public this(ResourceLayout[] resourceLayouts, ComputeShaderStateDescription shaderDescription, uint32 threadGroupSizeX = 1, uint32 threadGroupSizeY = 1, uint32 threadGroupSizeZ = 1)
 	{
 		ResourceLayouts = resourceLayouts;
-		this.shaderDescription = shaderDescription;
+		ShaderDescription = shaderDescription;
 		ThreadGroupSizeX = threadGroupSizeX;
 		ThreadGroupSizeY = threadGroupSizeY;
 		ThreadGroupSizeZ = threadGroupSizeZ;
@@ -58,7 +58,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// </returns>
 	public bool Equals(ComputePipelineDescription other)
 	{
-		if (shaderDescription != other.shaderDescription
+		if (ShaderDescription != other.ShaderDescription
 			|| !ResourceLayouts.SequenceEqual(other.ResourceLayouts)
 			|| ThreadGroupSizeX != other.ThreadGroupSizeX
 			|| ThreadGroupSizeY != other.ThreadGroupSizeY
@@ -97,7 +97,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)((((((uint32)(((shaderDescription.GetHashCode() * 397)
+		return (int)((((((uint32)(((ShaderDescription.GetHashCode() * 397)
 			^ ResourceLayouts.GetHashCode()) * 397)
 			^ ThreadGroupSizeX) * 397)
 			^ ThreadGroupSizeY) * 397)

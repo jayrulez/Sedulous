@@ -313,7 +313,7 @@ namespace Sedulous.Platform
 		/// <summary>
 		/// Gets the surface type and native handles.
 		/// </summary>
-		SurfaceInfo SurfaceInfo { get; }
+		ref SurfaceInfo SurfaceInfo { get; }
 
 		/// <summary>
 		/// Occurs when the window is shown.

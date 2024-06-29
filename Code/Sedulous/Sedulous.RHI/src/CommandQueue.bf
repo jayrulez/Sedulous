@@ -10,7 +10,7 @@ abstract class CommandQueue : IDisposable
 	/// <summary>
 	/// The command buffer array size.
 	/// </summary>
-	public const int32 CommandBufferArraySize = 64;
+	public const int CommandBufferArraySize = 64;
 
 	/// <summary>
 	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.

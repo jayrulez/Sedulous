@@ -4,6 +4,7 @@ using Bulkan;
 using Sedulous.RHI;
 using Sedulous.Foundation;
 using Sedulous.Foundation.Utilities;
+using Sedulous.Platform;
 
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;

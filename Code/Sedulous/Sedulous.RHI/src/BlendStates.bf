@@ -36,38 +36,38 @@ public static class BlendStates
 	static this()
 	{
 		Opaque = BlendStateDescription.Default;
-		Opaque.RenderTarget0.BlendEnable = false;
-		Opaque.RenderTarget0.SourceBlendColor = Blend.One;
-		Opaque.RenderTarget0.DestinationBlendColor = Blend.Zero;
+		Opaque.RenderTargets[0].BlendEnable = false;
+		Opaque.RenderTargets[0].SourceBlendColor = Blend.One;
+		Opaque.RenderTargets[0].DestinationBlendColor = Blend.Zero;
 
 		AlphaBlend = BlendStateDescription.Default;
-		AlphaBlend.RenderTarget0.BlendEnable = true;
-		AlphaBlend.RenderTarget0.SourceBlendColor = Blend.One;
-		AlphaBlend.RenderTarget0.DestinationBlendColor = Blend.InverseSourceAlpha;
-		AlphaBlend.RenderTarget0.SourceBlendAlpha = Blend.One;
-		AlphaBlend.RenderTarget0.DestinationBlendAlpha = Blend.InverseSourceAlpha;
+		AlphaBlend.RenderTargets[0].BlendEnable = true;
+		AlphaBlend.RenderTargets[0].SourceBlendColor = Blend.One;
+		AlphaBlend.RenderTargets[0].DestinationBlendColor = Blend.InverseSourceAlpha;
+		AlphaBlend.RenderTargets[0].SourceBlendAlpha = Blend.One;
+		AlphaBlend.RenderTargets[0].DestinationBlendAlpha = Blend.InverseSourceAlpha;
 
 		Additive = BlendStateDescription.Default;
-		Additive.RenderTarget0.BlendEnable = true;
-		Additive.RenderTarget0.BlendOperationColor = BlendOperation.Add;
-		Additive.RenderTarget0.BlendOperationAlpha = BlendOperation.Add;
-		Additive.RenderTarget0.SourceBlendColor = Blend.One;
-		Additive.RenderTarget0.DestinationBlendColor = Blend.One;
-		Additive.RenderTarget0.SourceBlendAlpha = Blend.One;
-		Additive.RenderTarget0.DestinationBlendAlpha = Blend.One;
+		Additive.RenderTargets[0].BlendEnable = true;
+		Additive.RenderTargets[0].BlendOperationColor = BlendOperation.Add;
+		Additive.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
+		Additive.RenderTargets[0].SourceBlendColor = Blend.One;
+		Additive.RenderTargets[0].DestinationBlendColor = Blend.One;
+		Additive.RenderTargets[0].SourceBlendAlpha = Blend.One;
+		Additive.RenderTargets[0].DestinationBlendAlpha = Blend.One;
 
 		Multiplicative = BlendStateDescription.Default;
-		Multiplicative.RenderTarget0.BlendEnable = true;
-		Multiplicative.RenderTarget0.BlendOperationColor = BlendOperation.Add;
-		Multiplicative.RenderTarget0.BlendOperationAlpha = BlendOperation.Add;
-		Multiplicative.RenderTarget0.SourceBlendColor = Blend.DestinationColor;
-		Multiplicative.RenderTarget0.DestinationBlendColor = Blend.InverseSourceAlpha;
-		Multiplicative.RenderTarget0.SourceBlendAlpha = Blend.One;
-		Multiplicative.RenderTarget0.DestinationBlendAlpha = Blend.One;
+		Multiplicative.RenderTargets[0].BlendEnable = true;
+		Multiplicative.RenderTargets[0].BlendOperationColor = BlendOperation.Add;
+		Multiplicative.RenderTargets[0].BlendOperationAlpha = BlendOperation.Add;
+		Multiplicative.RenderTargets[0].SourceBlendColor = Blend.DestinationColor;
+		Multiplicative.RenderTargets[0].DestinationBlendColor = Blend.InverseSourceAlpha;
+		Multiplicative.RenderTargets[0].SourceBlendAlpha = Blend.One;
+		Multiplicative.RenderTargets[0].DestinationBlendAlpha = Blend.One;
 
 		NonPremultiplied = BlendStateDescription.Default;
-		NonPremultiplied.RenderTarget0.BlendEnable = true;
-		NonPremultiplied.RenderTarget0.SourceBlendColor = Blend.SourceAlpha;
-		NonPremultiplied.RenderTarget0.DestinationBlendColor = Blend.InverseSourceAlpha;
+		NonPremultiplied.RenderTargets[0].BlendEnable = true;
+		NonPremultiplied.RenderTargets[0].SourceBlendColor = Blend.SourceAlpha;
+		NonPremultiplied.RenderTargets[0].DestinationBlendColor = Blend.InverseSourceAlpha;
 	}
 }

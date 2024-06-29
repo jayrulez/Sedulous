@@ -129,7 +129,7 @@ class ValidationLayer
 	/// <param name="description">The compute pipeline description.</param>
 	public void CreateComputePipelineValidation(ref ComputePipelineDescription description)
 	{
-		if (description.shaderDescription == null)
+		if (description.ShaderDescription == null)
 		{
 			NotifyInternal("The compute shader cannot be null in a ComputePipeline.");
 		}
