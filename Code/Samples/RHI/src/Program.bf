@@ -6,6 +6,7 @@ using System;
 using Sedulous.RHI;
 using Sedulous.RHI.Vulkan;
 using Sedulous.Foundation.Mathematics;
+using System.Collections;
 using static Sedulous.Core.IContext;
 namespace RHI;
 
@@ -25,6 +26,8 @@ class RHIApplication
 	private Buffer mVertexBuffer;
 	private InputLayouts mVertexLayouts = null;
 	private GraphicsPipelineState mGraphicsPipelineState = null;
+	private Viewport[] mViewports = null;
+	private Rectangle[] mScissors = null;
 
 	private readonly IPlatformBackend mHost;
 
@@ -84,6 +87,9 @@ class RHIApplication
 		mCommandQueue = mGraphicsContext.Factory.CreateCommandQueue();
 
 		// Compile Vertex and Pixel shaders
+		List<uint8> vsBytes = scope .();
+		List<uint8> psBytes = scope .();
+
 		ShaderDescription vertexShaderDescription = ShaderDescription(.Vertex, "VS", vsBytes);
 		ShaderDescription pixelShaderDescription = ShaderDescription(.Pixel, "PS", psBytes);
 
@@ -125,10 +131,15 @@ class RHIApplication
 			};
 
 		mGraphicsPipelineState = mGraphicsContext.Factory.CreateGraphicsPipeline(ref pipelineDescription);
+
+		mViewports = new Viewport[1](.(0, 0, window.ClientSize.Width, window.ClientSize.Height));
+		mScissors = new Rectangle[1]();
 	}
 
 	public void ShuttingDown(IContext context)
 	{
+		delete mScissors;
+		delete mViewports;
 		mGraphicsPipelineState.Dispose();
 		mVertexBuffer.Dispose();
 		mSwapChain.Dispose();
@@ -162,8 +173,8 @@ class RHIApplication
 		RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, ClearValue(ClearFlags.All, 1, 0, Color.CornflowerBlue.ToVector4()));
 		commandBuffer.BeginRenderPass(ref renderPassDescription);
 
-		commandBuffer.SetViewports(viewports);
-		commandBuffer.SetScissorRectangles(scissors);
+		commandBuffer.SetViewports(mViewports);
+		commandBuffer.SetScissorRectangles(mScissors);
 		commandBuffer.SetGraphicsPipelineState(mGraphicsPipelineState);
 		commandBuffer.SetVertexBuffers(scope Buffer[1](mVertexBuffer));
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
@@ -15,7 +16,7 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// <summary>
 	/// Gets the raw shader code.
 	/// </summary>
-	public readonly uint8[] ShaderBytes;
+	public readonly List<uint8> ShaderBytes;
 
 	/// <summary>
 	/// Gets the shader stage.
@@ -33,7 +34,7 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// <param name="stage">The shader stage.</param>
 	/// <param name="entryPoint">The entry point function.</param>
 	/// <param name="shaderBytes">The shader code in bytes.</param>
-	public this(ShaderStages stage, String entryPoint, uint8[] shaderBytes)
+	public this(ShaderStages stage, String entryPoint, List<uint8> shaderBytes)
 	{
 		Stage = stage;
 		EntryPoint = entryPoint;

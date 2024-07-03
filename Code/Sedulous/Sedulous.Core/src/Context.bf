@@ -7,6 +7,7 @@ using Sedulous.Foundation.Logging.Debug;
 using Sedulous.Foundation.Jobs;
 using Sedulous.Foundation;
 using Sedulous.Core.Resources;
+using Sedulous.Core.SceneGraph;
 
 namespace Sedulous.Core;
 
@@ -80,6 +81,8 @@ sealed class Context : IContext
 	}
 
 	private List<Subsystem> mSubsystems = new .() ~ delete _;
+
+	private SceneGraphSubsystem mSceneGraph = null;
 
 	public IContext.ContextState State { get; private set; } = .Stopped;
 
@@ -208,8 +211,8 @@ sealed class Context : IContext
 			return .Err;
 		}
 
-		//mSceneGraph = new .();
-		//mSystems.Add(mSceneGraph);
+		mSceneGraph = new .();
+		mSubsystems.Add(mSceneGraph);
 
 		mSubsystems.AddRange(initializer.Subsystems);
 
@@ -252,7 +255,7 @@ sealed class Context : IContext
 
 		mSubsystems.Clear();
 
-		//delete mSceneGraph;
+		delete mSceneGraph;
 
 		mInitialized = false;
 		mLogger.LogInformation("Context uninitialized.");
