@@ -1,19 +1,38 @@
 using System;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This struct contains all the shader stages.
 /// </summary>
-class ComputeShaderStateDescription : ShaderStateDescription, IEquatable<ComputeShaderStateDescription>, IHashable
+struct ComputeShaderStateDescription : IEquatable<ComputeShaderStateDescription>, IHashable
 {
+	/// <summary>
+	/// ConstantBuffers bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> constantBuffersBindings = null;
+
+	/// <summary>
+	/// Textures bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> texturesBindings = null;
+
+	/// <summary>
+	/// Uniform parameters bindings.
+	/// Used in WebGL1 and OpenGL ES 2.0.
+	/// </summary>
+	public Dictionary<String, BufferParameterBinding> bufferParametersBinding = null;
+
 	/// <summary>
 	/// Gets or sets the compute shader program.
 	/// </summary>
 	public Shader ComputeShader;
 
 	/// <inheritdoc />
-	public override bool Equals(Object obj)
+	public bool Equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -37,7 +56,7 @@ class ComputeShaderStateDescription : ShaderStateDescription, IEquatable<Compute
 	}
 
 	/// <inheritdoc />
-	public override int GetHashCode()
+	public int GetHashCode()
 	{
 		int hashCode = 0;
 		if (ComputeShader != null)

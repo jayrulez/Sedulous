@@ -1,12 +1,31 @@
 using System;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This struct contains all the shader stages.
 /// </summary>
-class GraphicsShaderStateDescription : ShaderStateDescription, IEquatable<GraphicsShaderStateDescription>, IHashable
+struct GraphicsShaderStateDescription : IEquatable<GraphicsShaderStateDescription>, IHashable
 {
+	/// <summary>
+	/// ConstantBuffers bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> constantBuffersBindings = null;
+
+	/// <summary>
+	/// Textures bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> texturesBindings = null;
+
+	/// <summary>
+	/// Uniform parameters bindings.
+	/// Used in WebGL1 and OpenGL ES 2.0.
+	/// </summary>
+	public Dictionary<String, BufferParameterBinding> bufferParametersBinding = null;
+
 	/// <summary>
 	/// Gets or sets the vertex shader program.
 	/// </summary>
@@ -52,7 +71,7 @@ class GraphicsShaderStateDescription : ShaderStateDescription, IEquatable<Graphi
 	}
 
 	/// <inheritdoc />
-	public override bool Equals(Object obj)
+	public bool Equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -66,7 +85,7 @@ class GraphicsShaderStateDescription : ShaderStateDescription, IEquatable<Graphi
 	}
 
 	/// <inheritdoc />
-	public override int GetHashCode()
+	public int GetHashCode()
 	{
 		int hashCode = 0;
 		if (VertexShader != null)

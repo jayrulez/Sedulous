@@ -7,8 +7,26 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// This class contains all the raytracing shader stages.
 /// </summary>
-class RaytracingShaderStateDescription : ShaderStateDescription, IEquatable<RaytracingShaderStateDescription>
+struct RaytracingShaderStateDescription : IEquatable<RaytracingShaderStateDescription>
 {
+	/// <summary>
+	/// ConstantBuffers bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> constantBuffersBindings = null;
+
+	/// <summary>
+	/// Textures bindings.
+	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
+	/// </summary>
+	public List<(String name, uint32 slot)> texturesBindings = null;
+
+	/// <summary>
+	/// Uniform parameters bindings.
+	/// Used in WebGL1 and OpenGL ES 2.0.
+	/// </summary>
+	public Dictionary<String, BufferParameterBinding> bufferParametersBinding = null;
+
 	/// <summary>
 	/// Gets or sets the Raygeneration shader program.
 	/// </summary>
@@ -49,7 +67,7 @@ class RaytracingShaderStateDescription : ShaderStateDescription, IEquatable<Rayt
 	}
 
 	/// <inheritdoc />
-	public override bool Equals(Object obj)
+	public bool Equals(Object obj)
 	{
 		if (obj == null)
 		{
@@ -63,7 +81,7 @@ class RaytracingShaderStateDescription : ShaderStateDescription, IEquatable<Rayt
 	}
 
 	/// <inheritdoc />
-	public override int GetHashCode()
+	public int GetHashCode()
 	{
 		int hashCode = 0;
 		if (RayGenerationShader != null)

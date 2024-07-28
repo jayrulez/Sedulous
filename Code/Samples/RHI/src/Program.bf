@@ -115,7 +115,7 @@ class RHIApplication
 			{
 				PrimitiveTopology = PrimitiveTopology.TriangleList,
 				InputLayouts = mVertexLayouts,
-				Shaders = scope GraphicsShaderStateDescription()
+				Shaders = GraphicsShaderStateDescription()
 					{
 						VertexShader = vertexShader,
 						PixelShader = pixelShader
