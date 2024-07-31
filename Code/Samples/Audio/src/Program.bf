@@ -10,12 +10,7 @@ namespace Audio;
 
 class AudioApplication
 {
-	private readonly UpdateFunctionInfo mUpdateFunctionInfo = .()
-		{
-			Priority = 1,
-			Function = new  => Update,
-			Stage = .FixedUpdate
-		} ~ delete _.Function;
+	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
 	private readonly OpenALAudioSubsystem mAudio = new .() ~ delete _;
 
@@ -34,7 +29,12 @@ class AudioApplication
 
 	public void Initialized(IContext context)
 	{
-		context.RegisterUpdateFunction(mUpdateFunctionInfo);
+		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
+		{
+			Priority = 1,
+			Function = new  => Update,
+			Stage = .FixedUpdate
+		});
 		var resourceSystem = context.ResourceSystem;
 
 		if (((Context)context).GetSubsystem<AudioSubsystem>() case .Ok(let audioSubsystem))
@@ -63,7 +63,12 @@ class AudioApplication
 
 	public void ShuttingDown(IContext context)
 	{
-		context.UnregisterUpdateFunction(mUpdateFunctionInfo);
+		if(mUpdateFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
+			delete mUpdateFunctionRegistration.Value.Function;
+			mUpdateFunctionRegistration = null;
+		}
 	}
 
 	private void Update(UpdateInfo info)

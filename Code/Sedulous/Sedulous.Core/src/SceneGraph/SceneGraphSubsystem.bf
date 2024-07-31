@@ -11,12 +11,7 @@ class SceneGraphSubsystem : Subsystem
 	private List<Scene> mScenes = new .() ~ delete _;
 	private List<Scene> mActiveScenes = new .() ~ delete _;
 
-	private readonly IContext.UpdateFunctionInfo mOnEngineUpdateInfo = .()
-		{
-			Priority = 1,
-			Stage = .VariableUpdate,
-			Function = new => OnEngineUpdate
-		} ~ delete _.Function;
+	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
 	private void OnEngineUpdate(IContext.UpdateInfo info)
 	{
@@ -28,15 +23,25 @@ class SceneGraphSubsystem : Subsystem
 		}
 	}
 
-	protected override Result<void> OnInitializing(IContext engine)
+	protected override Result<void> OnInitializing(IContext context)
 	{
-		engine.RegisterUpdateFunction(mOnEngineUpdateInfo);
+		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
+		{
+			Priority = 1,
+			Stage = .VariableUpdate,
+			Function = new => OnEngineUpdate
+		});
 		return .Ok;
 	}
 
-	protected override void OnUnitializing(IContext engine)
+	protected override void OnUnitializing(IContext context)
 	{
-		engine.UnregisterUpdateFunction(mOnEngineUpdateInfo);
+		if(mUpdateFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
+			delete mUpdateFunctionRegistration.Value.Function;
+			mUpdateFunctionRegistration = null;
+		}
 	}
 
 	public Result<void> CreateScene(out Scene scene)

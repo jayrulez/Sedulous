@@ -43,6 +43,22 @@ interface IContext
 		public Time Time;
 	}
 
+	public struct RegisteredUpdateFunctionInfo
+	{
+		public Guid Id;
+		public UpdateStage Stage;
+		public int Priority;
+		public UpdateFunction Function;
+
+		internal this(Guid id, UpdateStage stage, int priority, UpdateFunction @function)
+		{
+			this.Id = id;
+			this.Stage = stage;
+			this.Priority = priority;
+			this.Function = @function;
+		}
+	}
+
 	public typealias UpdateFunction = delegate void(UpdateInfo info);
 
 	public struct UpdateFunctionInfo
@@ -57,13 +73,13 @@ interface IContext
 	JobSystem JobSystem { get; }
 	ResourceSystem ResourceSystem { get; }
 
-	void RegisterUpdateFunction(UpdateFunctionInfo info);
+	[NoDiscard]IContext.RegisteredUpdateFunctionInfo RegisterUpdateFunction(UpdateFunctionInfo info);
 
-	void RegisterUpdateFunctions(Span<UpdateFunctionInfo> infos);
+	void RegisterUpdateFunctions(Span<UpdateFunctionInfo> infos, List<IContext.RegisteredUpdateFunctionInfo> registrations);
 
-	void UnregisterUpdateFunction(UpdateFunctionInfo info);
+	void UnregisterUpdateFunction(IContext.RegisteredUpdateFunctionInfo registration);
 
-	void UnregisterUpdateFunctions(Span<UpdateFunctionInfo> infos);
+	void UnregisterUpdateFunctions(Span<IContext.RegisteredUpdateFunctionInfo> registrations);
 
 	Result<T> GetSubsystem<T>() where T : Subsystem;
 
@@ -88,14 +104,9 @@ sealed class Context : IContext
 
 	private bool mInitialized = false;
 
-	private struct RegisteredUpdateFunctionInfo
-	{
-		public int Priority;
-		public IContext.UpdateFunction Function;
-	}
-	private Dictionary<IContext.UpdateStage, List<RegisteredUpdateFunctionInfo>> mUpdateFunctions = new .() ~ delete _;
-	private List<IContext.UpdateFunctionInfo> mUpdateFunctionsToRegister = new .() ~ delete _;
-	private List<IContext.UpdateFunctionInfo> mUpdateFunctionsToUnregister = new .() ~ delete _;
+	private Dictionary<IContext.UpdateStage, List<IContext.RegisteredUpdateFunctionInfo>> mUpdateFunctions = new .() ~ delete _;
+	private List<IContext.RegisteredUpdateFunctionInfo> mUpdateFunctionsToRegister = new .() ~ delete _;
+	private List<IContext.RegisteredUpdateFunctionInfo> mUpdateFunctionsToUnregister = new .() ~ delete _;
 
 	private readonly ILogger mLogger = null;
 	private bool mOwnsLogger = false;
@@ -281,7 +292,7 @@ sealed class Context : IContext
 
 		void RunUpdateFunctions(IContext.UpdateStage phase, IContext.UpdateInfo info)
 		{
-			for (ref RegisteredUpdateFunctionInfo updateFunctionInfo in ref mUpdateFunctions[phase])
+			for (ref IContext.RegisteredUpdateFunctionInfo updateFunctionInfo in ref mUpdateFunctions[phase])
 			{
 				updateFunctionInfo.Function(info);
 			}
@@ -294,11 +305,7 @@ sealed class Context : IContext
 
 			for (var info in mUpdateFunctionsToRegister)
 			{
-				mUpdateFunctions[info.Stage].Add(.()
-					{
-						Priority = info.Priority,
-						Function = info.Function
-					});
+				mUpdateFunctions[info.Stage].Add(info);
 			}
 			mUpdateFunctionsToRegister.Clear();
 			SortUpdateFunctions();
@@ -313,7 +320,7 @@ sealed class Context : IContext
 			{
 				var index = mUpdateFunctions[info.Stage].FindIndex(scope (registered) =>
 					{
-						return info.Function == registered.Function;
+						return info.Id == registered.Id;
 					});
 
 				if (index >= 0)
@@ -396,29 +403,31 @@ sealed class Context : IContext
 		}
 	}
 
-	public void RegisterUpdateFunction(IContext.UpdateFunctionInfo info)
+	public IContext.RegisteredUpdateFunctionInfo RegisterUpdateFunction(IContext.UpdateFunctionInfo info)
 	{
-		mUpdateFunctionsToRegister.Add(info);
+		IContext.RegisteredUpdateFunctionInfo registration = .(Guid.Create(), info.Stage, info.Priority, info.Function);
+		mUpdateFunctionsToRegister.Add(registration);
+		return registration;
 	}
 
-	public void RegisterUpdateFunctions(Span<IContext.UpdateFunctionInfo> infos)
+	public void RegisterUpdateFunctions(Span<IContext.UpdateFunctionInfo> infos, List<IContext.RegisteredUpdateFunctionInfo> registrations)
 	{
 		for (var info in infos)
 		{
-			mUpdateFunctionsToRegister.Add(info);
+			registrations.Add(RegisterUpdateFunction(info));
 		}
 	}
 
-	public void UnregisterUpdateFunction(IContext.UpdateFunctionInfo info)
+	public void UnregisterUpdateFunction(IContext.RegisteredUpdateFunctionInfo registration)
 	{
-		mUpdateFunctionsToUnregister.Add(info);
+		mUpdateFunctionsToUnregister.Add(registration);
 	}
 
-	public void UnregisterUpdateFunctions(Span<IContext.UpdateFunctionInfo> infos)
+	public void UnregisterUpdateFunctions(Span<IContext.RegisteredUpdateFunctionInfo> registrations)
 	{
-		for (var info in infos)
+		for (var registration in registrations)
 		{
-			mUpdateFunctionsToUnregister.Add(info);
+			mUpdateFunctionsToUnregister.Add(registration);
 		}
 	}
 

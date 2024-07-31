@@ -8,19 +8,13 @@ namespace Sandbox;
 
 class SandboxApplication
 {
-	private readonly UpdateFunctionInfo mUpdateFunctionInfo = .()
-		{
-			Priority = 1,
-			Function = new  => Update,
-			Stage = .FixedUpdate
-		} ~ delete _.Function;
+	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
 	private readonly IPlatformBackend mHost;
 
 	public this(IPlatformBackend host)
 	{
 		mHost = host;
-		((IContextHost)mHost).Context.RegisterUpdateFunction(mUpdateFunctionInfo);
 	}
 
 	public Result<void> Initializing(ContextInitializer initializer)
@@ -30,12 +24,22 @@ class SandboxApplication
 
 	public void Initialized(IContext context)
 	{
-		context.RegisterUpdateFunction(mUpdateFunctionInfo);
+		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
+		{
+			Priority = 1,
+			Function = new  => Update,
+			Stage = .FixedUpdate
+		});
 	}
 
 	public void ShuttingDown(IContext context)
 	{
-		context.UnregisterUpdateFunction(mUpdateFunctionInfo);
+		if(mUpdateFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
+			delete mUpdateFunctionRegistration.Value.Function;
+			mUpdateFunctionRegistration = null;
+		}
 	}
 
 	private void Update(UpdateInfo info)

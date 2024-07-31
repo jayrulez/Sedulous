@@ -12,12 +12,7 @@ namespace RHI;
 
 class RHIApplication
 {
-	private readonly UpdateFunctionInfo mUpdateFunctionInfo = .()
-		{
-			Priority = 1,
-			Function = new  => Update,
-			Stage = .FixedUpdate
-		} ~ delete _.Function;
+	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
 	private readonly ValidationLayer mValidationLayer = new .(.Trace) ~ delete _;
 	private readonly VKGraphicsContext mGraphicsContext = new .() ~ delete _;
@@ -70,7 +65,12 @@ class RHIApplication
 
 	public void Initialized(IContext context)
 	{
-		context.RegisterUpdateFunction(mUpdateFunctionInfo);
+		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
+		{
+			Priority = 1,
+			Function = new  => Update,
+			Stage = .FixedUpdate
+		});
 
 		var window = mHost.Windows.GetPrimary();
 
@@ -151,7 +151,12 @@ class RHIApplication
 		delete mCommandQueue;
 		delete mSwapChain;
 
-		context.UnregisterUpdateFunction(mUpdateFunctionInfo);
+		if(mUpdateFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
+			delete mUpdateFunctionRegistration.Value.Function;
+			mUpdateFunctionRegistration = null;
+		}
 	}
 
 	private void Update(UpdateInfo info)
