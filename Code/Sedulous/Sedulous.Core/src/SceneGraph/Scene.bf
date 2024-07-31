@@ -3,15 +3,54 @@ using System.Collections;
 using Sedulous.Foundation.Mathematics;
 namespace Sedulous.Core.SceneGraph;
 
+using internal Sedulous.Core.SceneGraph;
+
 interface IScene
 {
-	void RegisterUpdateFunction(Scene.UpdateFunctionInfo info);
+	public enum UpdateStage
+	{
+		PreTransform,
+		PostTransform
+	}
 
-	void RegisterUpdateFunctions(Span<Scene.UpdateFunctionInfo> infos);
+	public struct UpdateInfo
+	{
+		public IScene Scene;
+		public TimeSpan DeltaTime;
+	}
 
-	void UnregisterUpdateFunction(Scene.UpdateFunctionInfo info);
+	public struct RegisteredUpdateFunctionInfo
+	{
+		public Guid Id;
+		public UpdateStage Stage;
+		public int Priority;
+		public UpdateFunction Function;
 
-	void UnregisterUpdateFunctions(Span<Scene.UpdateFunctionInfo> infos);
+		internal this(Guid id, UpdateStage stage, int priority, UpdateFunction @function)
+		{
+			this.Id = id;
+			this.Stage = stage;
+			this.Priority = priority;
+			this.Function = @function;
+		}
+	}
+
+	public typealias UpdateFunction = delegate void(UpdateInfo info);
+
+	public struct UpdateFunctionInfo
+	{
+		public int Priority;
+		public UpdateStage Stage;
+		public UpdateFunction Function;
+	}
+
+	[NoDiscard]IScene.RegisteredUpdateFunctionInfo RegisterUpdateFunction(UpdateFunctionInfo info);
+
+	void RegisterUpdateFunctions(Span<UpdateFunctionInfo> infos, List<IScene.RegisteredUpdateFunctionInfo> registrations);
+
+	void UnregisterUpdateFunction(IScene.RegisteredUpdateFunctionInfo registration);
+
+	void UnregisterUpdateFunctions(Span<IScene.RegisteredUpdateFunctionInfo> registrations);
 
 	Result<T> GetModule<T>() where T : SceneModule;
 
@@ -22,18 +61,13 @@ class Scene : IScene
 {
 	private List<SceneModule> mModules = new .() ~ delete _;
 
-	private struct RegisteredUpdateFunctionInfo
-	{
-		public int Priority;
-		public UpdateFunction Function;
-	}
-	private Dictionary<UpdateStage, List<RegisteredUpdateFunctionInfo>> mUpdateFunctions = new .() ~ delete _;
-	private List<UpdateFunctionInfo> mUpdateFunctionsToRegister = new .() ~ delete _;
-	private List<UpdateFunctionInfo> mUpdateFunctionsToUnregister = new .() ~ delete _;
+	private Dictionary<IScene.UpdateStage, List<IScene.RegisteredUpdateFunctionInfo>> mUpdateFunctions = new .() ~ delete _;
+	private List<IScene.RegisteredUpdateFunctionInfo> mUpdateFunctionsToRegister = new .() ~ delete _;
+	private List<IScene.RegisteredUpdateFunctionInfo> mUpdateFunctionsToUnregister = new .() ~ delete _;
 
 	internal this()
 	{
-		Enum.MapValues<UpdateStage>(scope (member) =>
+		Enum.MapValues<IScene.UpdateStage>(scope (member) =>
 			{
 				mUpdateFunctions.Add(member, new .());
 			});
@@ -41,7 +75,7 @@ class Scene : IScene
 
 	internal ~this()
 	{
-		Enum.MapValues<UpdateStage>(scope (member) =>
+		Enum.MapValues<IScene.UpdateStage>(scope (member) =>
 			{
 				delete mUpdateFunctions[member];
 			});
@@ -56,7 +90,7 @@ class Scene : IScene
 		#region Update methods
 		void SortUpdateFunctions()
 		{
-			Enum.MapValues<UpdateStage>(scope (member) =>
+			Enum.MapValues<IScene.UpdateStage>(scope (member) =>
 				{
 					mUpdateFunctions[member].Sort(scope (lhs, rhs) =>
 						{
@@ -69,9 +103,9 @@ class Scene : IScene
 				});
 		}
 
-		void RunUpdateFunctions(UpdateStage phase, UpdateInfo info)
+		void RunUpdateFunctions(IScene.UpdateStage phase, IScene.UpdateInfo info)
 		{
-			for (ref RegisteredUpdateFunctionInfo updateFunctionInfo in ref mUpdateFunctions[phase])
+			for (var updateFunctionInfo in mUpdateFunctions[phase])
 			{
 				updateFunctionInfo.Function(info);
 			}
@@ -84,11 +118,7 @@ class Scene : IScene
 
 			for (var info in mUpdateFunctionsToRegister)
 			{
-				mUpdateFunctions[info.Stage].Add(.()
-					{
-						Priority = info.Priority,
-						Function = info.Function
-					});
+				mUpdateFunctions[info.Stage].Add(info);
 			}
 			mUpdateFunctionsToRegister.Clear();
 			SortUpdateFunctions();
@@ -103,7 +133,7 @@ class Scene : IScene
 			{
 				var index = mUpdateFunctions[info.Stage].FindIndex(scope (registered) =>
 					{
-						return info.Function == registered.Function;
+						return info.Id == registered.Id;
 					});
 
 				if (index >= 0)
@@ -144,27 +174,29 @@ class Scene : IScene
 		}
 	}
 
-	public void RegisterUpdateFunction(UpdateFunctionInfo info)
+	public IScene.RegisteredUpdateFunctionInfo RegisterUpdateFunction(IScene.UpdateFunctionInfo info)
 	{
-		mUpdateFunctionsToRegister.Add(info);
+		IScene.RegisteredUpdateFunctionInfo registration = .(Guid.Create(), info.Stage, info.Priority, info.Function);
+		mUpdateFunctionsToRegister.Add(registration);
+		return registration;
 	}
 
-	public void RegisterUpdateFunctions(Span<UpdateFunctionInfo> infos)
+	public void RegisterUpdateFunctions(Span<IScene.UpdateFunctionInfo> infos, List<IScene.RegisteredUpdateFunctionInfo> registrations)
 	{
 		for (var info in infos)
 		{
-			mUpdateFunctionsToRegister.Add(info);
+			registrations.Add(RegisterUpdateFunction(info));
 		}
 	}
 
-	public void UnregisterUpdateFunction(UpdateFunctionInfo info)
+	public void UnregisterUpdateFunction(IScene.RegisteredUpdateFunctionInfo registration)
 	{
-		mUpdateFunctionsToUnregister.Add(info);
+		mUpdateFunctionsToUnregister.Add(registration);
 	}
 
-	public void UnregisterUpdateFunctions(Span<UpdateFunctionInfo> infos)
+	public void UnregisterUpdateFunctions(Span<IScene.RegisteredUpdateFunctionInfo> registrations)
 	{
-		for (var info in infos)
+		for (var info in registrations)
 		{
 			mUpdateFunctionsToUnregister.Add(info);
 		}
@@ -194,30 +226,6 @@ class Scene : IScene
 		}
 		outModule = null;
 		return false;
-	}
-}
-
-extension Scene
-{
-	public enum UpdateStage
-	{
-		PreTransform,
-		PostTransform
-	}
-
-	struct UpdateInfo
-	{
-		public IScene Scene;
-		public TimeSpan DeltaTime;
-	}
-
-	public typealias UpdateFunction = delegate void(UpdateInfo info);
-
-	public struct UpdateFunctionInfo
-	{
-		public int Priority;
-		public UpdateStage Stage;
-		public UpdateFunction Function;
 	}
 }
 
