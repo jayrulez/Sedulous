@@ -1,5 +1,5 @@
 using Sedulous.Foundation.Mathematics;
-namespace Sedulous.Core.SceneGraph;
+namespace Sedulous.SceneGraph;
 
 struct EntityTransform
 {

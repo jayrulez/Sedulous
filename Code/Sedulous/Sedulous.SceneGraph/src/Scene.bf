@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using Sedulous.Foundation.Mathematics;
-namespace Sedulous.Core.SceneGraph;
+namespace Sedulous.SceneGraph;
 
-using internal Sedulous.Core.SceneGraph;
+using internal Sedulous.SceneGraph;
 
 interface IScene
 {

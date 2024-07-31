@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.SceneGraph" = "*", "Sedulous.Platform.Desktop" = "*"}
+
+[Project]
+Name = "SceneGraph"
+StartupObject = "SceneGraph.Program"

@@ -1,5 +1,5 @@
 using System;
-namespace Sedulous.Core.SceneGraph;
+namespace Sedulous.SceneGraph;
 
 struct Entity : uint64, IHashable
 {

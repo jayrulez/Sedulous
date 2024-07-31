@@ -1,7 +1,7 @@
 using Sedulous.Core.Resources;
 using System;
 using System.IO;
-namespace Sedulous.Core.SceneGraph;
+namespace Sedulous.SceneGraph;
 
 class SceneResource : Resource
 {

@@ -98,8 +98,6 @@ sealed class Context : IContext
 
 	private List<Subsystem> mSubsystems = new .() ~ delete _;
 
-	private SceneGraphSubsystem mSceneGraph = null;
-
 	public IContext.ContextState State { get; private set; } = .Stopped;
 
 	private bool mInitialized = false;
@@ -222,9 +220,6 @@ sealed class Context : IContext
 			return .Err;
 		}
 
-		mSceneGraph = new .();
-		mSubsystems.Add(mSceneGraph);
-
 		mSubsystems.AddRange(initializer.Subsystems);
 
 		mInitialized = true;
@@ -265,8 +260,6 @@ sealed class Context : IContext
 		}
 
 		mSubsystems.Clear();
-
-		delete mSceneGraph;
 
 		mInitialized = false;
 		mLogger.LogInformation("Context uninitialized.");

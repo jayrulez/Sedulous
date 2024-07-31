@@ -1,4 +1,4 @@
-namespace Sedulous.Core.SceneGraph;
+namespace Sedulous.SceneGraph;
 
 typealias SceneModuleTypeId = uint16;
 
