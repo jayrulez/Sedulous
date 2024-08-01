@@ -1,4 +1,4 @@
-namespace Sedulous.Audio.OpenAL.Bindings;
+namespace OpenALNative;
 
 extension OpenALNativeImpl
 {

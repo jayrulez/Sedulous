@@ -1,5 +1,6 @@
-using Sedulous.Audio.OpenAL.Bindings;
 namespace Sedulous.Audio.OpenAL;
+
+using OpenALNative;
 
 class OpenALAudioSubsystem : AudioSubsystem
 {

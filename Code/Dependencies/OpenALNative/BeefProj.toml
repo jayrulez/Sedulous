@@ -1,0 +1,18 @@
+FileVersion = 1
+
+[Project]
+Name = "OpenALNative"
+TargetType = "BeefLib"
+StartupObject = "OpenALNative.Program"
+
+[Configs.Debug.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win64/*.dll\")"]
+
+[Configs.Debug.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win32/*.dll\")"]
+
+[Configs.Release.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win64/*.dll\")"]
+
+[Configs.Release.Win32]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/Win32/*.dll\")"]

@@ -1,8 +1,8 @@
 using System;
 
-namespace Sedulous.Audio.OpenAL.Bindings;
+namespace OpenALNative;
 
-using internal Sedulous.Audio.OpenAL.Bindings;
+using internal OpenALNative;
 
 extension OpenALNativeImpl_Default
 {

@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-namespace Sedulous.Audio.OpenAL.Bindings;
+namespace OpenALNative;
 
-using internal Sedulous.Audio.OpenAL.Bindings;
+using internal OpenALNative;
 
 internal class Libdl
 {
