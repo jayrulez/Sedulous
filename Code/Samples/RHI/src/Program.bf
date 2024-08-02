@@ -7,6 +7,9 @@ using Sedulous.RHI;
 using Sedulous.RHI.Vulkan;
 using Sedulous.Foundation.Mathematics;
 using System.Collections;
+using Sedulous.Foundation.Logging.Abstractions;
+using Sedulous.Foundation.Logging.Console;
+using System.IO;
 using static Sedulous.Core.IContext;
 namespace RHI;
 
@@ -14,7 +17,8 @@ class RHIApplication
 {
 	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
-	private readonly ValidationLayer mValidationLayer = new .(.Trace) ~ delete _;
+	private readonly ILogger mLogger = new ConsoleLogger(.Trace) ~ delete _;
+	private readonly ValidationLayer mValidationLayer = new .(mLogger) ~ delete _;
 	private readonly VKGraphicsContext mGraphicsContext = new .() ~ delete _;
 	private SwapChain mSwapChain = null;
 	private CommandQueue mCommandQueue = null;
@@ -32,8 +36,7 @@ class RHIApplication
 	}
 
 	private static Vector4[] VertexData = new Vector4[]
-		(
-		// TriangleList
+		( // TriangleList
 		Vector4(0f, 0.5f, 0.0f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f),
 		Vector4(0.5f, -0.5f, 0.0f, 1.0f), Vector4(0.0f, 1.0f, 0.0f, 1.0f),
 		Vector4(-0.5f, -0.5f, 0.0f, 1.0f), Vector4(0.0f, 0.0f, 1.0f, 1.0f)
@@ -66,18 +69,13 @@ class RHIApplication
 	public void Initialized(IContext context)
 	{
 		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
-		{
-			Priority = 1,
-			Function = new  => Update,
-			Stage = .FixedUpdate
-		});
+			{
+				Priority = 1,
+				Function = new  => Update,
+				Stage = .FixedUpdate
+			});
 
 		var window = mHost.Windows.GetPrimary();
-
-		window.Drawing.Subscribe(new (window, time) =>
-			{
-				Render();
-			});
 
 		mGraphicsContext.CreateDevice(mValidationLayer);
 
@@ -86,29 +84,44 @@ class RHIApplication
 
 		mCommandQueue = mGraphicsContext.Factory.CreateCommandQueue();
 
+		List<uint8> shaderBytes = scope .();
+
 		// Compile Vertex and Pixel shaders
-		List<uint8> vsBytes = scope .();
-		List<uint8> psBytes = scope .();
+		if (File.ReadAll("Shaders/FragmentShader.spirv", shaderBytes) case .Err)
+		{
+			Runtime.FatalError("Failed to load fragment shader.");
+		}
+		uint8[] psBytes = scope .[shaderBytes.Count];
+		shaderBytes.CopyTo(psBytes);
+
+		shaderBytes.Clear();
+		if (File.ReadAll("Shaders/VertexShader.spirv", shaderBytes) case .Err)
+		{
+			Runtime.FatalError("Failed to load vertex shader.");
+		}
+		uint8[] vsBytes = scope .[shaderBytes.Count];
+		shaderBytes.CopyTo(vsBytes);
+
 
 		ShaderDescription vertexShaderDescription = ShaderDescription(.Vertex, "VS", vsBytes);
 		ShaderDescription pixelShaderDescription = ShaderDescription(.Pixel, "PS", psBytes);
 
-		Shader vertexShader = mGraphicsContext.Factory.CreateShader(ref vertexShaderDescription);
+		Shader vertexShader = mGraphicsContext.Factory.CreateShader(vertexShaderDescription);
 		defer delete vertexShader;
 		defer vertexShader.Dispose();
 
-		Shader pixelShader = mGraphicsContext.Factory.CreateShader(ref pixelShaderDescription);
+		Shader pixelShader = mGraphicsContext.Factory.CreateShader(pixelShaderDescription);
 		defer delete pixelShader;
 		defer pixelShader.Dispose();
 
 		BufferDescription vertexBufferDescription = BufferDescription((.)sizeof(Vector4) * (.)VertexData.Count, BufferFlags.VertexBuffer, ResourceUsage.Default);
-		mVertexBuffer = mGraphicsContext.Factory.CreateBuffer(VertexData, ref vertexBufferDescription);
+		mVertexBuffer = mGraphicsContext.Factory.CreateBuffer(VertexData, vertexBufferDescription);
 
 		// Prepare Pipeline
 		mVertexLayouts = new InputLayouts()
 			.Add(scope LayoutDescription()
-				.Add(ElementDescription(ElementFormat.Float4, ElementSemanticType.Position))
-				.Add(ElementDescription(ElementFormat.Float4, ElementSemanticType.Color))
+			.Add(ElementDescription(ElementFormat.Float4, ElementSemanticType.Position))
+			.Add(ElementDescription(ElementFormat.Float4, ElementSemanticType.Color))
 			);
 
 		GraphicsPipelineDescription pipelineDescription = GraphicsPipelineDescription
@@ -130,10 +143,24 @@ class RHIApplication
 				ResourceLayouts = null
 			};
 
-		mGraphicsPipelineState = mGraphicsContext.Factory.CreateGraphicsPipeline(ref pipelineDescription);
+		mGraphicsPipelineState = mGraphicsContext.Factory.CreateGraphicsPipeline(pipelineDescription);
 
 		mViewports = new Viewport[1](.(0, 0, window.ClientSize.Width, window.ClientSize.Height));
 		mScissors = new Rectangle[1]();
+
+		window.Drawing.Subscribe(new (window, time) =>
+			{
+				Render();
+			});
+
+		window.SizeChanged.Subscribe(new (window) =>
+			{
+				int32 width = window.ClientSize.Width;
+				int32 height = window.ClientSize.Height;
+				mViewports[0] = Viewport(0, 0, width, height);
+				mScissors[0] = Rectangle(0, 0, (.)width, (.)height);
+				mSwapChain.ResizeSwapChain((.)width, (.)height);
+			});
 	}
 
 	public void ShuttingDown(IContext context)
@@ -142,6 +169,7 @@ class RHIApplication
 		delete mViewports;
 		mGraphicsPipelineState.Dispose();
 		mVertexBuffer.Dispose();
+		mCommandQueue.Dispose();
 		mSwapChain.Dispose();
 		mGraphicsContext.Dispose();
 
@@ -151,7 +179,7 @@ class RHIApplication
 		delete mCommandQueue;
 		delete mSwapChain;
 
-		if(mUpdateFunctionRegistration.HasValue)
+		if (mUpdateFunctionRegistration.HasValue)
 		{
 			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
 			delete mUpdateFunctionRegistration.Value.Function;
@@ -176,7 +204,7 @@ class RHIApplication
 		commandBuffer.Begin();
 
 		RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, ClearValue(ClearFlags.All, 1, 0, Color.CornflowerBlue.ToVector4()));
-		commandBuffer.BeginRenderPass(ref renderPassDescription);
+		commandBuffer.BeginRenderPass(renderPassDescription);
 
 		commandBuffer.SetViewports(mViewports);
 		commandBuffer.SetScissorRectangles(mScissors);
