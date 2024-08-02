@@ -7,7 +7,6 @@ using Sedulous.Foundation.Logging.Debug;
 using Sedulous.Foundation.Jobs;
 using Sedulous.Foundation;
 using Sedulous.Core.Resources;
-using Sedulous.Core.SceneGraph;
 
 namespace Sedulous.Core;
 
