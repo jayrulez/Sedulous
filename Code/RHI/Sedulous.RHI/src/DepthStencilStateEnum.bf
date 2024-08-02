@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The depth stencil state default values.
 /// </summary>
-enum DepthStencilStateEnum : uint8
+public enum DepthStencilStateEnum : uint8
 {
 	/// <summary>
 	/// Depth disable

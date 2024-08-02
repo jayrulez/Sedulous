@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identifies the set of device capabilities.
 /// </summary>
-enum GraphicsProfile : uint8
+public enum GraphicsProfile : uint8
 {
 	/// <summary>
 	/// DirectX 9.1 HLSL 3.0 | OpenGL ES 2.0

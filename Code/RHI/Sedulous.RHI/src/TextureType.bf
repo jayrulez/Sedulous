@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Texture type.
 /// </summary>
-enum TextureType : uint8
+public enum TextureType : uint8
 {
 	/// <summary>
 	/// Represent a 2D texture.

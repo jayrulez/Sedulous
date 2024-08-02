@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes depth-stencil state.
 /// </summary>
-struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>, IHashable
+public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>
 {
 	/// <summary>
 	/// Enable depth testing.
@@ -71,12 +71,10 @@ struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>, 
 		StencilEnable = false;
 		StencilReadMask = uint8.MaxValue;
 		StencilWriteMask = uint8.MaxValue;
-
 		FrontFace.StencilFunction = ComparisonFunction.Always;
 		FrontFace.StencilPassOperation = StencilOperation.Keep;
 		FrontFace.StencilFailOperation = StencilOperation.Keep;
 		FrontFace.StencilDepthFailOperation = StencilOperation.Keep;
-
 		BackFace.StencilFunction = ComparisonFunction.Always;
 		BackFace.StencilPassOperation = StencilOperation.Keep;
 		BackFace.StencilFailOperation = StencilOperation.Keep;
@@ -133,14 +131,7 @@ struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>, 
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((((((uint32)(((DepthEnable.GetHashCode() * 397)
-			^ DepthWriteMask.GetHashCode()) * 397)
-			^ (uint32)DepthFunction) * 397)
-			^ (uint32)StencilEnable.GetHashCode()) * 397)
-			^ (uint32)StencilReadMask.GetHashCode()) * 397)
-			^ (uint32)StencilWriteMask.GetHashCode()) * 397)
-			^ (uint32)FrontFace.GetHashCode()) * 397)
-			^ BackFace.GetHashCode();
+		return (int)(((((((((((uint32)(((DepthEnable.GetHashCode() * 397) ^ DepthWriteMask.GetHashCode()) * 397) ^ (uint32)DepthFunction) * 397) ^ (uint32)StencilEnable.GetHashCode()) * 397) ^ (uint32)StencilReadMask.GetHashCode()) * 397) ^ (uint32)StencilWriteMask.GetHashCode()) * 397) ^ (uint32)FrontFace.GetHashCode()) * 397) ^ BackFace.GetHashCode();
 	}
 
 	/// <summary>

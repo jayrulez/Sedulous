@@ -5,12 +5,12 @@ namespace Sedulous.RHI;
 /// <summary>
 /// A pool of <see cref="M:Sedulous.RHI.CommandQueue.CommandBuffer" />.
 /// </summary>
-abstract class CommandQueue : IDisposable
+public abstract class CommandQueue : IDisposable
 {
 	/// <summary>
 	/// The command buffer array size.
 	/// </summary>
-	public const int CommandBufferArraySize = 64;
+	public const int32 CommandBufferArraySize = 64;
 
 	/// <summary>
 	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.

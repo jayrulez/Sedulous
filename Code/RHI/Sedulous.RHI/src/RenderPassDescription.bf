@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Structure specifying render pass begin info.
 /// </summary>
-struct RenderPassDescription
+public struct RenderPassDescription
 {
 	/// <summary>
 	/// The frameBuffer containing the attachments that are used with the renderpass.
@@ -24,7 +24,7 @@ struct RenderPassDescription
 	/// <param name="clearValue">That contains clear values for each attachment.</param>
 	public this(FrameBuffer frameBuffer, ClearValue clearValue)
 	{
-		if (!frameBuffer.ColorTargets.IsEmpty && !clearValue.ColorValues.IsEmpty && frameBuffer.ColorTargets.Count != clearValue.ColorValues.Count)
+		if (/*frameBuffer.ColorTargets != null && clearValue.ColorValues != null &&*/ frameBuffer.ColorTargets.Count != clearValue.ColorValues.Count)
 		{
 			Runtime.ArgumentError(scope $"The number of framebuffer color targets {frameBuffer.ColorTargets.Count} must be equal the number of clear color values {clearValue.ColorValues.Count}");
 		}

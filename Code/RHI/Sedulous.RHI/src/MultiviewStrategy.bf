@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Indicates the strategy supported to render multiple views.
 /// </summary>
-enum MultiviewStrategy
+public enum MultiviewStrategy
 {
 	/// <summary>
 	/// Multiview is not supported in this device.

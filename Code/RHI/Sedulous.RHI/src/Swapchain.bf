@@ -6,7 +6,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// SwapChain instance.
 /// </summary>
-abstract class SwapChain : IDisposable
+public abstract class SwapChain : IDisposable
 {
 	/// <summary>
 	/// Holds if the instance has been disposed.

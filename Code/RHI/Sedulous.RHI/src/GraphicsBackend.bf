@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The specify graphics low level API used by the <see cref="T:Sedulous.RHI.GraphicsContext" />.
 /// </summary>
-enum GraphicsBackend : uint8
+public enum GraphicsBackend : uint8
 {
 	/// <summary>
 	/// DirectX 11

@@ -2,14 +2,18 @@
 using System;
 using System.Diagnostics;
 using Sedulous.RHI.Raytracing;
+using Sedulous.Foundation.Logging.Abstractions;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// The graphics validation layer.
 /// </summary>
-class ValidationLayer
+public class ValidationLayer
 {
+	private readonly ILogger logger;
+	private readonly bool ownsNotifyDelegate = false;
+
 	/// <summary>
 	/// The Notify delegate function.
 	/// </summary>
@@ -61,8 +65,6 @@ class ValidationLayer
 	/// </summary>
 	public NotifyAction Notify;
 
-	private bool mOwnsNotifyDelegate = false;
-
 	/// <summary>
 	/// Event that allow to obtains the error messages if NofityMethod is set to Events.
 	/// </summary>
@@ -72,8 +74,11 @@ class ValidationLayer
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ValidationLayer" /> class.
 	/// </summary>
 	/// <param name="method">The notify method <see cref="T:Sedulous.RHI.ValidationLayer.NotifyMethod" />, exception by default.</param>
-	public this(NotifyMethod method = NotifyMethod.Exceptions)
+	public this(ILogger logger, NotifyMethod method = NotifyMethod.Exceptions)
 	{
+		logger = logger;
+		ownsNotifyDelegate = true;
+
 		switch (method)
 		{
 		case NotifyMethod.Exceptions:
@@ -86,17 +91,25 @@ class ValidationLayer
 			Notify = new => NotifyEvent;
 			break;
 		}
-
-		mOwnsNotifyDelegate = true;
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ValidationLayer" /> class.
 	/// </summary>
 	/// <param name="function">The callback function called for every error detection.</param>
-	public this(NotifyAction @function)
+	public this(ILogger logger, NotifyAction @function)
 	{
+		logger = logger;
+
 		Notify = @function;
+	}
+
+	public ~this()
+	{
+		if(ownsNotifyDelegate)
+		{
+			delete Notify;
+		}
 	}
 
 	/// <summary>
@@ -115,7 +128,7 @@ class ValidationLayer
 	/// Creates a graphic pipeline validation.
 	/// </summary>
 	/// <param name="description">The graphic pipeline description.</param>
-	public void CreateGraphicsPipelineValidation(ref GraphicsPipelineDescription description)
+	public void CreateGraphicsPipelineValidation(in GraphicsPipelineDescription description)
 	{
 		if (description.Outputs.ColorAttachments.IsEmpty && !description.Outputs.DepthAttachment.HasValue)
 		{
@@ -127,19 +140,19 @@ class ValidationLayer
 	/// Creates a compute pipeline validation layer.
 	/// </summary>
 	/// <param name="description">The compute pipeline description.</param>
-	public void CreateComputePipelineValidation(ref ComputePipelineDescription description)
+	public void CreateComputePipelineValidation(in ComputePipelineDescription description)
 	{
-		//if (description.ShaderDescription == null)
-		//{
-		//	NotifyInternal("The compute shader cannot be null in a ComputePipeline.");
-		//}
+		/*if (description.shaderDescription == null)
+		{
+			NotifyInternal("The compute shader cannot be null in a ComputePipeline.");
+		}*/
 	}
 
 	/// <summary>
 	/// Creates a raytracing pipeline validatino layer.
 	/// </summary>
 	/// <param name="description">The raytracing pipeline description.</param>
-	public void CreateRaytracingPipelineValidation(ref RaytracingPipelineDescription description)
+	public void CreateRaytracingPipelineValidation(in RaytracingPipelineDescription description)
 	{
 	}
 
@@ -149,7 +162,7 @@ class ValidationLayer
 	/// <param name="data">The texture data.</param>
 	/// <param name="description">The texture description.</param>
 	/// <param name="samplerState">The texture sampler state.</param>
-	public void CreateTextureValidation(DataBox[] data, ref TextureDescription description, ref SamplerStateDescription samplerState)
+	public void CreateTextureValidation(DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
 	{
 		if (description.Width == 0 || description.Height == 0 || description.Depth == 0)
 		{
@@ -178,7 +191,7 @@ class ValidationLayer
 	/// </summary>
 	/// <param name="data">The buffer data.</param>
 	/// <param name="description">The buffer description.</param>
-	public void CreateBufferValidation(void* data, ref BufferDescription description)
+	public void CreateBufferValidation(void* data, in BufferDescription description)
 	{
 		if ((description.Flags & BufferFlags.BufferStructured) == BufferFlags.BufferStructured || (description.Flags & BufferFlags.UnorderedAccess) == BufferFlags.UnorderedAccess)
 		{
@@ -205,7 +218,7 @@ class ValidationLayer
 	/// Creates a shader validation layer.
 	/// </summary>
 	/// <param name="description">The shader description.</param>
-	public void CreateShaderValidation(ref ShaderDescription description)
+	public void CreateShaderValidation(in ShaderDescription description)
 	{
 		if (String.IsNullOrEmpty(description.EntryPoint))
 		{
@@ -221,7 +234,7 @@ class ValidationLayer
 	/// Creates the sampler state validation layer.
 	/// </summary>
 	/// <param name="description">The sampler state description.</param>
-	public void CreateSamplerStateValidation(ref SamplerStateDescription description)
+	public void CreateSamplerStateValidation(in SamplerStateDescription description)
 	{
 		if (description.MaxAnisotropy > 16)
 		{
@@ -235,7 +248,7 @@ class ValidationLayer
 	/// <param name="depthTarget">The depth frame buffer.</param>
 	/// <param name="colorTargets">The color frame buffers.</param>
 	/// <param name="disposeAttachments">If the attachments should be disposed.</param>
-	public void CreateFrameBufferValidation(FrameBufferAttachment? depthTarget, FrameBufferColorAttachmentList colorTargets, bool disposeAttachments)
+	public void CreateFrameBufferValidation(FrameBufferAttachment? depthTarget, FrameBufferAttachment[] colorTargets, bool disposeAttachments)
 	{
 		if (colorTargets.Count == 0)
 		{
@@ -247,7 +260,7 @@ class ValidationLayer
 	/// Creates the resource layout validation.
 	/// </summary>
 	/// <param name="description">The resource layout description.</param>
-	public void CreateResourceLayoutValidation(ref ResourceLayoutDescription description)
+	public void CreateResourceLayoutValidation(in ResourceLayoutDescription description)
 	{
 	}
 
@@ -255,7 +268,7 @@ class ValidationLayer
 	/// Creates the resource set validation.
 	/// </summary>
 	/// <param name="description">The resource set description.</param>
-	public void CreateResourceSetValidation(ref ResourceSetDescription description)
+	public void CreateResourceSetValidation(in ResourceSetDescription description)
 	{
 	}
 
@@ -380,8 +393,7 @@ class ValidationLayer
 
 	private void NotifyTrace(String owner, String message, Severity severity)
 	{
-		//Trace.TraceInformation(scope $"A {owner} error was encountered: {message}");
-		Console.WriteLine(scope $"A {owner} error was encountered: {message}");
+		logger.LogTrace(scope $"A {owner} error was encountered: {message}");
 	}
 
 	private void NotifyException(String owner, String message, Severity severity)
@@ -390,12 +402,10 @@ class ValidationLayer
 		switch (severity)
 		{
 		case Severity.Information:
-			//Trace.TraceInformation(fullMessage);
-			Console.WriteLine(fullMessage);
+			logger.LogInformation(fullMessage);
 			break;
 		case Severity.Warning:
-			//Trace.TraceWarning(fullMessage);
-			Console.WriteLine(fullMessage);
+			logger.LogWarning(fullMessage);
 			break;
 		case Severity.Error:
 			Runtime.FatalError(fullMessage);

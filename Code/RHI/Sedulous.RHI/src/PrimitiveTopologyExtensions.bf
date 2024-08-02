@@ -4,10 +4,27 @@ namespace Sedulous.RHI;
 
 /// <summary>
 /// Primitive topology extensions.
-/// Helper methods for primitive topology.
 /// </summary>
 public static class PrimitiveTopologyExtensions
 {
+	/// <summary>
+	/// Interpret the vertex data as a patch list.
+	/// </summary>
+	/// <param name="topology">The primitive topology.</param>
+	/// <param name="points">Number of control points. Valid range 1 - 32.</param>
+	/// <returns>The result primitive topology.</returns>
+	public static PrimitiveTopology ControlPoints(this PrimitiveTopology topology, int32 points)
+	{
+		if (topology != PrimitiveTopology.Patch_List)
+		{
+			Runtime.InvalidOperationError("Control points method apply only to PrimitiveTopology.Patch_List");
+		}
+		if (points < 1 || points > 32)
+		{
+			Runtime.ArgumentOutOfRangeError("Control points value must be in between 1 and 32");
+		}
+		return (PrimitiveTopology)(33 + points - 1);
+	}
 	/// <summary>
 	/// Convert index count to primitive count.
 	/// </summary>
@@ -66,26 +83,7 @@ public static class PrimitiveTopologyExtensions
 		case PrimitiveTopology.TriangleStripWithAdjacency:
 			return primitiveCount * 2 + 1;
 		default:
-			Runtime.InvalidOperationError(scope $"Primitive topology {primitiveTopology} not supported.");
+			Runtime.InvalidOperationError("Primitive topology {primitiveTopology} not supported.");
 		}
-	}
-
-	/// <summary>
-	/// Interpret the vertex data as a patch list.
-	/// </summary>
-	/// <param name="topology">The primitive topology.</param>
-	/// <param name="points">Number of control points. Valid range 1 - 32.</param>
-	/// <returns>The result primitive topology.</returns>
-	public static PrimitiveTopology ControlPoints(this PrimitiveTopology topology, int32 points)
-	{
-		if (topology != PrimitiveTopology.Patch_List)
-		{
-			Runtime.InvalidOperationError("Control points method apply only to PrimitiveTopology.Patch_List");
-		}
-		if (points < 1 || points > 32)
-		{
-			Runtime.ArgumentOutOfRangeError("Control points value must be in between 1 and 32");
-		}
-		return (PrimitiveTopology)(33 + points - 1);
 	}
 }

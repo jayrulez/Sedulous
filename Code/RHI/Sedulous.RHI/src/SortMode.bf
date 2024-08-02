@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specify the sort order.
 /// </summary>
-enum SortMode : uint8
+public enum SortMode : uint8
 {
 	/// <summary>
 	/// No sorting.

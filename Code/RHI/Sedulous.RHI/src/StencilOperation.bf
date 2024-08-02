@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The stencil operations that can be performed during depth-stencil testing.
 /// </summary>
-enum StencilOperation : uint8
+public enum StencilOperation : uint8
 {
 	/// <summary>
 	/// Keep the existing stencil data.

@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the vertex element usage.
 /// </summary>
-enum VertexElementUsage
+public enum VertexElementUsage
 {
 	/// <summary>
 	/// Used for position.

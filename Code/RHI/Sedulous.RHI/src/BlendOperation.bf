@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// RGB or alpha blending operation.
 /// </summary>
-enum BlendOperation : uint8
+public enum BlendOperation : uint8
 {
 	/// <summary>
 	/// Add source 1 and source 2.

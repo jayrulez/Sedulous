@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the elements type of a CommandQueue.
 /// </summary>
-enum CommandQueueType
+public enum CommandQueueType
 {
 	/// <summary>
 	/// Specifies a command buffer that the GPU can execute. A direct command list doesn't inherit any GPU state.

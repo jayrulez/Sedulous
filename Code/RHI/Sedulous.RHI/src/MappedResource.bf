@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The resource which has been mapped.
 /// </summary>
-struct MappedResource
+public struct MappedResource
 {
 	/// <summary>
 	/// The resource which has been mapped.

@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Provides access to data organized in 3D.
 /// </summary>
-struct DataBox
+public struct DataBox
 {
 	/// <summary>
 	/// Pointer to the data.
@@ -39,7 +39,7 @@ struct DataBox
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a IntPtr.
+	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a void*.
 	/// </summary>
 	/// <param name="datapointer">The datapointer.</param>
 	/// <param name="rowPitch">The row pitch.</param>
@@ -52,9 +52,9 @@ struct DataBox
 	}
 
 	/// <summary>
-	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a uint8 array.
+	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a byte array.
 	/// </summary>
-	/// <param name="data">The data as uint8 array.</param>
+	/// <param name="data">The data as byte array.</param>
 	/// <param name="rowPitch">The row pitch.</param>
 	/// <param name="slicePitch">The slice pitch.</param>
 	public this(uint8[] data, uint32 rowPitch = 0, uint32 slicePitch = 0)

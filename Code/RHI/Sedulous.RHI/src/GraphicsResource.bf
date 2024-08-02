@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// A resource interface provides common actions on all resources.
 /// </summary>
-abstract class GraphicsResource : IDisposable
+public abstract class GraphicsResource : IDisposable
 {
 	/// <summary>
 	/// Holds if the instance has been disposed.

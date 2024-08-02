@@ -4,7 +4,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class represent the GPU graphics pipeline.
 /// </summary>
-abstract class GraphicsPipelineState : PipelineState
+public abstract class GraphicsPipelineState : PipelineState
 {
 	/// <summary>
 	/// Gets the graphics pipelinestate description.
@@ -25,7 +25,7 @@ abstract class GraphicsPipelineState : PipelineState
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.GraphicsPipelineState" /> class.
 	/// </summary>
 	/// <param name="description">The pipelineState description.</param>
-	protected this(ref GraphicsPipelineDescription description)
+	protected this(in GraphicsPipelineDescription description)
 	{
 		Description = description;
 	}

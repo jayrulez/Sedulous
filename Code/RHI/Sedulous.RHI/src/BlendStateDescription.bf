@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes the blend state.
 /// </summary>
-struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
+public struct BlendStateDescription : IEquatable<BlendStateDescription>
 {
 	/// <summary>
 	/// Specifies whether to use alpha-to-coverage as a multisampling technique when setting a pixel to a render target.
@@ -19,9 +19,44 @@ struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
 	public bool IndependentBlendEnable;
 
 	/// <summary>
-	/// RenderTarget blend descriptions.
+	/// RenderTarget blend description 0 / 7.
 	/// </summary>
-	public BlendStateRenderTargetDescription[8] RenderTargets;
+	public BlendStateRenderTargetDescription RenderTarget0;
+
+	/// <summary>
+	/// RenderTarget blend description 1 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget1;
+
+	/// <summary>
+	/// RenderTarget blend description 2 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget2;
+
+	/// <summary>
+	/// RenderTarget blend description 3 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget3;
+
+	/// <summary>
+	/// RenderTarget blend description 4 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget4;
+
+	/// <summary>
+	/// RenderTarget blend description 5 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget5;
+
+	/// <summary>
+	/// RenderTarget blend description 6 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget6;
+
+	/// <summary>
+	/// RenderTarget blend description 7 / 7.
+	/// </summary>
+	public BlendStateRenderTargetDescription RenderTarget7;
 
 	/// <summary>
 	/// Gets default values for BlendStateDescription.
@@ -43,14 +78,14 @@ struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
 	{
 		AlphaToCoverageEnable = false;
 		IndependentBlendEnable = false;
-		RenderTargets[0] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[1] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[2] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[3] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[4] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[5] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[6] = BlendStateRenderTargetDescription.Default;
-		RenderTargets[7] = BlendStateRenderTargetDescription.Default;
+		RenderTarget0 = BlendStateRenderTargetDescription.Default;
+		RenderTarget1 = BlendStateRenderTargetDescription.Default;
+		RenderTarget2 = BlendStateRenderTargetDescription.Default;
+		RenderTarget3 = BlendStateRenderTargetDescription.Default;
+		RenderTarget4 = BlendStateRenderTargetDescription.Default;
+		RenderTarget5 = BlendStateRenderTargetDescription.Default;
+		RenderTarget6 = BlendStateRenderTargetDescription.Default;
+		RenderTarget7 = BlendStateRenderTargetDescription.Default;
 	}
 
 	/// <summary>
@@ -62,16 +97,7 @@ struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
 	/// </returns>
 	public bool Equals(BlendStateDescription other)
 	{
-		if (AlphaToCoverageEnable != other.AlphaToCoverageEnable
-			|| IndependentBlendEnable != other.IndependentBlendEnable
-			|| RenderTargets[0] != other.RenderTargets[0]
-			|| RenderTargets[1] != other.RenderTargets[1]
-			|| RenderTargets[2] != other.RenderTargets[2]
-			|| RenderTargets[3] != other.RenderTargets[3]
-			|| RenderTargets[4] != other.RenderTargets[4]
-			|| RenderTargets[5] != other.RenderTargets[5]
-			|| RenderTargets[6] != other.RenderTargets[6]
-			|| RenderTargets[7] != other.RenderTargets[7])
+		if (AlphaToCoverageEnable != other.AlphaToCoverageEnable || IndependentBlendEnable != other.IndependentBlendEnable || RenderTarget0 != other.RenderTarget0 || RenderTarget1 != other.RenderTarget1 || RenderTarget2 != other.RenderTarget2 || RenderTarget3 != other.RenderTarget3 || RenderTarget4 != other.RenderTarget4 || RenderTarget5 != other.RenderTarget5 || RenderTarget6 != other.RenderTarget6 || RenderTarget7 != other.RenderTarget7)
 		{
 			return false;
 		}
@@ -106,16 +132,7 @@ struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (((((((((((((((((AlphaToCoverageEnable.GetHashCode() * 397)
-			^ IndependentBlendEnable.GetHashCode()) * 397)
-			^ RenderTargets[0].GetHashCode()) * 397)
-			^ RenderTargets[1].GetHashCode()) * 397)
-			^ RenderTargets[2].GetHashCode()) * 397)
-			^ RenderTargets[3].GetHashCode()) * 397)
-			^ RenderTargets[4].GetHashCode()) * 397)
-			^ RenderTargets[5].GetHashCode()) * 397)
-			^ RenderTargets[6].GetHashCode()) * 397)
-			^ RenderTargets[7].GetHashCode();
+		return (((((((((((((((((AlphaToCoverageEnable.GetHashCode() * 397) ^ IndependentBlendEnable.GetHashCode()) * 397) ^ RenderTarget0.GetHashCode()) * 397) ^ RenderTarget1.GetHashCode()) * 397) ^ RenderTarget2.GetHashCode()) * 397) ^ RenderTarget3.GetHashCode()) * 397) ^ RenderTarget4.GetHashCode()) * 397) ^ RenderTarget5.GetHashCode()) * 397) ^ RenderTarget6.GetHashCode()) * 397) ^ RenderTarget7.GetHashCode();
 	}
 
 	/// <summary>

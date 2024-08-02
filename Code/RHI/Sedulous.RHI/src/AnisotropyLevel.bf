@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the level of anisotropic filtering.
 /// </summary>
-enum AnisotropyLevel : uint8
+public enum AnisotropyLevel : uint8
 {
 	/// <summary>
 	/// 1x anisotropic filtering.

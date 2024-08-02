@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This class represent a sampler state.
 /// </summary>
-abstract class SamplerState : GraphicsResource
+public abstract class SamplerState : GraphicsResource
 {
 	/// <summary>
 	/// The sampler state description.
@@ -23,7 +24,7 @@ abstract class SamplerState : GraphicsResource
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The sampler state description.</param>
-	protected this(GraphicsContext context, ref SamplerStateDescription description)
+	protected this(GraphicsContext context, in SamplerStateDescription description)
 		: base(context)
 	{
 		Description = description;

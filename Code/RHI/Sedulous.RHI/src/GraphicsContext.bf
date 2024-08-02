@@ -2,28 +2,29 @@ using System;
 using System.Collections;
 
 namespace Sedulous.RHI;
+
 using internal Sedulous.RHI;
 
 /// <summary>
 /// Performs primitive-based rendering, creates resources, handles system-level variables, adjusts gamma ramp levels, and creates shaders.
 /// </summary>
-abstract class GraphicsContext : IDisposable
+public abstract class GraphicsContext : IDisposable, IGetNativePointers
 {
 	/// <summary>
 	/// the rate at which the GPU timestamp counter increments.
 	/// </summary>
 	public uint64 TimestampFrequency;
 
-	private uint64 defaultTextureUploaderSize = 128 * 1024 * 1024;
+	private uint64 defaultTextureUploaderSize = 134217728uL;
 
-	private uint64 defaultBufferUploaderSize = 32 * 1024 * 1024;
+	private uint64 defaultBufferUploaderSize = 33554432uL;
 
 	private const String DevicePointerKey = "Device";
 
 	/// <summary>
 	/// Gets the default Sampler state used when there is a missing sampler in a resource set.
 	/// </summary>
-	public ref SamplerState DefaultSampler { get; private set; }
+	public SamplerState DefaultSampler { get; private set; }
 
 	/// <summary>
 	/// Gets the graphics validation layer pointer.
@@ -56,7 +57,10 @@ abstract class GraphicsContext : IDisposable
 	public abstract GraphicsContextCapabilities Capabilities { get; }
 
 	/// <inheritdoc />
-	public virtual IEnumerable<String> AvailablePointerKeys { get; } = new List<String>() { "Device" } ~ delete _;
+	public virtual void GetAvailablePointerKeys(List<String> pointerKeys)
+	{
+		pointerKeys.Add("Device");
+	}
 
 	/// <summary>
 	/// Gets or sets a value indicating the size in bytes of the texture uploader.
@@ -120,8 +124,6 @@ abstract class GraphicsContext : IDisposable
 	/// <param name="description">The swapchain descriptor.</param>
 	/// <returns>Created Swapchain.</returns>
 	public abstract SwapChain CreateSwapChain(SwapChainDescription description);
-
-	public abstract void DestroySwapChain(ref SwapChain swapChain);
 
 	/// <summary>
 	/// Fill the buffer with a data array.
@@ -249,6 +251,28 @@ abstract class GraphicsContext : IDisposable
 	public abstract void UnmapMemory(GraphicsResource resource, uint32 subResource = 0);
 
 	/// <summary>
+	/// Converts the shader source into bytecode.
+	/// </summary>
+	/// <param name="shaderSource">The shader source text.</param>
+	/// <param name="entryPoint">The entrypoint function name.</param>
+	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
+	/// <returns>The shader bytecodes.</returns>
+	public CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage)
+	{
+		return ShaderCompile(shaderSource, entryPoint, stage, CompilerParameters.Default);
+	}
+
+	/// <summary>
+	/// Converts the shader source into bytecode.
+	/// </summary>
+	/// <param name="shaderSource">The shader source text.</param>
+	/// <param name="entryPoint">The entrypoint function name.</param>
+	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
+	/// <param name="parameters">The compiler parameters.</param>
+	/// <returns>The shader bytecodes.</returns>
+	public abstract CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters);
+
+	/// <summary>
 	/// Generate mipmapping texture levels.
 	/// </summary>
 	/// <param name="texture">The texture to generate mipmapping.</param>
@@ -280,8 +304,10 @@ abstract class GraphicsContext : IDisposable
 	public void Dispose()
 	{
 		DefaultSampler?.Dispose();
-		if (DefaultSampler != null)
-			Factory.DestroySamplerState(ref DefaultSampler);
+		if(DefaultSampler != null)
+		{
+			delete DefaultSampler;
+		}
 		Dispose(disposing: true);
 	}
 
@@ -304,7 +330,7 @@ abstract class GraphicsContext : IDisposable
 			samplerStateDescription.AddressU = TextureAddressMode.Wrap;
 			samplerStateDescription.AddressV = TextureAddressMode.Wrap;
 			samplerStateDescription.AddressW = TextureAddressMode.Wrap;
-			DefaultSampler = Factory.CreateSamplerState(ref samplerStateDescription);
+			DefaultSampler = Factory.CreateSamplerState(samplerStateDescription);
 		}
 	}
 }

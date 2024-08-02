@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Filtering options during texture sampling.
 /// </summary>
-enum TextureFilter : uint8
+public enum TextureFilter : uint8
 {
 	/// <summary>
 	/// Use point sampling for minification, magnification, and mip-level sampling.

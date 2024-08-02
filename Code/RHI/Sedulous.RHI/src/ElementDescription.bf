@@ -6,7 +6,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes an individual component of a vertex.
 /// </summary>
-struct ElementDescription : IEquatable<ElementDescription>, IHashable
+public struct ElementDescription : IEquatable<ElementDescription>
 {
 	/// <summary>
 	/// Use secuential offset.
@@ -92,9 +92,7 @@ struct ElementDescription : IEquatable<ElementDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((uint32)((int)Semantic * 397)
-			^ SemanticIndex) * 397)
-			^ (int)Format;
+		return (int)(((uint32)((int32)Semantic * 397) ^ SemanticIndex) * 397) ^ (int32)Format;
 	}
 
 	/// <summary>

@@ -1,10 +1,11 @@
 using Sedulous.Foundation.Mathematics;
+
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
 /// Represents a vertex with position and texture coordinate.
 /// </summary>
-struct VertexPositionTexture
+public struct VertexPositionTexture
 {
 	/// <summary>
 	/// Vertex position.
@@ -37,8 +38,6 @@ struct VertexPositionTexture
 	/// </summary>
 	static this()
 	{
-		VertexFormat = new LayoutDescription()
-			.Add(ElementDescription(ElementFormat.Float3, ElementSemanticType.Position))
-			.Add(ElementDescription(ElementFormat.Float2, ElementSemanticType.TexCoord));
+		VertexFormat = new LayoutDescription().Add(ElementDescription(ElementFormat.Float3, ElementSemanticType.Position)).Add(ElementDescription(ElementFormat.Float2, ElementSemanticType.TexCoord));
 	}
 }

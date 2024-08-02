@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies polygon depth boas.
 /// </summary>
-enum DepthBias : uint8
+public enum DepthBias : uint8
 {
 	/// <summary>
 	/// Zero depth bias

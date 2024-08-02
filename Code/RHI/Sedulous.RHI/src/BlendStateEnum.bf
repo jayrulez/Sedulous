@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The blend state default values.
 /// </summary>
-enum BlendStateEnum
+public enum BlendStateEnum
 {
 	/// <summary>
 	/// Not blending.

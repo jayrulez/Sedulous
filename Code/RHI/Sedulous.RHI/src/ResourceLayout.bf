@@ -2,20 +2,10 @@ using System;
 
 namespace Sedulous.RHI;
 
-static
-{
-	public static int GetHashCode(this ResourceLayout[] array)
-	{
-		int hashCode = 0;
-
-		return hashCode;
-	}
-}
-
 /// <summary>
 /// This class represent a set of bindable resources.
 /// </summary>
-abstract class ResourceLayout : IDisposable
+public abstract class ResourceLayout : IDisposable
 {
 	/// <summary>
 	/// The resource layout description.
@@ -36,7 +26,7 @@ abstract class ResourceLayout : IDisposable
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ResourceLayout" /> class.
 	/// </summary>
 	/// <param name="description">The resource layout description.</param>
-	public this(ref ResourceLayoutDescription description)
+	public this(in ResourceLayoutDescription description)
 	{
 		Description = description;
 	}

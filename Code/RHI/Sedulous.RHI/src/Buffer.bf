@@ -4,7 +4,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class represent a buffer resource.
 /// </summary>
-abstract class Buffer : GraphicsResource
+public abstract class Buffer : GraphicsResource
 {
 	/// <summary>
 	///  Counter that represent every time that this buffer is updated.
@@ -31,7 +31,7 @@ abstract class Buffer : GraphicsResource
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The buffer description.</param>
-	protected this(GraphicsContext context, ref BufferDescription description)
+	protected this(GraphicsContext context, in BufferDescription description)
 		: base(context)
 	{
 		Description = description;

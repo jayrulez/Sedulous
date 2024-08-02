@@ -5,8 +5,7 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// Raytracing instance flags.
 /// </summary>
-//[Flags]
-enum AccelerationStructureInstanceFlags
+public enum AccelerationStructureInstanceFlags
 {
 	/// <summary>
 	/// No options specified.

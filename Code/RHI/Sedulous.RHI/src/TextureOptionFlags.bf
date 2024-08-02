@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identifies expected texture use during rendering.
 /// </summary>
-enum TextureOptionFlags : uint8
+public enum TextureOptionFlags : uint8
 {
 	/// <summary>
 	/// The default value.

@@ -1,16 +1,17 @@
 using System;
 using Sedulous.RHI.Raytracing;
-using System.Collections;
 using Sedulous.Foundation.Mathematics;
+using System.Collections;
 
 namespace Sedulous.RHI;
+
 using internal Sedulous.RHI;
 
 /// <summary>
 /// A command buffer stores commands until the buffer is committed for execution by the GPU.
 /// CommandBuffers are transient single-use objects and do not support reuse.
 /// </summary>
-abstract class CommandBuffer : IDisposable
+public abstract class CommandBuffer : IDisposable, IGetNativePointers
 {
 	/// <summary>
 	/// Available states for a command buffer.
@@ -55,7 +56,7 @@ abstract class CommandBuffer : IDisposable
 	public abstract String Name { get; set; }
 
 	/// <inheritdoc />
-	public virtual IEnumerable<String> AvailablePointerKeys {get;} = new List<String>() ~ delete _;
+	public virtual void GetAvailablePointerKeys(List<String> pointerKeys){}
 
 	/// <summary>
 	/// Gets the generic graphicsContext.
@@ -256,17 +257,17 @@ abstract class CommandBuffer : IDisposable
 	/// Begin a render pass.
 	/// </summary>
 	/// <param name="description">The renderPass description <see cref="T:Sedulous.RHI.RenderPassDescription" />.</param>
-	public void BeginRenderPass(ref RenderPassDescription description)
+	public void BeginRenderPass(in RenderPassDescription description)
 	{
 		InRenderPass = true;
-		BeginRenderPassInternal(ref description);
+		BeginRenderPassInternal(description);
 	}
 
 	/// <summary>
 	/// Begin a render pass.
 	/// </summary>
 	/// <param name="description">The renderPass description <see cref="T:Sedulous.RHI.RenderPassDescription" />.</param>
-	protected abstract void BeginRenderPassInternal(ref RenderPassDescription description);
+	protected abstract void BeginRenderPassInternal(in RenderPassDescription description);
 
 	/// <summary>
 	/// End a render pass.
@@ -495,7 +496,7 @@ abstract class CommandBuffer : IDisposable
 	/// <param name="argBuffer">A buffer containing the GPU generated primitives.</param>
 	/// <param name="offset">Offset to the start of the GPU generated primitives.</param>
 	/// <param name="drawCount">It is the number of draws to execute, and can be zero.</param>
-	/// <param name="stride">It is the uint8 stride between succesive sets of draw parameters.</param>
+	/// <param name="stride">It is the byte stride between succesive sets of draw parameters.</param>
 	public abstract void DrawInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride);
 
 	/// <summary>
@@ -522,7 +523,7 @@ abstract class CommandBuffer : IDisposable
 	/// <param name="argBuffer">A buffer containing the GPU generated primitives.</param>
 	/// <param name="offset">Offset to the start of the GPU generated primitives.</param>
 	/// <param name="drawCount">It is the number of draws to execute, and can be zero.</param>
-	/// <param name="stride">It is the uint8 stride between succesive sets of draw parameters.</param>
+	/// <param name="stride">It is the byte stride between succesive sets of draw parameters.</param>
 	public abstract void DrawIndexedInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride);
 
 	/// <summary>

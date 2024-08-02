@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Primitive fill mode.
 /// </summary>
-enum FillMode : uint8
+public enum FillMode : uint8
 {
 	/// <summary>
 	/// Draw lines connecting the vertices. Adjacent vertices are not drawn.

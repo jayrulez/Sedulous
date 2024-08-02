@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Blend factors, which modulate values for the pixel shader and render target.
 /// </summary>
-enum Blend : uint8
+public enum Blend : uint8
 {
 	/// <summary>
 	/// The data source is the color black (0, 0, 0, 0). No pre-blend operation.

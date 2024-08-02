@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the type of query.
 /// </summary>
-enum QueryType
+public enum QueryType
 {
 	/// <summary>
 	/// Indicates the query is for high definition GPU and CPU timestamps.

@@ -28,9 +28,7 @@ public static class DepthStencilStates
 		None = DepthStencilStateDescription.Default;
 		None.DepthEnable = false;
 		None.DepthWriteMask = false;
-
 		ReadWrite = DepthStencilStateDescription.Default;
-
 		Read = DepthStencilStateDescription.Default;
 		Read.DepthWriteMask = false;
 	}

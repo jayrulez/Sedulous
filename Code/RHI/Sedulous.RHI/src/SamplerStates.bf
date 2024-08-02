@@ -57,40 +57,32 @@ public static class SamplerStates
 	{
 		PointClamp = SamplerStateDescription.Default;
 		PointClamp.Filter = TextureFilter.MinPoint_MagPoint_MipPoint;
-
 		PointWrap = SamplerStateDescription.Default;
-		PointWrap.Filter = TextureFilter.MinPoint_MagPoint_MipPoint;
+		PointClamp.Filter = TextureFilter.MinPoint_MagPoint_MipPoint;
 		PointWrap.AddressU = TextureAddressMode.Wrap;
 		PointWrap.AddressV = TextureAddressMode.Wrap;
 		PointWrap.AddressW = TextureAddressMode.Wrap;
-
 		PointMirror = SamplerStateDescription.Default;
-		PointMirror.Filter = TextureFilter.MinPoint_MagPoint_MipPoint;
+		PointClamp.Filter = TextureFilter.MinPoint_MagPoint_MipPoint;
 		PointMirror.AddressU = TextureAddressMode.Mirror;
 		PointMirror.AddressV = TextureAddressMode.Mirror;
 		PointMirror.AddressW = TextureAddressMode.Mirror;
-
 		LinearClamp = SamplerStateDescription.Default;
-
 		LinearWrap = SamplerStateDescription.Default;
 		LinearWrap.AddressU = TextureAddressMode.Wrap;
 		LinearWrap.AddressV = TextureAddressMode.Wrap;
 		LinearWrap.AddressW = TextureAddressMode.Wrap;
-
 		LinearMirror = SamplerStateDescription.Default;
 		LinearMirror.AddressU = TextureAddressMode.Mirror;
 		LinearMirror.AddressV = TextureAddressMode.Mirror;
 		LinearMirror.AddressW = TextureAddressMode.Mirror;
-
 		AnisotropicClamp = SamplerStateDescription.Default;
 		AnisotropicClamp.Filter = TextureFilter.Anisotropic;
-
 		AnisotropicWrap = SamplerStateDescription.Default;
 		AnisotropicWrap.Filter = TextureFilter.Anisotropic;
 		AnisotropicWrap.AddressU = TextureAddressMode.Wrap;
 		AnisotropicWrap.AddressV = TextureAddressMode.Wrap;
 		AnisotropicWrap.AddressW = TextureAddressMode.Wrap;
-
 		AnisotropicMirror = SamplerStateDescription.Default;
 		AnisotropicMirror.Filter = TextureFilter.Anisotropic;
 		AnisotropicMirror.AddressU = TextureAddressMode.Mirror;

@@ -1,13 +1,13 @@
 using System;
-using System.Threading;
 using Sedulous.Foundation.Mathematics;
+using System.Threading;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This abstract class represent and strategy to fast upload buffers to GPU.
 /// </summary>
-abstract class UploadBuffer : IDisposable
+public abstract class UploadBuffer : IDisposable
 {
 	/// <summary>
 	/// Pointer to the begin of the buffer.
@@ -44,7 +44,7 @@ abstract class UploadBuffer : IDisposable
 	/// </summary>
 	protected GraphicsContext context;
 
-	private readonly Monitor bufferLock = new .() ~ delete _;
+	private Monitor bufferLock = new .() ~ delete _;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.UploadBuffer" /> class.
@@ -72,7 +72,7 @@ abstract class UploadBuffer : IDisposable
 	/// <returns>The destination address to copy.</returns>
 	public uint64 Allocate(uint64 dataSize)
 	{
-		uint64 returnValue = 0UL;
+		uint64 returnValue = 0uL;
 		using (bufferLock.Enter())
 		{
 			if (dataSize > TotalSize)
@@ -108,7 +108,7 @@ abstract class UploadBuffer : IDisposable
 		using (bufferLock.Enter())
 		{
 			DataCurrent = DataBegin;
-			Count = 0UL;
+			Count = 0uL;
 		}
 	}
 

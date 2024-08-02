@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The sampler state default values.
 /// </summary>
-enum SamplerStateEnum
+public enum SamplerStateEnum
 {
 	/// <summary>
 	/// SamplerState description using point filter (bilinear) and clamp address mode for UVW.

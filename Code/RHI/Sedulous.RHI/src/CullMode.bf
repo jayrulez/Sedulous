@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies polygon culling mode.
 /// </summary>
-enum CullMode : uint8
+public enum CullMode : uint8
 {
 	/// <summary>
 	/// Always draw all triangles.

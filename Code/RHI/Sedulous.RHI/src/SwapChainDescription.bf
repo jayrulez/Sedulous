@@ -6,7 +6,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Represents the requiered information to create a new swapchain depending of the platform.
 /// </summary>
-struct SwapChainDescription : IEquatable<SwapChainDescription>, IHashable
+public struct SwapChainDescription : IEquatable<SwapChainDescription>
 {
 	/// <summary>
 	/// Surface information.
@@ -110,16 +110,7 @@ struct SwapChainDescription : IEquatable<SwapChainDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((((((((((((uint32)(SurfaceInfo.GetHashCode() * 397)
-			^ Width) * 397)
-			^ Height) * 397)
-			^ RefreshRate) * 397)
-			^ (uint32)ColorTargetFormat) * 397)
-			^ (uint32)ColorTargetFlags) * 397)
-			^ (uint32)DepthStencilTargetFormat) * 397)
-			^ (uint32)DepthStencilTargetFlags) * 397)
-			^ (uint32)SampleCount) * 397)
-			^ IsWindowed.GetHashCode();
+		return (int32)(((((((((((((((((uint32)(SurfaceInfo.GetHashCode() * 397) ^ Width) * 397) ^ Height) * 397) ^ RefreshRate) * 397) ^ (uint32)ColorTargetFormat) * 397) ^ (uint32)ColorTargetFlags) * 397) ^ (uint32)DepthStencilTargetFormat) * 397) ^ (uint32)DepthStencilTargetFlags) * 397) ^ (uint32)SampleCount) * 397) ^ IsWindowed.GetHashCode();
 	}
 
 	/// <summary>

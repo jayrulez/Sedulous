@@ -1,11 +1,12 @@
 using System;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This class represent a Texture graphics resource.
 /// </summary>
-abstract class Texture : GraphicsResource
+public abstract class Texture : GraphicsResource
 {
 	/// <summary>
 	/// Gets or sets the <see cref="T:Sedulous.RHI.TextureDescription" /> struct.
@@ -27,14 +28,9 @@ abstract class Texture : GraphicsResource
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The texture description.</param>
-	protected this(GraphicsContext context, ref TextureDescription description)
+	protected this(GraphicsContext context, in TextureDescription description)
 		: base(context)
 	{
 		Description = description;
-	}
-
-	public int GetHashCode()
-	{
-		return (int)Internal.UnsafeCastToPtr(this);
 	}
 }

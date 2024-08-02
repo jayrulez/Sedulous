@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The shader resource type.
 /// </summary>
-enum ResourceType : uint8
+public enum ResourceType : uint8
 {
 	/// <summary>
 	/// A <see cref="T:Sedulous.RHI.Buffer" /> accessed as a uniform buffer.

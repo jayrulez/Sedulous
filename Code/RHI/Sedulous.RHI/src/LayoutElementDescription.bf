@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class represent a shader resource binding;.
 /// </summary>
-struct LayoutElementDescription : IEquatable<LayoutElementDescription>, IHashable
+public struct LayoutElementDescription : IEquatable<LayoutElementDescription>
 {
 	/// <summary>
 	/// Gets the resource slot.
@@ -93,9 +93,7 @@ struct LayoutElementDescription : IEquatable<LayoutElementDescription>, IHashabl
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((Slot * 397)
-			^ (uint32)((int)Type).GetHashCode()) * 397)
-			^ ((int)Stages).GetHashCode();
+		return (int32)(((Slot * 397) ^ (uint32)((int)Type).GetHashCode()) * 397) ^ ((int)Stages).GetHashCode();
 	}
 
 	/// <summary>

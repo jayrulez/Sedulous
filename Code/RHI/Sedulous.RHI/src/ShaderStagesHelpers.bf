@@ -33,7 +33,7 @@ public static class ShaderStagesHelpers
 	/// </summary>
 	/// <param name="stages">The shaderstage.</param>
 	/// <returns>The stage index.</returns>
-	public static int32 IndexOf(ShaderStages stages)
+	public static int IndexOf(ShaderStages stages)
 	{
 		switch (stages)
 		{

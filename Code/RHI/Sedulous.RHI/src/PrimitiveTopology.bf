@@ -4,7 +4,7 @@ namespace Sedulous.RHI;
 /// How the pipeline interprets vertex data that is bound to the input-assembler stage.
 /// These primitive topology values determine how the vertex data is rendered on screen.
 /// </summary>
-enum PrimitiveTopology
+public enum PrimitiveTopology
 {
 	/// <summary>
 	/// The IA stage has not been initialized with a primitive topology.

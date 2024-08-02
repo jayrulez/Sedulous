@@ -1,16 +1,17 @@
 using Sedulous.Foundation.Mathematics;
 using Sedulous.Foundation.Collections;
+
 namespace Sedulous.RHI;
 
 /// <summary>
 /// Structure specifying a clear value.
 /// </summary>
-struct ClearValue
+public struct ClearValue
 {
 	/// <summary>
 	/// The array of color clear value to use when clearing each color attachment.
 	/// </summary>
-	public FixedList<Vector4, const Constants.MaxColorAttachments> ColorValues = .();
+	public FixedList<Vector4, const Constants.MaxAttachments> ColorValues = .();
 
 	/// <summary>
 	/// The depth clear value to use when clearing a depth/stencil attachment.
@@ -100,7 +101,7 @@ struct ClearValue
 		Depth = depth;
 		Stencil = stencil;
 		ColorValues.Count = colorValues.Count;
-		for (int i = 0; i < colorValues.Count; i++)
+		for (int32 i = 0; i < colorValues.Count; i++)
 		{
 			ColorValues[i] = colorValues[i].ToVector4();
 		}
@@ -118,7 +119,7 @@ struct ClearValue
 		Flags = flags;
 		Depth = depth;
 		Stencil = stencil;
-		ColorValues = .( colorValue.ToVector4() );
+		ColorValues = .(colorValue.ToVector4());
 	}
 
 	/// <summary>

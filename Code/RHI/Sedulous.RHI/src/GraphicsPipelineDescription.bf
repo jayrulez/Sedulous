@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Contains properties that describe the characteristics of a new pipeline state object.
 /// </summary>
-struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>, IHashable
+public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>
 {
 	/// <summary>
 	/// The render state description.
@@ -65,12 +65,7 @@ struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>, IH
 	/// </returns>
 	public bool Equals(GraphicsPipelineDescription other)
 	{
-		if (PrimitiveTopology != other.PrimitiveTopology
-			|| InputLayouts != other.InputLayouts
-			|| !ResourceLayouts.SequenceEqual(other.ResourceLayouts)
-			|| Shaders != other.Shaders
-			|| RenderStates != other.RenderStates
-			|| Outputs != other.Outputs)
+		if (PrimitiveTopology != other.PrimitiveTopology || InputLayouts != other.InputLayouts || !ResourceLayouts.SequenceEqual(other.ResourceLayouts) || Shaders != other.Shaders || RenderStates != other.RenderStates || Outputs != other.Outputs)
 		{
 			return false;
 		}
@@ -105,12 +100,7 @@ struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>, IH
 	/// </returns>
 	public int GetHashCode()
 	{
-		return ((((((((((int)PrimitiveTopology * 397)
-			^ InputLayouts.GetHashCode()) * 397)
-			^ ResourceLayouts.GetHashCode()) * 397)
-			^ Shaders.GetHashCode()) * 397)
-			^ RenderStates.GetHashCode()) * 397)
-			^ Outputs.GetHashCode();
+		return ((((((((((int)PrimitiveTopology * 397) ^ InputLayouts.GetHashCode()) * 397) ^ HashCode.Generate(ResourceLayouts)) * 397) ^ Shaders.GetHashCode()) * 397) ^ RenderStates.GetHashCode()) * 397) ^ Outputs.GetHashCode();
 	}
 
 	/// <summary>

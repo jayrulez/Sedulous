@@ -5,8 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Indicates the flip mode of a sprite, billboard, etc...
 /// </summary>
-//[Flags]
-enum FlipMode : uint8
+public enum FlipMode : uint8
 {
 	/// <summary>
 	/// No flip.

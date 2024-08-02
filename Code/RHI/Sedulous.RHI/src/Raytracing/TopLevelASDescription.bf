@@ -3,7 +3,7 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// The top level acceleration structure description.
 /// </summary>
-struct TopLevelASDescription
+public struct TopLevelASDescription
 {
 	/// <summary>
 	/// The update flags.

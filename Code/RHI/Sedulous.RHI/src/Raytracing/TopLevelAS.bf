@@ -3,7 +3,7 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// Top Level Acceleration Structure.
 /// </summary>
-abstract class TopLevelAS : GraphicsResource
+public abstract class TopLevelAS : GraphicsResource
 {
 	/// <summary>
 	/// Get the Acceleration Structure description.
@@ -15,7 +15,7 @@ abstract class TopLevelAS : GraphicsResource
 	/// </summary>
 	/// <param name="context">The device context.</param>
 	/// <param name="description">The Top Level Acceleration Structure description.</param>
-	protected this(GraphicsContext context, ref TopLevelASDescription description)
+	protected this(GraphicsContext context, in TopLevelASDescription description)
 		: base(context)
 	{
 		Description = description;

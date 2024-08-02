@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class represent a queryheap resource.
 /// </summary>
-abstract class QueryHeap : GraphicsResource
+public abstract class QueryHeap : GraphicsResource
 {
 	/// <summary>
 	/// Gets the queryheap description.
@@ -15,7 +15,7 @@ abstract class QueryHeap : GraphicsResource
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The queryheap description.</param>
-	protected this(GraphicsContext context, ref QueryHeapDescription description)
+	protected this(GraphicsContext context, in QueryHeapDescription description)
 		: base(context)
 	{
 		Description = description;

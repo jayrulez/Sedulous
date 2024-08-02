@@ -1,6 +1,6 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 
 namespace Sedulous.RHI;
 
@@ -9,7 +9,7 @@ namespace Sedulous.RHI;
 /// This object describes the inputs from a single vertex buffer.
 /// </summary>
 /// <remarks>Shaders may use inputs from multiple vertex buffers.</remarks>
-class LayoutDescription : IEquatable<LayoutDescription>, IHashable
+public class LayoutDescription : IEquatable<LayoutDescription>
 {
 	/// <summary>
 	/// The collection of individual vertex elements comprising a single vertex.
@@ -45,6 +45,11 @@ class LayoutDescription : IEquatable<LayoutDescription>, IHashable
 		StepRate = (int32)stepRate;
 		Stride = 0;
 		Elements = new List<ElementDescription>();
+	}
+
+	public ~this()
+	{
+		delete Elements;
 	}
 
 	/// <summary>
@@ -141,7 +146,7 @@ class LayoutDescription : IEquatable<LayoutDescription>, IHashable
 		{
 			return false;
 		}
-		for (int i = 0; i < Elements.Count; i++)
+		for (int32 i = 0; i < Elements.Count; i++)
 		{
 			if (Elements[i] != other.Elements[i])
 			{

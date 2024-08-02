@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identifies how a graphics resource will be mapped into CPU address space.
 /// </summary>
-enum MapMode : uint8
+public enum MapMode : uint8
 {
 	/// <summary>
 	/// A read-only resource mapping. The mapped data region is not writable, and cannot be used to transfer data into the graphics resource.

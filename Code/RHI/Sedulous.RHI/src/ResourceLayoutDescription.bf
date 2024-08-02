@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class describes the elements inside a <see cref="T:Sedulous.RHI.ResourceLayout" />.
 /// </summary>
-struct ResourceLayoutDescription
+public struct ResourceLayoutDescription
 {
 	/// <summary>
 	/// The Layout elements.
@@ -23,7 +23,7 @@ struct ResourceLayoutDescription
 	{
 		Elements = elements;
 		DynamicConstantBufferCount = 0;
-		for (int i = 0; i < elements.Count; i++)
+		for (int32 i = 0; i < elements.Count; i++)
 		{
 			if (elements[i].AllowDynamicOffset)
 			{

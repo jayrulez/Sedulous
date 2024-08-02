@@ -3,12 +3,12 @@ using Sedulous.Foundation.Collections;
 
 namespace Sedulous.RHI;
 
-typealias FrameBufferColorAttachmentList = FixedList<FrameBufferAttachment, const Constants.MaxColorAttachments>;
+typealias FrameBufferAttachmentList = FixedList<FrameBufferAttachment, const Constants.MaxAttachments>;
 
 /// <summary>
 /// Contains properties that describe a framebuffer texture attachment description.
 /// </summary>
-struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>, IHashable
+public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 {
 	/// <summary>
 	/// The number of slices to attach.
@@ -137,11 +137,7 @@ struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>, IHashable
 	/// </returns>
 	public bool Equals(FrameBufferAttachment other)
 	{
-		if (AttachmentTexture == other.AttachmentTexture
-			&& AttachedFirstSlice == other.AttachedFirstSlice
-			&& SliceCount == other.SliceCount
-			&& MipSlice == other.MipSlice
-			&& ResolvedTexture == other.ResolvedTexture)
+		if (AttachmentTexture == other.AttachmentTexture && AttachedFirstSlice == other.AttachedFirstSlice && SliceCount == other.SliceCount && MipSlice == other.MipSlice && ResolvedTexture == other.ResolvedTexture)
 		{
 			return ResolvedFirstSlice == other.ResolvedFirstSlice;
 		}
@@ -176,14 +172,14 @@ struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		int hashCode = AttachmentTexture.GetHashCode();
-		hashCode = (hashCode * 397) ^ (int)AttachedFirstSlice;
-		hashCode = (hashCode * 397) ^ (int)SliceCount;
-		hashCode = (hashCode * 397) ^ (int)MipSlice;
+		int hashCode = HashCode.Generate(AttachmentTexture);
+		hashCode = (hashCode * 397) ^ (int32)AttachedFirstSlice;
+		hashCode = (hashCode * 397) ^ (int32)SliceCount;
+		hashCode = (hashCode * 397) ^ (int32)MipSlice;
 		if (ResolvedTexture != null)
 		{
-			hashCode = (hashCode * 397) ^ ResolvedTexture.GetHashCode();
-			hashCode = (hashCode * 397) ^ (int)ResolvedFirstSlice;
+			hashCode = (hashCode * 397) ^ HashCode.Generate(ResolvedTexture);
+			hashCode = (hashCode * 397) ^ (int32)ResolvedFirstSlice;
 		}
 		return hashCode;
 	}

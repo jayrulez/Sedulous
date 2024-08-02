@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Vertex element format.
 /// </summary>
-enum ElementFormat
+public enum ElementFormat
 {
 	/// <summary>
 	/// One unsigned 8-bit value.

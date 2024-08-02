@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Contains properties that describe the characteristics of a new queryheap object.
 /// </summary>
-struct QueryHeapDescription : IEquatable<QueryHeapDescription>, IHashable
+public struct QueryHeapDescription : IEquatable<QueryHeapDescription>
 {
 	/// <summary>
 	/// Specifies the queryheap type, <see cref="T:Sedulous.RHI.QueryType" /> structure.
@@ -61,7 +61,7 @@ struct QueryHeapDescription : IEquatable<QueryHeapDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return ((int)Type * 397) ^ (int)QueryCount;
+		return ((int32)Type * 397) ^ (int32)QueryCount;
 	}
 
 	/// <summary>

@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Contains properties that describe the characteristics of a new pipeline state object.
 /// </summary>
-struct OutputDescription : IEquatable<OutputDescription>, IHashable
+public struct OutputDescription : IEquatable<OutputDescription>
 {
 	/// <summary>
 	/// A description of the depth attachment, or null if none exists.
@@ -15,7 +15,7 @@ struct OutputDescription : IEquatable<OutputDescription>, IHashable
 	/// <summary>
 	/// An array of attachment descriptions, one for each color attachment.
 	/// </summary>
-	public readonly ColorAttachmentList ColorAttachments;
+	public readonly OutputAttachmentList ColorAttachments;
 
 	/// <summary>
 	/// Gets the number of view counts.
@@ -39,7 +39,7 @@ struct OutputDescription : IEquatable<OutputDescription>, IHashable
 	/// <param name="colors">An array of descriptions of each color attachment.</param>
 	/// <param name="sampleCount">The number of samples in each target attachment.</param>
 	/// <param name="arraySliceCount">The number of views rendered.</param>
-	public this(OutputAttachmentDescription? depth, ColorAttachmentList colors, TextureSampleCount sampleCount, uint32 arraySliceCount)
+	public this(OutputAttachmentDescription? depth, OutputAttachmentList colors, TextureSampleCount sampleCount, uint32 arraySliceCount)
 	{
 		DepthAttachment = depth;
 		ColorAttachments = colors;
@@ -50,8 +50,8 @@ struct OutputDescription : IEquatable<OutputDescription>, IHashable
 		{
 			hashCode = (hashCode * 397) ^ ColorAttachments[i].GetHashCode();
 		}
-		CachedHashCode = (hashCode * 397) ^ (int)SampleCount;
-		CachedHashCode = (hashCode * 397) ^ (int)ArraySliceCount;
+		CachedHashCode = (hashCode * 397) ^ (int32)SampleCount;
+		CachedHashCode = (hashCode * 397) ^ (int32)ArraySliceCount;
 	}
 
 	/// <summary>
@@ -71,7 +71,7 @@ struct OutputDescription : IEquatable<OutputDescription>, IHashable
 			depthAttachment = OutputAttachmentDescription(depthDescription.Format, depthTarget.ResolvedTexture != null);
 			sampleCount = depthDescription.SampleCount;
 		}
-		ColorAttachmentList colorsAttachments = .();
+		OutputAttachmentList colorsAttachments = .();
 		if (!frameBuffer.ColorTargets.IsEmpty)
 		{
 			colorsAttachments.Count = frameBuffer.ColorTargets.Count;
@@ -166,7 +166,7 @@ struct OutputDescription : IEquatable<OutputDescription>, IHashable
 		{
 			return false;
 		}
-		for (int i = 0; i < left.Count; i++)
+		for (int32 i = 0; i < left.Count; i++)
 		{
 			if (!left[i].Equals(right[i]))
 			{

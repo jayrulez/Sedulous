@@ -3,7 +3,7 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// Acceleration Structure Triangle geometry.
 /// </summary>
-class AccelerationStructureTriangles : AccelerationStructureGeometry
+public class AccelerationStructureTriangles : AccelerationStructureGeometry
 {
 	/// <summary>
 	/// Array of vertex indices. If NULL, triangles are non-indexed. Just as with graphics, the address must be aligned to the size

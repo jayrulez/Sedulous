@@ -6,7 +6,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This struct represent all the parameters in the render states.
 /// </summary>
-struct RenderStateDescription : IEquatable<RenderStateDescription>, IHashable
+public struct RenderStateDescription : IEquatable<RenderStateDescription>
 {
 	/// <summary>
 	/// Gets or sets the Rasterizer State.
@@ -120,9 +120,10 @@ struct RenderStateDescription : IEquatable<RenderStateDescription>, IHashable
 		hashCode = (hashCode * 397) ^ BlendState.GetHashCode();
 		hashCode = (hashCode * 397) ^ DepthStencilState.GetHashCode();
 		hashCode = (hashCode * 397) ^ StencilReference;
+		hashCode = (hashCode * 397) ^ BlendFactor.GetHashCode();
 		if (BlendFactor.HasValue)
 		{
-			hashCode = (hashCode * 397) ^ BlendFactor.Value.GetHashCode();
+			hashCode = (hashCode * 397) ^ BlendFactor.GetHashCode();
 		}
 		if (SampleMask.HasValue)
 		{

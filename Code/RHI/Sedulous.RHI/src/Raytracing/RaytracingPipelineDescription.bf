@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
 /// Contains properties that describe the characteristics of a new pipeline state object.
 /// </summary>
-struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescription>
+public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescription>
 {
 	/// <summary>
 	/// Describes the resources layout input.
@@ -72,12 +71,7 @@ struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescription>
 	/// </returns>
 	public bool Equals(RaytracingPipelineDescription other)
 	{
-		if (Shaders != other.Shaders
-			|| !ResourceLayouts.SequenceEqual(other.ResourceLayouts)
-			|| !HitGroups.SequenceEqual(other.HitGroups)
-			|| MaxTraceRecursionDepth != other.MaxTraceRecursionDepth
-			|| MaxPayloadSizeInBytes != other.MaxPayloadSizeInBytes
-			|| MaxAttributeSizeInBytes != other.MaxAttributeSizeInBytes)
+		if (Shaders != other.Shaders || !ResourceLayouts.SequenceEqual(other.ResourceLayouts) || !HitGroups.SequenceEqual(other.HitGroups) || MaxTraceRecursionDepth != other.MaxTraceRecursionDepth || MaxPayloadSizeInBytes != other.MaxPayloadSizeInBytes || MaxAttributeSizeInBytes != other.MaxAttributeSizeInBytes)
 		{
 			return false;
 		}
@@ -112,12 +106,7 @@ struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescription>
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)((((((uint32)(((((Shaders.GetHashCode() * 397)
-			^ ResourceLayouts.GetHashCode()) * 397)
-			^ HitGroups.GetHashCode()) * 397)
-			^ MaxTraceRecursionDepth) * 397)
-			^ MaxPayloadSizeInBytes) * 397)
-			^ MaxAttributeSizeInBytes);
+		return (int)((((((uint32)(((((Shaders.GetHashCode() * 397) ^ HashCode.Generate(ResourceLayouts)) * 397) ^ HashCode.Generate(HitGroups)) * 397) ^ MaxTraceRecursionDepth) * 397) ^ MaxPayloadSizeInBytes) * 397) ^ MaxAttributeSizeInBytes);
 	}
 
 	/// <summary>

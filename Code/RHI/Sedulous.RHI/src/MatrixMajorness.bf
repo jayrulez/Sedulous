@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Indicates the majorness of the matrix in this backend.
 /// </summary>
-enum MatrixMajorness
+public enum MatrixMajorness
 {
 	/// <summary>
 	/// Row major order.

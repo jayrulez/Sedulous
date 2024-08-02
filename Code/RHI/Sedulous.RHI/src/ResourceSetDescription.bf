@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class describes the elements inside a <see cref="T:Sedulous.RHI.ResourceLayout" />.
 /// </summary>
-struct ResourceSetDescription
+public struct ResourceSetDescription
 {
 	/// <summary>
 	/// The resourceLayout object <see cref="T:Sedulous.RHI.ResourceLayout" />.

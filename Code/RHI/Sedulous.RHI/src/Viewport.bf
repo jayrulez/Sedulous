@@ -6,8 +6,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Abstracts a viewport used for defining rendering regions.
 /// </summary>
-[CRepr, Packed(4)]
-struct Viewport : IEquatable<Viewport>
+public struct Viewport : IEquatable<Viewport>
 {
 	/// <summary>
 	/// Empty value for an undefined viewport.
@@ -123,12 +122,7 @@ struct Viewport : IEquatable<Viewport>
 	/// </returns>
 	public bool Equals(Viewport other)
 	{
-		if (X != other.X
-			|| Y != other.Y
-			|| Width != other.Width
-			|| Height != other.Height
-			|| MinDepth != other.MinDepth
-			|| MaxDepth != other.MaxDepth)
+		if (X != other.X || Y != other.Y || Width != other.Width || Height != other.Height || MinDepth != other.MinDepth || MaxDepth != other.MaxDepth)
 		{
 			return false;
 		}
@@ -163,12 +157,7 @@ struct Viewport : IEquatable<Viewport>
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (((((((((X.GetHashCode() * 397)
-			^ Y.GetHashCode()) * 397)
-			^ Width.GetHashCode()) * 397)
-			^ Height.GetHashCode()) * 397)
-			^ MinDepth.GetHashCode()) * 397)
-			^ MaxDepth.GetHashCode();
+		return (((((((((X.GetHashCode() * 397) ^ Y.GetHashCode()) * 397) ^ Width.GetHashCode()) * 397) ^ Height.GetHashCode()) * 397) ^ MinDepth.GetHashCode()) * 397) ^ MaxDepth.GetHashCode();
 	}
 
 	/// <summary>

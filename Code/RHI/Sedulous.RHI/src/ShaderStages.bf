@@ -5,8 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the usage of a resource in shaders.
 /// </summary>
-//[Flags]
-enum ShaderStages : int16
+public enum ShaderStages : int16
 {
 	/// <summary>
 	/// No stages.

@@ -1,10 +1,11 @@
 using Sedulous.Foundation.Mathematics;
+
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
 /// A vertex format structure containing vertex position and color.
 /// </summary>
-struct VertexPosition
+public struct VertexPosition
 {
 	/// <summary>
 	/// Vertex position.
@@ -30,7 +31,6 @@ struct VertexPosition
 	/// </summary>
 	static this()
 	{
-		VertexFormat = new LayoutDescription()
-			.Add(ElementDescription(ElementFormat.Float3, ElementSemanticType.Position));
+		VertexFormat = new LayoutDescription().Add(ElementDescription(ElementFormat.Float3, ElementSemanticType.Position));
 	}
 }

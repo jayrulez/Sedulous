@@ -1,4 +1,5 @@
 using Sedulous.Foundation.Mathematics;
+
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
@@ -6,7 +7,7 @@ namespace Sedulous.RHI.Raytracing;
 /// This struct definition is useful if generating instance data on the CPU first then uploading to the GPU.
 /// But apps are also free to generate instance descriptions directly into GPU memory from compute shaders for instance, following the same layout.
 /// </summary>
-struct AccelerationStructureInstance
+public struct AccelerationStructureInstance
 {
 	/// <summary>
 	/// Flags from <see cref="T:Sedulous.RHI.Raytracing.AccelerationStructureInstanceFlags" /> to apply to the instance.

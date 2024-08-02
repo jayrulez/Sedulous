@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes the blend state.
 /// </summary>
-struct BlendStateRenderTargetDescription : IEquatable<BlendStateRenderTargetDescription>, IHashable
+public struct BlendStateRenderTargetDescription : IEquatable<BlendStateRenderTargetDescription>
 {
 	/// <summary>
 	/// Enable (or disable) blending.
@@ -131,14 +131,7 @@ struct BlendStateRenderTargetDescription : IEquatable<BlendStateRenderTargetDesc
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((((((((uint32)(BlendEnable.GetHashCode() * 397)
-			^ (uint32)SourceBlendColor) * 397)
-			^ (uint32)DestinationBlendColor) * 397)
-			^ (uint32)BlendOperationColor) * 397)
-			^ (uint32)SourceBlendAlpha) * 397)
-			^ (uint32)DestinationBlendAlpha) * 397)
-			^ (uint32)BlendOperationAlpha) * 397)
-			^ (int)ColorWriteChannels;
+		return (int)(((((((((((((uint32)(BlendEnable.GetHashCode() * 397) ^ (uint32)SourceBlendColor) * 397) ^ (uint32)DestinationBlendColor) * 397) ^ (uint32)BlendOperationColor) * 397) ^ (uint32)SourceBlendAlpha) * 397) ^ (uint32)DestinationBlendAlpha) * 397) ^ (uint32)BlendOperationAlpha) * 397) ^ (int32)ColorWriteChannels;
 	}
 
 	/// <summary>

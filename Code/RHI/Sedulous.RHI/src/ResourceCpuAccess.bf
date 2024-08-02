@@ -5,8 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies the types of CPU access allowed for a resource.
 /// </summary>
-//[Flags]
-enum ResourceCpuAccess : uint8
+public enum ResourceCpuAccess : uint8
 {
 	/// <summary>
 	/// None (default value).

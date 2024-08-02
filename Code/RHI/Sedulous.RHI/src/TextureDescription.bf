@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes a 2D texture.
 /// </summary>
-struct TextureDescription : IEquatable<TextureDescription>
+public struct TextureDescription : IEquatable<TextureDescription>
 {
 	/// <summary>
 	/// Texture type <see cref="T:Sedulous.RHI.TextureType" />.
@@ -165,18 +165,7 @@ struct TextureDescription : IEquatable<TextureDescription>
 	/// </returns>
 	public bool Equals(TextureDescription other)
 	{
-		if (Type != other.Type
-			|| Format != other.Format
-			|| Width != other.Width
-			|| Height != other.Height
-			|| Depth != other.Depth
-			|| ArraySize != other.ArraySize
-			|| Faces != other.Faces
-			|| MipLevels != other.MipLevels
-			|| Flags != other.Flags
-			|| Usage != other.Usage
-			|| SampleCount != other.SampleCount
-			|| CpuAccess != other.CpuAccess)
+		if (Type != other.Type || Format != other.Format || Width != other.Width || Height != other.Height || Depth != other.Depth || ArraySize != other.ArraySize || Faces != other.Faces || MipLevels != other.MipLevels || Flags != other.Flags || Usage != other.Usage || SampleCount != other.SampleCount || CpuAccess != other.CpuAccess)
 		{
 			return false;
 		}
@@ -211,18 +200,7 @@ struct TextureDescription : IEquatable<TextureDescription>
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((((((((((((((((uint32)((int)Type * 397)
-			^ (uint32)Format) * 397)
-			^ Width) * 397)
-			^ Height) * 397)
-			^ Depth) * 397)
-			^ ArraySize) * 397)
-			^ Faces) * 397)
-			^ MipLevels) * 397)
-			^ (uint32)Flags) * 397)
-			^ (uint32)Usage) * 397)
-			^ (uint32)Usage) * 397)
-			^ (int)CpuAccess;
+		return (int32)(((((((((((((((((((((uint32)((int32)Type * 397) ^ (uint32)Format) * 397) ^ Width) * 397) ^ Height) * 397) ^ Depth) * 397) ^ ArraySize) * 397) ^ Faces) * 397) ^ MipLevels) * 397) ^ (uint32)Flags) * 397) ^ (uint32)Usage) * 397) ^ (uint32)Usage) * 397) ^ (int32)CpuAccess;
 	}
 
 	/// <summary>

@@ -5,8 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identify which components of each pixel of a render target are writable during blending.
 /// </summary>
-//[Flags]
-enum ColorWriteChannels
+public enum ColorWriteChannels
 {
 	/// <summary>
 	/// None of the data are stored.

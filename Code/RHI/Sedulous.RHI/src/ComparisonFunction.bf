@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Comparison options.
 /// </summary>
-enum ComparisonFunction : uint8
+public enum ComparisonFunction : uint8
 {
 	/// <summary>
 	/// Never pass the comparison.

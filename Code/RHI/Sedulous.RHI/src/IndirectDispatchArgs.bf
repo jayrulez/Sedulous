@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Struct representing an indirect dispatch of a Command Buffer.
 /// </summary>
-struct IndirectDispatchArgs
+public struct IndirectDispatchArgs
 {
 	/// <summary>
 	/// The thread group X size.

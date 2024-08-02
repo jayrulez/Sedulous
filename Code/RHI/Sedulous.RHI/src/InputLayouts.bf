@@ -1,13 +1,13 @@
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This class represent contains the descriptions of vertex input layout.
 /// </summary>
-class InputLayouts : IEquatable<InputLayouts>
+public class InputLayouts : IEquatable<InputLayouts>
 {
 	private int32[] elementsCache;
 
@@ -24,6 +24,11 @@ class InputLayouts : IEquatable<InputLayouts>
 	public this()
 	{
 		LayoutElements = new List<LayoutDescription>();
+	}
+
+	public ~this()
+	{
+		delete LayoutElements;
 	}
 
 	/// <summary>

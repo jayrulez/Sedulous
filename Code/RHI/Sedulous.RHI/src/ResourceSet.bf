@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This class describes the elements inside a <see cref="T:Sedulous.RHI.ResourceLayout" />.
 /// </summary>
-abstract class ResourceSet : IDisposable
+public abstract class ResourceSet : IDisposable
 {
 	/// <summary>
 	/// The resourceSet description <see cref="T:Sedulous.RHI.ResourceSetDescription" />.
@@ -21,7 +21,7 @@ abstract class ResourceSet : IDisposable
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ResourceSet" /> class.
 	/// </summary>
 	/// <param name="description">The resourceSet description.</param>
-	public this(ref ResourceSetDescription description)
+	public this(in ResourceSetDescription description)
 	{
 		Description = description;
 	}

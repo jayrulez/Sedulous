@@ -2,5 +2,5 @@ namespace Sedulous.RHI;
 
 sealed class Constants
 {
-	public const uint32 MaxColorAttachments = 8;
+	public const uint32 MaxAttachments = 8;
 }

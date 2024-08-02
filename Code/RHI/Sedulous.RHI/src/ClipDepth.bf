@@ -1,9 +1,9 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-///  Define the type of depth in the clip space depth.
+///  Define the tipe of depth in the clip space depth.
 /// </summary>
-enum ClipDepth : uint8
+public enum ClipDepth : uint8
 {
 	/// <summary>
 	/// The depth in clip space is in the [0, 1] range.

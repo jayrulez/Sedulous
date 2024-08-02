@@ -6,25 +6,25 @@ namespace Sedulous.RHI;
 /// <summary>
 /// This struct contains all the shader stages.
 /// </summary>
-struct GraphicsShaderStateDescription : IEquatable<GraphicsShaderStateDescription>, IHashable
+public struct GraphicsShaderStateDescription : IEquatable<GraphicsShaderStateDescription>
 {
 	/// <summary>
 	/// ConstantBuffers bindings.
 	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
 	/// </summary>
-	public List<(String name, uint32 slot)> constantBuffersBindings = null;
+	public List<(String name, uint32 slot)> constantBuffersBindings;
 
 	/// <summary>
 	/// Textures bindings.
 	/// Used in OpenGL 410 or minor and OpenGLES 300 or minor.
 	/// </summary>
-	public List<(String name, uint32 slot)> texturesBindings = null;
+	public List<(String name, uint32 slot)> texturesBindings;
 
 	/// <summary>
 	/// Uniform parameters bindings.
 	/// Used in WebGL1 and OpenGL ES 2.0.
 	/// </summary>
-	public Dictionary<String, BufferParameterBinding> bufferParametersBinding = null;
+	public Dictionary<String, BufferParameterBinding> bufferParametersBinding;
 
 	/// <summary>
 	/// Gets or sets the vertex shader program.
@@ -59,11 +59,7 @@ struct GraphicsShaderStateDescription : IEquatable<GraphicsShaderStateDescriptio
 	/// <inheritdoc />
 	public bool Equals(GraphicsShaderStateDescription other)
 	{
-		if (VertexShader != other.VertexShader
-			|| HullShader != other.HullShader
-			|| DomainShader != other.DomainShader
-			|| GeometryShader != other.GeometryShader
-			|| PixelShader != other.PixelShader)
+		if (VertexShader != other.VertexShader || HullShader != other.HullShader || DomainShader != other.DomainShader || GeometryShader != other.GeometryShader || PixelShader != other.PixelShader)
 		{
 			return false;
 		}

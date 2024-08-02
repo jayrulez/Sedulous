@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identifies expected texture use during rendering.
 /// </summary>
-enum ResourceUsage : uint8
+public enum ResourceUsage : uint8
 {
 	/// <summary>
 	/// A resource that requires read and write access by the GPU, Default value.

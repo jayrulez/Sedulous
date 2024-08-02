@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Pixel format type.
 /// </summary>
-enum PixelFormat
+public enum PixelFormat
 {
 	/// <summary>
 	///     The format is not known.

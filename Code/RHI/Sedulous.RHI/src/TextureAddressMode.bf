@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Identify a technique for resolving texture coordinates that are outside of the boundaries of a texture.
 /// </summary>
-enum TextureAddressMode : uint8
+public enum TextureAddressMode : uint8
 {
 	/// <summary>
 	/// Tile the texture at every (u,v) integer junction. For example, for u values between 0 and 3, the texture is repeated three times.

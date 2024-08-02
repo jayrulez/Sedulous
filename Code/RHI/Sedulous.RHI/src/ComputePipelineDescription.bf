@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Contains properties that describe the characteristics of a new pipeline state object.
 /// </summary>
-struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHashable
+public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>
 {
 	/// <summary>
 	/// Describes the resources layout input.
@@ -15,7 +15,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// <summary>
 	/// Gets or sets the compute shader program.
 	/// </summary>
-	public ComputeShaderStateDescription ShaderDescription;
+	public ComputeShaderStateDescription shaderDescription;
 
 	/// <summary>
 	/// The X dimension of the thread group size.
@@ -43,7 +43,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	public this(ResourceLayout[] resourceLayouts, ComputeShaderStateDescription shaderDescription, uint32 threadGroupSizeX = 1, uint32 threadGroupSizeY = 1, uint32 threadGroupSizeZ = 1)
 	{
 		ResourceLayouts = resourceLayouts;
-		ShaderDescription = shaderDescription;
+		this.shaderDescription = shaderDescription;
 		ThreadGroupSizeX = threadGroupSizeX;
 		ThreadGroupSizeY = threadGroupSizeY;
 		ThreadGroupSizeZ = threadGroupSizeZ;
@@ -58,11 +58,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// </returns>
 	public bool Equals(ComputePipelineDescription other)
 	{
-		if (ShaderDescription != other.ShaderDescription
-			|| !ResourceLayouts.SequenceEqual(other.ResourceLayouts)
-			|| ThreadGroupSizeX != other.ThreadGroupSizeX
-			|| ThreadGroupSizeY != other.ThreadGroupSizeY
-			|| ThreadGroupSizeZ != other.ThreadGroupSizeZ)
+		if (shaderDescription != other.shaderDescription || !ResourceLayouts.SequenceEqual(other.ResourceLayouts) || ThreadGroupSizeX != other.ThreadGroupSizeX || ThreadGroupSizeY != other.ThreadGroupSizeY || ThreadGroupSizeZ != other.ThreadGroupSizeZ)
 		{
 			return false;
 		}
@@ -97,11 +93,7 @@ struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHas
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)((((((uint32)(((ShaderDescription.GetHashCode() * 397)
-			^ ResourceLayouts.GetHashCode()) * 397)
-			^ ThreadGroupSizeX) * 397)
-			^ ThreadGroupSizeY) * 397)
-			^ ThreadGroupSizeZ);
+		return (int)((((((uint32)(((shaderDescription.GetHashCode() * 397) ^ HashCode.Generate(ResourceLayouts)) * 397) ^ ThreadGroupSizeX) * 397) ^ ThreadGroupSizeY) * 397) ^ ThreadGroupSizeZ);
 	}
 
 	/// <summary>

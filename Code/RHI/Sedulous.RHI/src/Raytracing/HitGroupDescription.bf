@@ -1,20 +1,10 @@
 using System;
 namespace Sedulous.RHI.Raytracing;
 
-static
-{
-	public static int GetHashCode(this HitGroupDescription[] array)
-	{
-		int hashCode = 0;
-
-		return hashCode;
-	}
-}
-
 /// <summary>
 /// Describes a raytracing hit group state subobject that can be included in a state object.
 /// </summary>
-struct HitGroupDescription
+public struct HitGroupDescription
 {
 	/// <summary>
 	/// Hit Group Type.

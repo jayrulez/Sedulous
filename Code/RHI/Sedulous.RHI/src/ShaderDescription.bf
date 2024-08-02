@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This struct represent all parameters requiered to create a new shader.
 /// </summary>
-struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
+public struct ShaderDescription : IEquatable<ShaderDescription>
 {
 	/// <summary>
 	/// Gets the name of the entry point function.
@@ -16,7 +15,7 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// <summary>
 	/// Gets the raw shader code.
 	/// </summary>
-	public readonly List<uint8> ShaderBytes;
+	public readonly uint8[] ShaderBytes;
 
 	/// <summary>
 	/// Gets the shader stage.
@@ -26,7 +25,7 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// <summary>
 	/// Byte array hastCode cached.
 	/// </summary>
-	private int shaderArrayHashCode;
+	private int32 shaderArrayHashCode;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ShaderDescription" /> struct.
@@ -34,13 +33,13 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// <param name="stage">The shader stage.</param>
 	/// <param name="entryPoint">The entry point function.</param>
 	/// <param name="shaderBytes">The shader code in bytes.</param>
-	public this(ShaderStages stage, String entryPoint, List<uint8> shaderBytes)
+	public this(ShaderStages stage, String entryPoint, uint8[] shaderBytes)
 	{
 		Stage = stage;
 		EntryPoint = entryPoint;
 		ShaderBytes = shaderBytes;
 		shaderArrayHashCode = 17;
-		for (int i = 0; i < ShaderBytes.Count; i++)
+		for (int32 i = 0; i < ShaderBytes.Count; i++)
 		{
 			shaderArrayHashCode = (shaderArrayHashCode * 397) ^ ShaderBytes[i];
 		}
@@ -90,9 +89,7 @@ struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (((EntryPoint.GetHashCode() * 397)
-			^ shaderArrayHashCode) * 397)
-			^ (int)Stage;
+		return (((EntryPoint.GetHashCode() * 397) ^ shaderArrayHashCode) * 397) ^ (int32)Stage;
 	}
 
 	/// <summary>

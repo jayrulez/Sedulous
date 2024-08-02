@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Enum of the rasterizer states.
 /// </summary>
-enum RasterizeStateEnum
+public enum RasterizeStateEnum
 {
 	/// <summary>
 	/// Cull primitives with clockwise winding order,

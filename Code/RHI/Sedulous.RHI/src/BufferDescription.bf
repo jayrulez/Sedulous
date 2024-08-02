@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Contains properties that describe the characteristics of a new buffer object.
 /// </summary>
-struct BufferDescription : IEquatable<BufferDescription>, IHashable
+public struct BufferDescription : IEquatable<BufferDescription>
 {
 	/// <summary>
 	/// Retrieves or sets the size of the new buffer.
@@ -39,7 +39,7 @@ struct BufferDescription : IEquatable<BufferDescription>, IHashable
 	/// <param name="flags">Buffer flags describing the buffer type.</param>
 	/// <param name="cpuAccess">Describe the type of CPU access allowed for. </param>
 	/// <param name="usage">Usage for this buffer.</param>
-	/// <param name="structureByteStride">The structure uint8 stride.</param>
+	/// <param name="structureByteStride">The structure byte stride.</param>
 	public this(uint32 sizeInBytes, BufferFlags flags, ResourceUsage usage, ResourceCpuAccess cpuAccess = ResourceCpuAccess.None, int32 structureByteStride = 0)
 	{
 		SizeInBytes = sizeInBytes;
@@ -58,10 +58,7 @@ struct BufferDescription : IEquatable<BufferDescription>, IHashable
 	/// </returns>
 	public bool Equals(BufferDescription other)
 	{
-		if (SizeInBytes == other.SizeInBytes
-			&& Flags == other.Flags
-			&& CpuAccess == other.CpuAccess
-			&& Usage == other.Usage)
+		if (SizeInBytes == other.SizeInBytes && Flags == other.Flags && CpuAccess == other.CpuAccess && Usage == other.Usage)
 		{
 			return StructureByteStride == other.StructureByteStride;
 		}
@@ -96,10 +93,7 @@ struct BufferDescription : IEquatable<BufferDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((SizeInBytes * 397)
-			^ (uint32)Flags) * 397)
-			^ (uint32)CpuAccess) * 397)
-			^ (uint32)Usage) * 397) ^ StructureByteStride;
+		return (int32)(((((((SizeInBytes * 397) ^ (uint32)Flags) * 397) ^ (uint32)CpuAccess) * 397) ^ (uint32)Usage) * 397) ^ StructureByteStride;
 	}
 
 	/// <summary>

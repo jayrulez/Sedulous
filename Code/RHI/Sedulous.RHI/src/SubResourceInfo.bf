@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Struct containing the sub resource info.
 /// </summary>
-struct SubResourceInfo
+public struct SubResourceInfo
 {
 	/// <summary>
 	/// The size in bytes.

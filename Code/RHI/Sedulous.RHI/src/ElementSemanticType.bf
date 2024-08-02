@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The semantic meaning of a vertex element.
 /// </summary>
-enum ElementSemanticType : uint8
+public enum ElementSemanticType : uint8
 {
 	/// <summary>
 	/// Describes a position.

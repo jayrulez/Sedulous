@@ -5,8 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies <see cref="T:Sedulous.RHI.FrameBuffer" /> clearing modes.
 /// </summary>
-//[Flags]
-enum ClearFlags
+public enum ClearFlags
 {
 	/// <summary>
 	/// Do not clear.

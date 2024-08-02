@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Comparison options.
 /// </summary>
-enum SamplerBorderColor : uint8
+public enum SamplerBorderColor : uint8
 {
 	/// <summary>
 	/// Transparent Black (0, 0, 0, 0)

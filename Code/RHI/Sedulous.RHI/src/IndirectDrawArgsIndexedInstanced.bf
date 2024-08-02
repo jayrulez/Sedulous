@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Struct containing the info of an indirect indexed and instanced draw call.
 /// </summary>
-struct IndirectDrawArgsIndexedInstanced
+public struct IndirectDrawArgsIndexedInstanced
 {
 	/// <summary>
 	/// The index count per instance.

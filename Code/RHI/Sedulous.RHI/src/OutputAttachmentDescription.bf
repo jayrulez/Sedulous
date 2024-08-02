@@ -3,12 +3,12 @@ using Sedulous.Foundation.Collections;
 
 namespace Sedulous.RHI;
 
-typealias ColorAttachmentList = FixedList<OutputAttachmentDescription, const Constants.MaxColorAttachments>;
+typealias OutputAttachmentList = FixedList<OutputAttachmentDescription, const Constants.MaxAttachments>;
 
 /// <summary>
 /// Contains properties that describe the characteristics of a new pipeline state object.
 /// </summary>
-struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescription>, IHashable
+public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescription>
 {
 	/// <summary>
 	/// The pixel format.
@@ -75,7 +75,7 @@ struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescription>, IH
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)Format * (ResolveMSAA ? 1 : (-1));
+		return (int32)Format * (ResolveMSAA ? 1 : (-1));
 	}
 
 	/// <summary>

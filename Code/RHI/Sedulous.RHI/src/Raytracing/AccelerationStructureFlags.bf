@@ -5,8 +5,7 @@ namespace Sedulous.RHI.Raytracing;
 /// <summary>
 /// Flags specifying additional parameters for acceleration structure builds.
 /// </summary>
-//[Flags]
-enum AccelerationStructureFlags
+public enum AccelerationStructureFlags
 {
 	/// <summary>
 	/// No options specified for the acceleration structure build.

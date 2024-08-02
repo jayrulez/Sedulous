@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes a sampler state.
 /// </summary>
-struct SamplerStateDescription : IEquatable<SamplerStateDescription>, IHashable
+public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 {
 	/// <summary>
 	/// Filtering method to use when sampling a texture.
@@ -100,15 +100,7 @@ struct SamplerStateDescription : IEquatable<SamplerStateDescription>, IHashable
 	/// </returns>
 	public bool Equals(SamplerStateDescription other)
 	{
-		if (Filter == other.Filter
-			&& AddressU == other.AddressU
-			&& AddressV == other.AddressV
-			&& AddressW == other.AddressW
-			&& MinLOD.Equals(other.MinLOD)
-			&& MaxLOD.Equals(other.MaxLOD)
-			&& MipLODBias == other.MipLODBias
-			&& MaxAnisotropy == other.MaxAnisotropy
-			&& ComparisonFunc == other.ComparisonFunc)
+		if (Filter == other.Filter && AddressU == other.AddressU && AddressV == other.AddressV && AddressW == other.AddressW && MinLOD.Equals(other.MinLOD) && MaxLOD.Equals(other.MaxLOD) && MipLODBias == other.MipLODBias && MaxAnisotropy == other.MaxAnisotropy && ComparisonFunc == other.ComparisonFunc)
 		{
 			return BorderColor == other.BorderColor;
 		}
@@ -143,16 +135,7 @@ struct SamplerStateDescription : IEquatable<SamplerStateDescription>, IHashable
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((((((((((((((uint32)((int)Filter * 397)
-			^ (uint32)AddressU) * 397)
-			^ (uint32)AddressV) * 397)
-			^ (uint32)AddressW) * 397)
-			^ (uint32)MinLOD.GetHashCode()) * 397)
-			^ (uint32)MaxLOD.GetHashCode()) * 397)
-			^ (uint32)MipLODBias.GetHashCode()) * 397)
-			^ MaxAnisotropy) * 397)
-			^ (uint32)ComparisonFunc) * 397)
-			^ ((int)BorderColor).GetHashCode();
+		return (int32)(((((((((((((((((uint32)((int32)Filter * 397) ^ (uint32)AddressU) * 397) ^ (uint32)AddressV) * 397) ^ (uint32)AddressW) * 397) ^ (uint32)MinLOD.GetHashCode()) * 397) ^ (uint32)MaxLOD.GetHashCode()) * 397) ^ (uint32)MipLODBias.GetHashCode()) * 397) ^ MaxAnisotropy) * 397) ^ (uint32)ComparisonFunc) * 397) ^ ((int)BorderColor).GetHashCode();
 	}
 
 	/// <summary>

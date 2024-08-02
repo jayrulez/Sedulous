@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies depth reading/writing mode.
 /// </summary>
-enum DepthMode : uint8
+public enum DepthMode : uint8
 {
 	/// <summary>
 	/// Read only.

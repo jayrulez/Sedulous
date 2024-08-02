@@ -3,10 +3,9 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Identifies how to bind a buffer.
+/// Identifies how to bing a buffer.
 /// </summary>
-//[Flags]
-enum BufferFlags
+public enum BufferFlags
 {
 	/// <summary>
 	/// No option.

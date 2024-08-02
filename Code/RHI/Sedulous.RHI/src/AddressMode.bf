@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies texture addressing mode.
 /// </summary>
-enum AddressMode : uint8
+public enum AddressMode : uint8
 {
 	/// <summary>
 	/// Point/nearest neighbor filtering, clamped texture coordinates.

@@ -1,12 +1,12 @@
 using System;
-using System.Reflection;
+using System.Collections;
 
 namespace Sedulous.RHI;
 
 /// <summary>
 /// This class represent which color texture and depth texture are rendered to present.
 /// </summary>
-abstract class FrameBuffer : IDisposable
+public abstract class FrameBuffer : IDisposable
 {
 	/// <summary>
 	/// Holds if the instance has been disposed.
@@ -69,7 +69,7 @@ abstract class FrameBuffer : IDisposable
 	/// <summary>
 	/// Gets or sets the collection of colors targets textures associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
-	public virtual FrameBufferColorAttachmentList ColorTargets { get; protected set; }
+	public virtual FrameBufferAttachmentList ColorTargets { get; protected set; }
 
 	/// <summary>
 	/// Gets or sets the depth targets texture associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
@@ -92,12 +92,12 @@ abstract class FrameBuffer : IDisposable
 	/// <param name="depthTarget">The depth texture which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
 	/// <param name="colorTargets">The array of color textures, all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
 	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
-	public this(FrameBufferAttachment? depthTarget, FrameBufferColorAttachmentList colorTargets, bool disposeAttachments)
+	public this(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 	{
 		DepthStencilTarget = depthTarget;
 		ColorTargets = colorTargets;
 		this.disposeAttachments = disposeAttachments;
-		FrameBufferColorAttachmentList colorTargets2 = ColorTargets;
+		FrameBufferAttachmentList colorTargets2 = ColorTargets;
 		if (!colorTargets2.IsEmpty && colorTargets2.Count != 0)
 		{
 			FrameBufferAttachment target = ColorTargets[0];
@@ -151,7 +151,7 @@ abstract class FrameBuffer : IDisposable
 			{
 				if (!ColorTargets.IsEmpty)
 				{
-					FrameBufferColorAttachmentList colorTargets = ColorTargets;
+					FrameBufferAttachmentList colorTargets = ColorTargets;
 					for (int i = 0; i < colorTargets.Count; i++)
 					{
 						FrameBufferAttachment frameBufferAttachment = colorTargets[i];

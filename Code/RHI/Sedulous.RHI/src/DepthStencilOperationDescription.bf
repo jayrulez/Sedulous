@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Stencil operations that can be performed based on the results of stencil test.
 /// </summary>
-struct DepthStencilOperationDescription : IEquatable<DepthStencilOperationDescription>, IHashable
+public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperationDescription>
 {
 	/// <summary>
 	/// The stencil operation to perform when stencil testing fails.
@@ -36,9 +36,7 @@ struct DepthStencilOperationDescription : IEquatable<DepthStencilOperationDescri
 	/// </returns>
 	public bool Equals(DepthStencilOperationDescription other)
 	{
-		if (StencilFailOperation == other.StencilFailOperation
-			&& StencilDepthFailOperation == other.StencilDepthFailOperation
-			&& StencilPassOperation == other.StencilPassOperation)
+		if (StencilFailOperation == other.StencilFailOperation && StencilDepthFailOperation == other.StencilDepthFailOperation && StencilPassOperation == other.StencilPassOperation)
 		{
 			return StencilFunction == other.StencilFunction;
 		}
@@ -73,10 +71,7 @@ struct DepthStencilOperationDescription : IEquatable<DepthStencilOperationDescri
 	/// </returns>
 	public int GetHashCode()
 	{
-		return (int)(((((uint32)(((int)StencilFailOperation).GetHashCode() * 397)
-			^ (uint32)StencilDepthFailOperation) * 397)
-			^ (uint32)StencilPassOperation) * 397)
-			^ (int)StencilFunction;
+		return (int)(((((uint32)(((int)StencilFailOperation).GetHashCode() * 397) ^ (uint32)StencilDepthFailOperation) * 397) ^ (uint32)StencilPassOperation) * 397) ^ (int)StencilFunction;
 	}
 
 	/// <summary>

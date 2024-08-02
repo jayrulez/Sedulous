@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// The arguments of an instanced indirect draw call.
 /// </summary>
-struct IndirectDrawArgsInstanced
+public struct IndirectDrawArgsInstanced
 {
 	/// <summary>
 	/// The vertex count per instance.

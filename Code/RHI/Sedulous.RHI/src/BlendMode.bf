@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Specifies alpha blending mode.
 /// </summary>
-enum BlendMode : uint8
+public enum BlendMode : uint8
 {
 	/// <summary>
 	/// No blending.

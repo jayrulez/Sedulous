@@ -5,7 +5,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes a rasterizer state.
 /// </summary>
-struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>, IHashable
+public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>
 {
 	/// <summary>
 	/// Determines the fill mode to use when rendering.
@@ -92,13 +92,7 @@ struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>, IHas
 	/// </returns>
 	public bool Equals(RasterizerStateDescription other)
 	{
-		if (FillMode == other.FillMode
-			&& CullMode == other.CullMode
-			&& FrontCounterClockwise == other.FrontCounterClockwise
-			&& DepthBias == other.DepthBias && DepthBiasClamp.Equals(other.DepthBiasClamp)
-			&& SlopeScaledDepthBias.Equals(other.SlopeScaledDepthBias)
-			&& DepthClipEnable == other.DepthClipEnable
-			&& ScissorEnable == other.ScissorEnable)
+		if (FillMode == other.FillMode && CullMode == other.CullMode && FrontCounterClockwise == other.FrontCounterClockwise && DepthBias == other.DepthBias && DepthBiasClamp.Equals(other.DepthBiasClamp) && SlopeScaledDepthBias.Equals(other.SlopeScaledDepthBias) && DepthClipEnable == other.DepthClipEnable && ScissorEnable == other.ScissorEnable)
 		{
 			return AntialiasedLineEnable == other.AntialiasedLineEnable;
 		}
@@ -149,14 +143,7 @@ struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>, IHas
 			cullMode = CullMode;
 			break;
 		}
-		return (int)(((((((((((((uint32)((int)FillMode * 397)
-			^ (uint32)cullMode) * 397)
-			^ (uint32)DepthBias) * 397)
-			^ (uint32)DepthBiasClamp.GetHashCode()) * 397)
-			^ (uint32)SlopeScaledDepthBias.GetHashCode()) * 397)
-			^ (uint32)DepthClipEnable.GetHashCode()) * 397)
-			^ (uint32)ScissorEnable.GetHashCode()) * 397)
-			^ AntialiasedLineEnable.GetHashCode();
+		return (int32)(((((((((((((uint32)((int32)FillMode * 397) ^ (uint32)cullMode) * 397) ^ (uint32)DepthBias) * 397) ^ (uint32)DepthBiasClamp.GetHashCode()) * 397) ^ (uint32)SlopeScaledDepthBias.GetHashCode()) * 397) ^ (uint32)DepthClipEnable.GetHashCode()) * 397) ^ (uint32)ScissorEnable.GetHashCode()) * 397) ^ AntialiasedLineEnable.GetHashCode();
 	}
 
 	/// <summary>

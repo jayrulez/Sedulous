@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Describes the number of samples to use in a <see cref="T:Sedulous.RHI.Texture" />.
 /// </summary>
-enum TextureSampleCount : uint8
+public enum TextureSampleCount : uint8
 {
 	/// <summary>
 	/// No multisample.

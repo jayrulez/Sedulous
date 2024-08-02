@@ -1,20 +1,10 @@
 using System;
 namespace Sedulous.RHI;
 
-static
-{
-	public static int GetHashCode(this Shader[] array)
-	{
-		int hashCode = 0;
-
-		return hashCode;
-	}
-}
-
 /// <summary>
 /// This class represent a single shader program.
 /// </summary>
-abstract class Shader : GraphicsResource
+public abstract class Shader : GraphicsResource
 {
 	/// <summary>
 	/// Gets the shader description.
@@ -31,7 +21,7 @@ abstract class Shader : GraphicsResource
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The shader description.</param>
-	protected this(GraphicsContext context, ref ShaderDescription description)
+	protected this(GraphicsContext context, in ShaderDescription description)
 		: base(context)
 	{
 		Description = description;

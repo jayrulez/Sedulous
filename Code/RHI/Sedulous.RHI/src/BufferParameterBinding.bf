@@ -4,9 +4,9 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represents a parameter property of a constant buffer. Used in WebGL1 and OpenGL ES 2.0.
+/// This class represents a parameter property of a constant buffer. Used un WebGL1 and OpenGL ES 2.0.
 /// </summary>
-class BufferParameterBinding
+public class BufferParameterBinding
 {
 	/// <summary>
 	/// The buffer parameter type.
@@ -86,15 +86,15 @@ class BufferParameterBinding
 		{
 			return BufferParameterType.UInt;
 		}
-		if (type == typeof(uint32[2]))//if (type == typeof(UInt2))
+		if (type == typeof(uint32[2]))
 		{
 			return BufferParameterType.UInt2;
 		}
-		if (type == typeof(uint32[3]))//if (type == typeof(UInt3))
+		if (type == typeof(uint32[3]))
 		{
 			return BufferParameterType.UInt3;
 		}
-		if (type == typeof(float[3][3]))//if (type == typeof(Matrix3x3))
+		if (type == typeof(float[9]))
 		{
 			return BufferParameterType.Matrix3x3;
 		}

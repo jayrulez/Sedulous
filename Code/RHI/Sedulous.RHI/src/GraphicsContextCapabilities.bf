@@ -3,7 +3,7 @@ namespace Sedulous.RHI;
 /// <summary>
 /// Abstract class that offers the capabilities of the graphics context.
 /// </summary>
-abstract class GraphicsContextCapabilities
+public abstract class GraphicsContextCapabilities
 {
 	/// <summary>
 	/// Gets a value indicating whether this graphics context support compute shaders.
