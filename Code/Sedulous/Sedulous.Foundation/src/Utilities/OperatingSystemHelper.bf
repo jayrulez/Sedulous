@@ -45,7 +45,7 @@ static class OperatingSystemHelper
 	/// <summary>
 	/// Gets current executing platform.
 	/// </summary>
-	/// <returns>Executing platform if found. Returns <see cref="F:Evergine.Common.PlatformType.Undefined" /> if platform could not be determined.</returns>
+	/// <returns>Executing platform if found. Returns <see cref="F:Sedulous.Foundation.PlatformType.Undefined" /> if platform could not be determined.</returns>
 	public static PlatformType GetCurrentPlatfom()
 	{
 		if (IsOSPlatform(PlatformType.Windows))
