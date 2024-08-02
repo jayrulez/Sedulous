@@ -3,9 +3,10 @@ using Bulkan;
 using Sedulous.RHI;
 using System.Collections;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents a native pipelineState on Vulkan.
@@ -53,8 +54,8 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The graphics pipeline state description.</param>
-	public this(VKGraphicsContext context, ref GraphicsPipelineDescription description)
-		: base(ref description)
+	public this(VKGraphicsContext context, in GraphicsPipelineDescription description)
+		: base(description)
 	{
 		vkContext = context;
 		VkGraphicsPipelineCreateInfo pipelineInfo = VkGraphicsPipelineCreateInfo()
@@ -78,9 +79,9 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 		rasterizerState.rasterizerDiscardEnable = false;
 		ScissorEnabled = description.RenderStates.RasterizerState.ScissorEnable;
 		pipelineInfo.pRasterizationState = &rasterizerState;
-		int32 renderTargetCount = (int32)description.Outputs.ColorAttachments.Count;
+		int renderTargetCount = description.Outputs.ColorAttachments.Count;
 		VkPipelineColorBlendAttachmentState* colorBlendAttachments = scope VkPipelineColorBlendAttachmentState[renderTargetCount]*;
-		BlendStateRenderTargetDescription renderTarget = description.RenderStates.BlendState.RenderTargets[0];
+		BlendStateRenderTargetDescription renderTarget = description.RenderStates.BlendState.RenderTarget0;
 		BlendStateRenderTargetDescription* renderTargetBlendState = &renderTarget;
 		for (int i = 0; i < renderTargetCount; i++)
 		{
@@ -182,7 +183,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 			inputInfo.topology = description.PrimitiveTopology.ToVulkan();
 		}
 		pipelineInfo.pInputAssemblyState = &inputInfo;
-		List<VkPipelineShaderStageCreateInfo> stages = new List<VkPipelineShaderStageCreateInfo>();
+		List<VkPipelineShaderStageCreateInfo> stages = scope List<VkPipelineShaderStageCreateInfo>();
 		if (description.Shaders.VertexShader != null)
 		{
 			VKShader vertexShader = description.Shaders.VertexShader as VKShader;
@@ -209,31 +210,31 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 			stages.Add(pixelShader.ShaderStateInfo);
 		}
 		VkPipelineShaderStageCreateInfo* stagePointer = scope VkPipelineShaderStageCreateInfo[stages.Count]*;
-		for (int i = 0; i < stages.Count; i++)
+		for (int32 i = 0; i < stages.Count; i++)
 		{
 			stagePointer[i] = stages[i];
 		}
 		pipelineInfo.stageCount = (uint32)stages.Count;
 		pipelineInfo.pStages = stagePointer;
 		InputLayouts shaderInputLayout = description.Shaders.ShaderInputLayout;
-		int32 bindingCount = (int32)((description.InputLayouts != null) ? description.InputLayouts.LayoutElements.Count : 0);
-		int32 attributeCount = 0;
+		int bindingCount = ((description.InputLayouts != null) ? description.InputLayouts.LayoutElements.Count : 0);
+		int attributeCount = 0;
 		if (shaderInputLayout != null && shaderInputLayout.LayoutElements.Count > 0)
 		{
-			attributeCount = (int32)shaderInputLayout.LayoutElements[0].Elements.Count;
+			attributeCount = shaderInputLayout.LayoutElements[0].Elements.Count;
 		}
 		else if (description.InputLayouts != null)
 		{
 			List<LayoutDescription> layoutElements = description.InputLayouts.LayoutElements;
-			for (int i = 0; i < layoutElements.Count; i++)
+			for (int32 i = 0; i < layoutElements.Count; i++)
 			{
-				attributeCount += (int32)layoutElements[i].Elements.Count;
+				attributeCount += layoutElements[i].Elements.Count;
 			}
 		}
 		VkVertexInputBindingDescription* bindingDescriptions = scope VkVertexInputBindingDescription[bindingCount]*;
 		VkVertexInputAttributeDescription* attributeDescriptions = scope VkVertexInputAttributeDescription[attributeCount]*;
-		int32 targetIndex = 0;
-		int32 targetLocation = 0;
+		int targetIndex = 0;
+		int targetLocation = 0;
 		for (uint32 i = 0; i < description.InputLayouts?.LayoutElements.Count; i++)
 		{
 			LayoutDescription inputLayout = description.InputLayouts.LayoutElements[(int32)i];
@@ -243,7 +244,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 				inputRate = ((inputLayout.StepRate != 0) ? VkVertexInputRate.VK_VERTEX_INPUT_RATE_INSTANCE : VkVertexInputRate.VK_VERTEX_INPUT_RATE_VERTEX),
 				stride = inputLayout.Stride
 			};
-			for (int j = 0; j < inputLayout.Elements.Count; j++)
+			for (int32 j = 0; j < inputLayout.Elements.Count; j++)
 			{
 				ElementDescription inputElement = inputLayout.Elements[j];
 				if (shaderInputLayout != null)
@@ -270,7 +271,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 					};
 				}
 			}
-			targetLocation += (int32)inputLayout.Elements.Count;
+			targetLocation += inputLayout.Elements.Count;
 		}
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = VkPipelineVertexInputStateCreateInfo()
 		{
@@ -295,7 +296,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 		if (description.ResourceLayouts != null)
 		{
 			VkDescriptorSetLayout* layouts = scope VkDescriptorSetLayout[description.ResourceLayouts.Count]*;
-			for (int i = 0; i < description.ResourceLayouts.Count; i++)
+			for (int32 i = 0; i < description.ResourceLayouts.Count; i++)
 			{
 				VKResourceLayout layout = description.ResourceLayouts[i] as VKResourceLayout;
 				layouts[i] = layout.DescriptorSetLayout;
@@ -317,7 +318,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 	private VkRenderPass CreateCompatibilityRenderPass(OutputDescription outputs)
 	{
 		VkAttachmentLoadOp loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		int32 attachmentCount = (int32)(outputs.DepthAttachment.HasValue ? (outputs.ColorAttachments.Count + 1) : outputs.ColorAttachments.Count) * 2;
+		int attachmentCount = (outputs.DepthAttachment.HasValue ? (outputs.ColorAttachments.Count + 1) : outputs.ColorAttachments.Count) * 2;
 		VkAttachmentDescription* attachments = scope VkAttachmentDescription[attachmentCount]*;
 		VkAttachmentReference* colorAttachmentReferences = scope VkAttachmentReference[outputs.ColorAttachments.Count]*;
 		VkAttachmentReference* resolveAttachmentReferences = scope VkAttachmentReference[outputs.ColorAttachments.Count]*;
@@ -326,7 +327,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 		uint32 resolvedAttachmentIndex = 0;
 		for (int i = 0; i < outputs.ColorAttachments.Count; i++)
 		{
-			/*ref*/ OutputAttachmentDescription reference = /*ref*/ outputs.ColorAttachments[i];
+			OutputAttachmentDescription reference = outputs.ColorAttachments[i];
 			VkFormat colorFormat = reference.Format.ToVulkan(depthFormat: false);
 			var (textureAttachment, textureAttachmentRef) = CreateAttachment(colorFormat, sampleCount, currentAttachmentIndex, loadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE, VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 			attachments[currentAttachmentIndex++] = textureAttachment;
@@ -348,7 +349,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 			{
 				isStencilFormat = true;
 			}
-			VkAttachmentDescription depthTextureAttachment = CreateAttachment(depthFormat, sampleCount, currentAttachmentIndex, loadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, isDepth: true).Description;
+			VkAttachmentDescription depthTextureAttachment = CreateAttachment(depthFormat, sampleCount, currentAttachmentIndex, loadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, isDepth: true).Attachment;
 			VkAttachmentReference vkAttachmentReference = default(VkAttachmentReference);
 			vkAttachmentReference.attachment = currentAttachmentIndex;
 			vkAttachmentReference.layout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -356,7 +357,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 			attachments[currentAttachmentIndex++] = depthTextureAttachment;
 			if (depthAttachment.ResolveMSAA)
 			{
-				VkAttachmentDescription msaaDepthTextureAttachment = CreateAttachment(depthFormat, sampleCount, currentAttachmentIndex, loadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, isDepth: true).Description;
+				VkAttachmentDescription msaaDepthTextureAttachment = CreateAttachment(depthFormat, sampleCount, currentAttachmentIndex, loadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, isDepth: true).Attachment;
 				vkAttachmentReference = default(VkAttachmentReference);
 				vkAttachmentReference.attachment = currentAttachmentIndex;
 				vkAttachmentReference.layout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -442,7 +443,7 @@ public class VKGraphicsPipelineState : GraphicsPipelineState
 		return newRenderPass;
 	}
 
-	private (VkAttachmentDescription Description, VkAttachmentReference Reference) CreateAttachment(VkFormat format, VkSampleCountFlags samples, uint32 index, VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp, VkAttachmentStoreOp stencilStoreOp, VkImageLayout finalLayout, bool isDepth = false)
+	private (VkAttachmentDescription Attachment, VkAttachmentReference Reference) CreateAttachment(VkFormat format, VkSampleCountFlags samples, uint32 index, VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp, VkAttachmentStoreOp stencilStoreOp, VkImageLayout finalLayout, bool isDepth = false)
 	{
 		VkAttachmentDescription vkAttachmentDescription = default(VkAttachmentDescription);
 		vkAttachmentDescription.format = format;

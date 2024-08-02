@@ -56,7 +56,7 @@ public static class VKRaytracingHelpers
 		VkMemoryAllocateInfo memoryAllocateInfo = vkMemoryAllocateInfo;
 		VkDeviceMemory deviceMemory = default(VkDeviceMemory);
 		VulkanNative.vkAllocateMemory(context.VkDevice, &memoryAllocateInfo, null, &deviceMemory);
-		VulkanNative.vkBindBufferMemory(context.VkDevice, newBuffer, deviceMemory, 0UL);
+		VulkanNative.vkBindBufferMemory(context.VkDevice, newBuffer, deviceMemory, 0uL);
 		BufferData result = default(BufferData);
 		result.Buffer = newBuffer;
 		result.Memory = deviceMemory;
@@ -96,11 +96,11 @@ public static class VKRaytracingHelpers
 		VkMemoryAllocateInfo memoryAllocateInfo = vkMemoryAllocateInfo;
 		VkDeviceMemory deviceMemory = default(VkDeviceMemory);
 		VulkanNative.vkAllocateMemory(context.VkDevice, &memoryAllocateInfo, null, &deviceMemory);
-		VulkanNative.vkBindBufferMemory(context.VkDevice, newBuffer, deviceMemory, 0UL);
+		VulkanNative.vkBindBufferMemory(context.VkDevice, newBuffer, deviceMemory, 0uL);
 		if (data != null)
 		{
 			void* dataPointer = default(void*);
-			VulkanNative.vkMapMemory(context.VkDevice, deviceMemory, 0UL, bufferSize, VkMemoryMapFlags.None, &dataPointer);
+			VulkanNative.vkMapMemory(context.VkDevice, deviceMemory, 0uL, bufferSize, VkMemoryMapFlags.None, &dataPointer);
 			Internal.MemCpy(dataPointer, (void*)data, (uint32)bufferSize);
 			VulkanNative.vkUnmapMemory(context.VkDevice, deviceMemory);
 		}

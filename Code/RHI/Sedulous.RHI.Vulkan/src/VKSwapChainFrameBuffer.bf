@@ -1,10 +1,12 @@
 using Bulkan;
 using Sedulous.RHI;
 using System;
+using System.Collections;
+
+namespace Sedulous.RHI.Vulkan;
 
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represent the swapchain FrameBuffer on Vulkan.
@@ -14,12 +16,17 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	/// <summary>
 	/// The colors texture array of this <see cref="T:Sedulous.RHI.Vulkan.VKFrameBuffer" />.
 	/// </summary>
-	public VkImage[] BackBufferImages;
+	//public VkImage[] BackBufferImages;
 
 	/// <summary>
 	/// The depth texture of this <see cref="T:Sedulous.RHI.Vulkan.VKFrameBuffer" />.
 	/// </summary>
-	public VKTexture DepthTargetTexture;
+	private VKTexture DepthTargetTexture;
+
+	private VKTexture ResolvedDepthTexture;
+
+	private List<VKTexture> BackBufferTextures = new .() ~ delete _;
+	private List<VKTexture> ResolvedBackBufferTextures = new .() ~ delete _;
 
 	/// <summary>
 	/// The array of frambuffers linked to this swapchain.
@@ -49,7 +56,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	}
 
 	/// <inheritdoc />
-	public override FrameBufferColorAttachmentList ColorTargets
+	public override FrameBufferAttachmentList ColorTargets
 	{
 		get
 		{
@@ -79,11 +86,9 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 		base.IntermediateBufferAssociated = true;
 		uint32 imageCount = 0;
 		VulkanNative.vkGetSwapchainImagesKHR(context.VkDevice, swapchain.vkSwapChain, &imageCount, null);
-		BackBufferImages = new VkImage[imageCount];
-		VkImage* images = BackBufferImages.Ptr;
-		{
-			VulkanNative.vkGetSwapchainImagesKHR(context.VkDevice, swapchain.vkSwapChain, &imageCount, images);
-		}
+		VkImage[] BackBufferImages = scope VkImage[imageCount];
+		VulkanNative.vkGetSwapchainImagesKHR(context.VkDevice, swapchain.vkSwapChain, &imageCount, BackBufferImages.Ptr);
+
 		TextureSampleCount sampleCount = swapchain.SwapChainDescription.SampleCount;
 		TextureDescription depthDescription = TextureDescription()
 		{
@@ -97,17 +102,16 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 			SampleCount = TextureSampleCount.None,
 			Flags = TextureFlags.DepthStencil
 		};
-		Texture depthTexture = vkContext.Factory.CreateTexture(ref depthDescription);
-		Texture resolvedDepthTexture = null;
+		VKTexture depthTexture = (VKTexture)vkContext.Factory.CreateTexture(depthDescription);
 		if (sampleCount != 0)
 		{
 			depthDescription.SampleCount = sampleCount;
-			resolvedDepthTexture = depthTexture;
-			depthTexture = vkContext.Factory.CreateTexture(ref depthDescription);
+			ResolvedDepthTexture = depthTexture;
+			depthTexture = (VKTexture)vkContext.Factory.CreateTexture(depthDescription);
 		}
-		DepthStencilTarget = FrameBufferAttachment(depthTexture, resolvedDepthTexture);
-		//ColorTargets = new FrameBufferAttachment[1];
-		ColorTargets = .(){Count = 1};
+		DepthTargetTexture = (VKTexture)depthTexture;
+		DepthStencilTarget = FrameBufferAttachment(DepthTargetTexture, ResolvedDepthTexture);
+		ColorTargets = .() {Count = 1};
 		FrameBuffers = new VKFrameBuffer[imageCount];
 		for (int i = 0; i < imageCount; i++)
 		{
@@ -123,14 +127,16 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 				SampleCount = TextureSampleCount.None,
 				Flags = TextureFlags.RenderTarget
 			};
-			Texture newTexture = VKTexture.FromVulkanImage(vkContext, ref colorTextureDescription, BackBufferImages[i]);
-			Texture newResolvedTexture = null;
+			VKTexture newTexture = (VKTexture)VKTexture.FromVulkanImage(vkContext, colorTextureDescription, BackBufferImages[i]);
+			VKTexture newResolvedTexture = null;
 			if (sampleCount != 0)
 			{
 				colorTextureDescription.SampleCount = sampleCount;
 				newResolvedTexture = newTexture;
-				newTexture = vkContext.Factory.CreateTexture(ref colorTextureDescription);
+				newTexture = (VKTexture)vkContext.Factory.CreateTexture(colorTextureDescription);
+				ResolvedBackBufferTextures.Add(newResolvedTexture);
 			}
+			BackBufferTextures.Add(newTexture);
 			FrameBufferAttachment frameAttachment = FrameBufferAttachment(newTexture, newResolvedTexture);
 			VKFrameBuffer frameBuffer = new VKFrameBuffer(vkContext, DepthStencilTarget, .(frameAttachment), disposeAttachments: true);
 			FrameBuffers[i] = frameBuffer;
@@ -141,7 +147,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	/// <inheritdoc />
 	public override void TransitionToIntermedialLayout(VkCommandBuffer cb)
 	{
-		FrameBufferColorAttachmentList colorTargets = FrameBuffers[CurrentBackBufferIndex].ColorTargets;
+		FrameBufferAttachmentList colorTargets = FrameBuffers[CurrentBackBufferIndex].ColorTargets;
 		for (int i = 0; i < colorTargets.Count; i++)
 		{
 			FrameBufferAttachment attachment = colorTargets[i];
@@ -152,7 +158,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	/// <inheritdoc />
 	public override void TransitionToFinalLayout(VkCommandBuffer cb)
 	{
-		FrameBufferColorAttachmentList colorTargets = FrameBuffers[CurrentBackBufferIndex].ColorTargets;
+		FrameBufferAttachmentList colorTargets = FrameBuffers[CurrentBackBufferIndex].ColorTargets;
 		for (FrameBufferAttachment attachment in colorTargets)
 		{
 			(attachment.Texture as VKTexture).TransitionImageLayout(cb, VkImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, 0, 1, 0, 1);
@@ -171,6 +177,24 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 			for (int i = 0; i < FrameBuffers.Count; i++)
 			{
 				FrameBuffers[i]?.Dispose();
+				delete FrameBuffers[i];
+			}
+			delete FrameBuffers;
+			if(DepthTargetTexture != null)
+			{
+				delete DepthTargetTexture;
+			}
+			if(ResolvedDepthTexture != null)
+			{
+				delete ResolvedDepthTexture;
+			}
+			for(var texture in BackBufferTextures)
+			{
+				delete texture;
+			}
+			for(var texture in ResolvedBackBufferTextures)
+			{
+				delete texture;
 			}
 		}
 	}

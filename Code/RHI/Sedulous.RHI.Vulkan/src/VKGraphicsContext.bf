@@ -3,11 +3,12 @@ using System.Text;
 using Bulkan;
 using Sedulous.RHI;
 using System.Collections;
-using Sedulous.Foundation;
 using Sedulous.Foundation.Utilities;
 
-using internal Sedulous.RHI.Vulkan;
 namespace Sedulous.RHI.Vulkan;
+
+using internal Sedulous.RHI.Vulkan;
+using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
 /// Graphics context on Vulkan.
@@ -132,11 +133,9 @@ public class VKGraphicsContext : GraphicsContext
 
 	private PFN_vkDebugUtilsMessengerCallbackEXT debugUtilsMessegerCallbackFunc;
 
-	private VkDebugReportCallbackEXT debugCallbackHandle;
+	private VkDebugReportCallbackEXT debugReportCallbackHandle;
 
-	private PFN_vkDebugReportCallbackEXT debugCallbackFunc;
-
-	private List<String> instanceExtensionEnabled;
+	private PFN_vkDebugReportCallbackEXT debugReportCallbackFunc;
 
 	/// <summary>
 	/// Set of device extensions to be enabled for this application.
@@ -144,7 +143,7 @@ public class VKGraphicsContext : GraphicsContext
 	/// <remarks>
 	/// Must be set before create device.
 	/// </remarks>
-	public readonly List<String> DeviceExtensionsToEnable = new .() ~ delete _;
+	public readonly List<String> DeviceExtensionsToEnable = new .() ~ DeleteContainerAndItems!(_);
 
 	/// <summary>
 	/// Set of device instance extensions to be enabled for this application.
@@ -152,10 +151,10 @@ public class VKGraphicsContext : GraphicsContext
 	/// <remarks>
 	/// Must be set before create device.
 	/// </remarks>
-	public readonly List<String> InstanceExtensionsToEnable = new .() ~ delete _;
+	public readonly List<String> InstanceExtensionsToEnable = new .() ~ DeleteContainerAndItems!(_);
 
 	/// <inheritdoc />
-	public override void* NativeDevicePointer => (void*)VkDevice.Handle;
+	public override void* NativeDevicePointer => null;
 
 	/// <inheritdoc />
 	public override GraphicsBackend BackendType => GraphicsBackend.Vulkan;
@@ -180,13 +179,11 @@ public class VKGraphicsContext : GraphicsContext
 	{
 		base.Factory = new VKResourceFactory(this);
 
-		//DeviceExtensionsToEnable = deviceExtensionsToEnable.ToList();
 		for (var @extension in deviceExtensionsToEnable)
 		{
 			DeviceExtensionsToEnable.Add(new .(@extension));
 		}
 
-		//InstanceExtensionsToEnable = instanceExtensionsToEnable.ToList();
 		for (var @extension in instanceExtensionsToEnable)
 		{
 			InstanceExtensionsToEnable.Add(new .(@extension));
@@ -228,13 +225,10 @@ public class VKGraphicsContext : GraphicsContext
 		return new VKSwapChain(this, description);
 	}
 
-	public override void DestroySwapChain(ref SwapChain swapChain)
+	/// <inheritdoc />
+	public override CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters)
 	{
-		if (let vkSwapChain = swapChain as VKSwapChain)
-		{
-			delete vkSwapChain;
-			swapChain = null;
-		}
+		return default(CompilationResult);
 	}
 
 	/// <inheritdoc />
@@ -250,7 +244,7 @@ public class VKGraphicsContext : GraphicsContext
 		{
 			VKBuffer buffer = resource as VKBuffer;
 			void* dataPointer = default(void*);
-			VulkanNative.vkMapMemory(VkDevice, buffer.BufferMemory, 0UL, buffer.Description.SizeInBytes, VkMemoryMapFlags.None, &dataPointer);
+			VulkanNative.vkMapMemory(VkDevice, buffer.BufferMemory, 0uL, buffer.Description.SizeInBytes, VkMemoryMapFlags.None, &dataPointer);
 			return MappedResource(resource, mode, dataPointer, buffer.Description.SizeInBytes);
 		}
 		if (resource is VKTexture)
@@ -297,7 +291,7 @@ public class VKGraphicsContext : GraphicsContext
 	}
 
 	/// <inheritdoc />
-	protected override void InternalUpdateBufferData(Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
+	protected override void InternalUpdateBufferData(Sedulous.RHI.Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
 	{
 		(buffer as VKBuffer).SetData(CopyCommandBuffer, source, sourceSizeInBytes, destinationOffsetInBytes);
 	}
@@ -318,17 +312,14 @@ public class VKGraphicsContext : GraphicsContext
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &commandBuffer;
 		VulkanNative.vkQueueSubmit(vkCopyQueue, 1, &submitInfo, vkCopyFence);
-
 		VkFence copyFence = vkCopyFence;
 		VulkanNative.vkWaitForFences(VkDevice, 1, &copyFence, VkBool32.True, uint64.MaxValue);
 		VulkanNative.vkResetFences(VkDevice, 1, &copyFence);
 		VulkanNative.vkResetCommandPool(VkDevice, copyCommandPool, VkCommandPoolResetFlags.None);
-
 		VkCommandBufferBeginInfo beginInfo = default(VkCommandBufferBeginInfo);
 		beginInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.flags = VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		VulkanNative.vkBeginCommandBuffer(CopyCommandBuffer, &beginInfo);
-
 		BufferUploader.Clear();
 		TextureUploader.Clear();
 	}
@@ -341,42 +332,37 @@ public class VKGraphicsContext : GraphicsContext
 		List<String> availableInstanceExtensions = VKHelpers.EnumerateInstanceExtensions(.. new .());
 		defer { DeleteContainerAndItems!(availableInstanceExtensions); }
 
-		instanceExtensionEnabled = new List<String>();
+		List<String> instanceExtensionEnabled = scope List<String>();
 		List<String> layersToEnable = scope List<String>();
-
 		CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_KHR_surface");
-
 		switch (OperatingSystemHelper.GetCurrentPlatfom())
 		{
-		case PlatformType.Windows:
+		case .Windows:
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_KHR_win32_surface");
 			break;
-		case PlatformType.Linux:
+		case .Linux:
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_KHR_xlib_surface");
 			break;
-		case PlatformType.Android:
+		case .Android:
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_KHR_android_surface");
 			break;
-		case PlatformType.MacOS:
+		case .MacOS:
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_MVK_macos_surface");
 			break;
-		case PlatformType.iOS:
+		case .iOS:
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, "VK_MVK_ios_surface");
 			break;
 
 		default: break;
 		}
-
 		for (String extensionName in InstanceExtensionsToEnable)
 		{
 			CheckExtension(availableInstanceExtensions, instanceExtensionEnabled, extensionName);
 		}
-
 		if (availableInstanceExtensions.Contains("VK_KHR_get_physical_device_properties2"))
 		{
 			instanceExtensionEnabled.Add("VK_KHR_get_physical_device_properties2");
 		}
-
 		if (base.IsValidationLayerEnabled)
 		{
 			if (availableInstanceExtensions.Contains("VK_EXT_debug_utils"))
@@ -391,13 +377,13 @@ public class VKGraphicsContext : GraphicsContext
 			}
 			switch (OperatingSystemHelper.GetCurrentPlatfom())
 			{
-			case PlatformType.Windows:
-				if (availableInstanceLayers.Contains("VK_LAYER_KHRONOS_validation"))
+			case .Windows:
+				if (availableInstanceLayers.Contains( "VK_LAYER_KHRONOS_validation"))
 				{
 					layersToEnable.Add("VK_LAYER_KHRONOS_validation");
 				}
 				break;
-			case PlatformType.Android:
+			case .Android:
 				if (availableInstanceLayers.Contains("VK_LAYER_KHRONOS_validation"))
 				{
 					layersToEnable.Add("VK_LAYER_KHRONOS_validation");
@@ -419,33 +405,29 @@ public class VKGraphicsContext : GraphicsContext
 			default: break;
 			}
 		}
-
 		VkApplicationInfo vkApplicationInfo = default(VkApplicationInfo);
 		vkApplicationInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_APPLICATION_INFO;
-		vkApplicationInfo.apiVersion = Version_1_2;
+		vkApplicationInfo.apiVersion = Version_1_3;
 		vkApplicationInfo.applicationVersion = Version_1_0;
 		vkApplicationInfo.engineVersion = Version_1_0;
 		vkApplicationInfo.pEngineName = "Sedulous";
 		vkApplicationInfo.pApplicationName = "Sedulous";
-
 		VkApplicationInfo appInfo = vkApplicationInfo;
 
-		int32 layersCount = (int32)layersToEnable.Count;
+		int layersCount = layersToEnable.Count;
 		char8** layersToEnableArray = scope char8*[layersCount]*;
 		for (int i = 0; i < layersCount; i++)
 		{
 			String layer = layersToEnable[i];
-			layersToEnableArray[i] = layer.CStr();
+			layersToEnableArray[i] = scope :: String(layer).CStr();
 		}
-
-		int32 extensionsCount = (int32)instanceExtensionEnabled.Count;
+		int extensionsCount = instanceExtensionEnabled.Count;
 		char8** extensionsToEnableArray = scope char8*[extensionsCount]*;
 		for (int i = 0; i < extensionsCount; i++)
 		{
 			String @extension = instanceExtensionEnabled[i];
-			extensionsToEnableArray[i] = @extension.CStr();
+			extensionsToEnableArray[i] = scope :: String(@extension).CStr();
 		}
-
 		VkInstanceCreateInfo instanceInfo = default(VkInstanceCreateInfo);
 		instanceInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		instanceInfo.pApplicationInfo = &appInfo;
@@ -453,11 +435,8 @@ public class VKGraphicsContext : GraphicsContext
 		instanceInfo.ppEnabledLayerNames = layersToEnableArray;
 		instanceInfo.enabledExtensionCount = (uint32)extensionsCount;
 		instanceInfo.ppEnabledExtensionNames = extensionsToEnableArray;
-
 		VkDebugUtilsMessengerCreateInfoEXT debug_utils_create_info = default(VkDebugUtilsMessengerCreateInfoEXT);
-
 		VkDebugReportCallbackCreateInfoEXT debug_report_create_info = default(VkDebugReportCallbackCreateInfoEXT);
-
 		if (base.IsValidationLayerEnabled)
 		{
 			if (DebugUtilsEnabled)
@@ -474,8 +453,8 @@ public class VKGraphicsContext : GraphicsContext
 			{
 				debug_report_create_info.sType = VkStructureType.VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
 				debug_report_create_info.flags = VkDebugReportFlagsEXT.VK_DEBUG_REPORT_WARNING_BIT_EXT | VkDebugReportFlagsEXT.VK_DEBUG_REPORT_ERROR_BIT_EXT;
-				debugCallbackFunc = => DebugCallback;
-				debug_report_create_info.pfnCallback = debugCallbackFunc;
+				debugReportCallbackFunc = => DebugReportCallback;
+				debug_report_create_info.pfnCallback = debugReportCallbackFunc;
 				debug_report_create_info.pUserData = Internal.UnsafeCastToPtr(this);
 				instanceInfo.pNext = &debug_report_create_info;
 			}
@@ -483,7 +462,7 @@ public class VKGraphicsContext : GraphicsContext
 		VkInstance newInstance = default(VkInstance);
 		VulkanNative.vkCreateInstance(&instanceInfo, null, &newInstance);
 		VkInstance = newInstance;
-		//VulkanNative.LoadFuncionPointers(newInstance);
+		
 		if (onInstanceCreated != null)
 		{
 			onInstanceCreated(newInstance);
@@ -493,15 +472,15 @@ public class VKGraphicsContext : GraphicsContext
 		{
 			if (DebugUtilsEnabled)
 			{
-				VkDebugUtilsMessengerEXT debugCallbackHandle = default(VkDebugUtilsMessengerEXT);
-				VulkanNative.vkCreateDebugUtilsMessengerEXT(VkInstance, &debug_utils_create_info, null, &debugCallbackHandle);
-				debugUtilsCallbackHandle = debugCallbackHandle;
+				VkDebugUtilsMessengerEXT debugUtilsCallbackHandle = default(VkDebugUtilsMessengerEXT);
+				VulkanNative.vkCreateDebugUtilsMessengerEXT(VkInstance, &debug_utils_create_info, null, &debugUtilsCallbackHandle);
+				this.debugUtilsCallbackHandle = debugUtilsCallbackHandle;
 			}
 			else
 			{
-				VkDebugReportCallbackEXT debugCallbackHandle = default(VkDebugReportCallbackEXT);
-				VulkanNative.vkCreateDebugReportCallbackEXT(VkInstance, &debug_report_create_info, null, &debugCallbackHandle);
-				this.debugCallbackHandle = debugCallbackHandle;
+				VkDebugReportCallbackEXT debugReportCallbackHandle = default(VkDebugReportCallbackEXT);
+				VulkanNative.vkCreateDebugReportCallbackEXT(VkInstance, &debug_report_create_info, null, &debugReportCallbackHandle);
+				this.debugReportCallbackHandle = debugReportCallbackHandle;
 			}
 		}
 	}
@@ -528,7 +507,7 @@ public class VKGraphicsContext : GraphicsContext
 		return false;
 	}
 
-	private static VkBool32 DebugCallback(uint32 flags, VkDebugReportObjectTypeEXT objectType, uint64 @object, uint location, int32 messageCode, char8* pLayerPrefix, char8* pMessage, void* pUserData)
+	private static VkBool32 DebugReportCallback(uint32 flags, VkDebugReportObjectTypeEXT objectType, uint64 @object, uint location, int32 messageCode, char8* pLayerPrefix, char8* pMessage, void* pUserData)
 	{
 		String message = scope .(pMessage);
 		String fullMessage = scope $"[{flags}] ({objectType}) {message}";
@@ -544,12 +523,10 @@ public class VKGraphicsContext : GraphicsContext
 	{
 		uint32 deviceCount = 0;
 		VulkanNative.vkEnumeratePhysicalDevices(VkInstance, &deviceCount, null);
-
 		if (deviceCount == 0)
 		{
 			base.ValidationLayer?.Notify("Vulkan", "No physical devices exist.");
 		}
-
 		VkPhysicalDevice* physicalDevices = scope VkPhysicalDevice[(int32)deviceCount]*;
 		VulkanNative.vkEnumeratePhysicalDevices(VkInstance, &deviceCount, physicalDevices);
 		VkPhysicalDeviceProperties2 deviceProperties2 = default(VkPhysicalDeviceProperties2);
@@ -599,23 +576,18 @@ public class VKGraphicsContext : GraphicsContext
 		VulkanNative.vkGetPhysicalDeviceProperties2(VkPhysicalDevice, &deviceProperties2);
 		VkPhysicalDeviceMemoryProperties deviceMemoryProperties = default(VkPhysicalDeviceMemoryProperties);
 		VulkanNative.vkGetPhysicalDeviceMemoryProperties(VkPhysicalDevice, &deviceMemoryProperties);
-
 		VkPhysicalDeviceMemoryProperties = deviceMemoryProperties;
 		TimestampFrequency = (uint64)(1.0 / (double)deviceProperties2.properties.limits.timestampPeriod * 1000.0 * 1000.0 * 1000.0);
 		QueueIndices = VKQueueFamilyIndices.FindQueueFamilies(this, VkPhysicalDevice, null);
-
 		float priority = 1f;
 		int32 queueCount = ((QueueIndices.CopyFamily <= 0) ? 1 : 2);
-
 		VkDeviceQueueCreateInfo graphicsQueueInfo = default(VkDeviceQueueCreateInfo);
 		graphicsQueueInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
 		graphicsQueueInfo.queueFamilyIndex = (uint32)QueueIndices.GraphicsFamily;
 		graphicsQueueInfo.queueCount = 1;
 		graphicsQueueInfo.pQueuePriorities = &priority;
-
 		VkDeviceQueueCreateInfo* queueCreateInfos = scope VkDeviceQueueCreateInfo[queueCount]*;
 		*queueCreateInfos = graphicsQueueInfo;
-
 		CopyQueueSupported = QueueIndices.CopyFamily > 0;
 		if (CopyQueueSupported)
 		{
@@ -626,7 +598,6 @@ public class VKGraphicsContext : GraphicsContext
 			copyQueueInfo.pQueuePriorities = &priority;
 			queueCreateInfos[1] = copyQueueInfo;
 		}
-
 		uint32 propertyCount = 0;
 		VulkanNative.vkEnumerateDeviceExtensionProperties(VkPhysicalDevice, null, &propertyCount, null);
 		VkExtensionProperties* availableDeviceProperties = scope VkExtensionProperties[(int32)propertyCount]*;
@@ -639,8 +610,8 @@ public class VKGraphicsContext : GraphicsContext
 			switch (extensionName)
 			{
 			case "VK_KHR_swapchain",
-				"VK_EXT_shader_viewport_index_layer",
-				"VK_NV_viewport_array2":
+				 "VK_EXT_shader_viewport_index_layer",
+				 "VK_NV_viewport_array2":
 				extensionsToEnable.Add(extensionName);
 				break;
 			case "VK_EXT_debug_marker":
@@ -652,7 +623,7 @@ public class VKGraphicsContext : GraphicsContext
 				extensionsToEnable.Add(extensionName);
 				break;
 			case "VK_KHR_spirv_1_4",
-				"VK_KHR_shader_float_controls":
+				 "VK_KHR_shader_float_controls":
 				extensionsToEnable.Add(extensionName);
 				break;
 			case "VK_KHR_acceleration_structure":
@@ -668,24 +639,20 @@ public class VKGraphicsContext : GraphicsContext
 			}
 		}
 		extensionsToEnable.AddRange(DeviceExtensionsToEnable);
-
-		int32 extensionsCount = (int32)extensionsToEnable.Count;
+		int extensionsCount = extensionsToEnable.Count;
 		char8** extensionsToEnableArray = scope char8*[extensionsCount]*;
 		for (int i = 0; i < extensionsCount; i++)
 		{
 			String @extension = extensionsToEnable[i];
-			extensionsToEnableArray[i] = @extension.CStr();
+			extensionsToEnableArray[i] = scope :: String(@extension).CStr();
 		}
-
 		VkPhysicalDeviceFeatures2 deviceFeatures2 = default(VkPhysicalDeviceFeatures2);
 		deviceFeatures2.sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-
 		VkPhysicalDeviceVulkan11Features features_1_1 = default(VkPhysicalDeviceVulkan11Features);
 		VkPhysicalDeviceVulkan12Features features_1_2 = default(VkPhysicalDeviceVulkan12Features);
 		VkPhysicalDeviceVulkan13Features features_1_3 = default(VkPhysicalDeviceVulkan13Features);
 		VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures = default(VkPhysicalDeviceAccelerationStructureFeaturesKHR);
 		VkPhysicalDeviceRayTracingPipelineFeaturesKHR raytracingFeatures = default(VkPhysicalDeviceRayTracingPipelineFeaturesKHR);
-
 		if (deviceProperties2.properties.apiVersion >= Version_1_1)
 		{
 			deviceFeatures2.pNext = &features_1_1;
@@ -708,21 +675,18 @@ public class VKGraphicsContext : GraphicsContext
 				}
 			}
 		}
-
 		VulkanNative.vkGetPhysicalDeviceFeatures2(VkPhysicalDevice, &deviceFeatures2);
-
 		VkPhysicalDeviceInfo = VKPhysicalDeviceInfo()
-			{
-				Propeties1 = properties_1_1,
-				Propeties2 = properties_1_2,
-				Propeties3 = properties_1_3,
-				Features_1_1 = features_1_1,
-				Features_1_2 = features_1_2,
-				Features_1_3 = features_1_3,
-				AccelerationStructureFeatures = accelerationStructureFeatures,
-				RaytracingFeatures = raytracingFeatures
-			};
-
+		{
+			Propeties1 = properties_1_1,
+			Propeties2 = properties_1_2,
+			Propeties3 = properties_1_3,
+			Features_1_1 = features_1_1,
+			Features_1_2 = features_1_2,
+			Features_1_3 = features_1_3,
+			AccelerationStructureFeatures = accelerationStructureFeatures,
+			RaytracingFeatures = raytracingFeatures
+		};
 		VkDeviceCreateInfo createInfo = default(VkDeviceCreateInfo);
 		createInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		createInfo.enabledExtensionCount = (uint32)extensionsCount;
@@ -731,11 +695,9 @@ public class VKGraphicsContext : GraphicsContext
 		createInfo.pQueueCreateInfos = queueCreateInfos;
 		createInfo.pEnabledFeatures = null;
 		createInfo.pNext = &deviceFeatures2;
-
 		VkDevice newDevice = default(VkDevice);
 		VulkanNative.vkCreateDevice(VkPhysicalDevice, &createInfo, null, &newDevice);
 		VkDevice = newDevice;
-
 		VkQueue newQueue = default(VkQueue);
 		VulkanNative.vkGetDeviceQueue(VkDevice, (uint32)QueueIndices.GraphicsFamily, 0, &newQueue);
 		vkGraphicsQueue = newQueue;
@@ -747,14 +709,12 @@ public class VKGraphicsContext : GraphicsContext
 		VkQueue newQueue = default(VkQueue);
 		VulkanNative.vkGetDeviceQueue(VkDevice, queueFamilyIndex, 0, &newQueue);
 		vkCopyQueue = newQueue;
-
 		VkCommandPoolCreateInfo poolInfo = default(VkCommandPoolCreateInfo);
 		poolInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
 		poolInfo.queueFamilyIndex = queueFamilyIndex;
 		VkCommandPool newCommandPool = default(VkCommandPool);
 		VulkanNative.vkCreateCommandPool(VkDevice, &poolInfo, null, &newCommandPool);
 		copyCommandPool = newCommandPool;
-
 		VkCommandBufferAllocateInfo commandBufferInfo = default(VkCommandBufferAllocateInfo);
 		commandBufferInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		commandBufferInfo.commandBufferCount = 1;
@@ -763,12 +723,10 @@ public class VKGraphicsContext : GraphicsContext
 		VkCommandBuffer newCommandBuffer = default(VkCommandBuffer);
 		VulkanNative.vkAllocateCommandBuffers(VkDevice, &commandBufferInfo, &newCommandBuffer);
 		CopyCommandBuffer = newCommandBuffer;
-
 		VkCommandBufferBeginInfo beginInfo = default(VkCommandBufferBeginInfo);
 		beginInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.flags = VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		VulkanNative.vkBeginCommandBuffer(CopyCommandBuffer, &beginInfo);
-
 		VkFenceCreateInfo fenceInfo = default(VkFenceCreateInfo);
 		fenceInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		VkFence newFence = default(VkFence);
@@ -793,7 +751,7 @@ public class VKGraphicsContext : GraphicsContext
 			nameInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT;
 			nameInfo.objectHandle = target;
 			nameInfo.objectType = type;
-			nameInfo.pObjectName = name.CStr();
+			nameInfo.pObjectName = scope String(name).CStr();
 			VulkanNative.vkSetDebugUtilsObjectNameEXT(VkDevice, &nameInfo);
 		}
 	}
@@ -815,7 +773,7 @@ public class VKGraphicsContext : GraphicsContext
 				nativePointer = (void*)vkGraphicsQueue.Handle;
 				return true;
 			case "QueueIndices":
-				nativePointer = (void*)(int)QueueIndices.GraphicsFamily;
+				nativePointer = (void*)int(QueueIndices.GraphicsFamily);
 				return true;
 			}
 		}
@@ -827,30 +785,39 @@ public class VKGraphicsContext : GraphicsContext
 	{
 		if (!disposed)
 		{
-			BufferUploader?.Dispose();
-			TextureUploader?.Dispose();
-
+			if(BufferUploader != null)
+			{
+				BufferUploader.Dispose();
+				delete BufferUploader;
+			}
+			if(TextureUploader != null)
+			{
+				TextureUploader.Dispose();
+				delete TextureUploader;
+			}
 			VulkanNative.vkDestroyFence(VkDevice, vkCopyFence, null);
 			DescriptorPool.DestroyAll();
+			delete DescriptorPool;
+			delete capabilities;
 			VulkanNative.vkDestroyCommandPool(VkDevice, copyCommandPool, null);
 			VulkanNative.vkDestroyFence(VkDevice, vkImageAvailableFence, null);
 			VulkanNative.vkDestroyDevice(VkDevice, null);
 
-			if (debugUtilsMessegerCallbackFunc != null)
+			if(debugUtilsMessegerCallbackFunc != null)
 			{
 				debugUtilsMessegerCallbackFunc = null;
 				((vkDestroyDebugUtilsMessengerEXT_d)VulkanNative.vkGetInstanceProcAddr(VkInstance, "vkDestroyDebugUtilsMessengerEXT"))(VkInstance, debugUtilsCallbackHandle, null);
 			}
 
-			if (debugCallbackFunc != null)
+			if (debugReportCallbackFunc != null)
 			{
-				debugCallbackFunc = null;
-				((vkDestroyDebugReportCallbackEXT_d)VulkanNative.vkGetInstanceProcAddr(VkInstance, "vkDestroyDebugReportCallbackEXT"))(VkInstance, debugCallbackHandle, null);
+				debugReportCallbackFunc = null;
+				((vkDestroyDebugReportCallbackEXT_d)VulkanNative.vkGetInstanceProcAddr(VkInstance, "vkDestroyDebugReportCallbackEXT"))(VkInstance, debugReportCallbackHandle, null);
 			}
-
 			VulkanNative.vkDestroyInstance(VkInstance, null);
-
 			disposed = true;
+
+			delete base.Factory;
 		}
 	}
 }

@@ -1,7 +1,9 @@
 using Sedulous.RHI;
 
-using internal Sedulous.RHI.Vulkan;
 namespace Sedulous.RHI.Vulkan;
+
+using internal Sedulous.RHI.Vulkan;
+using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
 /// The OpenGL capabilities.

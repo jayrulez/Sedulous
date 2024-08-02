@@ -1,9 +1,10 @@
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 internal class VKUploadBuffer : UploadBuffer
 {
@@ -54,9 +55,9 @@ internal class VKUploadBuffer : UploadBuffer
 		VkDeviceMemory newDeviceMemory = default(VkDeviceMemory);
 		VulkanNative.vkAllocateMemory(nativeContext.VkDevice, &allocInfo, null, &newDeviceMemory);
 		BufferMemory = newDeviceMemory;
-		VulkanNative.vkBindBufferMemory(nativeContext.VkDevice, NativeBuffer, BufferMemory, 0UL);
+		VulkanNative.vkBindBufferMemory(nativeContext.VkDevice, NativeBuffer, BufferMemory, 0uL);
 		void* data = null;
-		VulkanNative.vkMapMemory(nativeContext.VkDevice, BufferMemory, 0UL, (uint32)size, VkMemoryMapFlags.None, &data);
+		VulkanNative.vkMapMemory(nativeContext.VkDevice, BufferMemory, 0uL, (uint32)size, VkMemoryMapFlags.None, &data);
 		DataCurrent = (DataBegin = (uint64)(int)data);
 		TotalSize = size;
 		DataEnd = DataBegin + size;

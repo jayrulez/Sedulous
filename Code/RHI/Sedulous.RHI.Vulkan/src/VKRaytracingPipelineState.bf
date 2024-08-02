@@ -33,8 +33,8 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The raytracing pipeline state description.</param>
-	public this(VKGraphicsContext context, ref RaytracingPipelineDescription description)
-		: base(ref description)
+	public this(VKGraphicsContext context, in RaytracingPipelineDescription description)
+		: base(description)
 	{
 		vkContext = context;
 		VkPipelineLayoutCreateInfo layoutInfo = VkPipelineLayoutCreateInfo()
@@ -100,7 +100,7 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 			}
 		}
 		VkPipelineShaderStageCreateInfo* stagePointer = scope VkPipelineShaderStageCreateInfo[stages.Count]*;
-		for (int i = 0; i < stages.Count; i++)
+		for (int32 i = 0; i < stages.Count; i++)
 		{
 			stagePointer[i] = stages[i];
 		}
@@ -143,24 +143,20 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 		VkPipeline newPipeline = default(VkPipeline);
 		VulkanNative.vkCreateRayTracingPipelinesKHR(context.VkDevice, VkDeferredOperationKHR.Null, VkPipelineCache.Null, 1, &pipelineInfo, null, &newPipeline);
 		NativePipeline = newPipeline;
-		CreateShaderBindingTable(context, ref description);
+		CreateShaderBindingTable(context, description);
 	}
 
-	private void CreateShaderBindingTable(VKGraphicsContext context, ref RaytracingPipelineDescription description)
+	private void CreateShaderBindingTable(VKGraphicsContext context, in RaytracingPipelineDescription description)
 	{
 		shaderBindingTable = new VKShaderTable(context);
 		RaytracingShaderStateDescription shaders = description.Shaders;
-
-		List<String> rayGenIdentifiers = shaders.GetEntryPointByStage(ShaderStages.RayGeneration, .. scope .());
-		String rayGenIdentifier = rayGenIdentifiers[0];
+		String rayGenIdentifier = shaders.GetEntryPointByStage(ShaderStages.RayGeneration, .. scope .())[0];
 		shaderBindingTable.AddRayGenProgram(rayGenIdentifier);
-
 		List<String> missIdentifiers = shaders.GetEntryPointByStage(ShaderStages.Miss, .. scope .());
 		for (int i = 0; i < missIdentifiers.Count; i++)
 		{
 			shaderBindingTable.AddMissProgram(missIdentifiers[i]);
 		}
-
 		HitGroupDescription[] hitgroups = description.HitGroups;
 		for (int i = 0; i < hitgroups.Count; i++)
 		{
@@ -170,7 +166,6 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 				shaderBindingTable.AddHitGroupProgram(hitGroupIdentifier);
 			}
 		}
-
 		shaderBindingTable.Generate(NativePipeline);
 	}
 

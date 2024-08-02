@@ -4,6 +4,9 @@ using Sedulous.RHI;
 
 namespace Sedulous.RHI.Vulkan;
 
+using internal Sedulous.RHI.Vulkan;
+using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
+
 /// <summary>
 /// Represents a Vulkan queryheap object.
 /// </summary>
@@ -24,8 +27,8 @@ public class VKQueryHeap : QueryHeap
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The queryheap description.</param>
-	public this(VKGraphicsContext context, ref QueryHeapDescription description)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, in QueryHeapDescription description)
+		: base(context, description)
 	{
 		vkContext = context;
 		VkQueryPoolCreateInfo poolInfo = VkQueryPoolCreateInfo()
@@ -52,11 +55,11 @@ public class VKQueryHeap : QueryHeap
 	/// <inheritdoc />
 	public override bool ReadData(uint32 startIndex, uint32 count, uint64[] results)
 	{
-		uint64 stride = 8UL;
+		uint64 stride = 8uL;
 		uint32 size = 8 * count;
-		VkResult result = VulkanNative.vkGetQueryPoolResults(vkContext.VkDevice, nativeQueryHeap, startIndex, count, uint(size), (void*)results.Ptr, stride, VkQueryResultFlags.VK_QUERY_RESULT_64_BIT);
+		VkResult num = VulkanNative.vkGetQueryPoolResults(vkContext.VkDevice, nativeQueryHeap, startIndex, count, uint(size), (void*)results.Ptr, stride, VkQueryResultFlags.VK_QUERY_RESULT_64_BIT);
 		VulkanNative.vkResetQueryPool(vkContext.VkDevice, nativeQueryHeap, startIndex, count);
-		return result == VkResult.VK_SUCCESS;
+		return num == VkResult.VK_SUCCESS;
 	}
 
 	/// <inheritdoc />

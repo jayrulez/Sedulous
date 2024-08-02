@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.Text;
 using Bulkan;
 using Sedulous.RHI;
-using System.Collections;
 using Sedulous.Foundation.Mathematics;
+using System.Collections;
 
 namespace Sedulous.RHI.Vulkan;
 
@@ -63,7 +63,7 @@ public static class VKHelpers
 	public static int32 FindMemoryType(VKGraphicsContext context, uint32 typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties = context.VkPhysicalDeviceMemoryProperties;
-		for (int i = 0; i < (int32)memProperties.memoryTypeCount; i++)
+		for (int i = 0; i < memProperties.memoryTypeCount; i++)
 		{
 			if ((typeFilter & (1 << i)) != 0L && (memProperties.GetMemoryType((uint32)i).propertyFlags & properties) == properties)
 			{
@@ -77,9 +77,8 @@ public static class VKHelpers
 	/// <summary>
 	/// Returns up to requested number of global layer properties.
 	/// </summary>
-	/// <param name="context">The graphics context.</param>
-	/// <returns>The string array of supported layers.</returns>
-	public static void EnumerateInstanceLayers(List<String> layers)
+	/// <param name="instanceLayers">The string array of supported layers.</param>
+	public static void EnumerateInstanceLayers(List<String> instanceLayers)
 	{
 		uint32 propCount = 0;
 		VulkanNative.vkEnumerateInstanceLayerProperties(&propCount, null);
@@ -89,19 +88,17 @@ public static class VKHelpers
 		}
 		VkLayerProperties* props = scope VkLayerProperties[(int32)propCount]*;
 		VulkanNative.vkEnumerateInstanceLayerProperties(&propCount, props);
-		layers.Resize(propCount);
 		for (int i = 0; i < propCount; i++)
 		{
-			layers[i] = new .(&props[i].layerName);
+			instanceLayers.Add(new String(&props[i].layerName));
 		}
 	}
 
 	/// <summary>
 	///  Returns up to requested number of global extension properties.
 	/// </summary>
-	/// <param name="context">The graphics context.</param>
-	/// <returns>A string array of supported extensions.</returns>
-	public static void EnumerateInstanceExtensions(List<String> extensions)
+	/// <param name="instanceExtensions">A string array of supported extensions.</param>
+	public static void EnumerateInstanceExtensions(List<String> instanceExtensions)
 	{
 		uint32 propCount = 0;
 		VulkanNative.vkEnumerateInstanceExtensionProperties(null, &propCount, null);
@@ -111,10 +108,9 @@ public static class VKHelpers
 		}
 		VkExtensionProperties* props = scope VkExtensionProperties[(int32)propCount]*;
 		VulkanNative.vkEnumerateInstanceExtensionProperties(null, &propCount, props);
-		extensions.Resize(propCount);
 		for (int i = 0; i < propCount; i++)
 		{
-			extensions[i] = new .(&props[i].extensionName);
+			instanceExtensions.Add(new String(&props[i].extensionName));
 		}
 	}
 

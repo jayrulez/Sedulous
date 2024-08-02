@@ -2,9 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents a native shader object on Metal.
@@ -50,7 +51,7 @@ public class VKShader : Shader
 					sType = VkStructureType.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 					stage = Description.Stage.ToVulkan(),
 					module = ShaderModule,
-					pName = Description.EntryPoint.CStr(),
+					pName = Description.EntryPoint, // todo: ensure cstring
 					pSpecializationInfo = null
 				};
 			}
@@ -66,8 +67,8 @@ public class VKShader : Shader
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The shader description.</param>
-	public this(GraphicsContext context, ref ShaderDescription description)
-		: base(context, ref description)
+	public this(GraphicsContext context, in ShaderDescription description)
+		: base(context, description)
 	{
 		vkContext = Context as VKGraphicsContext;
 		VkDevice vkDevice = vkContext.VkDevice;
@@ -75,14 +76,11 @@ public class VKShader : Shader
 		{
 			sType = VkStructureType.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO
 		};
-		uint8* sourcePointer = description.ShaderBytes.Ptr;
-		{
-			nativeDescription.codeSize = (uint)description.ShaderBytes.Count;
-			nativeDescription.pCode = (uint32*)sourcePointer;
-			VkShaderModule newShader = default(VkShaderModule);
-			VulkanNative.vkCreateShaderModule(vkDevice, &nativeDescription, null, &newShader);
-			ShaderModule = newShader;
-		}
+		nativeDescription.codeSize = (uint)description.ShaderBytes.Count;
+		nativeDescription.pCode = (uint32*)description.ShaderBytes.Ptr;
+		VkShaderModule newShader = default(VkShaderModule);
+		VulkanNative.vkCreateShaderModule(vkDevice, &nativeDescription, null, &newShader);
+		ShaderModule = newShader;
 	}
 
 	/// <inheritdoc />

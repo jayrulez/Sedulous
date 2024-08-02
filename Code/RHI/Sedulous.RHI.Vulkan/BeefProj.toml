@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.RHI" = "*", corlib = "*"}
+Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.Foundation" = "*", "Sedulous.RHI" = "*"}
 
 [Project]
 Name = "Sedulous.RHI.Vulkan"

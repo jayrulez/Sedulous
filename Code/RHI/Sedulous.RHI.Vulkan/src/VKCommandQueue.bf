@@ -3,9 +3,10 @@ using Bulkan;
 using Sedulous.RHI;
 using System.Collections;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represent a queue where commandbuffers waits to be executing by the GPU.
@@ -38,7 +39,7 @@ public class VKCommandQueue : CommandQueue
 		set
 		{
 			name.Set(value);
-			vkContext?.SetDebugName(VkObjectType.VK_OBJECT_TYPE_QUEUE, (uint64)CommandQueue.Handle, name);
+			vkContext?.SetDebugName(VkObjectType.VK_OBJECT_TYPE_QUEUE, (uint64)(int)CommandQueue.Handle, name);
 		}
 	}
 
@@ -70,6 +71,11 @@ public class VKCommandQueue : CommandQueue
 		VkQueue newQueue = default(VkQueue);
 		VulkanNative.vkGetDeviceQueue(vkContext.VkDevice, familyIndex, 0, &newQueue);
 		CommandQueue = newQueue;
+	}
+
+	public ~this()
+	{
+		delete executionArray;
 	}
 
 	/// <inheritdoc />
@@ -142,7 +148,7 @@ public class VKCommandQueue : CommandQueue
 	/// </summary>
 	private void ClearExecutionArray()
 	{
-		for (int i = 0; i < executionArraySize; i++)
+		for (int32 i = 0; i < executionArraySize; i++)
 		{
 			executionArray[i] = null;
 		}
@@ -162,8 +168,11 @@ public class VKCommandQueue : CommandQueue
 			WaitIdle();
 			while (queue.Count > 0)
 			{
-				queue.PopFront().Dispose();
+				var commandBuffer = queue.PopFront();
+				commandBuffer.Dispose();
+				delete commandBuffer;
 			}
+			delete queue;
 			disposed = true;
 		}
 	}

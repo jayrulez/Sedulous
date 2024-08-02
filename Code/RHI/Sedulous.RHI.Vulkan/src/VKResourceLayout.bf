@@ -2,9 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// The Vulkan implementation of a ResourceLayout object.
@@ -43,8 +44,8 @@ public class VKResourceLayout : ResourceLayout
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The layout description.</param>
-	public this(VKGraphicsContext context, ref ResourceLayoutDescription description)
-		: base(ref description)
+	public this(VKGraphicsContext context, in ResourceLayoutDescription description)
+		: base(description)
 	{
 		vkContext = context;
 		VkDescriptorSetLayoutCreateInfo info = VkDescriptorSetLayoutCreateInfo()

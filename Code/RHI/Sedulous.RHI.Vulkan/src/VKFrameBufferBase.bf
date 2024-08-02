@@ -14,7 +14,7 @@ public abstract class VKFrameBufferBase : FrameBuffer
 	/// <param name="depthTarget">The depthtarget attachment.</param>
 	/// <param name="colorTargets">The colortarget attachment.</param>
 	/// <param name="disposeAttachments">Whether the attachment texture should be destroy with this object or not.</param>
-	public this(FrameBufferAttachment? depthTarget, FrameBufferColorAttachmentList colorTargets, bool disposeAttachments)
+	public this(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 		: base(depthTarget, colorTargets, disposeAttachments)
 	{
 	}

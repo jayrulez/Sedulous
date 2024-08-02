@@ -2,10 +2,11 @@ using System;
 using Bulkan;
 using Sedulous.RHI.Raytracing;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 using static Sedulous.RHI.Vulkan.VKHelpers;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// Vulkan Top Level Acceleration Structure implementation.
@@ -34,12 +35,12 @@ public class VKTopLevelAS : TopLevelAS
 	/// <param name="context">DirectX12 Context.</param>
 	/// <param name="commandBuffer">Command buffer.</param>
 	/// <param name="description">Top Level Description.</param>
-	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, ref TopLevelASDescription description)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, in TopLevelASDescription description)
+		: base(context, description)
 	{
 		vkContext = context;
 		VkAccelerationStructureInstanceKHR* instanceDescriptions = scope VkAccelerationStructureInstanceKHR[description.Instances.Count]*;
-		for (int i = 0; i < description.Instances.Count; i++)
+		for (int32 i = 0; i < description.Instances.Count; i++)
 		{
 			AccelerationStructureInstance instance = description.Instances[i];
 			instanceDescriptions[i] = VkAccelerationStructureInstanceKHR()
@@ -52,7 +53,7 @@ public class VKTopLevelAS : TopLevelAS
 				accelerationStructureReference = (uint64)(int)(instance.BottonLevel as VKBottomLevelAS).NativePointer
 			};
 		}
-		instanceBuffer = VKRaytracingHelpers.CreateMappedBuffer(vkContext, (void*)instanceDescriptions, (uint64)sizeof(VkAccelerationStructureInstanceKHR) * (uint64)description.Instances.Count, VkBufferUsageFlags.VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR);
+		instanceBuffer = VKRaytracingHelpers.CreateMappedBuffer(vkContext, instanceDescriptions, (uint64)sizeof(VkAccelerationStructureInstanceKHR) * (uint64)description.Instances.Count, VkBufferUsageFlags.VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR);
 		VkAccelerationStructureGeometryKHR geometryInfo = VkAccelerationStructureGeometryKHR()
 		{
 			sType = VkStructureType.VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR,
@@ -131,7 +132,7 @@ public class VKTopLevelAS : TopLevelAS
 	/// </summary>
 	/// <param name="commandBuffer">Command Buffer instance.</param>
 	/// <param name="description">New top level description.</param>
-	public void UpdateAccelerationStructure(VkCommandBuffer commandBuffer, ref TopLevelASDescription description)
+	public void UpdateAccelerationStructure(VkCommandBuffer commandBuffer, in TopLevelASDescription description)
 	{
 		Description = description;
 		VkAccelerationStructureInstanceKHR[] instanceDescriptions = new VkAccelerationStructureInstanceKHR[description.Instances.Count];
@@ -149,9 +150,10 @@ public class VKTopLevelAS : TopLevelAS
 		}
 		uint32 instanceSize = (uint32)(sizeof(VkAccelerationStructureInstanceKHR) * instanceDescriptions.Count);
 		void* instanceBufferPointer = default(void*);
-		VulkanNative.vkMapMemory(vkContext.VkDevice, instanceBuffer.Memory, 0UL, instanceSize, VkMemoryMapFlags.None, &instanceBufferPointer);
+		VulkanNative.vkMapMemory(vkContext.VkDevice, instanceBuffer.Memory, 0uL, instanceSize, VkMemoryMapFlags.None, &instanceBufferPointer);
 		Internal.MemCpy(instanceBufferPointer, (void*)instanceDescriptions.Ptr, instanceSize);
 		VulkanNative.vkUnmapMemory(vkContext.VkDevice, instanceBuffer.Memory);
+
 		VkAccelerationStructureGeometryKHR vkAccelerationStructureGeometryKHR = default(VkAccelerationStructureGeometryKHR);
 		vkAccelerationStructureGeometryKHR.sType = VkStructureType.VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_KHR;
 		vkAccelerationStructureGeometryKHR.flags = VkGeometryFlagsKHR.VK_GEOMETRY_OPAQUE_BIT_KHR;

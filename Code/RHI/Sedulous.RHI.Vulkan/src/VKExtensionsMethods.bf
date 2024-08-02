@@ -5,7 +5,7 @@ using Sedulous.RHI.Raytracing;
 namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
-/// Extensions methods used to convert values from Sedulous to Vulkan.
+/// Extensions methods used to convert values from the RHI to DirectX.
 /// </summary>
 public static class VKExtensionsMethods
 {
@@ -689,10 +689,10 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to Sedulous pixel format.
+	/// Converts to the RHI pixel format.
 	/// </summary>
 	/// <param name="format">The format to convert.</param>
-	/// <returns>The Sedulous format.</returns>
+	/// <returns>The RHI format.</returns>
 	public static PixelFormat FromVulkan(this VkFormat format)
 	{
 		switch (format)

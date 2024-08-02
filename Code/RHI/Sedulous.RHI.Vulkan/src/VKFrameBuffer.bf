@@ -1,11 +1,12 @@
 using Bulkan;
 using Sedulous.RHI;
-using System.Collections;
 using System;
+using System.Collections;
+
+namespace Sedulous.RHI.Vulkan;
 
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents a native FrameBuffer object on Vulkan.
@@ -49,7 +50,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 	/// <param name="depthTarget">The depth texture which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
 	/// <param name="colorTargets">The array of color textures, all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
 	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
-	public this(VKGraphicsContext context, FrameBufferAttachment? depthTarget, FrameBufferColorAttachmentList colorTargets, bool disposeAttachments)
+	public this(VKGraphicsContext context, FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 		: base(depthTarget, colorTargets, disposeAttachments)
 	{
 		vkContext = context;
@@ -93,10 +94,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 			height = base.Height,
 			attachmentCount = (uint32)imageViews.Count
 		};
-		VkImageView* attachments = imageViews.Ptr;
-		{
-			frameBufferInfo.pAttachments = attachments;
-		}
+		frameBufferInfo.pAttachments = imageViews.Ptr;
 		frameBufferInfo.layers = 1;
 		frameBufferInfo.renderPass = defaultRenderPasses[7];
 		VkFramebuffer newFrameBuffer = default(VkFramebuffer);
@@ -160,13 +158,13 @@ public class VKFrameBuffer : VKFrameBufferBase
 
 	private VkRenderPass CreateRenderPasses(VkAttachmentLoadOp targetLoadOp, VkAttachmentLoadOp depthLoadOp, VkAttachmentLoadOp stencilLoadOp)
 	{
-		int32 colorTargetLength = (int32)ColorTargets.Count;
-		int32 targetsCount = colorTargetLength;
+		int colorTargetLength = ((!ColorTargets.IsEmpty) ? ColorTargets.Count : 0);
+		int targetsCount = colorTargetLength;
 		if (DepthStencilTarget.HasValue)
 		{
 			targetsCount++;
 		}
-		int32 attachmentCount = targetsCount * 2;
+		int attachmentCount = targetsCount * 2;
 		uint32 currentAttachmentIndex = 0;
 		uint32 colorAttachmentIndex = 0;
 		uint32 resolvedAttachmentIndex = 0;
@@ -175,7 +173,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 		VkAttachmentReference* resolveAttachmentReferences = scope VkAttachmentReference[colorTargetLength]*;
 		if (!ColorTargets.IsEmpty)
 		{
-			for (int i = 0; i < colorTargetLength; i++)
+			for (int32 i = 0; i < colorTargetLength; i++)
 			{
 				FrameBufferAttachment frameBufferAttachment = ColorTargets[i];
 				VKTexture colorTexture = frameBufferAttachment.AttachmentTexture as VKTexture;
@@ -201,7 +199,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 				isStencilFormat = true;
 			}
 			VkImageLayout depthInitialLayout = ((depthLoadOp == VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD || stencilLoadOp == VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD) ? VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL : VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED);
-			VkAttachmentDescription depthTextureAttachment = CreateAttachment(depthTexture.Description.Format.ToVulkan(depthFormat: true), depthTexture.Description.SampleCount.ToVulkan(), currentAttachmentIndex, depthLoadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, isStencilFormat ? stencilLoadOp : VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, depthInitialLayout, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL).Description;
+			VkAttachmentDescription depthTextureAttachment = CreateAttachment(depthTexture.Description.Format.ToVulkan(depthFormat: true), depthTexture.Description.SampleCount.ToVulkan(), currentAttachmentIndex, depthLoadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, isStencilFormat ? stencilLoadOp : VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, depthInitialLayout, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL).Attachment;
 			VkAttachmentReference vkAttachmentReference = default(VkAttachmentReference);
 			vkAttachmentReference.attachment = currentAttachmentIndex;
 			vkAttachmentReference.layout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -210,7 +208,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 			VKTexture resolvedDepthTexture = DepthStencilTarget.Value.ResolvedTexture as VKTexture;
 			if (resolvedDepthTexture != null)
 			{
-				VkAttachmentDescription msaaDepthTextureAttachment = CreateAttachment(resolvedDepthTexture.Description.Format.ToVulkan(depthFormat: true), resolvedDepthTexture.Description.SampleCount.ToVulkan(), currentAttachmentIndex, depthLoadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, isStencilFormat ? stencilLoadOp : VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, depthInitialLayout, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL).Description;
+				VkAttachmentDescription msaaDepthTextureAttachment = CreateAttachment(resolvedDepthTexture.Description.Format.ToVulkan(depthFormat: true), resolvedDepthTexture.Description.SampleCount.ToVulkan(), currentAttachmentIndex, depthLoadOp, VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, isStencilFormat ? stencilLoadOp : VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE, (!isStencilFormat) ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE, depthInitialLayout, VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL).Attachment;
 				vkAttachmentReference = default(VkAttachmentReference);
 				vkAttachmentReference.attachment = currentAttachmentIndex;
 				vkAttachmentReference.layout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
@@ -296,7 +294,7 @@ public class VKFrameBuffer : VKFrameBufferBase
 		return newRenderPass;
 	}
 
-	private (VkAttachmentDescription Description, VkAttachmentReference Reference) CreateAttachment(VkFormat format, VkSampleCountFlags samples, uint32 index, VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp, VkAttachmentLoadOp stencilLoadOp, VkAttachmentStoreOp stencilStoreOp, VkImageLayout initialLayout, VkImageLayout finalLayout)
+	private (VkAttachmentDescription Attachment, VkAttachmentReference Reference) CreateAttachment(VkFormat format, VkSampleCountFlags samples, uint32 index, VkAttachmentLoadOp loadOp, VkAttachmentStoreOp storeOp, VkAttachmentLoadOp stencilLoadOp, VkAttachmentStoreOp stencilStoreOp, VkImageLayout initialLayout, VkImageLayout finalLayout)
 	{
 		VkAttachmentDescription vkAttachmentDescription = default(VkAttachmentDescription);
 		vkAttachmentDescription.format = format;
@@ -361,17 +359,19 @@ public class VKFrameBuffer : VKFrameBufferBase
 		}
 		if (disposing)
 		{
-			base.Dispose(disposing);
-
 			VulkanNative.vkDestroyFramebuffer(vkContext.VkDevice, NativeFrameBuffer, null);
 			for (int i = 0; i < defaultRenderPasses.Count; i++)
 			{
 				VulkanNative.vkDestroyRenderPass(vkContext.VkDevice, defaultRenderPasses[i], null);
 			}
+			delete defaultRenderPasses;
+
 			for (VkImageView imageView in imageViews)
 			{
 				VulkanNative.vkDestroyImageView(vkContext.VkDevice, imageView, null);
 			}
+			delete imageViews;
+			base.Dispose(disposing);
 		}
 		disposed = true;
 	}

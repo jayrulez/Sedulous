@@ -2,9 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents the a Vulkan samplerState object.
@@ -52,8 +53,8 @@ public class VKSamplerState : SamplerState
 	/// </summary>
 	/// <param name="context">The graphics context. <see cref="T:Sedulous.RHI.GraphicsContext" />.</param>
 	/// <param name="description">The sampler state description. <see cref="T:Sedulous.RHI.SamplerStateDescription" />.</param>
-	public this(GraphicsContext context, ref SamplerStateDescription description)
-		: base(context, ref description)
+	public this(GraphicsContext context, in SamplerStateDescription description)
+		: base(context, description)
 	{
 		description.Filter.ToVulkan(var minFilter, var magFilter, var mipmapMode);
 		VkSamplerCreateInfo nativeDescription = VkSamplerCreateInfo()

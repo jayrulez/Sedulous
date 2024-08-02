@@ -2,9 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI.Raytracing;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// Vulkan Bottom Level Acceleration Structure implementation.
@@ -29,14 +30,14 @@ public class VKBottomLevelAS : BottomLevelAS
 	/// <param name="context">Graphics Context.</param>
 	/// <param name="commandBuffer">Command buffer.</param>
 	/// <param name="description">Bottom Level Description.</param>
-	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, ref BottomLevelASDescription description)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, in BottomLevelASDescription description)
+		: base(context, description)
 	{
 		vkContext = context;
 		VkAccelerationStructureGeometryKHR* geometryInfos = scope VkAccelerationStructureGeometryKHR[description.Geometries.Count]*;
 		VkAccelerationStructureBuildRangeInfoKHR* ranges = scope VkAccelerationStructureBuildRangeInfoKHR[description.Geometries.Count]*;
 		uint32 primitiveCount = 0;
-		for (int i = 0; i < description.Geometries.Count; i++)
+		for (int32 i = 0; i < description.Geometries.Count; i++)
 		{
 			AccelerationStructureGeometry geometry = description.Geometries[i];
 			VkAccelerationStructureGeometryKHR geometryInfo = default(VkAccelerationStructureGeometryKHR);

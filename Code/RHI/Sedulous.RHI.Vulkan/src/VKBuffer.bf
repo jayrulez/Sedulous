@@ -2,14 +2,15 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// Represents a Vulkan buffer object.
 /// </summary>
-public class VKBuffer : Buffer
+public class VKBuffer : Sedulous.RHI.Buffer
 {
 	/// <summary>
 	/// The Vulkan buffer object.
@@ -55,8 +56,8 @@ public class VKBuffer : Buffer
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">A buffer description.</param>
-	public this(VKGraphicsContext context, void* data, ref BufferDescription description)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, void* data, in BufferDescription description)
+		: base(context, description)
 	{
 		vkContext = context;
 		vkUsage = VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
@@ -137,7 +138,7 @@ public class VKBuffer : Buffer
 		VkDeviceMemory newDeviceMemory = default(VkDeviceMemory);
 		VulkanNative.vkAllocateMemory(context.VkDevice, &allocInfo, null, &newDeviceMemory);
 		BufferMemory = newDeviceMemory;
-		VulkanNative.vkBindBufferMemory(context.VkDevice, NativeBuffer, BufferMemory, 0UL);
+		VulkanNative.vkBindBufferMemory(context.VkDevice, NativeBuffer, BufferMemory, 0uL);
 		if (bufferInfo.usage.HasFlag(VkBufferUsageFlags.VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT))
 		{
 			VkBufferDeviceAddressInfo addressInfo = VkBufferDeviceAddressInfo()
@@ -223,7 +224,7 @@ public class VKBuffer : Buffer
 	/// <param name="sizeInBytes">The data size in bytes to copy.</param>
 	/// <param name="sourceOffset">The source buffer offset in bytes.</param>
 	/// <param name="destinationOffset">The destination buffer offset in bytes.</param>
-	public void CopyTo(VkCommandBuffer commandBuffer, CommandQueueType queueType, Buffer destination, uint32 sizeInBytes, uint32 sourceOffset, uint32 destinationOffset)
+	public void CopyTo(VkCommandBuffer commandBuffer, CommandQueueType queueType, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset, uint32 destinationOffset)
 	{
 		VKBuffer dstBuffer = destination as VKBuffer;
 		VkBufferCopy vkBufferCopy = default(VkBufferCopy);

@@ -1,9 +1,11 @@
 using Bulkan;
-using System.Collections;
 using System.Threading;
+using System.Collections;
+
+namespace Sedulous.RHI.Vulkan;
 
 using internal Sedulous.RHI.Vulkan;
-namespace Sedulous.RHI.Vulkan;
+using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
 /// This class represent a pool of descriptor sets.
@@ -42,13 +44,7 @@ internal class VKDescriptorSetPool
 
 		public bool Allocate(VKResourceCounts resourceCounts)
 		{
-			if (RemainingSets != 0
-				&& ConstantBufferCount >= resourceCounts.ConstantBufferCount
-				&& TextureCount >= resourceCounts.TextureCount
-				&& SamplerCount >= resourceCounts.SamplerCount
-				&& StorageBufferCount >= resourceCounts.StorageBufferCount
-				&& StorageImageCount >= resourceCounts.StorageImageCount
-				&& AccelerationStructureCount >= resourceCounts.AccelerationStructureCount)
+			if (RemainingSets != 0 && ConstantBufferCount >= resourceCounts.ConstantBufferCount && TextureCount >= resourceCounts.TextureCount && SamplerCount >= resourceCounts.SamplerCount && StorageBufferCount >= resourceCounts.StorageBufferCount && StorageImageCount >= resourceCounts.StorageImageCount && AccelerationStructureCount >= resourceCounts.AccelerationStructureCount)
 			{
 				RemainingSets--;
 				ConstantBufferCount -= resourceCounts.ConstantBufferCount;
@@ -99,34 +95,25 @@ internal class VKDescriptorSetPool
 		uint32 descriptorCount = 100;
 		uint32 poolSizeCount = (context.raytracingSupported ? 8 : 7);
 		VkDescriptorPoolSize* sizes = scope VkDescriptorPoolSize[(int32)poolSizeCount]*;
-
-		sizes.type = VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-		sizes.descriptorCount = descriptorCount;
-
+		sizes[0].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		sizes[0].descriptorCount = descriptorCount;
 		sizes[1].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 		sizes[1].descriptorCount = descriptorCount;
-
 		sizes[2].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		sizes[2].descriptorCount = descriptorCount;
-
 		sizes[3].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER;
 		sizes[3].descriptorCount = descriptorCount;
-
 		sizes[4].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
 		sizes[4].descriptorCount = descriptorCount;
-
 		sizes[5].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 		sizes[5].descriptorCount = descriptorCount;
-
 		sizes[6].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
 		sizes[6].descriptorCount = descriptorCount;
-
 		if (context.raytracingSupported)
 		{
 			sizes[7].type = VkDescriptorType.VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
 			sizes[7].descriptorCount = descriptorCount;
 		}
-
 		VkDescriptorPoolCreateInfo poolInfo = default(VkDescriptorPoolCreateInfo);
 		poolInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 		poolInfo.flags = VkDescriptorPoolCreateFlags.VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
@@ -159,6 +146,7 @@ internal class VKDescriptorSetPool
 	public VKDescriptorAllocationToken Allocate(VkDescriptorSetLayout layout, VKResourceCounts resourceCounts)
 	{
 		var layout;
+
 		VkDescriptorPool pool = GetPool(resourceCounts);
 		VkDescriptorSetAllocateInfo allocInfo = default(VkDescriptorSetAllocateInfo);
 		allocInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -189,6 +177,8 @@ internal class VKDescriptorSetPool
 		for (PoolInfo poolInfo in pools)
 		{
 			VulkanNative.vkDestroyDescriptorPool(context.VkDevice, poolInfo.DescriptorPool, null);
+			delete poolInfo;
 		}
+		delete pools;
 	}
 }

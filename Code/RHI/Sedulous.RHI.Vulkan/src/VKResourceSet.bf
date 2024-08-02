@@ -3,9 +3,10 @@ using Bulkan;
 using Sedulous.RHI;
 using System.Collections;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// The Vulkan implementation of a ResourceSet object.
@@ -59,8 +60,8 @@ public class VKResourceSet : ResourceSet
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The resourceSet description.</param>
-	public this(VKGraphicsContext context, ref ResourceSetDescription description)
-		: base(ref description)
+	public this(VKGraphicsContext context, in ResourceSetDescription description)
+		: base(description)
 	{
 		vkContext = context;
 		VKResourceLayout vkLayout = description.Layout as VKResourceLayout;

@@ -4,11 +4,11 @@ using Bulkan;
 using Sedulous.RHI;
 using Sedulous.RHI.Raytracing;
 using Sedulous.Foundation.Mathematics;
-using Sedulous.Foundation.Utilities;
+
+namespace Sedulous.RHI.Vulkan;
 
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// The Vulkan implementation of a command buffer object.
@@ -57,7 +57,7 @@ public class VKCommandBuffer : CommandBuffer
 		}
 		set
 		{
-			name.Set(value ?? String.Empty);
+			name.Set(value);
 			context.SetDebugName(VkObjectType.VK_OBJECT_TYPE_COMMAND_BUFFER, (uint64)(int)CommandBuffer.Handle, scope $"{name}_CommandBuffer");
 			context.SetDebugName(VkObjectType.VK_OBJECT_TYPE_COMMAND_POOL, commandPool.Handle, scope $"{name}_CommandPool");
 		}
@@ -106,13 +106,13 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void BeginRenderPassInternal(ref RenderPassDescription description)
+	protected override void BeginRenderPassInternal(in RenderPassDescription description)
 	{
 		FrameBuffer frameBuffer = description.FrameBuffer;
 		ClearValue clearValue = description.ClearValue;
 		if (clearValue.Flags == ClearFlags.None)
 		{
-			FrameBufferColorAttachmentList colorTargets = frameBuffer.ColorTargets;
+			FrameBufferAttachmentList colorTargets = frameBuffer.ColorTargets;
 			for (FrameBufferAttachment attachment in colorTargets)
 			{
 				(attachment.Texture as VKTexture).TransitionImageLayout(CommandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, 0, 1, 0, 1);
@@ -264,7 +264,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	public override void DispatchIndirect(Buffer argBuffer, uint32 offset)
+	public override void DispatchIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset)
 	{
 		VKBuffer buffer = argBuffer as VKBuffer;
 		VulkanNative.vkCmdDispatchIndirect(CommandBuffer, buffer.NativeBuffer, offset);
@@ -289,7 +289,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	public override void DrawIndexedInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
+	public override void DrawIndexedInstancedIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
 	{
 		if ((argBuffer.Description.Flags & BufferFlags.IndirectBuffer) == 0)
 		{
@@ -306,14 +306,14 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	public override void DrawInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
+	public override void DrawInstancedIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
 	{
 		VKBuffer buffer = argBuffer as VKBuffer;
 		VulkanNative.vkCmdDrawIndirect(CommandBuffer, buffer.NativeBuffer, offset, drawCount, stride);
 	}
 
 	/// <inheritdoc />
-	protected override void SetIndexBufferInternal(Buffer buffer, IndexFormat format = IndexFormat.UInt16, uint32 offset = 0)
+	protected override void SetIndexBufferInternal(Sedulous.RHI.Buffer buffer, IndexFormat format = IndexFormat.UInt16, uint32 offset = 0)
 	{
 		VKBuffer vkBuffer = buffer as VKBuffer;
 		VkIndexType vkFormat = format.ToVulkan();
@@ -356,12 +356,12 @@ public class VKCommandBuffer : CommandBuffer
 	protected override void SetResourceSetInternal(ResourceSet resourceSet, uint32 index, uint32[] offsets)
 	{
 		VKResourceSet vkResourceSet = resourceSet as VKResourceSet;
-		for (int i = 0; i < vkResourceSet.StorageTextures.Count; i++)
+		for (int32 i = 0; i < vkResourceSet.StorageTextures.Count; i++)
 		{
 			VKTexture storageImage = vkResourceSet.StorageTextures[i];
 			storageImage.TransitionImageLayout(CommandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_GENERAL, 0, storageImage.Description.MipLevels, 0, storageImage.Description.ArraySize);
 		}
-		for (int i = 0; i < vkResourceSet.Textures.Count; i++)
+		for (int32 i = 0; i < vkResourceSet.Textures.Count; i++)
 		{
 			VKTexture textureImage = vkResourceSet.Textures[i];
 			textureImage.TransitionImageLayout(CommandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, 0, textureImage.Description.MipLevels, 0, textureImage.Description.ArraySize);
@@ -412,15 +412,12 @@ public class VKCommandBuffer : CommandBuffer
 				Rectangle rectangle = rectangles[i];
 				rawRectangles[i] = VkRect2D(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height);
 			}
-			VkRect2D* pointer = rawRectangles.Ptr;
-			{
-				VulkanNative.vkCmdSetScissor(CommandBuffer, 0, (uint32)rectangles.Count, pointer);
-			}
+			VulkanNative.vkCmdSetScissor(CommandBuffer, 0, (uint32)rectangles.Count, rawRectangles.Ptr);
 		}
 	}
 
 	/// <inheritdoc />
-	protected override void SetVertexBufferInternal(uint32 slot, Buffer buffer, uint32 offset = 0)
+	protected override void SetVertexBufferInternal(uint32 slot, Sedulous.RHI.Buffer buffer, uint32 offset = 0)
 	{
 		VKBuffer obj = buffer as VKBuffer;
 		uint64 nativeOffset = offset;
@@ -429,7 +426,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void SetVertexBuffersInternal(Buffer[] buffers, int32[] offsets)
+	protected override void SetVertexBuffersInternal(Sedulous.RHI.Buffer[] buffers, int32[] offsets)
 	{
 		ArrayHelpers.EnsureArraySize(ref vertexBuffers, buffers.Count);
 		ArrayHelpers.EnsureArraySize(ref vertexOffsets, buffers.Count);
@@ -438,13 +435,7 @@ public class VKCommandBuffer : CommandBuffer
 			vertexBuffers[i] = (buffers[i] as VKBuffer).NativeBuffer;
 			vertexOffsets[i] = (uint64)((offsets != null) ? offsets[i] : 0);
 		}
-		VkBuffer* buffersPointer = vertexBuffers.Ptr;
-		{
-			uint64* pOffsets = vertexOffsets.Ptr;
-			{
-				VulkanNative.vkCmdBindVertexBuffers(CommandBuffer, 0, (uint32)buffers.Count, buffersPointer, pOffsets);
-			}
-		}
+		VulkanNative.vkCmdBindVertexBuffers(CommandBuffer, 0, (uint32)buffers.Count, vertexBuffers.Ptr, vertexOffsets.Ptr);
 	}
 
 	/// <inheritdoc />
@@ -466,17 +457,14 @@ public class VKCommandBuffer : CommandBuffer
 				maxDepth = viewport.MaxDepth
 			};
 		}
-		VkViewport* viewportPointer = rawViewports.Ptr;
-		{
-			VulkanNative.vkCmdSetViewport(CommandBuffer, 0, (uint32)rawViewports.Count, viewportPointer);
-		}
+		VulkanNative.vkCmdSetViewport(CommandBuffer, 0, (uint32)rawViewports.Count, rawViewports.Ptr);
 	}
 
 	/// <summary>
 	/// Sets a resource barrier for a texture.
 	/// </summary>
 	/// <param name="buffer">The buffer.</param>
-	public override void ResourceBarrierUnorderedAccessView(Buffer buffer)
+	public override void ResourceBarrierUnorderedAccessView(Sedulous.RHI.Buffer buffer)
 	{
 		VkBufferMemoryBarrier barrier = default(VkBufferMemoryBarrier);
 		barrier.sType = VkStructureType.VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
@@ -567,7 +555,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void CopyBufferDataToInternal(Buffer origin, Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
+	protected override void CopyBufferDataToInternal(Sedulous.RHI.Buffer origin, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
 	{
 		(origin as VKBuffer).CopyTo(CommandBuffer, commandQueue.QueueType, destination, sizeInBytes, sourceOffset, destinationOffset);
 	}
@@ -585,7 +573,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void UpdateBufferDataInternal(Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
+	protected override void UpdateBufferDataInternal(Sedulous.RHI.Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
 	{
 		(buffer as VKBuffer).SetData(CommandBuffer, source, sourceSizeInBytes, destinationOffsetInBytes);
 	}
@@ -597,7 +585,7 @@ public class VKCommandBuffer : CommandBuffer
 		{
 			VkDebugUtilsLabelEXT vkDebugUtilsLabelEXT = default(VkDebugUtilsLabelEXT);
 			vkDebugUtilsLabelEXT.sType = VkStructureType.VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
-			vkDebugUtilsLabelEXT.pLabelName = label.CStr();
+			vkDebugUtilsLabelEXT.pLabelName = scope String(label).CStr();
 			VkDebugUtilsLabelEXT labelInfo = vkDebugUtilsLabelEXT;
 			VulkanNative.vkCmdBeginDebugUtilsLabelEXT(CommandBuffer, &labelInfo);
 		}
@@ -619,7 +607,7 @@ public class VKCommandBuffer : CommandBuffer
 		{
 			VkDebugUtilsLabelEXT vkDebugUtilsLabelEXT = default(VkDebugUtilsLabelEXT);
 			vkDebugUtilsLabelEXT.sType = VkStructureType.VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT;
-			vkDebugUtilsLabelEXT.pLabelName = label.CStr();
+			vkDebugUtilsLabelEXT.pLabelName = scope String(label).CStr();
 			VkDebugUtilsLabelEXT labelInfo = vkDebugUtilsLabelEXT;
 			VulkanNative.vkCmdInsertDebugUtilsLabelEXT(CommandBuffer, &labelInfo);
 		}
@@ -658,22 +646,19 @@ public class VKCommandBuffer : CommandBuffer
 	/// <inheritdoc />
 	public override BottomLevelAS BuildRaytracingAccelerationStructure(BottomLevelASDescription description)
 	{
-		var description;
-		return new VKBottomLevelAS(context, CommandBuffer, ref description);
+		return new VKBottomLevelAS(context, CommandBuffer, description);
 	}
 
 	/// <inheritdoc />
 	public override TopLevelAS BuildRaytracingAccelerationStructure(TopLevelASDescription description)
 	{
-		var description;
-		return new VKTopLevelAS(context, CommandBuffer, ref description);
+		return new VKTopLevelAS(context, CommandBuffer, description);
 	}
 
 	/// <inheritdoc />
 	public override void UpdateRaytracingAccelerationStructure(ref TopLevelAS tlas, TopLevelASDescription newDescription)
 	{
-		var newDescription;
-		((VKTopLevelAS)tlas).UpdateAccelerationStructure(CommandBuffer, ref newDescription);
+		((VKTopLevelAS)tlas).UpdateAccelerationStructure(CommandBuffer, newDescription);
 	}
 
 	/// <inheritdoc />
@@ -717,6 +702,18 @@ public class VKCommandBuffer : CommandBuffer
 		{
 			if (disposing)
 			{
+				if(rawViewports != null)
+					delete rawViewports;
+
+				if(rawRectangles != null)
+					delete rawRectangles;
+
+				if(vertexOffsets != null)
+					delete vertexOffsets;
+
+				if(vertexBuffers != null)
+					delete vertexBuffers;
+
 				VulkanNative.vkDestroyCommandPool(context.VkDevice, commandPool, null);
 			}
 			disposed = true;

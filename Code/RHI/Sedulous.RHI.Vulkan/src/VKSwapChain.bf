@@ -6,9 +6,10 @@ using Sedulous.Foundation;
 using Sedulous.Foundation.Utilities;
 using Sedulous.Platform;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents a native swapchain object on Vulkan.
@@ -85,8 +86,8 @@ public class VKSwapChain : SwapChain
 	/// <param name="jniEnv">The jni environment pointer.</param>
 	/// <param name="surface">The native surface pointer.</param>
 	/// <returns>A new ANativeWindows surface.</returns>
-	[Import("android.so")]
-	public static extern void* ANativeWindow_fromSurface(void* jniEnv, void* surface);
+	//[Import("android.so")]
+	//public static extern void* ANativeWindow_fromSurface(void* jniEnv, void* surface);
 
 	/// <inheritdoc />
 	public override Texture GetCurrentFramebufferTexture()
@@ -134,26 +135,26 @@ public class VKSwapChain : SwapChain
 			{
 				VkWaylandSurfaceCreateInfoKHR wayLandSurfaceInfo = default(VkWaylandSurfaceCreateInfoKHR);
 				wayLandSurfaceInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR;
-				wayLandSurfaceInfo.display = (void*)base.SwapChainDescription.SurfaceInfo.Wayland.Display;
-				wayLandSurfaceInfo.surface = (void*)base.SwapChainDescription.SurfaceInfo.Wayland.Surface;
+				wayLandSurfaceInfo.display = base.SwapChainDescription.SurfaceInfo.Wayland.Display;
+				wayLandSurfaceInfo.surface = base.SwapChainDescription.SurfaceInfo.Wayland.Surface;
 				VulkanNative.vkCreateWaylandSurfaceKHR(vkContext.VkInstance, &wayLandSurfaceInfo, null, &newSurface);
 			}
 			else
 			{
 				VkXlibSurfaceCreateInfoKHR x11SurfaceInfo = default(VkXlibSurfaceCreateInfoKHR);
 				x11SurfaceInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR;
-				x11SurfaceInfo.dpy = (void*)base.SwapChainDescription.SurfaceInfo.X11.Display;
+				x11SurfaceInfo.dpy = base.SwapChainDescription.SurfaceInfo.X11.Display;
 				x11SurfaceInfo.window = (void*)(int)base.SwapChainDescription.SurfaceInfo.X11.Window;
 				VulkanNative.vkCreateXlibSurfaceKHR(vkContext.VkInstance, &x11SurfaceInfo, null, &newSurface);
 			}
 			break;
 		case PlatformType.Android:
 		{
-			void* aNativeWindow = ANativeWindow_fromSurface((void*)base.SwapChainDescription.SurfaceInfo.Android.JNIEnv, (void*)base.SwapChainDescription.SurfaceInfo.Android.Surface);
+			/*void* aNativeWindow = ANativeWindow_fromSurface(base.SwapChainDescription.SurfaceInfo.Android.JNIEnv, base.SwapChainDescription.SurfaceInfo.Android.Surface);
 			VkAndroidSurfaceCreateInfoKHR androidSurfaceInfo = default(VkAndroidSurfaceCreateInfoKHR);
 			androidSurfaceInfo.sType = VkStructureType.VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR;
 			androidSurfaceInfo.window = aNativeWindow;
-			VulkanNative.vkCreateAndroidSurfaceKHR(vkContext.VkInstance, &androidSurfaceInfo, null, &newSurface);
+			VulkanNative.vkCreateAndroidSurfaceKHR(vkContext.VkInstance, &androidSurfaceInfo, null, &newSurface);*/
 			break;
 		}
 		case PlatformType.MacOS:
@@ -217,7 +218,7 @@ public class VKSwapChain : SwapChain
 		vkContext.QueueIndices = VKQueueFamilyIndices.FindQueueFamilies(vkContext, vkContext.VkPhysicalDevice, vkSurface);
 		uint32 graphicsQueueIndex = (uint32)vkContext.QueueIndices.GraphicsFamily;
 		uint32 presentQueueIndex = (uint32)vkContext.QueueIndices.Presentfamily;
-		uint32* queueFamilices = scope uint32[2]* ( graphicsQueueIndex, presentQueueIndex );
+		uint32* queueFamilices = scope uint32[2]* (graphicsQueueIndex, presentQueueIndex);
 		if (graphicsQueueIndex != presentQueueIndex)
 		{
 			vkSwapchainInfo.imageSharingMode = VkSharingMode.VK_SHARING_MODE_CONCURRENT;
@@ -253,7 +254,13 @@ public class VKSwapChain : SwapChain
 		{
 			VulkanNative.vkDestroySwapchainKHR(vkContext.VkDevice, vkSwapChain, null);
 			vkSwapChain = VkSwapchainKHR.Null;
-			base.FrameBuffer?.Dispose();
+
+			if(base.FrameBuffer != null)
+			{
+				base.FrameBuffer.Dispose();
+				delete base.FrameBuffer;
+				base.FrameBuffer = null;
+			}
 		}
 	}
 
@@ -292,8 +299,11 @@ public class VKSwapChain : SwapChain
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = &swapchain;
 		presentInfo.pImageIndices = &imageIndex;
-		VulkanNative.vkQueuePresentKHR(vkPresentQueue, &presentInfo);
-		AcquireNextImage();
+		VkResult result = VulkanNative.vkQueuePresentKHR(vkPresentQueue, &presentInfo);
+		if(!(result == .VK_ERROR_OUT_OF_DATE_KHR || result == .VK_SUBOPTIMAL_KHR))
+		{
+			AcquireNextImage();
+		}
 	}
 
 	/// <inheritdoc />
@@ -321,11 +331,10 @@ public class VKSwapChain : SwapChain
 			result.colorSpace = VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 			return result;
 		}
-		for (int i = 0; i < length; i++)
+		for (int32 i = 0; i < length; i++)
 		{
 			VkSurfaceFormatKHR availableFormat = formats[i];
-			if (availableFormat.format == base.SwapChainDescription.ColorTargetFormat.ToVulkan(depthFormat: false)
-				&& availableFormat.colorSpace == VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (availableFormat.format == base.SwapChainDescription.ColorTargetFormat.ToVulkan(depthFormat: false) && availableFormat.colorSpace == VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				return availableFormat;
 			}
@@ -356,7 +365,7 @@ public class VKSwapChain : SwapChain
 
 	private bool Contains(VkPresentModeKHR* allPresents, int32 length, VkPresentModeKHR presentMode)
 	{
-		for (int i = 0; i < length; i++)
+		for (int32 i = 0; i < length; i++)
 		{
 			if (allPresents[i] == presentMode)
 			{
@@ -408,7 +417,11 @@ public class VKSwapChain : SwapChain
 		{
 			if (disposing)
 			{
-				base.FrameBuffer?.Dispose();
+				if(base.FrameBuffer != null){
+					base.FrameBuffer.Dispose();
+					delete base.FrameBuffer;
+					base.FrameBuffer = null;
+				}
 				VulkanNative.vkDestroySwapchainKHR(vkContext.VkDevice, vkSwapChain, null);
 				VulkanNative.vkDestroySurfaceKHR(vkContext.VkInstance, vkSurface, null);
 			}

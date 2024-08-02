@@ -31,7 +31,7 @@ internal struct VKQueueFamilyIndices
 		VkQueueFamilyProperties* queueFamilies = scope VkQueueFamilyProperties[(int32)queueFamilyCount]*;
 		VulkanNative.vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
 		VkBool32 presentSupported = default(VkBool32);
-		for (int32 i = 0; i < (int32)queueFamilyCount; i++)
+		for (int i = 0; i < queueFamilyCount; i++)
 		{
 			VkQueueFamilyProperties q = queueFamilies[i];
 			if (surface.HasValue)
@@ -39,20 +39,20 @@ internal struct VKQueueFamilyIndices
 				VulkanNative.vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, (uint32)i, surface.Value, &presentSupported);
 				if (indices.Presentfamily < 0 && q.queueCount != 0 && (bool)presentSupported)
 				{
-					indices.Presentfamily = i;
+					indices.Presentfamily = (int32)i;
 				}
 			}
 			if (q.queueCount != 0 && (q.queueFlags & VkQueueFlags.VK_QUEUE_GRAPHICS_BIT) != 0)
 			{
-				indices.GraphicsFamily = i;
+				indices.GraphicsFamily = (int32)i;
 			}
 			if (q.queueCount != 0 && (q.queueFlags & VkQueueFlags.VK_QUEUE_TRANSFER_BIT) != 0)
 			{
-				indices.CopyFamily = i;
+				indices.CopyFamily = (int32)i;
 			}
 			if (q.queueCount != 0 && (q.queueFlags & VkQueueFlags.VK_QUEUE_COMPUTE_BIT) != 0)
 			{
-				indices.ComputeFamily = i;
+				indices.ComputeFamily = (int32)i;
 			}
 		}
 		return indices;

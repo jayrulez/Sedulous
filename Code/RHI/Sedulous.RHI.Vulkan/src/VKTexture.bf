@@ -2,9 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
+namespace Sedulous.RHI.Vulkan;
+
 using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
-namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
 /// This class represents a native texture object on Metal.
@@ -51,6 +52,8 @@ public class VKTexture : Texture
 	private VkImageView imageView;
 
 	private String name = new .() ~ delete _;
+
+	private bool destroyNativeImage = true;
 
 	/// <inheritdoc />
 	public override String Name
@@ -104,8 +107,8 @@ public class VKTexture : Texture
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">The texture description.</param>
 	/// <param name="samplerState">the sampler state description for this texture.</param>
-	public this(VKGraphicsContext context, DataBox[] data, ref TextureDescription description, ref SamplerStateDescription samplerState)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
+		: base(context, description)
 	{
 		vkContext = context;
 		bool isStaging = description.Usage == ResourceUsage.Staging;
@@ -119,12 +122,12 @@ public class VKTexture : Texture
 		{
 			totalSize = Helpers.ComputeTextureSize(description);
 			VkBufferCreateInfo bufferInfo = VkBufferCreateInfo()
-			{
-				sType = VkStructureType.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-				usage = (VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_DST_BIT),
-				size = totalSize,
-				sharingMode = (context.CopyQueueSupported ? VkSharingMode.VK_SHARING_MODE_CONCURRENT : VkSharingMode.VK_SHARING_MODE_EXCLUSIVE)
-			};
+				{
+					sType = VkStructureType.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+					usage = (VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_DST_BIT),
+					size = totalSize,
+					sharingMode = (context.CopyQueueSupported ? VkSharingMode.VK_SHARING_MODE_CONCURRENT : VkSharingMode.VK_SHARING_MODE_EXCLUSIVE)
+				};
 			int32 queueFamilies = ((!context.CopyQueueSupported) ? 1 : 2);
 			uint32* queueFamilyIndices = scope uint32[queueFamilies]*;
 			*queueFamilyIndices = (uint32)context.QueueIndices.GraphicsFamily;
@@ -140,10 +143,10 @@ public class VKTexture : Texture
 			VulkanNative.vkGetBufferMemoryRequirements(context.VkDevice, NativeBuffer, &memoryRequirements);
 			MemoryRequirements = memoryRequirements;
 			allocInfo = VkMemoryAllocateInfo()
-			{
-				sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-				allocationSize = MemoryRequirements.size
-			};
+				{
+					sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+					allocationSize = MemoryRequirements.size
+				};
 			memoryType = VKHelpers.FindMemoryType(context, MemoryRequirements.memoryTypeBits, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 			if (memoryType == -1)
 			{
@@ -152,10 +155,10 @@ public class VKTexture : Texture
 			allocInfo.memoryTypeIndex = (uint32)memoryType;
 			VulkanNative.vkAllocateMemory(context.VkDevice, &allocInfo, null, &deviceMemory);
 			BufferMemory = deviceMemory;
-			VulkanNative.vkBindBufferMemory(context.VkDevice, NativeBuffer, BufferMemory, 0UL);
+			VulkanNative.vkBindBufferMemory(context.VkDevice, NativeBuffer, BufferMemory, 0uL);
 			subResourceCount = description.MipLevels * description.ArraySize * description.Faces * description.Depth;
 			ImageLayouts = new VkImageLayout[subResourceCount];
-			for (int i = 0; i < (int32)subResourceCount; i++)
+			for (int i = 0; i < subResourceCount; i++)
 			{
 				ImageLayouts[i] = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
 			}
@@ -181,34 +184,34 @@ public class VKTexture : Texture
 		}
 		Format = description.Format.ToVulkan(isDepthFormat);
 		VkImageCreateInfo imageInfo = VkImageCreateInfo()
-		{
-			sType = VkStructureType.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-			mipLevels = description.MipLevels,
-			arrayLayers = description.ArraySize * description.Faces,
-			extent = .()
 			{
-				width = description.Width,
-				height = description.Height,
-				depth = description.Depth
-			},
-			initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-			usage = vkUsage,
-			tiling = (isStaging ? VkImageTiling.VK_IMAGE_TILING_LINEAR : VkImageTiling.VK_IMAGE_TILING_OPTIMAL),
-			samples = description.SampleCount.ToVulkan(),
-			format = Format
-		};
+				sType = VkStructureType.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
+				mipLevels = description.MipLevels,
+				arrayLayers = description.ArraySize * description.Faces,
+				extent = .()
+					{
+						width = description.Width,
+						height = description.Height,
+						depth = description.Depth
+					},
+				initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
+				usage = vkUsage,
+				tiling = (isStaging ? VkImageTiling.VK_IMAGE_TILING_LINEAR : VkImageTiling.VK_IMAGE_TILING_OPTIMAL),
+				samples = description.SampleCount.ToVulkan(),
+				format = Format
+			};
 		switch (description.Type)
 		{
 		case TextureType.Texture1D,
-			 TextureType.Texture1DArray:
+			TextureType.Texture1DArray:
 			imageInfo.imageType = VkImageType.VK_IMAGE_TYPE_1D;
 			break;
 		case TextureType.Texture2D,
-			 TextureType.Texture2DArray:
+			TextureType.Texture2DArray:
 			imageInfo.imageType = VkImageType.VK_IMAGE_TYPE_2D;
 			break;
 		case TextureType.TextureCube,
-			 TextureType.TextureCubeArray:
+			TextureType.TextureCubeArray:
 			imageInfo.imageType = VkImageType.VK_IMAGE_TYPE_2D;
 			imageInfo.flags |= VkImageCreateFlags.VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
 			break;
@@ -225,10 +228,10 @@ public class VKTexture : Texture
 		VulkanNative.vkGetImageMemoryRequirements(context.VkDevice, NativeImage, &memoryRequirements);
 		MemoryRequirements = memoryRequirements;
 		allocInfo = VkMemoryAllocateInfo()
-		{
-			sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-			allocationSize = MemoryRequirements.size
-		};
+			{
+				sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+				allocationSize = MemoryRequirements.size
+			};
 		memoryType = VKHelpers.FindMemoryType(context, MemoryRequirements.memoryTypeBits, VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 		if (memoryType == -1)
 		{
@@ -237,10 +240,10 @@ public class VKTexture : Texture
 		allocInfo.memoryTypeIndex = (uint32)memoryType;
 		VulkanNative.vkAllocateMemory(context.VkDevice, &allocInfo, null, &deviceMemory);
 		ImageMemory = deviceMemory;
-		VulkanNative.vkBindImageMemory(context.VkDevice, NativeImage, ImageMemory, 0UL);
+		VulkanNative.vkBindImageMemory(context.VkDevice, NativeImage, ImageMemory, 0uL);
 		subResourceCount = description.MipLevels * description.ArraySize * description.Faces * description.Depth;
 		ImageLayouts = new VkImageLayout[subResourceCount];
-		for (int i = 0; i < (int32)subResourceCount; i++)
+		for (int i = 0; i < subResourceCount; i++)
 		{
 			ImageLayouts[i] = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
 		}
@@ -268,25 +271,25 @@ public class VKTexture : Texture
 					Internal.MemCpy((void*)(int)copyPointer, (void*)dataBox.DataPointer, dataBox.SlicePitch * description.Depth);
 					copyOffset += dataBox.SlicePitch;
 					copyRegions[index] = VkBufferImageCopy()
-					{
-						bufferOffset = context.TextureUploader.CalculateOffset(copyPointer),
-						bufferRowLength = 0,
-						bufferImageHeight = 0,
-						imageSubresource = .()
 						{
-							aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
-							mipLevel = m,
-							baseArrayLayer = a * description.Faces + f,
-							layerCount = 1
-						},
-						imageOffset = default(VkOffset3D),
-						imageExtent = VkExtent3D()
-						{
-							width = levelWidth,
-							height = levelHeight,
-							depth = levelDepth
-						}
-					};
+							bufferOffset = context.TextureUploader.CalculateOffset(copyPointer),
+							bufferRowLength = 0,
+							bufferImageHeight = 0,
+							imageSubresource = .()
+								{
+									aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
+									mipLevel = m,
+									baseArrayLayer = a * description.Faces + f,
+									layerCount = 1
+								},
+							imageOffset = default(VkOffset3D),
+							imageExtent = VkExtent3D()
+								{
+									width = levelWidth,
+									height = levelHeight,
+									depth = levelDepth
+								}
+						};
 					levelWidth = Math.Max(1, levelWidth / 2);
 					levelHeight = Math.Max(1, levelHeight / 2);
 					levelDepth = Math.Max(1, levelDepth / 2);
@@ -294,24 +297,24 @@ public class VKTexture : Texture
 			}
 		}
 		VkImageMemoryBarrier barrier = VkImageMemoryBarrier()
-		{
-			sType = VkStructureType.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-			image = NativeImage,
-			oldLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-			newLayout = VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-			srcAccessMask = VkAccessFlags.VK_ACCESS_NONE,
-			dstAccessMask = VkAccessFlags.VK_ACCESS_TRANSFER_WRITE_BIT,
-			subresourceRange = .()
 			{
-				aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
-				baseArrayLayer = 0,
-				layerCount = description.ArraySize * description.Faces,
-				baseMipLevel = 0,
-				levelCount = description.MipLevels
-			},
-			srcQueueFamilyIndex = uint32.MaxValue,
-			dstQueueFamilyIndex = uint32.MaxValue
-		};
+				sType = VkStructureType.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+				image = NativeImage,
+				oldLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
+				newLayout = VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+				srcAccessMask = VkAccessFlags.VK_ACCESS_NONE,
+				dstAccessMask = VkAccessFlags.VK_ACCESS_TRANSFER_WRITE_BIT,
+				subresourceRange = .()
+					{
+						aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
+						baseArrayLayer = 0,
+						layerCount = description.ArraySize * description.Faces,
+						baseMipLevel = 0,
+						levelCount = description.MipLevels
+					},
+				srcQueueFamilyIndex = uint32.MaxValue,
+				dstQueueFamilyIndex = uint32.MaxValue
+			};
 		VulkanNative.vkCmdPipelineBarrier(context.CopyCommandBuffer, VkPipelineStageFlags.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VkPipelineStageFlags.VK_PIPELINE_STAGE_TRANSFER_BIT, VkDependencyFlags.None, 0, null, 0, null, 1, &barrier);
 		VulkanNative.vkCmdCopyBufferToImage(context.CopyCommandBuffer, context.TextureUploader.NativeBuffer, NativeImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regionCount, copyRegions);
 		if ((Description.Flags & TextureFlags.ShaderResource) != 0)
@@ -321,8 +324,7 @@ public class VKTexture : Texture
 			barrier.srcAccessMask = VkAccessFlags.VK_ACCESS_TRANSFER_WRITE_BIT;
 			barrier.dstAccessMask = VkAccessFlags.VK_ACCESS_SHADER_READ_BIT | VkAccessFlags.VK_ACCESS_SHADER_WRITE_BIT;
 			VulkanNative.vkCmdPipelineBarrier(context.CopyCommandBuffer, VkPipelineStageFlags.VK_PIPELINE_STAGE_TRANSFER_BIT, VkPipelineStageFlags.VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VkDependencyFlags.None, 0, null, 0, null, 1, &barrier);
-
-			for (int i = 0; i < (int32)subResourceCount; i++)
+			for (int i = 0; i < subResourceCount; i++)
 			{
 				ImageLayouts[i] = VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 			}
@@ -335,9 +337,10 @@ public class VKTexture : Texture
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">The texture description.</param>
-	public this(VKGraphicsContext context, DataBox[] data, ref TextureDescription description)
-		: base(context, ref description)
+	public this(VKGraphicsContext context, DataBox[] data, in TextureDescription description)
+		: base(context, description)
 	{
+		destroyNativeImage = false;
 	}
 
 	/// <summary>
@@ -347,12 +350,11 @@ public class VKTexture : Texture
 	/// <param name="description">The texture description.</param>
 	/// <param name="image">The vulkan image already created.</param>
 	/// <returns>A new VKTexture.</returns>
-	public static VKTexture FromVulkanImage(VKGraphicsContext context, ref TextureDescription description, VkImage image)
+	public static VKTexture FromVulkanImage(VKGraphicsContext context, in TextureDescription description, VkImage image)
 	{
-		VKTexture texture = new VKTexture(context, null, ref description);
+		VKTexture texture = new VKTexture(context, null, description);
 		texture.vkContext = context;
 		texture.NativeImage = image;
-		//texture.ImageLayouts = Enumerable.Repeat(VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED, (int32)description.ArraySize).ToArray();
 		texture.ImageLayouts = new .[(int32)description.ArraySize]
 			..SetAll(VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED);
 		if (description.Usage != ResourceUsage.Staging)
@@ -406,7 +408,7 @@ public class VKTexture : Texture
 		switch (oldLayout)
 		{
 		case VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED,
-			 VkImageLayout.VK_IMAGE_LAYOUT_PREINITIALIZED:
+			VkImageLayout.VK_IMAGE_LAYOUT_PREINITIALIZED:
 			imageBarrier.srcAccessMask = VkAccessFlags.VK_ACCESS_NONE;
 			srcStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 			break;
@@ -423,7 +425,7 @@ public class VKTexture : Texture
 			srcStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 			break;
 		case VkImageLayout.VK_IMAGE_LAYOUT_GENERAL,
-			 VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
+			VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL:
 			imageBarrier.srcAccessMask = VkAccessFlags.VK_ACCESS_TRANSFER_READ_BIT;
 			srcStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_TRANSFER_BIT;
 			break;
@@ -529,25 +531,25 @@ public class VKTexture : Texture
 			VkImageSubresourceLayers destinationSubresource = vkImageSubresourceLayers;
 			VkImageCopy vkImageCopy = default(VkImageCopy);
 			vkImageCopy.srcOffset = VkOffset3D()
-			{
-				x = (int32)sourceX,
-				y = (int32)sourceY,
-				z = (int32)sourceZ
-			};
+				{
+					x = (int32)sourceX,
+					y = (int32)sourceY,
+					z = (int32)sourceZ
+				};
 			vkImageCopy.dstOffset = VkOffset3D()
-			{
-				x = (int32)destinationX,
-				y = (int32)destinationY,
-				z = (int32)destinationZ
-			};
+				{
+					x = (int32)destinationX,
+					y = (int32)destinationY,
+					z = (int32)destinationZ
+				};
 			vkImageCopy.srcSubresource = sourceSubresource;
 			vkImageCopy.dstSubresource = destinationSubresource;
 			vkImageCopy.extent = VkExtent3D()
-			{
-				width = Description.Width,
-				height = Description.Height,
-				depth = Description.Depth
-			};
+				{
+					width = Description.Width,
+					height = Description.Height,
+					depth = Description.Depth
+				};
 			VkImageCopy region = vkImageCopy;
 			VulkanNative.vkCmdCopyImage(commandBuffer, NativeImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, vkDestination.NativeImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 			return;
@@ -576,17 +578,17 @@ public class VKTexture : Texture
 			VkBufferImageCopy vkBufferImageCopy = default(VkBufferImageCopy);
 			vkBufferImageCopy.imageSubresource = destinationSubresource;
 			vkBufferImageCopy.imageExtent = VkExtent3D()
-			{
-				width = width,
-				height = height,
-				depth = depth
-			};
+				{
+					width = width,
+					height = height,
+					depth = depth
+				};
 			vkBufferImageCopy.imageOffset = VkOffset3D()
-			{
-				x = (int32)destinationX,
-				y = (int32)destinationY,
-				z = (int32)destinationZ
-			};
+				{
+					x = (int32)destinationX,
+					y = (int32)destinationY,
+					z = (int32)destinationZ
+				};
 			vkBufferImageCopy.bufferRowLength = bufferRowLength;
 			vkBufferImageCopy.bufferImageHeight = bufferImageHeight;
 			vkBufferImageCopy.bufferOffset = offset;
@@ -617,17 +619,17 @@ public class VKTexture : Texture
 			VkBufferImageCopy vkBufferImageCopy = default(VkBufferImageCopy);
 			vkBufferImageCopy.imageSubresource = sourceSubresource;
 			vkBufferImageCopy.imageExtent = VkExtent3D()
-			{
-				width = width,
-				height = height,
-				depth = depth
-			};
+				{
+					width = width,
+					height = height,
+					depth = depth
+				};
 			vkBufferImageCopy.imageOffset = VkOffset3D()
-			{
-				x = (int32)sourceX,
-				y = (int32)sourceY,
-				z = (int32)sourceZ
-			};
+				{
+					x = (int32)sourceX,
+					y = (int32)sourceY,
+					z = (int32)sourceZ
+				};
 			vkBufferImageCopy.bufferRowLength = bufferRowLength;
 			vkBufferImageCopy.bufferImageHeight = bufferImageHeight;
 			vkBufferImageCopy.bufferOffset = offset;
@@ -713,29 +715,29 @@ public class VKTexture : Texture
 		VkImageSubresourceLayers destinationSubresource = vkImageSubresourceLayers;
 		VkImageBlit vkImageBlit = default(VkImageBlit);
 		vkImageBlit.srcOffsets[0] = VkOffset3D()
-		{
-			x = (int32)sourceX,
-			y = (int32)sourceY,
-			z = (int32)sourceZ
-		};
+			{
+				x = (int32)sourceX,
+				y = (int32)sourceY,
+				z = (int32)sourceZ
+			};
 		vkImageBlit.srcOffsets[1] = VkOffset3D()
-		{
-			x = (int32)Description.Width,
-			y = (int32)Description.Height,
-			z = (int32)Description.Depth
-		};
+			{
+				x = (int32)Description.Width,
+				y = (int32)Description.Height,
+				z = (int32)Description.Depth
+			};
 		vkImageBlit.dstOffsets[0] = VkOffset3D()
-		{
-			x = (int32)destinationX,
-			y = (int32)destinationY,
-			z = (int32)destinationZ
-		};
+			{
+				x = (int32)destinationX,
+				y = (int32)destinationY,
+				z = (int32)destinationZ
+			};
 		vkImageBlit.dstOffsets[1] = VkOffset3D()
-		{
-			x = (int32)Description.Width,
-			y = (int32)Description.Height,
-			z = (int32)Description.Depth
-		};
+			{
+				x = (int32)Description.Width,
+				y = (int32)Description.Height,
+				z = (int32)Description.Depth
+			};
 		vkImageBlit.srcSubresource = sourceSubresource;
 		vkImageBlit.dstSubresource = destinationSubresource;
 		VkImageBlit region = vkImageBlit;
@@ -803,11 +805,11 @@ public class VKTexture : Texture
 		region.imageSubresource.layerCount = 1;
 		region.imageOffset = default(VkOffset3D);
 		region.imageExtent = VkExtent3D()
-		{
-			width = subResourceInfo.MipWidth,
-			height = subResourceInfo.MipHeight,
-			depth = subResourceInfo.MipDepth
-		};
+			{
+				width = subResourceInfo.MipWidth,
+				height = subResourceInfo.MipHeight,
+				depth = subResourceInfo.MipDepth
+			};
 		*copyRegions = region;
 		TransitionImageLayout(commandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, subResourceInfo.MipLevel, 1, subResourceInfo.ArrayLayer, Description.ArraySize * Description.Faces);
 		VulkanNative.vkCmdCopyBufferToImage(vkContext.CopyCommandBuffer, vkContext.TextureUploader.NativeBuffer, NativeImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, regionCount, copyRegions);
@@ -837,13 +839,13 @@ public class VKTexture : Texture
 			aspectFlags = VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT;
 		}
 		imageViewInfo.subresourceRange = VkImageSubresourceRange()
-		{
-			aspectMask = aspectFlags,
-			baseMipLevel = 0,
-			levelCount = Description.MipLevels,
-			baseArrayLayer = 0,
-			layerCount = Description.ArraySize * Description.Faces
-		};
+			{
+				aspectMask = aspectFlags,
+				baseMipLevel = 0,
+				levelCount = Description.MipLevels,
+				baseArrayLayer = 0,
+				layerCount = Description.ArraySize * Description.Faces
+			};
 		switch (Description.Type)
 		{
 		case TextureType.Texture1D:
@@ -889,9 +891,13 @@ public class VKTexture : Texture
 			}
 			else
 			{
-				VulkanNative.vkDestroyImage(vkContext.VkDevice, NativeImage, null);
-				VulkanNative.vkFreeMemory(vkContext.VkDevice, ImageMemory, null);
+				if (destroyNativeImage)
+				{
+					VulkanNative.vkDestroyImage(vkContext.VkDevice, NativeImage, null);
+					VulkanNative.vkFreeMemory(vkContext.VkDevice, ImageMemory, null);
+				}
 			}
+			delete ImageLayouts;
 		}
 		disposed = true;
 	}

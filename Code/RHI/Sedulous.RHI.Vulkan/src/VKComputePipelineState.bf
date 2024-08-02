@@ -2,8 +2,10 @@ using System;
 using Bulkan;
 using Sedulous.RHI;
 
-using internal Sedulous.RHI.Vulkan;
 namespace Sedulous.RHI.Vulkan;
+
+using internal Sedulous.RHI.Vulkan;
+using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
 /// This class represents a native pipelineState on Vulkan.
@@ -45,8 +47,8 @@ public class VKComputePipelineState : ComputePipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The compute pipeline state description.</param>
-	public this(VKGraphicsContext context, ref ComputePipelineDescription description)
-		: base(ref description)
+	public this(VKGraphicsContext context, ComputePipelineDescription description)
+		: base(description)
 	{
 		vkContext = context;
 		VkComputePipelineCreateInfo pipelineInfo = VkComputePipelineCreateInfo()
@@ -72,7 +74,7 @@ public class VKComputePipelineState : ComputePipelineState
 		VulkanNative.vkCreatePipelineLayout(context.VkDevice, &layoutInfo, null, &newPipelineLayout);
 		NativePipelineLayout = newPipelineLayout;
 		pipelineInfo.layout = NativePipelineLayout;
-		VkPipelineShaderStageCreateInfo shaderInfo = (description.ShaderDescription.ComputeShader as VKShader).ShaderStateInfo;
+		VkPipelineShaderStageCreateInfo shaderInfo = (description.shaderDescription.ComputeShader as VKShader).ShaderStateInfo;
 		pipelineInfo.stage = shaderInfo;
 		VkPipeline newPipeline = default(VkPipeline);
 		VulkanNative.vkCreateComputePipelines(context.VkDevice, VkPipelineCache.Null, 1, &pipelineInfo, null, &newPipeline);
