@@ -341,6 +341,11 @@ namespace Sedulous.Platform
 		EventAccessor<WindowEventHandler> Restored { get; }
 
 		/// <summary>
+		/// Occurs when the window size is changed.
+		/// </summary>
+		EventAccessor<WindowEventHandler> SizeChanged { get; }
+
+		/// <summary>
 		/// Occurs when the window is drawn.
 		/// </summary>
 		EventAccessor<WindowDrawingEventHandler> Drawing { get; }

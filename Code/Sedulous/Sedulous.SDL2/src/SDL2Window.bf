@@ -138,6 +138,7 @@ namespace Sedulous.SDL2
 
 			case .SDL_WINDOWEVENT_SIZE_CHANGED:
 				UpdateWindowedClientSize(Size2(evt.window.data1, evt.window.data2));
+				OnSizeChanged();
 				return true;
 
 			case .SDL_WINDOWEVENT_FOCUS_GAINED:
@@ -662,6 +663,11 @@ namespace Sedulous.SDL2
 		public readonly EventAccessor<WindowEventHandler> Restored { get; } = new .() ~ delete _;
 
 		/// <summary>
+		/// Occurs when the window size is changed.
+		/// </summary>
+		public readonly EventAccessor<WindowEventHandler> SizeChanged { get; } = new .() ~ delete _;
+
+		/// <summary>
 		/// Occurs when the window is rendered.
 		/// </summary>
 		public readonly EventAccessor<WindowDrawingEventHandler> Drawing { get; } = new .() ~ delete _;
@@ -834,6 +840,12 @@ namespace Sedulous.SDL2
 		/// </summary>
 		private void OnRestored() =>
 			Restored?.Invoke(this);
+
+		/// <summary>
+		/// Raises the SizeChanged event.
+		/// </summary>
+		private void OnSizeChanged() =>
+			SizeChanged?.Invoke(this);
 
 		/// <summary>
 		/// Called when the window's DPI changes.
