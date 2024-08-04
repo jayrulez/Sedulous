@@ -223,6 +223,11 @@ sealed class Context : IContext
 
 		mInitialized = true;
 
+		for(var subsystem in mSubsystems)
+		{
+			subsystem.Initialized(this);
+		}
+
 		mLogger.LogInformation("Context initialization completed.");
 
 		State = .Running;

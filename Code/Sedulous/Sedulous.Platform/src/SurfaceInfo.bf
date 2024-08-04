@@ -29,6 +29,7 @@ enum NativeSurfaceType
 	Unspecified,
 	Win32,
 	UWP,
+	WinUI,
 	X11,
 	Wayland,
 	Android,

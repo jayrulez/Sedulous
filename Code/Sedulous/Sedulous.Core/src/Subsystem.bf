@@ -17,10 +17,17 @@ abstract class Subsystem
 		return OnInitializing(mContext);
 	}
 
+	internal void Initialized(Context context)
+	{
+		OnInitialized(context);
+	}
+
 	protected virtual Result<void> OnInitializing(IContext context)
 	{
 		return .Ok;
 	}
+
+	protected virtual void OnInitialized(Context context) {}
 
 	internal void Uninitialize()
 	{
