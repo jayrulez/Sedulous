@@ -30,7 +30,7 @@ internal class DX12DescriptorAllocator : IDisposable
 
 	private DX12GraphicsContext context;
 
-	public this(DX12GraphicsContext context, D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32 maxCount, D3D12_DESCRIPTOR_HEAP_FLAGS flags = .D3D12_DESCRIPTOR_HEAP_FLAG_NONE)
+	public this(DX12GraphicsContext context, D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32 maxCount, D3D12_DESCRIPTOR_HEAP_FLAGS flags = D3D12_DESCRIPTOR_HEAP_FLAGS.D3D12_DESCRIPTOR_HEAP_FLAG_NONE)
 	{
 		HeapType = heapType;
 		this.context = context;
@@ -38,7 +38,7 @@ internal class DX12DescriptorAllocator : IDisposable
 		{
 			Flags = flags,
 			Type = HeapType,
-			NumDescriptors = (uint32)maxCount,
+			NumDescriptors = maxCount,
 			NodeMask = 0
 		};
 		HRESULT result = context.DXDevice.CreateDescriptorHeap(&heapDescription, ID3D12DescriptorHeap.IID, (void**)&Heap);
@@ -96,7 +96,7 @@ internal class DX12DescriptorAllocator : IDisposable
 	{
 		using (descriptorsAliveMonitor.Enter())
 		{
-			for (uint32 i = 0; i < maxDescriptorCount; i++)
+			for (int i = 0; i < maxDescriptorCount; i++)
 			{
 				descriptorsAlive[i] = false;
 			}
@@ -107,11 +107,7 @@ internal class DX12DescriptorAllocator : IDisposable
 	/// <inheritdoc />
 	public void Dispose()
 	{
-		ID3D12DescriptorHeap* heap = Heap;
-		if (heap != null)
-		{
-			heap.Release();
-		}
+		Heap?.Release();
 		Heap = null;
 		descriptorsAlive = null;
 	}

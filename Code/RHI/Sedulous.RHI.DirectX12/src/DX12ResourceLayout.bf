@@ -8,7 +8,7 @@ namespace Sedulous.RHI.DirectX12;
 /// </summary>
 public class DX12ResourceLayout : ResourceLayout
 {
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
 	public override String Name
@@ -19,7 +19,7 @@ public class DX12ResourceLayout : ResourceLayout
 		}
 		set
 		{
-			name = value;
+			name.Set(value);
 		}
 	}
 
@@ -27,8 +27,8 @@ public class DX12ResourceLayout : ResourceLayout
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12ResourceLayout" /> class.
 	/// </summary>
 	/// <param name="description">The layout description.</param>
-	public this(ref ResourceLayoutDescription description)
-		: base(ref description)
+	public this(in ResourceLayoutDescription description)
+		: base(description)
 	{
 	}
 

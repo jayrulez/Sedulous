@@ -35,182 +35,74 @@ public class DX12ResourceFactory : ResourceFactory
 	}
 
 	/// <inheritdoc />
-	protected override GraphicsPipelineState CreateGraphicsPipelineInternal(ref GraphicsPipelineDescription description)
+	protected override GraphicsPipelineState CreateGraphicsPipelineInternal(in GraphicsPipelineDescription description)
 	{
-		return new DX12GraphicsPipelineState(context, ref description);
+		return new DX12GraphicsPipelineState(context, description);
 	}
 
 	/// <inheritdoc />
-	protected override ComputePipelineState CreateComputePipelineInternal(ref ComputePipelineDescription description)
+	protected override ComputePipelineState CreateComputePipelineInternal(in ComputePipelineDescription description)
 	{
-		return new DX12ComputePipelineState(context, ref description);
+		return new DX12ComputePipelineState(context, description);
 	}
 
 	/// <inheritdoc />
-	protected override RaytracingPipelineState CreateRaytracingPipelineInternal(ref RaytracingPipelineDescription description)
+	protected override RaytracingPipelineState CreateRaytracingPipelineInternal(in RaytracingPipelineDescription description)
 	{
-		return new DX12RaytracingPipelineState(context, ref description);
+		return new DX12RaytracingPipelineState(context, description);
 	}
 
 	/// <inheritdoc />
-	protected override Buffer CreateBufferInternal(void* data, ref BufferDescription description)
+	protected override Sedulous.RHI.Buffer CreateBufferInternal(void* data, in BufferDescription description)
 	{
-		return new DX12Buffer(context, data, ref description);
+		return new DX12Buffer(context, data, description);
 	}
 
 	/// <inheritdoc />
-	protected override Texture CreateTextureInternal(DataBox[] data, ref TextureDescription description, ref SamplerStateDescription samplerState)
+	protected override Texture CreateTextureInternal(DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
 	{
-		return new DX12Texture(context, data, ref description, ref samplerState);
+		return new DX12Texture(context, data, description, samplerState);
 	}
 
 	/// <inheritdoc />
-	protected override Shader CreateShaderInternal(ref ShaderDescription description)
+	protected override Shader CreateShaderInternal(in ShaderDescription description)
 	{
-		return new DX12Shader(context, ref description);
+		return new DX12Shader(context, description);
 	}
 
 	/// <inheritdoc />
-	protected override SamplerState CreateSamplerStateInternal(ref SamplerStateDescription description)
+	protected override SamplerState CreateSamplerStateInternal(in SamplerStateDescription description)
 	{
-		return new DX12SamplerState(context, ref description);
+		return new DX12SamplerState(context, description);
 	}
 
 	/// <inheritdoc />
-	protected override FrameBuffer CreateFrameBufferInternal(FrameBufferAttachment? depthTarget, FrameBufferColorAttachmentList colorTargets, bool disposeAttachments)
+	protected override FrameBuffer CreateFrameBufferInternal(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 	{
 		return new DX12FrameBuffer(context, depthTarget, colorTargets, disposeAttachments);
 	}
 
 	/// <inheritdoc />
-	protected override ResourceLayout CreateResourceLayoutInternal(ref ResourceLayoutDescription description)
+	protected override ResourceLayout CreateResourceLayoutInternal(in ResourceLayoutDescription description)
 	{
-		return new DX12ResourceLayout(ref description);
+		return new DX12ResourceLayout(description);
 	}
 
 	/// <inheritdoc />
-	protected override ResourceSet CreateResourceSetInternal(ref ResourceSetDescription description)
+	protected override ResourceSet CreateResourceSetInternal(in ResourceSetDescription description)
 	{
-		return new DX12ResourceSet(ref description);
+		return new DX12ResourceSet(description);
 	}
 
 	/// <inheritdoc />
-	protected override Texture GetTextureFromNativePointerInternal(void* texturePointer, ref TextureDescription textureDescription)
+	protected override Texture GetTextureFromNativePointerInternal(void* texturePointer, in TextureDescription textureDescription)
 	{
 		return DX12Texture.FromDirectXTexture(context, texturePointer, textureDescription);
 	}
 
 	/// <inheritdoc />
-	public override QueryHeap CreateQueryHeap(ref QueryHeapDescription description)
+	public override QueryHeap CreateQueryHeap(in QueryHeapDescription description)
 	{
-		return new DX12QueryHeap(context, ref description);
-	}
-
-	public override void DestroyCommandQueue(ref CommandQueue commandQueue)
-	{
-		if (var dx12CommandQueue = commandQueue as DX12CommandQueue)
-		{
-			delete dx12CommandQueue;
-			commandQueue = null;
-		}
-	}
-
-	public override void DestroyGraphicsPipeline(ref GraphicsPipelineState graphicsPipelineState)
-	{
-		if (var dx12GraphicsPipelineState = graphicsPipelineState as DX12GraphicsPipelineState)
-		{
-			delete dx12GraphicsPipelineState;
-			graphicsPipelineState = null;
-		}
-	}
-
-	public override void DestroyComputePipeline(ref ComputePipelineState computePipelineState)
-	{
-		if (var dx12ComputePipelineState = computePipelineState as DX12ComputePipelineState)
-		{
-			delete dx12ComputePipelineState;
-			computePipelineState = null;
-		}
-	}
-
-	public override void DestroyRaytracingPipeline(ref RaytracingPipelineState raytracingPipelineState)
-	{
-		if (var dx12RaytracingPipelineState = raytracingPipelineState as DX12RaytracingPipelineState)
-		{
-			delete dx12RaytracingPipelineState;
-			raytracingPipelineState = null;
-		}
-	}
-
-	public override void DestroyTexture(ref Texture texture)
-	{
-		if (var dx12Texture = texture as DX12Texture)
-		{
-			delete dx12Texture;
-			texture = null;
-		}
-	}
-
-	public override void DestroyBuffer(ref Buffer buffer)
-	{
-		if (var dx12Buffer = buffer as DX12Buffer)
-		{
-			delete dx12Buffer;
-			buffer = null;
-		}
-	}
-
-	public override void DestroyQueryHeap(ref QueryHeap queryHeap)
-	{
-		if (var dx12QueryHeap = queryHeap as DX12QueryHeap)
-		{
-			delete dx12QueryHeap;
-			queryHeap = null;
-		}
-	}
-
-	public override void DestroyShader(ref Shader shader)
-	{
-		if (var dx12Shader = shader as DX12Shader)
-		{
-			delete dx12Shader;
-			shader = null;
-		}
-	}
-
-	public override void DestroySamplerState(ref SamplerState samplerState)
-	{
-		if (var dx12SamplerState = samplerState as DX12SamplerState)
-		{
-			delete dx12SamplerState;
-			samplerState = null;
-		}
-	}
-
-	public override void DestroyFrameBuffer(ref FrameBuffer frameBuffer)
-	{
-		if (var dx12FrameBuffer = frameBuffer as DX12FrameBuffer)
-		{
-			delete dx12FrameBuffer;
-			frameBuffer = null;
-		}
-	}
-
-	public override void DestroyResourceLayout(ref ResourceLayout resourceLayout)
-	{
-		if (var dx12ResourceLayout = resourceLayout as DX12ResourceLayout)
-		{
-			delete dx12ResourceLayout;
-			resourceLayout = null;
-		}
-	}
-
-	public override void DestroyResourceSet(ref ResourceSet resourceSet)
-	{
-		if (var dx12ResourceSet = resourceSet as DX12ResourceSet)
-		{
-			delete dx12ResourceSet;
-			resourceSet = null;
-		}
+		return new DX12QueryHeap(context, description);
 	}
 }

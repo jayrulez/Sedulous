@@ -1,11 +1,11 @@
 using System;
 using System.Threading;
 using Sedulous.RHI;
+using Win32;
+using Win32.Graphics.Direct3D;
 using Win32.Graphics.Direct3D12;
 using Win32.Graphics.Dxgi;
 using Win32.Foundation;
-using Win32;
-using Win32.Graphics.Direct3D;
 
 namespace Sedulous.RHI.DirectX12;
 
@@ -125,16 +125,12 @@ public class DX12GraphicsContext : GraphicsContext
 	/// <inheritdoc />
 	public override void CreateDeviceInternal()
 	{
-		ID3D12Device* dXDevice = DXDevice;
-		if (dXDevice != null)
-		{
-			dXDevice.Release();
-		}
+		DXDevice?.Release();
 		if (base.IsValidationLayerEnabled)
 		{
 			ID3D12Debug* pDx12Debug = null;
-			HRESULT val = D3D12GetDebugInterface(ID3D12Debug.IID, (void**)&pDx12Debug);
-			if (SUCCEEDED(val))
+			HRESULT result = D3D12GetDebugInterface(ID3D12Debug.IID, (void**)&pDx12Debug);
+			if(SUCCEEDED(result))
 			{
 				pDx12Debug.EnableDebugLayer();
 			}
@@ -168,7 +164,7 @@ public class DX12GraphicsContext : GraphicsContext
 							.D3D12_MESSAGE_ID_MAP_INVALID_NULLRANGE,
 							.D3D12_MESSAGE_ID_UNMAP_INVALID_NULLRANGE 
 						);
-					D3D12_INFO_QUEUE_FILTER   filter = D3D12_INFO_QUEUE_FILTER  ()
+					D3D12_INFO_QUEUE_FILTER filter = D3D12_INFO_QUEUE_FILTER  ()
 					{
 						DenyList = .()
 						{
@@ -317,7 +313,7 @@ public class DX12GraphicsContext : GraphicsContext
 	}
 
 	/// <inheritdoc />
-	public override SwapChain CreateSwapChain(SwapChainDescription description)
+	public override SwapChain CreateSwapChain(Sedulous.RHI.SwapChainDescription description)
 	{
 		if (DXDevice == null)
 		{
@@ -326,17 +322,8 @@ public class DX12GraphicsContext : GraphicsContext
 		return new DX12SwapChain(this, description);
 	}
 
-	public override void DestroySwapChain(ref SwapChain swapChain)
-	{
-		if(let dxSwapChain = swapChain as DX12SwapChain)
-		{
-			delete dxSwapChain;
-			swapChain = null;
-		}
-	}
-
 	/// <inheritdoc />
-	protected override void InternalUpdateBufferData(Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
+	protected override void InternalUpdateBufferData(Sedulous.RHI.Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
 	{
 		(buffer as DX12Buffer).SetData(CopyCommandList, source, sourceSizeInBytes, destinationOffsetInBytes);
 	}
@@ -405,13 +392,19 @@ public class DX12GraphicsContext : GraphicsContext
 			}
 			else
 			{
-				texture.NativeTexture.Unmap((uint32)subResource, null);
+				texture.NativeTexture.Unmap(subResource, null);
 			}
 		}
 		else
 		{
 			base.ValidationLayer?.Notify("DX12", "This operation is only supported to buffers and textures.");
 		}
+	}
+
+	/// <inheritdoc />
+	public override CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters)
+	{
+		return DX12Shader.ShaderCompile(this, shaderSource, entryPoint, stage, parameters);
 	}
 
 	/// <inheritdoc />
@@ -443,36 +436,16 @@ public class DX12GraphicsContext : GraphicsContext
 	{
 		if (!disposed && disposing)
 		{
-			ID3D12Device* dXDevice = DXDevice;
-			if (dXDevice != null)
-			{
-				dXDevice.Release();
-			}
-			IDXGIFactory4* dXFactory = DXFactory;
-			if (dXFactory != null)
-			{
-				dXFactory.Release();
-			}
+			DXDevice?.Release();
+			DXFactory?.Release();
 			RenderTargetViewAllocator?.Dispose();
 			DepthStencilViewAllocator?.Dispose();
 			ShaderResourceViewAllocator?.Dispose();
 			SamplerAllocator?.Dispose();
 			DefaultGraphicsQueue?.Dispose();
-			ID3D12CommandQueue* copyCommandQueue = CopyCommandQueue;
-			if (copyCommandQueue != null)
-			{
-				copyCommandQueue.Release();
-			}
-			ID3D12CommandAllocator* copyCommandAlloc = CopyCommandAlloc;
-			if (copyCommandAlloc != null)
-			{
-				copyCommandAlloc.Release();
-			}
-			ID3D12GraphicsCommandList* copyCommandList = CopyCommandList;
-			if (copyCommandList != null)
-			{
-				copyCommandList.Release();
-			}
+			CopyCommandQueue?.Release();
+			CopyCommandAlloc?.Release();
+			CopyCommandList?.Release();
 			BufferUploader?.Dispose();
 			TextureUploader?.Dispose();
 			disposed = true;

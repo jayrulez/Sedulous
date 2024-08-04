@@ -1,12 +1,13 @@
 using System;
 using Sedulous.RHI;
 using Sedulous.RHI.Raytracing;
+using Sedulous.Foundation.Mathematics;
 using Win32.Foundation;
 using Win32.Graphics.Direct3D12;
 using Win32;
-using Sedulous.Foundation.Mathematics;
 
 namespace Sedulous.RHI.DirectX12;
+
 using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
@@ -57,7 +58,7 @@ public class DX12CommandBuffer : CommandBuffer
 		}
 		set
 		{
-			name = value;
+			name.Set(value);
 			SetDebugName(CommandList, name);
 		}
 	}
@@ -71,7 +72,7 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		this.context = context;
 		commandQueue = queue;
-		D3D12_COMMAND_LIST_TYPE  nativeType = queue.QueueType.ToDirectX();
+		D3D12_COMMAND_LIST_TYPE nativeType = queue.QueueType.ToDirectX();
 		HRESULT result = this.context.DXDevice.CreateCommandAllocator(nativeType, ID3D12CommandAllocator.IID, (void**)&CommandAlloc);
 		if (!SUCCEEDED(result))
 		{
@@ -84,9 +85,9 @@ public class DX12CommandBuffer : CommandBuffer
 			this.context.ValidationLayer?.Notify("DX12", scope $"Error code: {result}, see: https://docs.microsoft.com/en-us/windows/win32/direct3d12/d3d12-graphics-reference-returnvalues");
 		}
 		ID3D12GraphicsCommandList4* cmdList4 = cmdList.QueryInterface<ID3D12GraphicsCommandList4>();
-		CommandList = (cmdList4 != null ? cmdList4 : cmdList);
-		resourceDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, .D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024);
-		samplerDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, .D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 16);
+		CommandList = ((cmdList4 != null) ? cmdList4 : cmdList);
+		resourceDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024);
+		samplerDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 16);
 		descriptorHeaps = new ID3D12DescriptorHeap*[2] ( resourceDescriptorsGPU.GPUheap, samplerDescriptorsGPU.GPUheap );
 	}
 
@@ -179,7 +180,7 @@ public class DX12CommandBuffer : CommandBuffer
 	/// Sets a resource barrier for a texture.
 	/// </summary>
 	/// <param name="buffer">The buffer.</param>
-	public override void ResourceBarrierUnorderedAccessView(Buffer buffer)
+	public override void ResourceBarrierUnorderedAccessView(Sedulous.RHI.Buffer buffer)
 	{
 		CommandList.ResourceBarrierUnorderedAccessView((buffer as DX12Buffer).NativeBuffer);
 	}
@@ -228,42 +229,40 @@ public class DX12CommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void SetVertexBuffersInternal(Buffer[] vertexBuffers, int32[] offsets)
+	protected override void SetVertexBuffersInternal(Sedulous.RHI.Buffer[] vertexBuffers, int32[] offsets)
 	{
 		D3D12_VERTEX_BUFFER_VIEW[] vertexBufferViews = scope .[vertexBuffers.Count];
 		for (int32 i = 0; i < vertexBuffers.Count; i++)
 		{
-			Buffer vertexBuffer = vertexBuffers[i];
+			Sedulous.RHI.Buffer vertexBuffer = vertexBuffers[i];
 			int32 offset = ((offsets != null) ? offsets[i] : 0);
 			vertexBufferViews[i] = .()
 			{
 				BufferLocation = (vertexBuffer as DX12Buffer).NativeBuffer.GetGPUVirtualAddress() + (uint64)offset,
 				StrideInBytes = (uint32)currentGraphicsPipelineState.VertexStrides[i],
-				SizeInBytes = (uint32)(vertexBuffer.Description.SizeInBytes - (uint32)offset)
+				SizeInBytes = (vertexBuffer.Description.SizeInBytes - (uint32)offset)
 			};
 		}
 		CommandList.IASetVertexBuffers(0, (uint32)vertexBuffers.Count, vertexBufferViews.Ptr);
 	}
 
 	/// <inheritdoc />
-	protected override void SetVertexBufferInternal(uint32 slot, Buffer buffer, uint32 offset = 0)
+	protected override void SetVertexBufferInternal(uint32 slot, Sedulous.RHI.Buffer buffer, uint32 offset = 0)
 	{
-		D3D12_VERTEX_BUFFER_VIEW  vertexBufferView = default(D3D12_VERTEX_BUFFER_VIEW );
+		D3D12_VERTEX_BUFFER_VIEW vertexBufferView = default(D3D12_VERTEX_BUFFER_VIEW);
 		vertexBufferView.BufferLocation = (buffer as DX12Buffer).NativeBuffer.GetGPUVirtualAddress() + offset;
 		vertexBufferView.StrideInBytes = (uint32)currentGraphicsPipelineState.VertexStrides[slot];
-		vertexBufferView.SizeInBytes = (uint32)(buffer.Description.SizeInBytes - offset);
-		D3D12_VERTEX_BUFFER_VIEW  bufferView = vertexBufferView;
-		CommandList.IASetVertexBuffers((uint32)slot, 1, &bufferView);
+		vertexBufferView.SizeInBytes = (buffer.Description.SizeInBytes - offset);
+		CommandList.IASetVertexBuffers(slot, 1, &vertexBufferView);
 	}
 
 	/// <inheritdoc />
-	protected override void SetIndexBufferInternal(Buffer buffer, IndexFormat format = IndexFormat.UInt16, uint32 offset = 0)
+	protected override void SetIndexBufferInternal(Sedulous.RHI.Buffer buffer, IndexFormat format = IndexFormat.UInt16, uint32 offset = 0)
 	{
-		D3D12_INDEX_BUFFER_VIEW  indexBufferView2 = default(D3D12_INDEX_BUFFER_VIEW );
-		indexBufferView2.BufferLocation = (buffer as DX12Buffer).NativeBuffer.GetGPUVirtualAddress() + offset;
-		indexBufferView2.Format = format.ToDirectX();
-		indexBufferView2.SizeInBytes = (uint32)(buffer.Description.SizeInBytes - offset);
-		D3D12_INDEX_BUFFER_VIEW  indexBufferView = indexBufferView2;
+		D3D12_INDEX_BUFFER_VIEW indexBufferView = default(D3D12_INDEX_BUFFER_VIEW);
+		indexBufferView.BufferLocation = (buffer as DX12Buffer).NativeBuffer.GetGPUVirtualAddress() + offset;
+		indexBufferView.Format = format.ToDirectX();
+		indexBufferView.SizeInBytes = (buffer.Description.SizeInBytes - offset);
 		CommandList.IASetIndexBuffer(&indexBufferView);
 	}
 
@@ -291,7 +290,7 @@ public class DX12CommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	public override void SetViewports(Viewport[] viewports)
+	public override void SetViewports(Sedulous.RHI.Viewport[] viewports)
 	{
 		if (viewports.Count == 1)
 		{
@@ -309,13 +308,13 @@ public class DX12CommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void UpdateBufferDataInternal(Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
+	protected override void UpdateBufferDataInternal(Sedulous.RHI.Buffer buffer, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
 	{
 		(buffer as DX12Buffer).SetData(CommandList, source, sourceSizeInBytes, destinationOffsetInBytes);
 	}
 
 	/// <inheritdoc />
-	protected override void CopyBufferDataToInternal(Buffer buffer, Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
+	protected override void CopyBufferDataToInternal(Sedulous.RHI.Buffer buffer, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
 	{
 		(buffer as DX12Buffer).CopyTo(CommandList, destination, sizeInBytes, sourceOffset, destinationOffset);
 	}
@@ -337,15 +336,15 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.Dispatch((uint32)threadGroupCountX, (uint32)threadGroupCountY, (uint32)threadGroupCountZ);
+		CommandList.Dispatch(threadGroupCountX, threadGroupCountY, threadGroupCountZ);
 	}
 
 	/// <inheritdoc />
-	public override void DispatchIndirect(Buffer argBuffer, uint32 offset)
+	public override void DispatchIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset)
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.ExecuteIndirect(context.DispatchIndirectCommandSignature, 1, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0UL);
+		CommandList.ExecuteIndirect(context.DispatchIndirectCommandSignature, 1, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0uL);
 	}
 
 	/// <inheritdoc />
@@ -353,7 +352,7 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.DrawInstanced((uint32)vertexCount, 1, (uint32)startVertexLocation, 0);
+		CommandList.DrawInstanced(vertexCount, 1, startVertexLocation, 0);
 	}
 
 	/// <inheritdoc />
@@ -361,7 +360,7 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.DrawIndexedInstanced((uint32)indexCount, 1, (uint32)startIndexLocation, (int32)baseVertexLocation, 0);
+		CommandList.DrawIndexedInstanced(indexCount, 1, startIndexLocation, (int32)baseVertexLocation, 0);
 	}
 
 	/// <inheritdoc />
@@ -369,11 +368,11 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.DrawIndexedInstanced((uint32)indexCountPerInstance, (uint32)instanceCount, (uint32)startIndexLocation, (int32)baseVertexLocation, (uint32)startInstanceLocation);
+		CommandList.DrawIndexedInstanced(indexCountPerInstance, instanceCount, startIndexLocation, (int32)baseVertexLocation, startInstanceLocation);
 	}
 
 	/// <inheritdoc />
-	public override void DrawIndexedInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
+	public override void DrawIndexedInstancedIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
 	{
 		if ((argBuffer.Description.Flags & BufferFlags.IndirectBuffer) == 0)
 		{
@@ -381,7 +380,7 @@ public class DX12CommandBuffer : CommandBuffer
 		}
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.ExecuteIndirect(context.DrawIndexedInstancedIndirectCommandSignature, (uint32)drawCount, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0UL);
+		CommandList.ExecuteIndirect(context.DrawIndexedInstancedIndirectCommandSignature, drawCount, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0uL);
 	}
 
 	/// <inheritdoc />
@@ -389,15 +388,15 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.DrawInstanced((uint32)vertexCountPerInstance, (uint32)instanceCount, (uint32)startVertexLocation, (uint32)startInstanceLocation);
+		CommandList.DrawInstanced(vertexCountPerInstance, instanceCount, startVertexLocation, startInstanceLocation);
 	}
 
 	/// <inheritdoc />
-	public override void DrawInstancedIndirect(Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
+	public override void DrawInstancedIndirect(Sedulous.RHI.Buffer argBuffer, uint32 offset, uint32 drawCount, uint32 stride)
 	{
 		resourceDescriptorsGPU.Submit(context.DXDevice, CommandList);
 		samplerDescriptorsGPU.Submit(context.DXDevice, CommandList);
-		CommandList.ExecuteIndirect(context.DrawInstancedIndirectCommandSignature, (uint32)drawCount, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0UL);
+		CommandList.ExecuteIndirect(context.DrawInstancedIndirectCommandSignature, drawCount, (argBuffer as DX12Buffer).NativeBuffer, offset, null, 0uL);
 	}
 
 	/// <inheritdoc />
@@ -406,7 +405,7 @@ public class DX12CommandBuffer : CommandBuffer
 	}
 
 	/// <inheritdoc />
-	protected override void BeginRenderPassInternal(ref RenderPassDescription description)
+	protected override void BeginRenderPassInternal(in RenderPassDescription description)
 	{
 		FrameBuffer frameBuffer = description.FrameBuffer;
 		Sedulous.RHI.ClearValue clearValue = description.ClearValue;
@@ -416,23 +415,21 @@ public class DX12CommandBuffer : CommandBuffer
 			DX12Texture texture = nativeFrameBuffer.BackBufferTextures[nativeFrameBuffer.CurrentBackBufferIndex];
 			ResourceBarrierTransition(texture, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_RENDER_TARGET);
 			ResourceBarrierTransition(nativeFrameBuffer.DepthTargetTexture, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_DEPTH_WRITE);
-
-
 			CommandList.OMSetRenderTargets(1, &nativeFrameBuffer.ColorTargetViews, FALSE, &nativeFrameBuffer.DepthTargetview);
-			if ((clearValue.Flags & ClearFlags.Target) == ClearFlags.Target)
+			if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Target) == Sedulous.RHI.ClearFlags.Target)
 			{
 				Vector4 colorValue = clearValue.ColorValues[0];
 				clearColor = .(colorValue.X, colorValue.Y, colorValue.Z, colorValue.W);
 				CommandList.ClearRenderTargetView(nativeFrameBuffer.BackBuffers[nativeFrameBuffer.CurrentBackBufferIndex], &clearColor, 0, null);
 			}
-			if ((clearValue.Flags & ClearFlags.Depth) == ClearFlags.Depth || (clearValue.Flags & ClearFlags.Stencil) == ClearFlags.Stencil)
+			if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Depth) == Sedulous.RHI.ClearFlags.Depth || (clearValue.Flags & Sedulous.RHI.ClearFlags.Stencil) == Sedulous.RHI.ClearFlags.Stencil)
 			{
-				D3D12_CLEAR_FLAGS flags = 0;
-				if ((clearValue.Flags & ClearFlags.Depth) == ClearFlags.Depth)
+				D3D12_CLEAR_FLAGS flags = (D3D12_CLEAR_FLAGS)0;
+				if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Depth) == Sedulous.RHI.ClearFlags.Depth)
 				{
 					flags |= .D3D12_CLEAR_FLAG_DEPTH;
 				}
-				if ((clearValue.Flags & ClearFlags.Stencil) == ClearFlags.Stencil)
+				if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Stencil) == Sedulous.RHI.ClearFlags.Stencil)
 				{
 					flags |= .D3D12_CLEAR_FLAG_STENCIL;
 				}
@@ -443,26 +440,26 @@ public class DX12CommandBuffer : CommandBuffer
 		{
 			DX12FrameBuffer nativeFrameBuffer = frameBuffer as DX12FrameBuffer;
 			ResourceBarrierTransition(nativeFrameBuffer.DepthTargetTexture, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_DEPTH_WRITE);
-			CommandList.OMSetRenderTargets((uint32)nativeFrameBuffer.ColorTargetViews.Count, nativeFrameBuffer.ColorTargetViews.Ptr, FALSE, &nativeFrameBuffer.DepthTargetview);
-			for (int32 i = 0; i < frameBuffer.ColorTargets/*?*/.Count; i++)
+			CommandList.OMSetRenderTargets((uint32)nativeFrameBuffer.ColorTargetViews.Count, nativeFrameBuffer.ColorTargetViews.Ptr, 0, &nativeFrameBuffer.DepthTargetview);
+			for (int32 i = 0; i < frameBuffer.ColorTargets.Count; i++)
 			{
 				DX12Texture texture = nativeFrameBuffer.ColorTargetTextures[i];
 				ResourceBarrierTransition(texture, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_RENDER_TARGET);
-				if ((clearValue.Flags & ClearFlags.Target) == ClearFlags.Target)
+				if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Target) == Sedulous.RHI.ClearFlags.Target)
 				{
 					Vector4 colorValue = clearValue.ColorValues[i];
 					clearColor = .(colorValue.X, colorValue.Y, colorValue.Z, colorValue.W);
 					CommandList.ClearRenderTargetView(nativeFrameBuffer.ColorTargetViews[i], &clearColor, 0, null);
 				}
 			}
-			if ((clearValue.Flags & ClearFlags.Depth) == ClearFlags.Depth || (clearValue.Flags & ClearFlags.Stencil) == ClearFlags.Stencil)
+			if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Depth) == Sedulous.RHI.ClearFlags.Depth || (clearValue.Flags & Sedulous.RHI.ClearFlags.Stencil) == Sedulous.RHI.ClearFlags.Stencil)
 			{
-				D3D12_CLEAR_FLAGS flags = 0;
-				if ((clearValue.Flags & ClearFlags.Depth) == ClearFlags.Depth)
+				D3D12_CLEAR_FLAGS flags = (D3D12_CLEAR_FLAGS)0;
+				if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Depth) == Sedulous.RHI.ClearFlags.Depth)
 				{
 					flags |= .D3D12_CLEAR_FLAG_DEPTH;
 				}
-				if ((clearValue.Flags & ClearFlags.Stencil) == ClearFlags.Stencil)
+				if ((clearValue.Flags & Sedulous.RHI.ClearFlags.Stencil) == Sedulous.RHI.ClearFlags.Stencil)
 				{
 					flags |= .D3D12_CLEAR_FLAG_STENCIL;
 				}
@@ -477,7 +474,6 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		if (!String.IsNullOrEmpty(label))
 		{
-			//CommandList.BeginEvent(label);
 			WinPixEventRuntime.PIXBeginEvent(CommandList, WinPixEventRuntime.PIX_COLOR_DEFAULT, label);
 		}
 	}
@@ -493,7 +489,6 @@ public class DX12CommandBuffer : CommandBuffer
 	{
 		if (!String.IsNullOrEmpty(label))
 		{
-			//CommandList.SetMarker(label);
 			WinPixEventRuntime.PIXSetMarker(CommandList, WinPixEventRuntime.PIX_COLOR_DEFAULT, label);
 		}
 	}
@@ -545,8 +540,7 @@ public class DX12CommandBuffer : CommandBuffer
 	/// <inheritdoc />
 	public override BottomLevelAS BuildRaytracingAccelerationStructure(BottomLevelASDescription description)
 	{
-		var description;
-		DX12BottomLevelAS blas = new DX12BottomLevelAS(context, ref description);
+		DX12BottomLevelAS blas = new DX12BottomLevelAS(context, description);
 		((ID3D12GraphicsCommandList4*)CommandList).BuildRaytracingAccelerationStructure(&blas.AccelerationStructureDescription, 0, null);
 		D3D12_RESOURCE_BARRIER uavBarrier = D3D12_RESOURCE_BARRIER(.(blas.ResultBuffer));
 		CommandList.ResourceBarrier(1, &uavBarrier);
@@ -556,8 +550,7 @@ public class DX12CommandBuffer : CommandBuffer
 	/// <inheritdoc />
 	public override TopLevelAS BuildRaytracingAccelerationStructure(TopLevelASDescription description)
 	{
-		var description;
-		DX12TopLevelAS tlas = new DX12TopLevelAS(context, ref description);
+		DX12TopLevelAS tlas = new DX12TopLevelAS(context, description);
 		((ID3D12GraphicsCommandList4*)CommandList).BuildRaytracingAccelerationStructure(&tlas.AccelerationStructureDescription, 0, null);
 		D3D12_RESOURCE_BARRIER  uavBarrier = D3D12_RESOURCE_BARRIER (.(tlas.ResultBuffer));
 		CommandList.ResourceBarrier(1, &uavBarrier);
@@ -567,9 +560,8 @@ public class DX12CommandBuffer : CommandBuffer
 	/// <inheritdoc />
 	public override void UpdateRaytracingAccelerationStructure(ref TopLevelAS tlas, TopLevelASDescription newDescription)
 	{
-		var newDescription;
 		DX12TopLevelAS nativeTopLevelAS = (DX12TopLevelAS)tlas;
-		nativeTopLevelAS.UpdateAccelerationStructure(ref newDescription);
+		nativeTopLevelAS.UpdateAccelerationStructure(newDescription);
 		((ID3D12GraphicsCommandList4*)CommandList).BuildRaytracingAccelerationStructure(&nativeTopLevelAS.AccelerationStructureDescription, 0, null);
 		D3D12_RESOURCE_BARRIER  uavBarrier = D3D12_RESOURCE_BARRIER (.(nativeTopLevelAS.ResultBuffer));
 		CommandList.ResourceBarrier(1, &uavBarrier);
@@ -630,11 +622,7 @@ public class DX12CommandBuffer : CommandBuffer
 			Reset();
 			resourceDescriptorsGPU?.Dispose();
 			samplerDescriptorsGPU?.Dispose();
-			ID3D12GraphicsCommandList* commandList = CommandList;
-			if (commandList != null)
-			{
-				commandList.Release();
-			}
+			CommandList?.Release();
 			CommandList = null;
 			disposed = true;
 		}

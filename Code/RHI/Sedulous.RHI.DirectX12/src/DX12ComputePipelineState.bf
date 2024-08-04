@@ -5,6 +5,7 @@ using Win32.Foundation;
 using Win32;
 
 namespace Sedulous.RHI.DirectX12;
+
 using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
@@ -19,7 +20,7 @@ public class DX12ComputePipelineState : ComputePipelineState
 
 	private ID3D12RootSignature* rootSignature;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
 	public override String Name
@@ -40,13 +41,13 @@ public class DX12ComputePipelineState : ComputePipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The compute pipeline state description.</param>
-	public this(DX12GraphicsContext context, ref ComputePipelineDescription description)
-		: base(ref description)
+	public this(DX12GraphicsContext context, in ComputePipelineDescription description)
+		: base(description)
 	{
 		rootSignature = context.DefaultComputeSignature;
 		D3D12_COMPUTE_PIPELINE_STATE_DESC nativePipelineStateDescription = D3D12_COMPUTE_PIPELINE_STATE_DESC()
 		{
-			CS = (description.ShaderDescription.ComputeShader as DX12Shader).NativeShader,
+			CS = (description.shaderDescription.ComputeShader as DX12Shader).NativeShader,
 			Flags = .D3D12_PIPELINE_STATE_FLAG_NONE,
 			pRootSignature = rootSignature
 		};
@@ -80,23 +81,14 @@ public class DX12ComputePipelineState : ComputePipelineState
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			ID3D12PipelineState* iD3D12PipelineState = nativePipeline;
-			if (iD3D12PipelineState != null)
+			if (disposing)
 			{
-				iD3D12PipelineState.Release();
+				nativePipeline?.Release();
+				rootSignature?.Release();
 			}
-			ID3D12RootSignature* iD3D12RootSignature = rootSignature;
-			if (iD3D12RootSignature != null)
-			{
-				iD3D12RootSignature.Release();
-			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }

@@ -3,34 +3,16 @@ using Sedulous.RHI;
 using Win32.Graphics.Direct3D12;
 
 namespace Sedulous.RHI.DirectX12;
+
 using internal Sedulous.RHI.DirectX12;
+using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
 /// The DX12 implementation of the ResourceSet object.
 /// </summary>
 public class DX12ResourceSet : ResourceSet
 {
-	private static ShaderStages[] stagesByIndex;
-
-	private String name;
-
-	/// <inheritdoc />
-	public override String Name
-	{
-		get
-		{
-			return name;
-		}
-		set
-		{
-			name = value;
-		}
-	}
-
-	static this()
-	{
-		stagesByIndex = new ShaderStages[11]
-		(
+	private static ShaderStages[?] stagesByIndex = .(
 			ShaderStages.Vertex,
 			ShaderStages.Hull,
 			ShaderStages.Domain,
@@ -42,15 +24,29 @@ public class DX12ResourceSet : ResourceSet
 			ShaderStages.ClosestHit,
 			ShaderStages.AnyHit,
 			ShaderStages.Intersection
-		);
+		);;
+
+	private String name = new .() ~ delete _;
+
+	/// <inheritdoc />
+	public override String Name
+	{
+		get
+		{
+			return name;
+		}
+		set
+		{
+			name.Set(value);
+		}
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12ResourceSet" /> class.
 	/// </summary>
 	/// <param name="description">The resourceSet description.</param>
-	public this(ref ResourceSetDescription description)
-		: base(ref description)
+	public this(in ResourceSetDescription description)
+		: base(description)
 	{
 	}
 
@@ -76,15 +72,15 @@ public class DX12ResourceSet : ResourceSet
 			{
 				uint32 slot = element.Slot;
 				DX12Buffer buffer = resource as DX12Buffer;
-				D3D12_CONSTANT_BUFFER_VIEW_DESC  cBVDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC );
+				D3D12_CONSTANT_BUFFER_VIEW_DESC cBVDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC);
 				uint32 bufferOffset = 0;
 				bool overrideOffset = element.AllowDynamicOffset && offsets != null;
 				if (overrideOffset)
 				{
 					bufferOffset = offsets[dynamicOffsetCounter];
 					dynamicOffsetCounter++;
-					D3D12_CONSTANT_BUFFER_VIEW_DESC  constantBufferViewDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC );
-					constantBufferViewDescription.SizeInBytes = (uint32)((element.Range == 0) ? (buffer.alignedSize - bufferOffset) : Helpers.AlignUp(element.Range));
+					D3D12_CONSTANT_BUFFER_VIEW_DESC constantBufferViewDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC);
+					constantBufferViewDescription.SizeInBytes = ((element.Range == 0) ? (buffer.alignedSize - bufferOffset) : Helpers.AlignUp(element.Range));
 					constantBufferViewDescription.BufferLocation = buffer.NativeBuffer.GetGPUVirtualAddress() + bufferOffset;
 					cBVDescription = constantBufferViewDescription;
 					cBVDescription.SizeInBytes = Math.Min(cBVDescription.SizeInBytes, 65536);

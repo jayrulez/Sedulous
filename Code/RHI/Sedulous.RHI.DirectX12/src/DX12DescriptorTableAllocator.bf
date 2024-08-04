@@ -42,7 +42,7 @@ internal class DX12DescriptorTableAllocator : IDisposable
 		}
 		D3D12_DESCRIPTOR_HEAP_DESC cpuHeapDescription = D3D12_DESCRIPTOR_HEAP_DESC()
 		{
-			Flags = .D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
+			Flags = D3D12_DESCRIPTOR_HEAP_FLAGS.D3D12_DESCRIPTOR_HEAP_FLAG_NONE,
 			Type = heapType,
 			NodeMask = 0,
 			NumDescriptors = uint32(itemCount * ShaderStageCount)
@@ -73,8 +73,8 @@ internal class DX12DescriptorTableAllocator : IDisposable
 
 	public void UpdateDescriptor(ID3D12Device* device, ShaderStages stage, D3D12_CPU_DESCRIPTOR_HANDLE descriptor, uint32 slot)
 	{
-		int32 stageIndex = ShaderStagesHelpers.IndexOf(stage);
-		uint32 index = (uint32)((uint32)stageIndex * itemCount) + slot;
+		int stageIndex = ShaderStagesHelpers.IndexOf(stage);
+		uint32 index = (uint32)(stageIndex * itemCount) + slot;
 		if ((uint64)boundDescriptors[index].ptr != descriptor.ptr)
 		{
 			boundDescriptors[index] = descriptor;
@@ -87,8 +87,8 @@ internal class DX12DescriptorTableAllocator : IDisposable
 
 	public D3D12_CPU_DESCRIPTOR_HANDLE UpdateDescriptorHandle(ShaderStages stage, uint32 offset)
 	{
-		int32 stageIndex = ShaderStagesHelpers.IndexOf(stage);
-		uint32 index = (uint32)((uint32)stageIndex * itemCount) + offset;
+		int stageIndex = ShaderStagesHelpers.IndexOf(stage);
+		uint32 index = (uint32)(stageIndex * itemCount) + offset;
 		D3D12_CPU_DESCRIPTOR_HANDLE dst_staging = CPUheap.GetCPUDescriptorHandleForHeapStart();
 		dst_staging.ptr += index * descriptorSize;
 		boundDescriptors[index] = dst_staging;
@@ -98,7 +98,7 @@ internal class DX12DescriptorTableAllocator : IDisposable
 
 	public D3D12_GPU_DESCRIPTOR_HANDLE StartStageHandle(ShaderStages stage)
 	{
-		uint32 index = (uint32)((uint32)ShaderStagesHelpers.IndexOf(stage) * itemCount);
+		uint32 index = (uint32)(ShaderStagesHelpers.IndexOf(stage) * itemCount);
 		D3D12_GPU_DESCRIPTOR_HANDLE handle = GPUheap.GetGPUDescriptorHandleForHeapStart();
 		handle.ptr += index * descriptorSize;
 		return handle;
@@ -106,7 +106,7 @@ internal class DX12DescriptorTableAllocator : IDisposable
 
 	public void Submit(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
 	{
-		for (uint32 stageIndex = 0; stageIndex < ShaderStageCount; stageIndex++)
+		for (int32 stageIndex = 0; stageIndex < ShaderStageCount; stageIndex++)
 		{
 			if (!dirty[stageIndex])
 			{
@@ -120,7 +120,7 @@ internal class DX12DescriptorTableAllocator : IDisposable
 			device.CopyDescriptorsSimple(itemCount, dst, src, DescriptorType);
 			D3D12_GPU_DESCRIPTOR_HANDLE descriptorTable = GPUheap.GetGPUDescriptorHandleForHeapStart();
 			descriptorTable.ptr += ringOffset;
-			if (stageIndex >= (uint32)ShaderStagesHelpers.IndexOf(ShaderStages.Compute))
+			if (stageIndex >= ShaderStagesHelpers.IndexOf(ShaderStages.Compute))
 			{
 				if (DescriptorType == D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 				{
@@ -133,14 +133,14 @@ internal class DX12DescriptorTableAllocator : IDisposable
 			}
 			else if (DescriptorType == D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
 			{
-				commandList.SetGraphicsRootDescriptorTable(stageIndex * 2, descriptorTable);
+				commandList.SetGraphicsRootDescriptorTable(uint32(stageIndex * 2), descriptorTable);
 			}
 			else
 			{
-				commandList.SetGraphicsRootDescriptorTable(stageIndex * 2 + 1, descriptorTable);
+				commandList.SetGraphicsRootDescriptorTable(uint32(stageIndex * 2 + 1), descriptorTable);
 			}
 			dirty[stageIndex] = false;
-			ringOffset += (uint32)((uint32)itemCount * (uint32)descriptorSize);
+			ringOffset += (uint32)(itemCount * descriptorSize);
 		}
 	}
 
@@ -153,15 +153,7 @@ internal class DX12DescriptorTableAllocator : IDisposable
 	/// <inheritdoc />
 	public void Dispose()
 	{
-		ID3D12DescriptorHeap* cPUheap = CPUheap;
-		if (cPUheap != null)
-		{
-			cPUheap.Release();
-		}
-		ID3D12DescriptorHeap* gPUheap = GPUheap;
-		if (gPUheap != null)
-		{
-			gPUheap.Release();
-		}
+		CPUheap?.Release();
+		GPUheap?.Release();
 	}
 }

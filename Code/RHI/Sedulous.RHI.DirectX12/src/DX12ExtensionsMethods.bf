@@ -167,6 +167,56 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
+	/// To convert from ShaderStage to DirectX stage.
+	/// </summary>
+	/// <param name="stage">The shaderstage to convert.</param>
+	/// <returns>The result string.</returns>
+	public static DxcShaderStage ToDirectXStage(this ShaderStages stage)
+	{
+		switch (stage)
+		{
+		case ShaderStages.Vertex:
+			return DxcShaderStage.Vertex;
+		case ShaderStages.Hull:
+			return DxcShaderStage.Hull;
+		case ShaderStages.Domain:
+			return DxcShaderStage.Domain;
+		case ShaderStages.Geometry:
+			return DxcShaderStage.Geometry;
+		case ShaderStages.Pixel:
+			return DxcShaderStage.Pixel;
+		case ShaderStages.Compute:
+			return DxcShaderStage.Compute;
+		case ShaderStages.RayGeneration,
+			ShaderStages.Miss,
+			ShaderStages.ClosestHit,
+			ShaderStages.AnyHit,
+			ShaderStages.Intersection:
+			return DxcShaderStage.Library;
+		default:
+			return DxcShaderStage.Vertex;
+		}
+	}
+
+	/// <summary>
+	/// To convert from graphicsProfile to directX graphics profile.
+	/// </summary>
+	/// <param name="profile">The profile to convert.</param>
+	/// <returns>The profile.</returns>
+	public static DxcShaderModel ToDirectX(this GraphicsProfile profile)
+	{
+		switch (profile)
+		{
+		case GraphicsProfile.Level_12_0:
+			return DxcShaderModel.Model6_0;
+		case GraphicsProfile.Level_12_3:
+			return DxcShaderModel.Model6_3;
+		default:
+			return DxcShaderModel.Model6_0;
+		}
+	}
+
+	/// <summary>
 	/// To convert from indexformat to DXGI format.
 	/// </summary>
 	/// <param name="format">The indexformat to convert.</param>
@@ -247,7 +297,7 @@ public static class DX12ExtensionsMethods
 		{
 			return result;
 		}
-		return Format.Unknown;*/
+		return .DXGI_FORMAT_UNKNOWN;*/
 
 		var enumString = scope $"DXGI_FORMAT_{pixelFormat.ToString(.. scope .())}";
 		if (Enum.Parse<DXGI_FORMAT>(enumString, true) case .Ok(let result))
@@ -268,19 +318,19 @@ public static class DX12ExtensionsMethods
 		switch (pixelFormat)
 		{
 		case PixelFormat.R16_Typeless,
-			 PixelFormat.D16_UNorm:
+			PixelFormat.D16_UNorm:
 			result = .DXGI_FORMAT_D16_UNORM;
 			break;
 		case PixelFormat.R32_Typeless,
-			 PixelFormat.D32_Float:
-			result =.DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+			PixelFormat.D32_Float:
+			result = .DXGI_FORMAT_D32_FLOAT;
 			break;
 		case PixelFormat.R24G8_Typeless,
-			 PixelFormat.D24_UNorm_S8_UInt:
+			PixelFormat.D24_UNorm_S8_UInt:
 			result = .DXGI_FORMAT_D24_UNORM_S8_UINT;
 			break;
 		case PixelFormat.R32G8X24_Typeless,
-			 PixelFormat.D32_Float_S8X24_UInt:
+			PixelFormat.D32_Float_S8X24_UInt:
 			result = .DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
 			break;
 		default: break;
@@ -301,7 +351,7 @@ public static class DX12ExtensionsMethods
 		}
 		return PixelFormat.Unknown;*/
 
-		
+
 		var enumString = pixelFormat.ToString(.. scope .());
 		enumString.Replace("DXGI_FORMAT_", "");
 		if (Enum.Parse<PixelFormat>(enumString, true) case .Ok(let result))
@@ -560,7 +610,7 @@ public static class DX12ExtensionsMethods
 		case ResourceType.ConstantBuffer:
 			return .D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
 		case ResourceType.StructuredBufferReadWrite,
-			 ResourceType.TextureReadWrite:
+			ResourceType.TextureReadWrite:
 			return .D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
 		case ResourceType.Sampler:
 			return .D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;

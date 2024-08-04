@@ -1,14 +1,15 @@
 using System;
 using Sedulous.RHI;
 using Win32.Graphics.Direct3D12;
-using Win32.Graphics.Dxgi.Common;
-using Win32.Foundation;
-using Win32;
 using Win32.System.Com;
 using Win32.Graphics.Dxgi;
+using Win32.Graphics.Dxgi.Common;
 using System.Collections;
+using Win32.Foundation;
+using Win32;
 
 namespace Sedulous.RHI.DirectX12;
+
 using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
@@ -46,7 +47,7 @@ public class DX12Texture : Texture
 
 	private D3D12_CPU_DESCRIPTOR_HANDLE? unorderedAccessView;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
 	public override String Name
@@ -115,10 +116,10 @@ public class DX12Texture : Texture
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">The texture description.</param>
 	/// <param name="samplerState">the sampler state description for this texture.</param>
-	public this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, ref TextureDescription description, ref SamplerStateDescription samplerState)
-		: base(context, ref description)
+	public this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
+		: base(context, description)
 	{
-		//ID3D12Device* dXDevice = context.DXDevice;
+		ID3D12Device* dXDevice = context.DXDevice;
 		dxContext = context;
 		nativeDescription = default(D3D12_RESOURCE_DESC);
 		switch (Description.Type)
@@ -196,9 +197,9 @@ public class DX12Texture : Texture
 					for (uint32 m = 0; m < description.MipLevels; m++)
 					{
 						uint32 index = a * description.Faces * description.MipLevels + f * description.MipLevels + m;
-						uint64 num = bufferPointer + copyOffset;
+						uint64 destination = bufferPointer + copyOffset;
 						Sedulous.RHI.DataBox dataBox = data[index];
-						Internal.MemCpy((void*)(int)num, (void*)dataBox.DataPointer, dataBox.SlicePitch * description.Depth);
+						Internal.MemCpy((void*)(int)destination, (void*)dataBox.DataPointer, dataBox.SlicePitch * description.Depth);
 						copyOffset += dataBox.SlicePitch;
 						levelWidth = Math.Max(1, levelWidth / 2);
 						levelHeight = Math.Max(1, levelHeight / 2);
@@ -290,8 +291,8 @@ public class DX12Texture : Texture
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">Databoxes array.</param>
 	/// <param name="description">Texture description.</param>
-	private this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, ref TextureDescription description)
-		: base(context, ref description)
+	private this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, in TextureDescription description)
+		: base(context, description)
 	{
 	}
 
@@ -304,13 +305,13 @@ public class DX12Texture : Texture
 	/// <param name="subResource">The subresource index.</param>
 	public void SetData(ID3D12GraphicsCommandList* commandList, void* source, uint32 sourceSizeInBytes, uint32 subResource = 0)
 	{
-		bool num = Description.Usage == ResourceUsage.Staging;
+		bool isStaging = Description.Usage == ResourceUsage.Staging;
 		SubResourceInfo subResourceInfo = Helpers.GetSubResourceInfo(Description, subResource);
 		if (sourceSizeInBytes > subResourceInfo.SizeInBytes)
 		{
 			Context.ValidationLayer?.Notify("DX12", scope $"The sourceSizeInBytes: {sourceSizeInBytes} is bigger than the subResource size: {subResourceInfo.SizeInBytes}");
 		}
-		if (num)
+		if (isStaging)
 		{
 			D3D12_RANGE range2 = default(D3D12_RANGE);
 			range2.Begin = uint((int64)subResourceInfo.Offset);
@@ -463,7 +464,7 @@ public class DX12Texture : Texture
 		stagingDescription.CpuAccess = ResourceCpuAccess.Write | ResourceCpuAccess.Read;
 		stagingDescription.Usage = ResourceUsage.Staging;
 		SamplerStateDescription samplerStateDescription = default(SamplerStateDescription);
-		return new DX12Texture(dxContext, null, ref stagingDescription, ref samplerStateDescription);
+		return new DX12Texture(dxContext, null, stagingDescription, samplerStateDescription);
 	}
 
 	/// <summary>
@@ -805,27 +806,26 @@ public class DX12Texture : Texture
 		TextureDescription description;
 		if (!textureDescription.HasValue)
 		{
-			//D3D12_RESOURCE_DESC nativeDescription = nativeTexture.Description;
 			D3D12_RESOURCE_DESC nativeDescription = nativeTexture.GetDesc();
-			TextureDescription textureDescription2 = default(TextureDescription);
-			textureDescription2.Width = (uint32)nativeDescription.Width;
-			textureDescription2.Height = (uint32)nativeDescription.Height;
-			textureDescription2.Format = nativeDescription.Format.FromDirectX();
-			textureDescription2.MipLevels = nativeDescription.MipLevels;
-			textureDescription2.ArraySize = nativeDescription.DepthOrArraySize;
-			textureDescription2.Faces = 1;
-			textureDescription2.Flags = nativeDescription.Flags.FromDirectX();
-			textureDescription2.CpuAccess = ResourceCpuAccess.None;
-			textureDescription2.Usage = ResourceUsage.Default;
-			textureDescription2.SampleCount = nativeDescription.SampleDesc.FromDirectX();
-			textureDescription2.Type = TextureType.Texture2D;
-			description = textureDescription2;
+			TextureDescription newDescription = default(TextureDescription);
+			newDescription.Width = (uint32)nativeDescription.Width;
+			newDescription.Height = (uint32)nativeDescription.Height;
+			newDescription.Format = nativeDescription.Format.FromDirectX();
+			newDescription.MipLevels = nativeDescription.MipLevels;
+			newDescription.ArraySize = nativeDescription.DepthOrArraySize;
+			newDescription.Faces = 1;
+			newDescription.Flags = nativeDescription.Flags.FromDirectX();
+			newDescription.CpuAccess = ResourceCpuAccess.None;
+			newDescription.Usage = ResourceUsage.Default;
+			newDescription.SampleCount = nativeDescription.SampleDesc.FromDirectX();
+			newDescription.Type = TextureType.Texture2D;
+			description = newDescription;
 		}
 		else
 		{
 			description = textureDescription.Value;
 		}
-		return new DX12Texture(context, null, ref description)
+		return new DX12Texture(context, null, description)
 		{
 			NativeTexture = nativeTexture,
 			dxContext = context
@@ -880,7 +880,7 @@ public class DX12Texture : Texture
 			return .DXGI_FORMAT_D16_UNORM;
 		case PixelFormat.R32_Typeless,
 			 PixelFormat.D32_Float:
-			return .DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
+			return .DXGI_FORMAT_D32_FLOAT;
 		case PixelFormat.R24G8_Typeless,
 			 PixelFormat.D24_UNorm_S8_UInt:
 			return .DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -892,7 +892,7 @@ public class DX12Texture : Texture
 		}
 	}
 
-	private static void ConvertDataBoxes(Sedulous.RHI.DataBox[] textureData, List<D3D12_SUBRESOURCE_DATA> outputData)
+	private static void ConvertDataBoxes(DataBox[] textureData, List<D3D12_SUBRESOURCE_DATA> outputData)
 	{
 		if (textureData == null || textureData.Count == 0)
 		{
@@ -911,7 +911,6 @@ public class DX12Texture : Texture
 
 	private void Dispose(bool disposing)
 	{
-		//base.Dispose();
 		if (disposed)
 		{
 			return;
@@ -926,11 +925,7 @@ public class DX12Texture : Texture
 			{
 				dxContext.ShaderResourceViewAllocator.Free(unorderedAccessView.Value);
 			}
-			ID3D12Resource* nativeTexture = NativeTexture;
-			if (nativeTexture != null)
-			{
-				nativeTexture.Release();
-			}
+			NativeTexture?.Release();
 		}
 		disposed = true;
 	}

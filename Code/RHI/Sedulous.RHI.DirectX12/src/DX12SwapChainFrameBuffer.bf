@@ -1,7 +1,6 @@
 using Sedulous.RHI;
 using System;
 using Win32.Graphics.Direct3D12;
-using Win32.Foundation;
 
 namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;
@@ -38,7 +37,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 
 	private DX12GraphicsContext graphicsContext;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <summary>
 	/// Gets the renderTargetView array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
@@ -54,7 +53,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 		}
 		set
 		{
-			name = value;
+			name.Set(value);
 		}
 	}
 
@@ -69,11 +68,11 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 		SwapChainDescription description = swapchain.SwapChainDescription;
 		base.IntermediateBufferAssociated = true;
 		int32 swapChainBufferCount = 3;
-		ColorTargets = .(){ Count = swapChainBufferCount};
+		ColorTargets = .() { Count = swapChainBufferCount};
 		for (int32 i = 0; i < swapChainBufferCount; i++)
 		{
 			ID3D12Resource* backBuffer = null;
-			/*HRESULT hr =*/ swapchain.nativeSwapChain.GetBuffer((uint32)i, ID3D12Resource.IID, (void**)&backBuffer);
+			 swapchain.nativeSwapChain.GetBuffer((uint32)i, ID3D12Resource.IID, (void**)&backBuffer);
 			swapchain.swapChainBuffers[i] = DX12Texture.FromDirectXTexture(graphicsContext, backBuffer);
 			ColorTargets[i] = FrameBufferAttachment(swapchain.swapChainBuffers[i], 0, 1);
 		}
@@ -90,7 +89,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 			Flags = TextureFlags.DepthStencil,
 			Type = TextureType.Texture2D
 		};
-		Texture depthTexture = graphicsContext.Factory.CreateTexture(ref depth);
+		Texture depthTexture = graphicsContext.Factory.CreateTexture(depth);
 		DepthStencilTarget = FrameBufferAttachment(depthTexture, 0, 1);
 		if (ColorTargets.Count != 0)
 		{
@@ -113,7 +112,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 		}
 		DepthTargetTexture = depthTexture as DX12Texture;
 		DepthTargetview = DepthTargetTexture.GetDepthStencilView(0, depthTexture.Description.ArraySize, 0);
-		BackBuffers = new .[swapChainBufferCount];
+		BackBuffers = new D3D12_CPU_DESCRIPTOR_HANDLE[swapChainBufferCount];
 		BackBufferTextures = new DX12Texture[swapChainBufferCount];
 		for (int32 i = 0; i < BackBuffers.Count; i++)
 		{

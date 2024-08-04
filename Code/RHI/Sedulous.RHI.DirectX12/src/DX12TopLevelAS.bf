@@ -37,7 +37,7 @@ public class DX12TopLevelAS : TopLevelAS
 		}
 	}
 
-	internal D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC  AccelerationStructureDescription;
+	internal D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC AccelerationStructureDescription;
 
 	private D3D12_CPU_DESCRIPTOR_HANDLE? accerationStructureView;
 
@@ -73,10 +73,9 @@ public class DX12TopLevelAS : TopLevelAS
 	/// </summary>
 	/// <param name="context">DirectX12 Context.</param>
 	/// <param name="description">Top Level Description.</param>
-	public this(DX12GraphicsContext context, ref TopLevelASDescription description)
-		: base(context, ref description)
+	public this(DX12GraphicsContext context, in TopLevelASDescription description)
+		: base(context, description)
 	{
-		//IL_0119: Unknown result type (might be due to invalid IL or missing references)
 		D3D12_RAYTRACING_INSTANCE_DESC[] raytracingInstanceDescriptions = new D3D12_RAYTRACING_INSTANCE_DESC[description.Instances.Count];
 		for (int32 i = 0; i < raytracingInstanceDescriptions.Count; i++)
 		{
@@ -122,9 +121,8 @@ public class DX12TopLevelAS : TopLevelAS
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12TopLevelAS" /> class.
 	/// </summary>
 	/// <param name="description">New top level description.</param>
-	public void UpdateAccelerationStructure(ref TopLevelASDescription description)
+	public void UpdateAccelerationStructure(in TopLevelASDescription description)
 	{
-		//IL_00e2: Unknown result type (might be due to invalid IL or missing references)
 		Description = description;
 		D3D12_RAYTRACING_INSTANCE_DESC[] raytracingInstanceDescriptions = new D3D12_RAYTRACING_INSTANCE_DESC[description.Instances.Count];
 		for (int32 i = 0; i < raytracingInstanceDescriptions.Count; i++)
@@ -201,11 +199,7 @@ public class DX12TopLevelAS : TopLevelAS
 			{
 				nativeContext.ShaderResourceViewAllocator.Free(accerationStructureView.Value);
 			}
-			ID3D12Resource* resultBuffer = ResultBuffer;
-			if (resultBuffer != null)
-			{
-				resultBuffer.Release();
-			}
+			ResultBuffer?.Release();
 		}
 		disposed = true;
 	}

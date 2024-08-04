@@ -36,10 +36,6 @@ internal class DX12UploadBuffer : UploadBuffer
 	public override void Dispose()
 	{
 		nativeBuffer?.Unmap(0, null);
-		ID3D12Resource* iD3D12Resource = nativeBuffer;
-		if (iD3D12Resource != null)
-		{
-			iD3D12Resource.Release();
-		}
+		nativeBuffer?.Release();
 	}
 }

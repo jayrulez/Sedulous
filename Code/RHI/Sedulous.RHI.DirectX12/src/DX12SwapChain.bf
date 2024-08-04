@@ -1,8 +1,8 @@
 using System;
 using Sedulous.RHI;
 using Win32.Graphics.Dxgi;
-using Win32.Foundation;
 using Win32;
+using Win32.Foundation;
 using Sedulous.Platform;
 
 namespace Sedulous.RHI.DirectX12;
@@ -30,7 +30,7 @@ public class DX12SwapChain : SwapChain
 
 	private int32 currentBackBufferIndex;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <summary>
 	/// Gets or sets the active backbuffer index.
@@ -57,7 +57,7 @@ public class DX12SwapChain : SwapChain
 		}
 		set
 		{
-			name = value;
+			name.Set(value);
 		}
 	}
 
@@ -75,19 +75,15 @@ public class DX12SwapChain : SwapChain
 	/// </summary>
 	/// <param name="context">Graphics Context.</param>
 	/// <param name="description">SwapChain description.</param>
-	public this(GraphicsContext context, SwapChainDescription description)
+	public this(GraphicsContext context, Sedulous.RHI.SwapChainDescription description)
 	{
 		GraphicsContext = context;
 		swapChainBuffers = new DX12Texture[3];
-		IDXGISwapChain3* iDXGISwapChain = nativeSwapChain;
-		if (iDXGISwapChain != null)
-		{
-			iDXGISwapChain.Release();
-		}
+		nativeSwapChain?.Release();
 		base.SwapChainDescription = description;
-		if (description.SurfaceInfo.Type == .UWP)
+		if (description.SurfaceInfo.Type == .WinUI)
 		{
-			DXGI_SWAP_CHAIN_DESC1 swapChainDescription = DXGI_SWAP_CHAIN_DESC1()
+			DXGI_SWAP_CHAIN_DESC1 swapChainDescription = .()
 			{
 				Width = description.Width,
 				Height = description.Height,
@@ -101,12 +97,12 @@ public class DX12SwapChain : SwapChain
 				Stereo = FALSE
 			};
 			IDXGISwapChain1* swapChain1 = null;
-			/*HRESULT hr =*/ ((DX12GraphicsContext)context).DXFactory.CreateSwapChainForComposition(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, &swapChainDescription, null, &swapChain1);
+			((DX12GraphicsContext)context).DXFactory.CreateSwapChainForComposition(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, &swapChainDescription, null, &swapChain1);
 			nativeSwapChain = swapChain1.QueryInterface<IDXGISwapChain3>();
 		}
 		else
 		{
-			DXGI_SWAP_CHAIN_DESC1 swapChainDescription = DXGI_SWAP_CHAIN_DESC1()
+			DXGI_SWAP_CHAIN_DESC1 swapChainDescription = .()
 			{
 				Width = description.Width,
 				Height = description.Height,
@@ -119,7 +115,7 @@ public class DX12SwapChain : SwapChain
 				SwapEffect = .DXGI_SWAP_EFFECT_FLIP_DISCARD,
 				Stereo = FALSE
 			};
-			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDescription = DXGI_SWAP_CHAIN_FULLSCREEN_DESC()
+			DXGI_SWAP_CHAIN_FULLSCREEN_DESC fullScreenDescription = .()
 			{
 				RefreshRate = .(description.RefreshRate, 1),
 				Windowed = description.IsWindowed ? TRUE : FALSE,
@@ -127,7 +123,7 @@ public class DX12SwapChain : SwapChain
 				ScanlineOrdering = .DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED
 			};
 			IDXGISwapChain1* swapChain1 = null;
-			/*HRESULT hr =*/ ((DX12GraphicsContext)context).DXFactory.CreateSwapChainForHwnd(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, (int)description.SurfaceInfo.Win32.Hwnd, &swapChainDescription, &fullScreenDescription, null, &swapChain1);
+			((DX12GraphicsContext)context).DXFactory.CreateSwapChainForHwnd(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, (int)description.SurfaceInfo.Win32.Hwnd, &swapChainDescription, &fullScreenDescription, null, &swapChain1);
 			nativeSwapChain = swapChain1.QueryInterface<IDXGISwapChain3>();
 		}
 		DX12SwapChainFrameBuffer frameBuffer = new DX12SwapChainFrameBuffer(GraphicsContext as DX12GraphicsContext, this);
@@ -151,7 +147,7 @@ public class DX12SwapChain : SwapChain
 		HRESULT result = nativeSwapChain.ResizeBuffers(3, width, height, nativeSwapChain.GetDesc(.. scope .()).BufferDesc.Format, /*SwapChainFlags.None*/0);
 		if (SUCCEEDED(result))
 		{
-			SwapChainDescription copyDescription = base.SwapChainDescription;
+			Sedulous.RHI.SwapChainDescription copyDescription = base.SwapChainDescription;
 			copyDescription.Width = width;
 			copyDescription.Height = height;
 			base.SwapChainDescription = copyDescription;
@@ -189,19 +185,14 @@ public class DX12SwapChain : SwapChain
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			base.FrameBuffer?.Dispose();
-			IDXGISwapChain3* iDXGISwapChain = nativeSwapChain;
-			if (iDXGISwapChain != null)
+			if (disposing)
 			{
-				iDXGISwapChain.Release();
+				base.FrameBuffer?.Dispose();
+				nativeSwapChain?.Release();
 			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }

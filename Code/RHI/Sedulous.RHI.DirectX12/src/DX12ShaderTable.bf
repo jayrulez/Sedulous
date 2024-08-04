@@ -111,7 +111,7 @@ public class DX12ShaderTable
 		shaderTableEntrySize = AlignTo(32, shaderTableEntrySize);
 		uint32 shaderTableSize = shaderTableEntrySize * (uint32)entries.Count;
 		ID3D12Device5* device = (ID3D12Device5*)context.DXDevice;
-		Buffer = DX12RaytracingHelpers.CreateBuffer(device, shaderTableSize, .D3D12_RESOURCE_FLAG_NONE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, DX12RaytracingHelpers.kUploadHeapProps);
+		Buffer = DX12RaytracingHelpers.CreateBuffer(device, shaderTableSize, D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, DX12RaytracingHelpers.kUploadHeapProps);
 		ID3D12StateObjectProperties* pipelineProperties = pipeline.QueryInterface<ID3D12StateObjectProperties>();
 		void* pData = null;
 		Buffer.Map(0, null, &pData);
@@ -139,7 +139,7 @@ public class DX12ShaderTable
 	public uint64 GetRayGenStartAddress()
 	{
 		uint64 gPUVirtualAddress = Buffer.GetGPUVirtualAddress();
-		//uint32 shaderTableEntrySize2 = shaderTableEntrySize;
+		uint32 shaderTableEntrySize2 = shaderTableEntrySize;
 		return gPUVirtualAddress + 0;
 	}
 

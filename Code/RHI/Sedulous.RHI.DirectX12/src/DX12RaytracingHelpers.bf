@@ -1,5 +1,6 @@
 using Win32.Graphics.Direct3D12;
 namespace Sedulous.RHI.DirectX12;
+namespace Sedulous.RHI.DirectX12;
 
 /// <summary>
 /// Raytracing helpers.

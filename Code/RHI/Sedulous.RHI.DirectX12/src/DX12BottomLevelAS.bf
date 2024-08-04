@@ -11,7 +11,7 @@ using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 /// </summary>
 public class DX12BottomLevelAS : BottomLevelAS
 {
-	internal D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC  AccelerationStructureDescription;
+	internal D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC AccelerationStructureDescription;
 
 	private ID3D12Resource* scratchBuffer;
 
@@ -28,8 +28,8 @@ public class DX12BottomLevelAS : BottomLevelAS
 	/// </summary>
 	/// <param name="context">Graphics Context.</param>
 	/// <param name="description">Bottom Level Description.</param>
-	public this(DX12GraphicsContext context, ref BottomLevelASDescription description)
-		: base(context, ref description)
+	public this(DX12GraphicsContext context, in BottomLevelASDescription description)
+		: base(context, description)
 	{
 		D3D12_RAYTRACING_GEOMETRY_DESC[] raytracingGeometryDescriptions = scope D3D12_RAYTRACING_GEOMETRY_DESC[description.Geometries.Count];
 		for (int32 i = 0; i < raytracingGeometryDescriptions.Count; i++)
@@ -118,18 +118,13 @@ public class DX12BottomLevelAS : BottomLevelAS
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			ID3D12Resource* resultBuffer = ResultBuffer;
-			if (resultBuffer != null)
+			if (disposing)
 			{
-				resultBuffer.Release();
+				ResultBuffer?.Release();
 			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }

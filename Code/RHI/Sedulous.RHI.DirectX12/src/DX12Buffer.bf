@@ -11,7 +11,7 @@ using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 /// <summary>
 /// Represents a DirectX buffer object.
 /// </summary>
-public class DX12Buffer : Buffer
+public class DX12Buffer : Sedulous.RHI.Buffer
 {
 	internal uint32 alignedSize;
 
@@ -116,26 +116,26 @@ public class DX12Buffer : Buffer
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">A buffer description.</param>
-	public this(DX12GraphicsContext context, void* data, ref BufferDescription description)
-		: base(context, ref description)
+	public this(DX12GraphicsContext context, void* data, in BufferDescription description)
+		: base(context, description)
 	{
-		D3D12_RESOURCE_FLAGS flags = .D3D12_RESOURCE_FLAG_NONE;
+		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE;
 		if ((description.Flags & BufferFlags.UnorderedAccess) != 0)
 		{
-			flags |= .D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+			flags |= D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 		}
 		alignedSize = Helpers.AlignUp(description.SizeInBytes);
-		nativeDescription = D3D12_RESOURCE_DESC.Buffer(alignedSize, flags, 0UL);
+		nativeDescription = D3D12_RESOURCE_DESC.Buffer(alignedSize, flags, 0uL);
 		nativeResourceState = D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COMMON;
-		D3D12_HEAP_TYPE heapType = .D3D12_HEAP_TYPE_DEFAULT;
+		D3D12_HEAP_TYPE heapType = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_DEFAULT;
 		if (description.Usage == ResourceUsage.Staging)
 		{
-			heapType = .D3D12_HEAP_TYPE_READBACK;
+			heapType = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_READBACK;
 			nativeResourceState = D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_COPY_DEST;
 		}
 		else if (description.Usage == ResourceUsage.Dynamic)
 		{
-			heapType = .D3D12_HEAP_TYPE_UPLOAD;
+			heapType = D3D12_HEAP_TYPE.D3D12_HEAP_TYPE_UPLOAD;
 			nativeResourceState = D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ;
 		}
 		HRESULT result = context.DXDevice.CreateCommittedResource(scope D3D12_HEAP_PROPERTIES(heapType), .D3D12_HEAP_FLAG_NONE, &nativeDescription, nativeResourceState, null, ID3D12Resource.IID, (void**)&NativeBuffer);
@@ -158,7 +158,6 @@ public class DX12Buffer : Buffer
 	/// <param name="destinationOffsetInBytes">The offset in bytes.</param>
 	public void SetData(ID3D12GraphicsCommandList* commandList, void* source, uint32 sourceSizeInBytes, uint32 destinationOffsetInBytes = 0)
 	{
-		//IL_007c: Unknown result type (might be due to invalid IL or missing references)
 		if (sourceSizeInBytes == 0 || Description.SizeInBytes < sourceSizeInBytes)
 		{
 			Context.ValidationLayer?.Notify("DX12", "invalid source size in bytes.");
@@ -190,7 +189,7 @@ public class DX12Buffer : Buffer
 	/// <param name="sizeInBytes">The data size in bytes to copy.</param>
 	/// <param name="sourceOffset">The source buffer offset in bytes.</param>
 	/// <param name="destinationOffset">The destionation buffer offset in bytes.</param>
-	public void CopyTo(ID3D12GraphicsCommandList* commandList, Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
+	public void CopyTo(ID3D12GraphicsCommandList* commandList, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
 	{
 		DX12Buffer destinationBuffer = destination as DX12Buffer;
 		D3D12_RESOURCE_STATES srcResourceState = nativeResourceState;
@@ -227,7 +226,7 @@ public class DX12Buffer : Buffer
 		stagingDescription.Flags = BufferFlags.None;
 		stagingDescription.CpuAccess = ResourceCpuAccess.Write | ResourceCpuAccess.Read;
 		stagingDescription.Usage = ResourceUsage.Staging;
-		return new DX12Buffer(Context as DX12GraphicsContext, null, ref stagingDescription);
+		return new DX12Buffer(Context as DX12GraphicsContext, null, stagingDescription);
 	}
 
 	/// <inheritdoc />
@@ -239,10 +238,10 @@ public class DX12Buffer : Buffer
 	private D3D12_CPU_DESCRIPTOR_HANDLE GetConstantBufferView()
 	{
 		D3D12_CPU_DESCRIPTOR_HANDLE cbv = default(D3D12_CPU_DESCRIPTOR_HANDLE);
-		D3D12_CONSTANT_BUFFER_VIEW_DESC  constantBufferViewDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC );
-		constantBufferViewDescription.SizeInBytes = Math.Min((uint32)alignedSize, 65536);
+		D3D12_CONSTANT_BUFFER_VIEW_DESC constantBufferViewDescription = default(D3D12_CONSTANT_BUFFER_VIEW_DESC);
+		constantBufferViewDescription.SizeInBytes = Math.Min(alignedSize, 65536);
 		constantBufferViewDescription.BufferLocation = NativeBuffer.GetGPUVirtualAddress();
-		D3D12_CONSTANT_BUFFER_VIEW_DESC  description = constantBufferViewDescription;
+		D3D12_CONSTANT_BUFFER_VIEW_DESC description = constantBufferViewDescription;
 		DX12GraphicsContext obj = Context as DX12GraphicsContext;
 		cbv = obj.ShaderResourceViewAllocator.Allocate();
 		obj.DXDevice.CreateConstantBufferView(&description, cbv);
@@ -254,15 +253,15 @@ public class DX12Buffer : Buffer
 		D3D12_CPU_DESCRIPTOR_HANDLE srv = default(D3D12_CPU_DESCRIPTOR_HANDLE);
 		if ((Description.Flags & BufferFlags.ShaderResource) != 0)
 		{
-			D3D12_SHADER_RESOURCE_VIEW_DESC  shaderResourceViewDescription = default(D3D12_SHADER_RESOURCE_VIEW_DESC );
-			shaderResourceViewDescription.Shader4ComponentMapping = (uint32)DX12GraphicsContext.DefaultShader4ComponentMapping;
+			D3D12_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDescription = default(D3D12_SHADER_RESOURCE_VIEW_DESC);
+			shaderResourceViewDescription.Shader4ComponentMapping = DX12GraphicsContext.DefaultShader4ComponentMapping;
 			shaderResourceViewDescription.Format = .DXGI_FORMAT_UNKNOWN;
 			shaderResourceViewDescription.ViewDimension = .D3D12_SRV_DIMENSION_BUFFER;
-			shaderResourceViewDescription.Buffer.NumElements = (uint32)Description.SizeInBytes / (uint32)Description.StructureByteStride;
-			shaderResourceViewDescription.Buffer.FirstElement = 0UL;
+			shaderResourceViewDescription.Buffer.NumElements = Description.SizeInBytes / (uint32)Description.StructureByteStride;
+			shaderResourceViewDescription.Buffer.FirstElement = 0uL;
 			shaderResourceViewDescription.Buffer.Flags = .D3D12_BUFFER_SRV_FLAG_NONE;
 			shaderResourceViewDescription.Buffer.StructureByteStride = (uint32)Description.StructureByteStride;
-			D3D12_SHADER_RESOURCE_VIEW_DESC  description = shaderResourceViewDescription;
+			D3D12_SHADER_RESOURCE_VIEW_DESC description = shaderResourceViewDescription;
 			DX12GraphicsContext obj = Context as DX12GraphicsContext;
 			srv = obj.ShaderResourceViewAllocator.Allocate();
 			obj.DXDevice.CreateShaderResourceView(NativeBuffer, &description, srv);
@@ -275,15 +274,15 @@ public class DX12Buffer : Buffer
 		D3D12_CPU_DESCRIPTOR_HANDLE uav = default(D3D12_CPU_DESCRIPTOR_HANDLE);
 		if ((Description.Flags & BufferFlags.UnorderedAccess) != 0)
 		{
-			D3D12_UNORDERED_ACCESS_VIEW_DESC  unorderedAccessViewDescription = default(D3D12_UNORDERED_ACCESS_VIEW_DESC );
+			D3D12_UNORDERED_ACCESS_VIEW_DESC unorderedAccessViewDescription = default(D3D12_UNORDERED_ACCESS_VIEW_DESC);
 			unorderedAccessViewDescription.Format = .DXGI_FORMAT_UNKNOWN;
 			unorderedAccessViewDescription.ViewDimension = .D3D12_UAV_DIMENSION_BUFFER;
-			unorderedAccessViewDescription.Buffer.NumElements = (uint32)Description.SizeInBytes / (uint32)Description.StructureByteStride;
-			unorderedAccessViewDescription.Buffer.FirstElement = 0UL;
+			unorderedAccessViewDescription.Buffer.NumElements = Description.SizeInBytes / (uint32)Description.StructureByteStride;
+			unorderedAccessViewDescription.Buffer.FirstElement = 0uL;
 			unorderedAccessViewDescription.Buffer.Flags = .D3D12_BUFFER_UAV_FLAG_NONE;
 			unorderedAccessViewDescription.Buffer.StructureByteStride = (uint32)Description.StructureByteStride;
-			unorderedAccessViewDescription.Buffer.CounterOffsetInBytes = 0UL;
-			D3D12_UNORDERED_ACCESS_VIEW_DESC  description = unorderedAccessViewDescription;
+			unorderedAccessViewDescription.Buffer.CounterOffsetInBytes = 0uL;
+			D3D12_UNORDERED_ACCESS_VIEW_DESC description = unorderedAccessViewDescription;
 			DX12GraphicsContext obj = Context as DX12GraphicsContext;
 			uav = obj.ShaderResourceViewAllocator.Allocate();
 			obj.DXDevice.CreateUnorderedAccessView(NativeBuffer, null, &description, uav);
@@ -316,11 +315,7 @@ public class DX12Buffer : Buffer
 			{
 				nativeContext.ShaderResourceViewAllocator.Free(constantBufferView.Value);
 			}
-			ID3D12Resource* nativeBuffer = NativeBuffer;
-			if (nativeBuffer != null)
-			{
-				nativeBuffer.Release();
-			}
+			NativeBuffer?.Release();
 		}
 		disposed = true;
 	}

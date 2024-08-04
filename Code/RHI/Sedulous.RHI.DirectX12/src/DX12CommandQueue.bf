@@ -36,7 +36,7 @@ public class DX12CommandQueue : CommandQueue
 
 	internal uint64 FenceValue;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
 	public override String Name
@@ -173,9 +173,7 @@ public class DX12CommandQueue : CommandQueue
 		{
 			while (queue.Count > 0)
 			{
-				var commandBuffer = queue.PopFront();
-				commandBuffer.Dispose();
-				delete commandBuffer;
+				queue.PopFront().Dispose();
 			}
 			queue = null;
 			disposed = true;

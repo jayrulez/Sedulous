@@ -32,7 +32,7 @@ public class DX12Capabilities : GraphicsContextCapabilities
 	public override MultiviewStrategy MultiviewStrategy => /*MultiviewStrategy*/.Unsupported;
 
 	/// <inheritdoc />
-	public override bool IsRaytracingSupported => context.DXDevice.QueryInterface<ID3D12Device5>() != null;
+	public override bool IsRaytracingSupported => context.DXDevice.QueryInterface<ID3D12Device5>() != null;//context.DXDevice is ID3D12Device5;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12Capabilities" /> class.

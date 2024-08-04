@@ -4,10 +4,9 @@ using Win32.Graphics.Direct3D12;
 using Win32.Graphics.Direct3D;
 using System.Collections;
 using Win32;
-using Win32.Graphics.Direct3D12;
-using Sedulous.Foundation.Utilities;
 
 namespace Sedulous.RHI.DirectX12;
+
 using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
@@ -28,11 +27,11 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 
 	private int32 stencilReference;
 
-	private D3D12_PRIMITIVE_TOPOLOGY_TYPE  primitiveTopologyType;
+	private D3D12_PRIMITIVE_TOPOLOGY_TYPE primitiveTopologyType;
 
-	private D3D_PRIMITIVE_TOPOLOGY  primitiveTopology;
+	private D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
-	private String name;
+	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
 	public override String Name
@@ -53,15 +52,14 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The graphics pipeline state description.</param>
-	public this(DX12GraphicsContext context, ref GraphicsPipelineDescription description)
-		: base(ref description)
+	public this(DX12GraphicsContext context, in GraphicsPipelineDescription description)
+		: base(description)
 	{
-		//IL_0337: Unknown result type (might be due to invalid IL or missing references)
 		rootSignature = context.DefaultGraphicsSignature;
 		if (description.InputLayouts != null && description.Shaders.VertexShader != null)
 		{
-			int32 numBuffers = (int32)description.InputLayouts.LayoutElements.Count;
-			ArrayHelpers.EnsureArraySize(ref VertexStrides, numBuffers);
+			int numBuffers = description.InputLayouts.LayoutElements.Count;
+			DX12Helpers.EnsureArraySize(ref VertexStrides, numBuffers);
 			for (int32 i = 0; i < numBuffers; i++)
 			{
 				VertexStrides[i] = (int32)description.InputLayouts.LayoutElements[i].Stride;
@@ -71,13 +69,13 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		primitiveTopology = CreateNativePrimitiveTopology(description.PrimitiveTopology);
 		stencilReference = description.RenderStates.StencilReference;
 		ScissorEnabled = description.RenderStates.RasterizerState.ScissorEnable;
-		D3D12_GRAPHICS_PIPELINE_STATE_DESC nativePipelineStateDescription = D3D12_GRAPHICS_PIPELINE_STATE_DESC()
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC nativePipelineStateDescription = .()
 		{
 			InputLayout = ((description.InputLayouts != null) ? CreateNativeInputLayout(description.InputLayouts) : .()),
 			pRootSignature = rootSignature,
-			RasterizerState = CreateNativeRasterizerState(ref description.RenderStates.RasterizerState, description.Outputs.SampleCount != TextureSampleCount.None),
+			RasterizerState = CreateNativeRasterizerState(description.RenderStates.RasterizerState, description.Outputs.SampleCount != TextureSampleCount.None),
 			BlendState = CreateNativeBlendState(description.RenderStates.BlendState),
-			DepthStencilState = CreateNativeDepthStencilState(ref description.RenderStates.DepthStencilState),
+			DepthStencilState = CreateNativeDepthStencilState(description.RenderStates.DepthStencilState),
 			SampleMask = (description.RenderStates.SampleMask.HasValue ? ((uint32)description.RenderStates.SampleMask.Value) : uint32.MaxValue),
 			PrimitiveTopologyType = primitiveTopologyType
 		};
@@ -85,7 +83,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		{
 			nativePipelineStateDescription.DSVFormat = description.Outputs.DepthAttachment.Value.Format.ToDepthStencilFormat();
 		}
-		nativePipelineStateDescription.RTVFormats = .();//new DXGI_FORMAT[description.Outputs.ColorAttachments.Length];
+		nativePipelineStateDescription.RTVFormats = .();//scope .[description.Outputs.ColorAttachments.Count];
 		for (int32 i = 0; i < description.Outputs.ColorAttachments.Count; i++)
 		{
 			nativePipelineStateDescription.RTVFormats[i] = description.Outputs.ColorAttachments[i].Format.ToDirectX();
@@ -134,7 +132,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		Dispose(disposing: true);
 	}
 
-	private D3D12_RASTERIZER_DESC CreateNativeRasterizerState(ref RasterizerStateDescription description, bool isMultisampleEnabled)
+	private D3D12_RASTERIZER_DESC CreateNativeRasterizerState(in RasterizerStateDescription description, bool isMultisampleEnabled)
 	{
 		D3D12_RASTERIZER_DESC nativeDescription = default(D3D12_RASTERIZER_DESC);
 		nativeDescription.CullMode = (D3D12_CULL_MODE)description.CullMode;
@@ -157,7 +155,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		D3D12_BLEND_DESC  nativeDescription = default(D3D12_BLEND_DESC );
 		nativeDescription.AlphaToCoverageEnable = description.AlphaToCoverageEnable ? TRUE : FALSE;
 		nativeDescription.IndependentBlendEnable = description.IndependentBlendEnable ? TRUE : FALSE;
-		BlendStateRenderTargetDescription* renderTargets = &description.RenderTargets[0];
+		BlendStateRenderTargetDescription* renderTargets = &description.RenderTarget0;
 		for (int32 i = 0; i < 8; i++)
 		{
 			nativeDescription.RenderTarget[i].BlendEnable = renderTargets[i].BlendEnable ? TRUE : FALSE;
@@ -172,7 +170,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		return nativeDescription;
 	}
 
-	private D3D12_DEPTH_STENCIL_DESC CreateNativeDepthStencilState(ref DepthStencilStateDescription description)
+	private D3D12_DEPTH_STENCIL_DESC CreateNativeDepthStencilState(in DepthStencilStateDescription description)
 	{
 		D3D12_DEPTH_STENCIL_DESC result = default(D3D12_DEPTH_STENCIL_DESC);
 		result.DepthEnable = description.DepthEnable ? TRUE : FALSE;
@@ -206,6 +204,8 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 			totalCount += (int32)vertexLayouts.LayoutElements[i].Elements.Count;
 		}
 		int32 index = 0;
+		// todo: how do we handle freeing this memory?
+		// perhaps make this a mixin and scope alloc in the caller?
 		D3D12_INPUT_ELEMENT_DESC[] inputElements = new D3D12_INPUT_ELEMENT_DESC[totalCount];
 		for (int32 slot = 0; slot < vertexLayouts.LayoutElements.Count; slot++)
 		{
@@ -292,23 +292,14 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			ID3D12PipelineState* iD3D12PipelineState = nativePipeline;
-			if (iD3D12PipelineState != null)
+			if (disposing)
 			{
-				iD3D12PipelineState.Release();
+				nativePipeline?.Release();
+				rootSignature?.Release();
 			}
-			ID3D12RootSignature* iD3D12RootSignature = rootSignature;
-			if (iD3D12RootSignature != null)
-			{
-				iD3D12RootSignature.Release();
-			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }

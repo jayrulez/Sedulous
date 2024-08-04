@@ -28,11 +28,9 @@ public class DX12QueryHeap : QueryHeap
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The queryheap description.</param>
-	public this(DX12GraphicsContext context, ref Sedulous.RHI.QueryHeapDescription description)
-		: base(context, ref description)
+	public this(DX12GraphicsContext context, in Sedulous.RHI.QueryHeapDescription description)
+		: base(context, description)
 	{
-		//IL_0060: Unknown result type (might be due to invalid IL or missing references)
-		//IL_0065: Unknown result type (might be due to invalid IL or missing references)
 		dxContext = context;
 		D3D12_QUERY_HEAP_DESC nativeDescription = D3D12_QUERY_HEAP_DESC()
 		{
@@ -60,14 +58,14 @@ public class DX12QueryHeap : QueryHeap
 			CpuAccess = ResourceCpuAccess.Read,
 			SizeInBytes = description.QueryCount * 8
 		};
-		readBackBuffer = new DX12Buffer(dxContext, null, ref bufferDescription);
+		readBackBuffer = new DX12Buffer(dxContext, null, bufferDescription);
 		readBackBuffer.Name = "Query Readback Buffer";
 	}
 
 	/// <inheritdoc />
 	public override bool ReadData(uint32 startIndex, uint32 count, uint64[] results)
 	{
-		uint64 stride = 8UL;
+		uint64 stride = 8uL;
 		uint64 startOffset = startIndex * stride;
 		uint32 sizeInBytes = count * (uint32)(int32)stride;
 		MappedResource mappedResource = dxContext.MapMemory(readBackBuffer, MapMode.Read);
@@ -88,19 +86,14 @@ public class DX12QueryHeap : QueryHeap
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			readBackBuffer?.Dispose();
-			ID3D12QueryHeap* iD3D12QueryHeap = nativeQueryHeap;
-			if (iD3D12QueryHeap != null)
+			if (disposing)
 			{
-				iD3D12QueryHeap.Release();
+				readBackBuffer?.Dispose();
+				nativeQueryHeap?.Release();
 			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }

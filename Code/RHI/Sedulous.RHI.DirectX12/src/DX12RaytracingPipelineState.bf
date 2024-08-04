@@ -1,8 +1,8 @@
 using System;
 using Sedulous.RHI;
 using Sedulous.RHI.Raytracing;
-using System.Collections;
 using Win32.Graphics.Direct3D12;
+using System.Collections;
 
 namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;
@@ -30,8 +30,8 @@ public class DX12RaytracingPipelineState : RaytracingPipelineState
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The raytracing pipeline state description.</param>
-	public this(DX12GraphicsContext context, ref RaytracingPipelineDescription description)
-		: base(ref description)
+	public this(DX12GraphicsContext context, in RaytracingPipelineDescription description)
+		: base(description)
 	{
 		List<D3D12_STATE_SUBOBJECT> subobjects = scope .();
 		List<D3D12_EXPORT_DESC> nativeExportDesc = scope .();
@@ -144,15 +144,14 @@ public class DX12RaytracingPipelineState : RaytracingPipelineState
 		};
 
 		((ID3D12Device5*)context.DXDevice).CreateStateObject(&desc, ID3D12StateObject.IID, (void**)& nativePipeline);
-		CreateShaderBindingTable(context, ref description);
+		CreateShaderBindingTable(context, description);
 	}
 
-	private void CreateShaderBindingTable(DX12GraphicsContext context, ref RaytracingPipelineDescription description)
+	private void CreateShaderBindingTable(DX12GraphicsContext context, in RaytracingPipelineDescription description)
 	{
 		shaderBindingTable = new DX12ShaderTable(context);
 		RaytracingShaderStateDescription shaders = description.Shaders;
-		List<String> rayGenIdentifiers = shaders.GetEntryPointByStage(ShaderStages.RayGeneration, .. scope .());
-		String rayGenIdentifier = rayGenIdentifiers[0];
+		String rayGenIdentifier = shaders.GetEntryPointByStage(ShaderStages.RayGeneration, .. scope .())[0];
 		shaderBindingTable.AddRayGenProgram(rayGenIdentifier, null);
 		List<String> missIdentifiers = shaders.GetEntryPointByStage(ShaderStages.Miss, .. scope .());
 		for (int32 i = 0; i < missIdentifiers.Count; i++)
@@ -194,18 +193,13 @@ public class DX12RaytracingPipelineState : RaytracingPipelineState
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
 	{
-		if (disposed)
+		if (!disposed)
 		{
-			return;
-		}
-		if (disposing)
-		{
-			ID3D12StateObject* iD3D12StateObject = nativePipeline;
-			if (iD3D12StateObject != null)
+			if (disposing)
 			{
-				iD3D12StateObject.Release();
+				nativePipeline?.Release();
 			}
+			disposed = true;
 		}
-		disposed = true;
 	}
 }
