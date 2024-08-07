@@ -91,6 +91,13 @@ public class DX12CommandBuffer : CommandBuffer
 		descriptorHeaps = new ID3D12DescriptorHeap*[2] ( resourceDescriptorsGPU.GPUheap, samplerDescriptorsGPU.GPUheap );
 	}
 
+	public ~this()
+	{
+		delete resourceDescriptorsGPU;
+		delete samplerDescriptorsGPU;
+		delete descriptorHeaps;
+	}
+
 	/// <inheritdoc />
 	public override void Begin()
 	{

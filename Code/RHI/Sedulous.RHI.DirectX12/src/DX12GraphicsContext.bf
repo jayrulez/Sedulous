@@ -135,9 +135,10 @@ public class DX12GraphicsContext : GraphicsContext
 				pDx12Debug.EnableDebugLayer();
 			}
 		}
+		HRESULT result = S_OK;
 		CreateDXGIFactory1(IDXGIFactory4.IID, (void**)&DXFactory);
 		ID3D12Device5* device5 = null;
-		HRESULT result = D3D12CreateDevice(null, .D3D_FEATURE_LEVEL_12_1, ID3D12Device5.IID, (void**)&device5);
+		result = D3D12CreateDevice(null, .D3D_FEATURE_LEVEL_12_1, ID3D12Device5.IID, (void**)&device5);
 		if (SUCCEEDED(result))
 		{
 			DXDevice = device5;
@@ -145,7 +146,7 @@ public class DX12GraphicsContext : GraphicsContext
 		else
 		{
 			ID3D12Device* device1 = null;
-			D3D12CreateDevice(null, .D3D_FEATURE_LEVEL_12_0, ID3D12Device.IID, (void**)&device1);
+			result = D3D12CreateDevice(null, .D3D_FEATURE_LEVEL_12_0, ID3D12Device.IID, (void**)&device1);
 			DXDevice = device1;
 		}
 		capabilities = new DX12Capabilities(this);
@@ -173,7 +174,7 @@ public class DX12GraphicsContext : GraphicsContext
 						},
 						AllowList = .()
 					};
-					infoQueue.AddStorageFilterEntries(&filter);
+					result = infoQueue.AddStorageFilterEntries(&filter);
 				}
 				infoQueue.Release();
 			}
@@ -240,7 +241,7 @@ public class DX12GraphicsContext : GraphicsContext
 
 		D3D12_ROOT_SIGNATURE_DESC graphicsRootSignatureDescription = D3D12_ROOT_SIGNATURE_DESC(.D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT, graphicsParameters);
 		hr = D3D12SerializeRootSignature(&graphicsRootSignatureDescription, D3D_ROOT_SIGNATURE_VERSION.D3D_ROOT_SIGNATURE_VERSION_1, &pBlob, &pErrorBlob);
-		DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultGraphicsSignature);
+		hr = DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultGraphicsSignature);
 
 		D3D12_ROOT_PARAMETER[] computeParameters = scope D3D12_ROOT_PARAMETER[2]
 		(
@@ -250,7 +251,7 @@ public class DX12GraphicsContext : GraphicsContext
 
 		D3D12_ROOT_SIGNATURE_DESC computeRootSignatureDescription = D3D12_ROOT_SIGNATURE_DESC(.D3D12_ROOT_SIGNATURE_FLAG_NONE, computeParameters);
 		hr = D3D12SerializeRootSignature(&computeRootSignatureDescription, D3D_ROOT_SIGNATURE_VERSION.D3D_ROOT_SIGNATURE_VERSION_1, &pBlob, &pErrorBlob);
-		DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultComputeSignature);
+		hr = DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultComputeSignature);
 
 		D3D12_ROOT_PARAMETER[] raytracingParameters = scope D3D12_ROOT_PARAMETER[2]
 		(
@@ -260,7 +261,7 @@ public class DX12GraphicsContext : GraphicsContext
 
 		D3D12_ROOT_SIGNATURE_DESC raytracingRootSignatureDescription = D3D12_ROOT_SIGNATURE_DESC(.D3D12_ROOT_SIGNATURE_FLAG_NONE, raytracingParameters);
 		hr = D3D12SerializeRootSignature(&raytracingRootSignatureDescription, D3D_ROOT_SIGNATURE_VERSION.D3D_ROOT_SIGNATURE_VERSION_1, &pBlob, &pErrorBlob);
-		DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultRaytracingGlobalRootSignature);
+		hr = DXDevice.CreateRootSignature(0, pBlob.GetBufferPointer(), pBlob.GetBufferSize(), ID3D12RootSignature.IID, (void**)&DefaultRaytracingGlobalRootSignature);
 
 		DefaultGraphicsQueue = new DX12CommandQueue(this, CommandQueueType.Graphics);
 		DefaultGraphicsQueue.CommandQueue.GetTimestampFrequency(&TimestampFrequency);
@@ -271,13 +272,13 @@ public class DX12GraphicsContext : GraphicsContext
 		commandQueueDescription.Priority = 0;
 		commandQueueDescription.Type = .D3D12_COMMAND_LIST_TYPE_COPY;
 		D3D12_COMMAND_QUEUE_DESC copyQueueDescription = commandQueueDescription;
-		DXDevice.CreateCommandQueue(&copyQueueDescription, ID3D12CommandQueue.IID, (void**)&CopyCommandQueue);
-		DXDevice.CreateCommandAllocator(.D3D12_COMMAND_LIST_TYPE_COPY, ID3D12CommandAllocator.IID, (void**)&CopyCommandAlloc);
-		DXDevice.CreateCommandList(0, .D3D12_COMMAND_LIST_TYPE_COPY, CopyCommandAlloc, null, ID3D12GraphicsCommandList.IID, (void**)&CopyCommandList);
+		hr = DXDevice.CreateCommandQueue(&copyQueueDescription, ID3D12CommandQueue.IID, (void**)&CopyCommandQueue);
+		hr = DXDevice.CreateCommandAllocator(.D3D12_COMMAND_LIST_TYPE_COPY, ID3D12CommandAllocator.IID, (void**)&CopyCommandAlloc);
+		hr = DXDevice.CreateCommandList(0, .D3D12_COMMAND_LIST_TYPE_COPY, CopyCommandAlloc, null, ID3D12GraphicsCommandList.IID, (void**)&CopyCommandList);
 
 		CopyFenceValue = 0UL;
 		CopyFenceEvent = new AutoResetEvent(initialState: false);
-		DXDevice.CreateFence(CopyFenceValue, .D3D12_FENCE_FLAG_NONE, ID3D12Fence.IID, (void**)&CopyFence);
+		hr = DXDevice.CreateFence(CopyFenceValue, .D3D12_FENCE_FLAG_NONE, ID3D12Fence.IID, (void**)&CopyFence);
 
 		BufferUploader = new DX12UploadBuffer(this, base.DefaultBufferUploaderSize, 0);
 		TextureUploader = new DX12UploadBuffer(this, base.DefaultTextureUploaderSize);
@@ -310,6 +311,21 @@ public class DX12GraphicsContext : GraphicsContext
 		cmd_description.pArgumentDescs = scope D3D12_INDIRECT_ARGUMENT_DESC[1]* ( drawIndexedInstancedArgs );
 		cmd_description.NumArgumentDescs  = 1;
 		DXDevice.CreateCommandSignature(&cmd_description, null, ID3D12CommandSignature.IID, (void**)&DrawIndexedInstancedIndirectCommandSignature);
+	}
+
+	public ~this()
+	{
+		delete base.Factory;
+		delete capabilities;
+		delete RenderTargetViewAllocator;
+		delete DepthStencilViewAllocator;
+		delete ShaderResourceViewAllocator;
+		delete SamplerAllocator;
+		delete NullDescriptors;
+		delete DefaultGraphicsQueue;
+		delete CopyFenceEvent;
+		delete BufferUploader;
+		delete TextureUploader;
 	}
 
 	/// <inheritdoc />

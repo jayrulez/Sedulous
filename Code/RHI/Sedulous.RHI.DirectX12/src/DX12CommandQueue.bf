@@ -22,11 +22,11 @@ public class DX12CommandQueue : CommandQueue
 
 	private Queue<DX12CommandBuffer> queue;
 
-	private DX12CommandBuffer[] executionArray;
+	private DX12CommandBuffer[] executionArray ~ delete _;
 
 	private int32 executionArraySize;
 
-	internal ID3D12CommandQueue* CommandQueue;
+	internal ID3D12CommandQueue* CommandQueue = null;
 
 	internal CommandQueueType QueueType;
 
@@ -72,7 +72,7 @@ public class DX12CommandQueue : CommandQueue
 			Type = commandListType,
 			NodeMask = 0
 		};
-		HRESULT result = context.DXDevice.CreateCommandQueue(&queueDescription, ID3D12CommandQueue.IID, (void**)CommandQueue);
+		HRESULT result = context.DXDevice.CreateCommandQueue(&queueDescription, ID3D12CommandQueue.IID, (void**)&CommandQueue);
 		if (!SUCCEEDED(result))
 		{
 			context.ValidationLayer?.Notify("DX12", scope $"Error code: {result}, see: https://docs.microsoft.com/en-us/windows/win32/direct3d12/d3d12-graphics-reference-returnvalues");
@@ -84,6 +84,11 @@ public class DX12CommandQueue : CommandQueue
 		{
 			context.ValidationLayer?.Notify("DX12", scope $"Error code: {result}, see: https://docs.microsoft.com/en-us/windows/win32/direct3d12/d3d12-graphics-reference-returnvalues");
 		}
+	}
+
+	public ~this()
+	{
+		delete FenceEvent;
 	}
 
 	/// <inheritdoc />
@@ -173,8 +178,11 @@ public class DX12CommandQueue : CommandQueue
 		{
 			while (queue.Count > 0)
 			{
-				queue.PopFront().Dispose();
+				var commandBuffer = queue.PopFront();
+					commandBuffer.Dispose();
+				delete commandBuffer;
 			}
+			delete queue;
 			queue = null;
 			disposed = true;
 		}

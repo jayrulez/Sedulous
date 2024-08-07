@@ -21,7 +21,7 @@ internal class DX12DescriptorAllocator : IDisposable
 
 	public uint32 maxDescriptorCount;
 
-	public bool[] descriptorsAlive;
+	public bool[] descriptorsAlive ~ delete _;
 	public readonly Monitor descriptorsAliveMonitor = new .() ~ delete _;
 
 	private uint32 descriptorSize;
@@ -109,6 +109,6 @@ internal class DX12DescriptorAllocator : IDisposable
 	{
 		Heap?.Release();
 		Heap = null;
-		descriptorsAlive = null;
+		//descriptorsAlive = null;
 	}
 }

@@ -39,6 +39,8 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 
 	private String name = new .() ~ delete _;
 
+	private readonly DX12SwapChain swapchain;
+
 	/// <summary>
 	/// Gets the renderTargetView array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
 	/// </summary>
@@ -65,11 +67,12 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 	public this(DX12GraphicsContext context, DX12SwapChain swapchain)
 	{
 		graphicsContext = context;
+		this.swapchain = swapchain;
 		SwapChainDescription description = swapchain.SwapChainDescription;
 		base.IntermediateBufferAssociated = true;
-		int32 swapChainBufferCount = 3;
+		int swapChainBufferCount = 3;
 		ColorTargets = .() { Count = swapChainBufferCount};
-		for (int32 i = 0; i < swapChainBufferCount; i++)
+		for (int i = 0; i < swapChainBufferCount; i++)
 		{
 			ID3D12Resource* backBuffer = null;
 			 swapchain.nativeSwapChain.GetBuffer((uint32)i, ID3D12Resource.IID, (void**)&backBuffer);
@@ -93,7 +96,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 		DepthStencilTarget = FrameBufferAttachment(depthTexture, 0, 1);
 		if (ColorTargets.Count != 0)
 		{
-			FrameBufferAttachment target = ColorTargets[0];
+			ref FrameBufferAttachment target = ref ColorTargets[0];
 			base.Width = target.AttachmentTexture.Description.Width;
 			base.Height = target.AttachmentTexture.Description.Height;
 			base.ArraySize = target.AttachmentTexture.Description.ArraySize;
@@ -122,6 +125,17 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 			BackBuffers[i] = colorTexture.GetRenderTargetView(colorTarget.FirstSlice, colorTarget.SliceCount, colorTarget.MipSlice);
 		}
 		base.OutputDescription = /*OutputDescription*/.CreateFromFrameBuffer(this);
+	}
+
+	public ~this()
+	{
+		for(int i = 0; i < BackBufferTextures.Count; i++)
+		{
+			delete swapchain.swapChainBuffers[i];
+		}
+		delete BackBuffers;
+		delete BackBufferTextures;
+		delete DepthTargetTexture;
 	}
 
 	/// <summary>

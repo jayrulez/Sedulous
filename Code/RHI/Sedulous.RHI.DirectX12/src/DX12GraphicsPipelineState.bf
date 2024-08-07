@@ -15,7 +15,7 @@ using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 /// </summary>
 public class DX12GraphicsPipelineState : GraphicsPipelineState
 {
-	internal int32[] VertexStrides;
+	internal int32[] VertexStrides ~ delete _;
 
 	internal bool ScissorEnabled;
 
@@ -70,21 +70,23 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		stencilReference = description.RenderStates.StencilReference;
 		ScissorEnabled = description.RenderStates.RasterizerState.ScissorEnable;
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC nativePipelineStateDescription = .()
-		{
-			InputLayout = ((description.InputLayouts != null) ? CreateNativeInputLayout(description.InputLayouts) : .()),
-			pRootSignature = rootSignature,
-			RasterizerState = CreateNativeRasterizerState(description.RenderStates.RasterizerState, description.Outputs.SampleCount != TextureSampleCount.None),
-			BlendState = CreateNativeBlendState(description.RenderStates.BlendState),
-			DepthStencilState = CreateNativeDepthStencilState(description.RenderStates.DepthStencilState),
-			SampleMask = (description.RenderStates.SampleMask.HasValue ? ((uint32)description.RenderStates.SampleMask.Value) : uint32.MaxValue),
-			PrimitiveTopologyType = primitiveTopologyType
-		};
+			{
+				InputLayout = ((description.InputLayouts != null) ? CreateNativeInputLayout(description.InputLayouts, scope :: .()) : .()),
+				pRootSignature = rootSignature,
+				RasterizerState = CreateNativeRasterizerState(description.RenderStates.RasterizerState, description.Outputs.SampleCount != TextureSampleCount.None),
+				BlendState = CreateNativeBlendState(description.RenderStates.BlendState),
+				DepthStencilState = CreateNativeDepthStencilState(description.RenderStates.DepthStencilState),
+				SampleMask = (description.RenderStates.SampleMask.HasValue ? ((uint32)description.RenderStates.SampleMask.Value) : uint32.MaxValue),
+				PrimitiveTopologyType = primitiveTopologyType
+			};
 		if (description.Outputs.DepthAttachment.HasValue)
 		{
 			nativePipelineStateDescription.DSVFormat = description.Outputs.DepthAttachment.Value.Format.ToDepthStencilFormat();
 		}
-		nativePipelineStateDescription.RTVFormats = .();//scope .[description.Outputs.ColorAttachments.Count];
-		for (int32 i = 0; i < description.Outputs.ColorAttachments.Count; i++)
+		nativePipelineStateDescription.NumRenderTargets = (uint32)description.Outputs.ColorAttachments.Count;
+		nativePipelineStateDescription.RTVFormats = .() //scope .[description.Outputs.ColorAttachments.Count];
+			..SetAll(.DXGI_FORMAT_UNKNOWN);
+		for (int i = 0; i < description.Outputs.ColorAttachments.Count; i++)
 		{
 			nativePipelineStateDescription.RTVFormats[i] = description.Outputs.ColorAttachments[i].Format.ToDirectX();
 		}
@@ -152,7 +154,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 	private D3D12_BLEND_DESC CreateNativeBlendState(BlendStateDescription description)
 	{
 		var description;
-		D3D12_BLEND_DESC  nativeDescription = default(D3D12_BLEND_DESC );
+		D3D12_BLEND_DESC  nativeDescription = default(D3D12_BLEND_DESC);
 		nativeDescription.AlphaToCoverageEnable = description.AlphaToCoverageEnable ? TRUE : FALSE;
 		nativeDescription.IndependentBlendEnable = description.IndependentBlendEnable ? TRUE : FALSE;
 		BlendStateRenderTargetDescription* renderTargets = &description.RenderTarget0;
@@ -180,47 +182,49 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		result.StencilReadMask = description.StencilReadMask;
 		result.StencilWriteMask = description.StencilWriteMask;
 		result.FrontFace = D3D12_DEPTH_STENCILOP_DESC()
-		{
-			StencilFailOp = (D3D12_STENCIL_OP)description.FrontFace.StencilFailOperation,
-			StencilPassOp = (D3D12_STENCIL_OP)description.FrontFace.StencilPassOperation,
-			StencilDepthFailOp = (D3D12_STENCIL_OP)description.FrontFace.StencilDepthFailOperation,
-			StencilFunc = description.FrontFace.StencilFunction.ToDirectX()
-		};
+			{
+				StencilFailOp = (D3D12_STENCIL_OP)description.FrontFace.StencilFailOperation,
+				StencilPassOp = (D3D12_STENCIL_OP)description.FrontFace.StencilPassOperation,
+				StencilDepthFailOp = (D3D12_STENCIL_OP)description.FrontFace.StencilDepthFailOperation,
+				StencilFunc = description.FrontFace.StencilFunction.ToDirectX()
+			};
 		result.BackFace = D3D12_DEPTH_STENCILOP_DESC()
-		{
-			StencilFailOp = (D3D12_STENCIL_OP)description.BackFace.StencilFailOperation,
-			StencilPassOp = (D3D12_STENCIL_OP)description.BackFace.StencilPassOperation,
-			StencilDepthFailOp = (D3D12_STENCIL_OP)description.BackFace.StencilDepthFailOperation,
-			StencilFunc = description.BackFace.StencilFunction.ToDirectX()
-		};
+			{
+				StencilFailOp = (D3D12_STENCIL_OP)description.BackFace.StencilFailOperation,
+				StencilPassOp = (D3D12_STENCIL_OP)description.BackFace.StencilPassOperation,
+				StencilDepthFailOp = (D3D12_STENCIL_OP)description.BackFace.StencilDepthFailOperation,
+				StencilFunc = description.BackFace.StencilFunction.ToDirectX()
+			};
 		return result;
 	}
 
-	private D3D12_INPUT_LAYOUT_DESC CreateNativeInputLayout(InputLayouts vertexLayouts)
+	private D3D12_INPUT_LAYOUT_DESC CreateNativeInputLayout(InputLayouts vertexLayouts, List<D3D12_INPUT_ELEMENT_DESC> inputElements)
 	{
-		int32 totalCount = 0;
-		for (int32 i = 0; i < vertexLayouts.LayoutElements.Count; i++)
+		int totalCount = 0;
+		for (int i = 0; i < vertexLayouts.LayoutElements.Count; i++)
 		{
 			totalCount += (int32)vertexLayouts.LayoutElements[i].Elements.Count;
 		}
-		int32 index = 0;
+		int index = 0;
 		// todo: how do we handle freeing this memory?
 		// perhaps make this a mixin and scope alloc in the caller?
-		D3D12_INPUT_ELEMENT_DESC[] inputElements = new D3D12_INPUT_ELEMENT_DESC[totalCount];
-		for (int32 slot = 0; slot < vertexLayouts.LayoutElements.Count; slot++)
+		//D3D12_INPUT_ELEMENT_DESC[] inputElements = new D3D12_INPUT_ELEMENT_DESC[totalCount];
+		inputElements.Count = totalCount;
+		for (int slot = 0; slot < vertexLayouts.LayoutElements.Count; slot++)
 		{
 			LayoutDescription layoutDescription = vertexLayouts.LayoutElements[slot];
 			List<ElementDescription> elementDescriptions = layoutDescription.Elements;
 			int32 stepRate = layoutDescription.StepRate;
 			VertexStepFunction stepFunction = layoutDescription.StepFunction;
-			for (int32 i = 0; i < elementDescriptions.Count; i++)
+			for (int i = 0; i < elementDescriptions.Count; i++)
 			{
 				ElementDescription description = elementDescriptions[i];
-				inputElements[index] = D3D12_INPUT_ELEMENT_DESC(description.Semantic.ToHLSLSemantic(), (int32)description.SemanticIndex, description.Format.ToDirectX(), description.Offset, slot, stepFunction.ToDirectX(), stepRate);
+				inputElements[index] = D3D12_INPUT_ELEMENT_DESC(description.Semantic.ToHLSLSemantic(), (int32)description.SemanticIndex, description.Format.ToDirectX(), description.Offset, (int32)slot, stepFunction.ToDirectX(), stepRate);
 				index++;
 			}
 		}
-		return D3D12_INPUT_LAYOUT_DESC(){
+		return D3D12_INPUT_LAYOUT_DESC()
+			{
 				pInputElementDescs = inputElements.Ptr,
 				NumElements = (.)inputElements.Count
 			};
@@ -231,31 +235,31 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		switch (primitiveTopology)
 		{
 		case PrimitiveTopology.Undefined:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 		case PrimitiveTopology.PointList:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
 		case PrimitiveTopology.LineList:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 		case PrimitiveTopology.LineStrip:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
 		case PrimitiveTopology.TriangleList:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 		case PrimitiveTopology.TriangleStrip:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
 		case PrimitiveTopology.LineListWithAdjacency:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_LINELIST_ADJ;
 		case PrimitiveTopology.LineStripWithAdjacency:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_LINESTRIP_ADJ;
 		case PrimitiveTopology.TriangleListWithAdjacency:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST_ADJ;
 		case PrimitiveTopology.TriangleStripWithAdjacency:
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP_ADJ;
 		default:
 			if (primitiveTopology >= PrimitiveTopology.Patch_List && primitiveTopology < (PrimitiveTopology)65)
 			{
-				return (D3D_PRIMITIVE_TOPOLOGY )primitiveTopology;
+				return (D3D_PRIMITIVE_TOPOLOGY)primitiveTopology;
 			}
-			return D3D_PRIMITIVE_TOPOLOGY .D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+			return D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
 		}
 	}
 
@@ -268,14 +272,14 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 		case PrimitiveTopology.PointList:
 			return D3D12_PRIMITIVE_TOPOLOGY_TYPE.D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 		case PrimitiveTopology.LineList,
-			 PrimitiveTopology.LineStrip,
-			 PrimitiveTopology.LineListWithAdjacency,
-			 PrimitiveTopology.LineStripWithAdjacency:
+			PrimitiveTopology.LineStrip,
+			PrimitiveTopology.LineListWithAdjacency,
+			PrimitiveTopology.LineStripWithAdjacency:
 			return D3D12_PRIMITIVE_TOPOLOGY_TYPE.D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE;
 		case PrimitiveTopology.TriangleList,
-			 PrimitiveTopology.TriangleStrip,
-			 PrimitiveTopology.TriangleListWithAdjacency,
-			 PrimitiveTopology.TriangleStripWithAdjacency:
+			PrimitiveTopology.TriangleStrip,
+			PrimitiveTopology.TriangleListWithAdjacency,
+			PrimitiveTopology.TriangleStripWithAdjacency:
 			return D3D12_PRIMITIVE_TOPOLOGY_TYPE.D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		default:
 			if (primitiveTopology >= PrimitiveTopology.Patch_List && primitiveTopology < (PrimitiveTopology)65)

@@ -26,7 +26,7 @@ public class DX12SwapChain : SwapChain
 
 	internal uint32 swapInterval;
 
-	internal DX12Texture[] swapChainBuffers;
+	internal DX12Texture[] swapChainBuffers ~ delete _;
 
 	private int32 currentBackBufferIndex;
 
@@ -190,6 +190,11 @@ public class DX12SwapChain : SwapChain
 			if (disposing)
 			{
 				base.FrameBuffer?.Dispose();
+				if(base.FrameBuffer != null)
+				{
+					delete base.FrameBuffer;
+					base.FrameBuffer = null;
+				}
 				nativeSwapChain?.Release();
 			}
 			disposed = true;

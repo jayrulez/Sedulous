@@ -19,13 +19,13 @@ internal class DX12DescriptorTableAllocator : IDisposable
 
 	public D3D12_DESCRIPTOR_HEAP_TYPE DescriptorType;
 
-	private D3D12_CPU_DESCRIPTOR_HANDLE[] boundDescriptors;
+	private D3D12_CPU_DESCRIPTOR_HANDLE[] boundDescriptors ~ delete _;
 
 	private uint32 itemCount;
 
 	private uint32 descriptorSize;
 
-	private bool[] dirty;
+	private bool[] dirty ~ delete _;
 
 	private uint32 ringOffset;
 
