@@ -11,8 +11,8 @@ class OpenALAudioSubsystem : AudioSubsystem
 
 	public this()
 	{
-		ALCdevice* device = OpenALNative.alcOpenDevice(null);
+		//ALCdevice* device = OpenALNative.alcOpenDevice(null);
 
-		int32 error = OpenALNative.alcGetError(device);
+		//int32 error = OpenALNative.alcGetError(device);
 	}
 }

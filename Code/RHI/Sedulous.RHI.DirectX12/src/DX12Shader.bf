@@ -93,7 +93,7 @@ public class DX12Shader : Shader
 		{
 			IDxcBlobUtf8* output = null;
 			compilationResult.GetOutput(.DXC_OUT_ERRORS, IDxcBlobUtf8.IID, (void**)&output, null);
-			message = scope .((char8*)output.GetStringPointer(), (.)output.GetStringLength());
+			message = scope :: .((char8*)output.GetStringPointer(), (.)output.GetStringLength());
 			context.ValidationLayer.Notify("DX12", message);
 			ProcessError(message, out line, out message);
 		}

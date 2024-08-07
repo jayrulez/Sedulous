@@ -10,16 +10,19 @@ using System.Collections;
 using Sedulous.Foundation.Logging.Abstractions;
 using Sedulous.Foundation.Logging.Console;
 using System.IO;
+using Sedulous.RHI.DirectX12;
 using static Sedulous.Core.IContext;
 namespace RHI;
 
 class RHIApplication
 {
+	private const GraphicsBackend GraphicsBackend = .DirectX12;
+
 	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
 	private readonly ILogger mLogger = new ConsoleLogger(.Trace) ~ delete _;
 	private readonly ValidationLayer mValidationLayer = new .(mLogger) ~ delete _;
-	private readonly VKGraphicsContext mGraphicsContext = new .() ~ delete _;
+	private readonly GraphicsContext mGraphicsContext ~ delete _;
 	private SwapChain mSwapChain = null;
 	private CommandQueue mCommandQueue = null;
 	private Buffer mVertexBuffer;
@@ -33,6 +36,17 @@ class RHIApplication
 	public this(IPlatformBackend host)
 	{
 		mHost = host;
+		switch(GraphicsBackend)
+		{
+		case .DirectX12:
+			mGraphicsContext = new DX12GraphicsContext();
+			break;
+		case .Vulkan:
+			mGraphicsContext = new VKGraphicsContext();
+			break;
+		default:
+			Runtime.FatalError("Backend not supported yet.");
+		}
 	}
 
 	private static Vector4[] VertexData = new Vector4[]
@@ -84,24 +98,52 @@ class RHIApplication
 
 		mCommandQueue = mGraphicsContext.Factory.CreateCommandQueue();
 
-		List<uint8> shaderBytes = scope .();
-
 		// Compile Vertex and Pixel shaders
-		if (File.ReadAll("Shaders/FragmentShader.spirv", shaderBytes) case .Err)
-		{
-			Runtime.FatalError("Failed to load fragment shader.");
-		}
-		uint8[] psBytes = scope .[shaderBytes.Count];
-		shaderBytes.CopyTo(psBytes);
+		uint8[] psBytes = null;
+		uint8[] vsBytes = null;
 
-		shaderBytes.Clear();
-		if (File.ReadAll("Shaders/VertexShader.spirv", shaderBytes) case .Err)
+		if (mGraphicsContext.BackendType == .Vulkan)
 		{
-			Runtime.FatalError("Failed to load vertex shader.");
-		}
-		uint8[] vsBytes = scope .[shaderBytes.Count];
-		shaderBytes.CopyTo(vsBytes);
+			List<uint8> shaderBytes = scope .();
+			if (File.ReadAll("Shaders/FragmentShader.spirv", shaderBytes) case .Err)
+			{
+				Runtime.FatalError("Failed to load pixel shader.");
+			}
+			psBytes = scope :: .[shaderBytes.Count];
+			shaderBytes.CopyTo(psBytes);
 
+			shaderBytes.Clear();
+			if (File.ReadAll("Shaders/VertexShader.spirv", shaderBytes) case .Err)
+			{
+				Runtime.FatalError("Failed to load vertex shader.");
+			}
+			vsBytes = scope :: .[shaderBytes.Count];
+			shaderBytes.CopyTo(vsBytes);
+		}else if(mGraphicsContext.BackendType == .DirectX12)
+		{
+			String shaderSource = scope .();
+			String shaderPath = "Shaders/HLSL.fx";
+			if(File.ReadAllText(shaderPath, shaderSource) case .Err)
+			{
+				Runtime.FatalError(scope $"Failed to load shader source '{shaderPath}'.");
+			}
+
+			CompilationResult psResult = mGraphicsContext.ShaderCompile(shaderSource, "PS", .Pixel);
+			if(psResult.HasErrors)
+			{
+				Runtime.FatalError("Failed to load pixel shader.");
+			}
+			psBytes = scope :: .[psResult.ByteCode.Count];
+			psResult.ByteCode.CopyTo(psBytes);
+
+			CompilationResult vsResult = mGraphicsContext.ShaderCompile(shaderSource, "VS", .Vertex);
+			if(vsResult.HasErrors)
+			{
+				Runtime.FatalError("Failed to load vertex shader.");
+			}
+			vsBytes = scope :: .[vsResult.ByteCode.Count];
+			vsResult.ByteCode.CopyTo(vsBytes);
+		}
 
 		ShaderDescription vertexShaderDescription = ShaderDescription(.Vertex, "VS", vsBytes);
 		ShaderDescription pixelShaderDescription = ShaderDescription(.Pixel, "PS", psBytes);

@@ -139,7 +139,7 @@ public class DX12ShaderTable
 	public uint64 GetRayGenStartAddress()
 	{
 		uint64 gPUVirtualAddress = Buffer.GetGPUVirtualAddress();
-		uint32 shaderTableEntrySize2 = shaderTableEntrySize;
+		//uint32 shaderTableEntrySize2 = shaderTableEntrySize;
 		return gPUVirtualAddress + 0;
 	}
 

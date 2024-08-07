@@ -119,7 +119,7 @@ public class DX12Texture : Texture
 	public this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
 		: base(context, description)
 	{
-		ID3D12Device* dXDevice = context.DXDevice;
+		//ID3D12Device* dXDevice = context.DXDevice;
 		dxContext = context;
 		nativeDescription = default(D3D12_RESOURCE_DESC);
 		switch (Description.Type)
