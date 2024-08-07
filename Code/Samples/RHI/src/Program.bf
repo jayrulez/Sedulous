@@ -219,7 +219,7 @@ class RHIApplication
 		delete mVertexLayouts;
 		delete mGraphicsPipelineState;
 		delete mVertexBuffer;
-		delete mCommandQueue;
+		//delete mCommandQueue;
 		delete mSwapChain;
 
 		if (mUpdateFunctionRegistration.HasValue)
@@ -246,7 +246,12 @@ class RHIApplication
 
 		commandBuffer.Begin();
 
-		RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, ClearValue(ClearFlags.All, 1, 0, Color.CornflowerBlue.ToVector4()));
+		ClearValue clearValue = .(ClearFlags.All, 1, 0);
+		clearValue.ColorValues.Count = mSwapChain.FrameBuffer.ColorTargets.Count;
+		for(int i = 0; i < clearValue.ColorValues.Count; i++)
+			clearValue.ColorValues[i] = Color.CornflowerBlue.ToVector4();
+
+		RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, clearValue);
 		commandBuffer.BeginRenderPass(renderPassDescription);
 
 		commandBuffer.SetViewports(mViewports);
