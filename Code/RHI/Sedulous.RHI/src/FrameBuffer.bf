@@ -69,7 +69,7 @@ public abstract class FrameBuffer : IDisposable
 	/// <summary>
 	/// Gets or sets the collection of colors targets textures associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
-	public virtual FrameBufferAttachmentList ColorTargets { get; protected set; }
+	public virtual ref FrameBufferAttachmentList ColorTargets { get; protected set; }
 
 	/// <summary>
 	/// Gets or sets the depth targets texture associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.

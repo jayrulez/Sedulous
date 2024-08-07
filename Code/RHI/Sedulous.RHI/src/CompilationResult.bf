@@ -44,6 +44,7 @@ public class CompilationResult
 	public void Set(uint8[] bytecode, bool hasErrors, uint32 errorLine = 0, String message = null)
 	{
 		this.ByteCode.Clear();
+		this.ByteCode.Count = bytecode.Count;
 		bytecode.CopyTo(this.ByteCode);
 
 		this.HasErrors = hasErrors;
