@@ -23,19 +23,17 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 		get
 		{
 			Runtime.Assert(index < mCurrentSize);
-
 			return mData[index];
-		}
-		set mut
-		{
-			Runtime.Assert(index < mCurrentSize);
-			mData[index] = value;
 		}
 	}
 
 	public ref T this[int index]
 	{
 		get mut { return ref mData[index]; }
+		set mut {
+			Runtime.Assert(index < mCurrentSize);
+			mData[index] = value;
+		}
 	}
 
 	public bool IsEmpty => mCurrentSize == 0;
