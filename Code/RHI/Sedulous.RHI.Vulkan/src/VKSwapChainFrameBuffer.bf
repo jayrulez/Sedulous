@@ -56,11 +56,11 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	}
 
 	/// <inheritdoc />
-	public override FrameBufferAttachmentList ColorTargets
+	public override ref FrameBufferAttachmentList ColorTargets
 	{
 		get
 		{
-			return FrameBuffers[CurrentBackBufferIndex].ColorTargets;
+			return ref FrameBuffers[CurrentBackBufferIndex].ColorTargets;
 		}
 		protected set
 		{
