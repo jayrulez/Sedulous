@@ -402,9 +402,9 @@ public class DX12GraphicsContext : GraphicsContext
 	}
 
 	/// <inheritdoc />
-	public override CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters)
+	public override void ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters, ref CompilationResult result)
 	{
-		return DX12Shader.ShaderCompile(this, shaderSource, entryPoint, stage, parameters);
+		DX12Shader.ShaderCompile(this, shaderSource, entryPoint, stage, parameters, ref result);
 	}
 
 	/// <inheritdoc />

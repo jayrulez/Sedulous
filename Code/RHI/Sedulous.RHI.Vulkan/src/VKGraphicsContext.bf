@@ -226,9 +226,8 @@ public class VKGraphicsContext : GraphicsContext
 	}
 
 	/// <inheritdoc />
-	public override CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters)
+	public override void ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters, ref CompilationResult result)
 	{
-		return default(CompilationResult);
 	}
 
 	/// <inheritdoc />

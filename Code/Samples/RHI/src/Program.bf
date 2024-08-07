@@ -128,21 +128,22 @@ class RHIApplication
 				Runtime.FatalError(scope $"Failed to load shader source '{shaderPath}'.");
 			}
 
-			CompilationResult psResult = mGraphicsContext.ShaderCompile(shaderSource, "PS", .Pixel);
-			if(psResult.HasErrors)
+			CompilationResult result = scope .();
+			mGraphicsContext.ShaderCompile(shaderSource, "PS", .Pixel, ref result);
+			if(result.HasErrors)
 			{
 				Runtime.FatalError("Failed to load pixel shader.");
 			}
-			psBytes = scope :: .[psResult.ByteCode.Count];
-			psResult.ByteCode.CopyTo(psBytes);
+			psBytes = scope :: .[result.ByteCode.Count];
+			result.ByteCode.CopyTo(psBytes);
 
-			CompilationResult vsResult = mGraphicsContext.ShaderCompile(shaderSource, "VS", .Vertex);
-			if(vsResult.HasErrors)
+			mGraphicsContext.ShaderCompile(shaderSource, "VS", .Vertex, ref result);
+			if(result.HasErrors)
 			{
 				Runtime.FatalError("Failed to load vertex shader.");
 			}
-			vsBytes = scope :: .[vsResult.ByteCode.Count];
-			vsResult.ByteCode.CopyTo(vsBytes);
+			vsBytes = scope :: .[result.ByteCode.Count];
+			result.ByteCode.CopyTo(vsBytes);
 		}
 
 		ShaderDescription vertexShaderDescription = ShaderDescription(.Vertex, "VS", vsBytes);

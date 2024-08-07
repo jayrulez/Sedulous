@@ -1,30 +1,38 @@
 using System;
+using System.Collections;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This struct represent the result of a compilation process in a shader.
+/// This class represent the result of a compilation process in a shader.
 /// </summary>
-public struct CompilationResult
+public class CompilationResult
 {
 	/// <summary>
 	/// The byte code before compile a shader.
 	/// </summary>
-	public readonly uint8[] ByteCode;
+	public readonly List<uint8> ByteCode { get; private set; } = new .() ~ delete _;
 
 	/// <summary>
 	/// True if the compilation was wrong.
 	/// </summary>
-	public readonly bool HasErrors;
+	public bool HasErrors { get; private set; } = false;
 
 	/// <summary>
 	/// The error line number.
 	/// </summary>
-	public readonly uint32 ErrorLine;
+	public uint32 ErrorLine { get; private set; } = 0;
 
 	/// <summary>
 	/// Error message if hasErrors is true.
 	/// </summary>
-	public readonly String Message;
+	public readonly String Message { get; private set; } = new .() ~ delete _;
+
+	/// <summary>
+	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.CompilationResult" /> struct.
+	/// </summary>
+	public this()
+	{
+	}
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.CompilationResult" /> struct.
@@ -33,11 +41,17 @@ public struct CompilationResult
 	/// <param name="hasErrors">Whether the compilation was success or not.</param>
 	/// <param name="errorLine">The error line number if hasError is true.</param>
 	/// <param name="message">The error message if hasErrors is true.</param>
-	public this(uint8[] bytecode, bool hasErrors, uint32 errorLine = 0, String message = null)
+	public void Set(uint8[] bytecode, bool hasErrors, uint32 errorLine = 0, String message = null)
 	{
-		ByteCode = bytecode;
-		HasErrors = hasErrors;
-		ErrorLine = errorLine;
-		Message = message;
+		this.ByteCode.Clear();
+		bytecode.CopyTo(this.ByteCode);
+
+		this.HasErrors = hasErrors;
+		this.ErrorLine = errorLine;
+		this.Message.Clear();
+		if (message != null)
+		{
+			this.Message.Set(message);
+		}
 	}
 }

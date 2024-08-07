@@ -257,9 +257,9 @@ public abstract class GraphicsContext : IDisposable, IGetNativePointers
 	/// <param name="entryPoint">The entrypoint function name.</param>
 	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
 	/// <returns>The shader bytecodes.</returns>
-	public CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage)
+	public void ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, ref CompilationResult result)
 	{
-		return ShaderCompile(shaderSource, entryPoint, stage, CompilerParameters.Default);
+		ShaderCompile(shaderSource, entryPoint, stage, CompilerParameters.Default, ref result);
 	}
 
 	/// <summary>
@@ -270,7 +270,7 @@ public abstract class GraphicsContext : IDisposable, IGetNativePointers
 	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
 	/// <param name="parameters">The compiler parameters.</param>
 	/// <returns>The shader bytecodes.</returns>
-	public abstract CompilationResult ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters);
+	public abstract void ShaderCompile(String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters, ref CompilationResult result);
 
 	/// <summary>
 	/// Generate mipmapping texture levels.

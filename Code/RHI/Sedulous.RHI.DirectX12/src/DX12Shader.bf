@@ -62,7 +62,7 @@ public class DX12Shader : Shader
 	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
 	/// <param name="parameters">The compiler parameters.</param>
 	/// <returns>The shader byte codes.</returns>
-	public static CompilationResult ShaderCompile(GraphicsContext context, String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters)
+	public static void ShaderCompile(GraphicsContext context, String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters, ref CompilationResult result)
 	{
 		DxcShaderModel shaderModel = parameters.Profile.ToDirectX();
 		DxcCompilerOptions compilerOptions = .()
@@ -97,14 +97,14 @@ public class DX12Shader : Shader
 			context.ValidationLayer.Notify("DX12", message);
 			ProcessError(message, out line, out message);
 		}
-		IDxcBlob* result = null;
-		compilationResult.GetResult(&result);
-		uint32 length = (uint32)(int64)result.GetBufferSize();
-		void* sourcePointer = result.GetBufferPointer();
-		uint8[] byteCode = new uint8[length];
+		IDxcBlob* resultBlob = null;
+		compilationResult.GetResult(&resultBlob);
+		uint32 length = (uint32)(int64)resultBlob.GetBufferSize();
+		void* sourcePointer = resultBlob.GetBufferPointer();
+		uint8[] byteCode = scope uint8[length];
 		void* destinationPointer = byteCode.Ptr;
 		Internal.MemCpy(destinationPointer, sourcePointer, length);
-		return CompilationResult(byteCode, hasErrors, line, message);
+		result.Set(byteCode, hasErrors, line, message);
 	}
 
 	/// <inheritdoc />
