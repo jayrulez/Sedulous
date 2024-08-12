@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a set of output attachments and their formats.
@@ -15,7 +15,7 @@ namespace Veldrid
         /// <summary>
         /// An array of attachment descriptions, one for each color attachment. May be empty.
         /// </summary>
-        public OutputAttachmentDescription[] ColorAttachments;
+        public OutputAttachmentList ColorAttachments;
         /// <summary>
         /// The number of samples in each target attachment.
         /// </summary>
@@ -26,10 +26,10 @@ namespace Veldrid
         /// </summary>
         /// <param name="depthAttachment">A description of the depth attachment.</param>
         /// <param name="colorAttachments">An array of descriptions of each color attachment.</param>
-        public OutputDescription(OutputAttachmentDescription? depthAttachment, params OutputAttachmentDescription[] colorAttachments)
+        public this(OutputAttachmentDescription? depthAttachment, params OutputAttachmentDescription[] colorAttachments)
         {
             DepthAttachment = depthAttachment;
-            ColorAttachments = colorAttachments ?? Array.Empty<OutputAttachmentDescription>();
+            ColorAttachments = .(colorAttachments);
             SampleCount = TextureSampleCount.Count1;
         }
 
@@ -39,13 +39,13 @@ namespace Veldrid
         /// <param name="depthAttachment">A description of the depth attachment.</param>
         /// <param name="colorAttachments">An array of descriptions of each color attachment.</param>
         /// <param name="sampleCount">The number of samples in each target attachment.</param>
-        public OutputDescription(
+        public this(
             OutputAttachmentDescription? depthAttachment,
-            OutputAttachmentDescription[] colorAttachments,
+            OutputAttachmentList colorAttachments,
             TextureSampleCount sampleCount)
         {
             DepthAttachment = depthAttachment;
-            ColorAttachments = colorAttachments ?? Array.Empty<OutputAttachmentDescription>();
+            ColorAttachments = colorAttachments;
             SampleCount = sampleCount;
         }
 
@@ -55,17 +55,17 @@ namespace Veldrid
             OutputAttachmentDescription? depthAttachment = null;
             if (fb.DepthTarget != null)
             {
-                depthAttachment = new OutputAttachmentDescription(fb.DepthTarget.Value.Target.Format);
+                depthAttachment = OutputAttachmentDescription(fb.DepthTarget.Value.Target.Format);
                 sampleCount = fb.DepthTarget.Value.Target.SampleCount;
             }
-            OutputAttachmentDescription[] colorAttachments = new OutputAttachmentDescription[fb.ColorTargets.Count];
-            for (int32 i = 0; i < colorAttachments.Length; i++)
+            OutputAttachmentList colorAttachments = .() { Count = fb.ColorTargets.Count };
+            for (int i = 0; i < colorAttachments.Count; i++)
             {
-                colorAttachments[i] = new OutputAttachmentDescription(fb.ColorTargets[i].Target.Format);
+                colorAttachments[i] = OutputAttachmentDescription(fb.ColorTargets[i].Target.Format);
                 sampleCount = fb.ColorTargets[i].Target.SampleCount;
             }
 
-            return new OutputDescription(depthAttachment, colorAttachments, sampleCount);
+            return OutputDescription(depthAttachment, colorAttachments, sampleCount);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Veldrid
         public bool Equals(OutputDescription other)
         {
             return DepthAttachment.GetValueOrDefault().Equals(other.DepthAttachment.GetValueOrDefault())
-                && Util.ArrayEqualsEquatable(ColorAttachments, other.ColorAttachments)
+                && ColorAttachments == other.ColorAttachments
                 && SampleCount == other.SampleCount;
         }
 
@@ -88,7 +88,7 @@ namespace Veldrid
         {
             return HashHelper.Combine(
                 DepthAttachment.GetHashCode(),
-                HashHelper.Array(ColorAttachments),
+                ColorAttachments.GetHashCode(),
                 (int)SampleCount);
         }
     }

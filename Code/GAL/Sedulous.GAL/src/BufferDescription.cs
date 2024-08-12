@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="DeviceBuffer"/>, used in the creation of <see cref="DeviceBuffer"/> objects by a
@@ -32,7 +32,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="sizeInBytes">The desired capacity, in bytes.</param>
         /// <param name="usage">Indicates how the <see cref="DeviceBuffer"/> will be used.</param>
-        public BufferDescription(uint32 sizeInBytes, BufferUsage usage)
+        public this(uint32 sizeInBytes, BufferUsage usage)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -47,7 +47,7 @@ namespace Veldrid
         /// <param name="usage">Indicates how the <see cref="DeviceBuffer"/> will be used.</param>
         /// <param name="structureByteStride">For structured buffers, this value indicates the size in bytes of a single
         /// structure element, and must be non-zero. For all other buffer types, this value must be zero.</param>
-        public BufferDescription(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride)
+        public this(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -65,7 +65,7 @@ namespace Veldrid
         /// <param name="rawBuffer">Indicates that this is a raw buffer. This should be combined with
         /// <see cref="BufferUsage.StructuredBufferReadWrite"/>. This affects how the buffer is bound in the D3D11 backend.
         /// </param>
-        public BufferDescription(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride, bool rawBuffer)
+        public this(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride, bool rawBuffer)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -80,10 +80,10 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(BufferDescription other)
         {
-            return SizeInBytes.Equals(other.SizeInBytes)
+            return SizeInBytes == other.SizeInBytes
                 && Usage == other.Usage
-                && StructureByteStride.Equals(other.StructureByteStride)
-                && RawBuffer.Equals(other.RawBuffer);
+                && StructureByteStride == other.StructureByteStride
+                && RawBuffer == other.RawBuffer;
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Veldrid
         {
             return HashHelper.Combine(
                 SizeInBytes.GetHashCode(),
-                (int32)Usage,
+                (int)Usage,
                 StructureByteStride.GetHashCode(),
                 RawBuffer.GetHashCode());
         }

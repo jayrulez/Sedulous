@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing the properties of the depth stencil state.
@@ -51,8 +51,8 @@ namespace Veldrid
         /// </summary>
         /// <param name="depthTestEnabled">Controls whether depth testing is enabled.</param>
         /// <param name="depthWriteEnabled">Controls whether new depth values are written to the depth buffer.</param>
-        /// <param name="comparisonKind">The <see cref="Veldrid.ComparisonKind"/> used when considering new depth values.</param>
-        public DepthStencilStateDescription(bool depthTestEnabled, bool depthWriteEnabled, ComparisonKind comparisonKind)
+        /// <param name="comparisonKind">The <see cref="Sedulous.GAL.ComparisonKind"/> used when considering new depth values.</param>
+        public this(bool depthTestEnabled, bool depthWriteEnabled, ComparisonKind comparisonKind)
         {
             DepthTestEnabled = depthTestEnabled;
             DepthWriteEnabled = depthWriteEnabled;
@@ -79,7 +79,7 @@ namespace Veldrid
         /// <param name="stencilReadMask">Controls the portion of the stencil buffer used for reading.</param>
         /// <param name="stencilWriteMask">Controls the portion of the stencil buffer used for writing.</param>
         /// <param name="stencilReference">The reference value to use when doing a stencil test.</param>
-        public DepthStencilStateDescription(
+        public this(
             bool depthTestEnabled,
             bool depthWriteEnabled,
             ComparisonKind comparisonKind,
@@ -110,7 +110,7 @@ namespace Veldrid
         ///     DepthWriteEnabled = true
         ///     ComparisonKind = DepthComparisonKind.LessEqual
         /// </summary>
-        public static readonly DepthStencilStateDescription DepthOnlyLessEqual = new DepthStencilStateDescription
+        public static readonly DepthStencilStateDescription DepthOnlyLessEqual = DepthStencilStateDescription
         {
             DepthTestEnabled = true,
             DepthWriteEnabled = true,
@@ -125,7 +125,7 @@ namespace Veldrid
         ///     DepthWriteEnabled = false
         ///     ComparisonKind = DepthComparisonKind.LessEqual
         /// </summary>
-        public static readonly DepthStencilStateDescription DepthOnlyLessEqualRead = new DepthStencilStateDescription
+        public static readonly DepthStencilStateDescription DepthOnlyLessEqualRead = DepthStencilStateDescription
         {
             DepthTestEnabled = true,
             DepthWriteEnabled = false,
@@ -140,7 +140,7 @@ namespace Veldrid
         ///     DepthWriteEnabled = true
         ///     ComparisonKind = DepthComparisonKind.GreaterEqual
         /// </summary>
-        public static readonly DepthStencilStateDescription DepthOnlyGreaterEqual = new DepthStencilStateDescription
+        public static readonly DepthStencilStateDescription DepthOnlyGreaterEqual = DepthStencilStateDescription
         {
             DepthTestEnabled = true,
             DepthWriteEnabled = true,
@@ -155,7 +155,7 @@ namespace Veldrid
         ///     DepthWriteEnabled = false
         ///     ComparisonKind = DepthComparisonKind.GreaterEqual
         /// </summary>
-        public static readonly DepthStencilStateDescription DepthOnlyGreaterEqualRead = new DepthStencilStateDescription
+        public static readonly DepthStencilStateDescription DepthOnlyGreaterEqualRead = DepthStencilStateDescription
         {
             DepthTestEnabled = true,
             DepthWriteEnabled = false,
@@ -170,7 +170,7 @@ namespace Veldrid
         ///     DepthWriteEnabled = false
         ///     ComparisonKind = DepthComparisonKind.LessEqual
         /// </summary>
-        public static readonly DepthStencilStateDescription Disabled = new DepthStencilStateDescription
+        public static readonly DepthStencilStateDescription Disabled = DepthStencilStateDescription
         {
             DepthTestEnabled = false,
             DepthWriteEnabled = false,
@@ -184,15 +184,15 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(DepthStencilStateDescription other)
         {
-            return DepthTestEnabled.Equals(other.DepthTestEnabled)
-                && DepthWriteEnabled.Equals(other.DepthWriteEnabled)
+            return DepthTestEnabled == other.DepthTestEnabled
+                && DepthWriteEnabled == other.DepthWriteEnabled
                 && DepthComparison == other.DepthComparison
-                && StencilTestEnabled.Equals(other.StencilTestEnabled)
-                && StencilFront.Equals(other.StencilFront)
-                && StencilBack.Equals(other.StencilBack)
-                && StencilReadMask.Equals(other.StencilReadMask)
-                && StencilWriteMask.Equals(other.StencilWriteMask)
-                && StencilReference.Equals(other.StencilReference);
+                && StencilTestEnabled == other.StencilTestEnabled
+                && StencilFront == other.StencilFront
+                && StencilBack == other.StencilBack
+                && StencilReadMask == other.StencilReadMask
+                && StencilWriteMask == other.StencilWriteMask
+                && StencilReference == other.StencilReference;
         }
 
         /// <summary>

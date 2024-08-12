@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A structure describing the layout of a mapped <see cref="MappableResource"/> object.
@@ -19,7 +18,7 @@ namespace Veldrid
         /// <summary>
         /// A pointer to the start of the mapped data region.
         /// </summary>
-        public readonly IntPtr Data;
+        public readonly void* Data;
         /// <summary>
         /// The total size, in bytes, of the mapped data region.
         /// </summary>
@@ -40,10 +39,10 @@ namespace Veldrid
         /// </summary>
         public readonly uint32 DepthPitch;
 
-        internal MappedResource(
+        internal this(
             MappableResource resource,
             MapMode mode,
-            IntPtr data,
+            void* data,
             uint32 sizeInBytes,
             uint32 subresource,
             uint32 rowPitch,
@@ -58,7 +57,7 @@ namespace Veldrid
             DepthPitch = depthPitch;
         }
 
-        internal MappedResource(MappableResource resource, MapMode mode, IntPtr data, uint32 sizeInBytes)
+        internal this(MappableResource resource, MapMode mode, void* data, uint32 sizeInBytes)
         {
             Resource = resource;
             Mode = mode;
@@ -78,7 +77,7 @@ namespace Veldrid
     /// <typeparam name="T">The blittable value type which mapped data is viewed as.</typeparam>
     public struct MappedResourceView<T> where T : struct
     {
-        private static readonly int32 s_sizeofT = Unsafe.SizeOf<T>();
+        private const int s_sizeofT = sizeof(T);
 
         /// <summary>
         /// The <see cref="MappedResource"/> that this instance views.
@@ -92,17 +91,17 @@ namespace Veldrid
         /// The total number of structures that is contained in the resource. This is effectively the total number of bytes
         /// divided by the size of the structure type.
         /// </summary>
-        public readonly int32 Count;
+        public readonly int Count;
 
         /// <summary>
         /// Constructs a new MappedResourceView which wraps the given <see cref="MappedResource"/>.
         /// </summary>
         /// <param name="rawResource">The raw resource which has been mapped.</param>
-        public MappedResourceView(MappedResource rawResource)
+        public this(MappedResource rawResource)
         {
             MappedResource = rawResource;
             SizeInBytes = rawResource.SizeInBytes;
-            Count = (int32)(SizeInBytes / s_sizeofT);
+            Count = (int)(SizeInBytes / s_sizeofT);
         }
 
         /// <summary>
@@ -110,18 +109,18 @@ namespace Veldrid
         /// </summary>
         /// <param name="index">The index of the value.</param>
         /// <returns>A reference to the value at the given index.</returns>
-        public ref T this[int32 index]
+        public ref T this[int index]
         {
             get
             {
                 if (index >= Count || index < 0)
                 {
-                    throw new IndexOutOfRangeException(
-                        $"Given index ({index}) must be non-negative and less than Count ({Count}).");
+                    Runtime.IndexOutOfRangeError(
+                        scope $"Given index ({index}) must be non-negative and less than Count ({Count}).");
                 }
 
                 uint8* ptr = (uint8*)MappedResource.Data + (index * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                return ref *(T*)ptr;
             }
         }
 
@@ -130,18 +129,18 @@ namespace Veldrid
         /// </summary>
         /// <param name="index">The index of the value.</param>
         /// <returns>A reference to the value at the given index.</returns>
-        public ref T this[uint32 index]
+        public ref T this[uint index]
         {
             get
             {
-                if (index >= Count)
+                if (index >= (uint)Count)
                 {
-                    throw new IndexOutOfRangeException(
-                        $"Given index ({index}) must be less than Count ({Count}).");
+                    Runtime.IndexOutOfRangeError(
+                        scope $"Given index ({index}) must be less than Count ({Count}).");
                 }
 
-                uint8* ptr = (uint8*)MappedResource.Data + (index * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                uint8* ptr = (uint8*)MappedResource.Data + ((int)index * s_sizeofT);
+                return ref *(T*)ptr;
             }
         }
 
@@ -151,12 +150,12 @@ namespace Veldrid
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[int32 x, int32 y]
+        public ref T this[int x, int y]
         {
             get
             {
                 uint8* ptr = (uint8*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                return ref *(T*)ptr;
             }
         }
 
@@ -166,12 +165,12 @@ namespace Veldrid
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[uint32 x, uint32 y]
+        public ref T this[uint x, uint y]
         {
             get
             {
-                uint8* ptr = (uint8*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                uint8* ptr = (uint8*)MappedResource.Data + (y * MappedResource.RowPitch) + ((int)x * s_sizeofT);
+                return ref *(T*)ptr;
             }
         }
 
@@ -182,7 +181,7 @@ namespace Veldrid
         /// <param name="y">The Y coordinate.</param>
         /// <param name="z">The Z coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[int32 x, int32 y, int32 z]
+        public ref T this[int x, int y, int z]
         {
             get
             {
@@ -190,7 +189,7 @@ namespace Veldrid
                     + (z * MappedResource.DepthPitch)
                     + (y * MappedResource.RowPitch)
                     + (x * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                return ref *(T*)ptr;
             }
         }
 
@@ -201,15 +200,15 @@ namespace Veldrid
         /// <param name="y">The Y coordinate.</param>
         /// <param name="z">The Z coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[uint32 x, uint32 y, uint32 z]
+        public ref T this[uint x, uint y, uint z]
         {
             get
             {
                 uint8* ptr = (uint8*)MappedResource.Data
                     + (z * MappedResource.DepthPitch)
                     + (y * MappedResource.RowPitch)
-                    + (x * s_sizeofT);
-                return ref Unsafe.AsRef<T>(ptr);
+                    + ((int)x * s_sizeofT);
+                return ref *(T*)ptr;
             }
         }
     }

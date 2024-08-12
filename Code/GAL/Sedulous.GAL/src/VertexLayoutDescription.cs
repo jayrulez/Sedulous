@@ -1,7 +1,9 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// Describes the layout of vertex data in a single <see cref="DeviceBuffer"/> used as a vertex buffer.
     /// </summary>
@@ -29,7 +31,7 @@ namespace Veldrid
         /// <param name="stride">The number of bytes in between successive elements in the <see cref="DeviceBuffer"/>.</param>
         /// <param name="elements">An array of <see cref="VertexElementDescription"/> objects, each describing a single element
         /// of vertex data.</param>
-        public VertexLayoutDescription(uint32 stride, params VertexElementDescription[] elements)
+        public this(uint32 stride, params VertexElementDescription[] elements)
         {
             Stride = stride;
             Elements = elements;
@@ -46,7 +48,7 @@ namespace Veldrid
         /// per-vertex elements, this value should be 0.
         /// For example, an InstanceStepRate of 3 indicates that 3 instances will be drawn with the same value for this element.
         /// The next 3 instances will be drawn with the next value for this element, and so on.</param>
-        public VertexLayoutDescription(uint32 stride, uint32 instanceStepRate, params VertexElementDescription[] elements)
+        public this(uint32 stride, uint32 instanceStepRate, params VertexElementDescription[] elements)
         {
             Stride = stride;
             Elements = elements;
@@ -58,11 +60,11 @@ namespace Veldrid
         /// </summary>
         /// <param name="elements">An array of <see cref="VertexElementDescription"/> objects, each describing a single element
         /// of vertex data.</param>
-        public VertexLayoutDescription(params VertexElementDescription[] elements)
+        public this(params VertexElementDescription[] elements)
         {
             Elements = elements;
             uint32 computedStride = 0;
-            for (int32 i = 0; i < elements.Length; i++)
+            for (int i = 0; i < elements.Count; i++)
             {
                 uint32 elementSize = FormatSizeHelpers.GetSizeInBytes(elements[i].Format);
                 if (elements[i].Offset != 0)
@@ -86,9 +88,9 @@ namespace Veldrid
         /// <returns>True if all elements and all array elements are equal; false otherswise.</returns>
         public bool Equals(VertexLayoutDescription other)
         {
-            return Stride.Equals(other.Stride)
+            return Stride == other.Stride
                 && Util.ArrayEqualsEquatable(Elements, other.Elements)
-                && InstanceStepRate.Equals(other.InstanceStepRate);
+                && InstanceStepRate == other.InstanceStepRate;
         }
 
         /// <summary>

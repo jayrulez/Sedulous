@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes an individual resource element in a <see cref="ResourceLayout"/>.
@@ -10,7 +10,7 @@ namespace Veldrid
         /// <summary>
         /// The name of the element.
         /// </summary>
-        public string Name;
+        public String Name;
         /// <summary>
         /// The kind of resource.
         /// </summary>
@@ -30,7 +30,7 @@ namespace Veldrid
         /// <param name="name">The name of the element.</param>
         /// <param name="kind">The kind of resource.</param>
         /// <param name="stages">The <see cref="ShaderStages"/> in which this element is used.</param>
-        public ResourceLayoutElementDescription(string name, ResourceKind kind, ShaderStages stages)
+        public this(String name, ResourceKind kind, ShaderStages stages)
         {
             Name = name;
             Kind = kind;
@@ -45,8 +45,8 @@ namespace Veldrid
         /// <param name="kind">The kind of resource.</param>
         /// <param name="stages">The <see cref="ShaderStages"/> in which this element is used.</param>
         /// <param name="options">Miscellaneous resource options for this element.</param>
-        public ResourceLayoutElementDescription(
-            string name,
+        public this(
+            String name,
             ResourceKind kind,
             ShaderStages stages,
             ResourceLayoutElementOptions options)
@@ -73,7 +73,7 @@ namespace Veldrid
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public int GetHashCode()
         {
-            return HashHelper.Combine(Name.GetHashCode(), (int32)Kind, (int32)Stages, (int32)Options);
+            return HashHelper.Combine(Name.GetHashCode(), (int)Kind, (int)Stages, (int)Options);
         }
     }
 

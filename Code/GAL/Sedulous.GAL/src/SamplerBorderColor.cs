@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// A constant color that is sampled when <see cref="SamplerAddressMode.Border"/> is used.

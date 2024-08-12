@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// The format of data stored in a <see cref="Texture"/>.

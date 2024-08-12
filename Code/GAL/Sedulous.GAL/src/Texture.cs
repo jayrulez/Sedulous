@@ -1,6 +1,7 @@
-﻿using System;
+using System;
+using System.Threading;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A device resource used to store arbitrary image data in a specific format.
@@ -8,7 +9,7 @@ namespace Veldrid
     /// </summary>
     public abstract class Texture : DeviceResource, MappableResource, IDisposable, BindableResource
     {
-        private readonly object _fullTextureViewLock = new object();
+        private readonly Monitor _fullTextureViewLock = new .() ~ delete _;
         private TextureView _fullTextureView;
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace Veldrid
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
         /// <summary>
         /// A bool indicating whether this instance has been disposed.
         /// </summary>
@@ -72,7 +73,7 @@ namespace Veldrid
 
         internal TextureView GetFullTextureView(GraphicsDevice gd)
         {
-            lock (_fullTextureViewLock)
+            using (_fullTextureViewLock.Enter())
             {
                 if (_fullTextureView == null)
                 {
@@ -83,7 +84,7 @@ namespace Veldrid
             }
         }
 
-        private protected virtual TextureView CreateFullTextureView(GraphicsDevice gd)
+        protected virtual TextureView CreateFullTextureView(GraphicsDevice gd)
         {
             return gd.ResourceFactory.CreateTextureView(this);
         }
@@ -93,7 +94,7 @@ namespace Veldrid
         /// </summary>
         public virtual void Dispose()
         {
-            lock (_fullTextureViewLock)
+            using (_fullTextureViewLock.Enter())
             {
                 _fullTextureView?.Dispose();
             }
@@ -101,6 +102,6 @@ namespace Veldrid
             DisposeCore();
         }
 
-        private protected abstract void DisposeCore();
+        protected abstract void DisposeCore();
     }
 }

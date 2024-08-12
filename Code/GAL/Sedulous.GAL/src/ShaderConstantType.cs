@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// The data type of a shader constant.

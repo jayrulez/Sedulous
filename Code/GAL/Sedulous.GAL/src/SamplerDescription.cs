@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="Sampler"/>, for creation using a <see cref="ResourceFactory"/>.
@@ -64,7 +64,7 @@ namespace Veldrid
         /// <param name="lodBias">The level of detail bias.</param>
         /// <param name="borderColor">The constant color that is sampled when <see cref="SamplerAddressMode.Border"/> is used, or
         /// otherwise ignored.</param>
-        public SamplerDescription(
+        public this(
             SamplerAddressMode addressModeU,
             SamplerAddressMode addressModeV,
             SamplerAddressMode addressModeW,
@@ -100,7 +100,7 @@ namespace Veldrid
         ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 0
         /// </summary>
-        public static readonly SamplerDescription Point = new SamplerDescription
+        public static readonly SamplerDescription Point = SamplerDescription
         {
             AddressModeU = SamplerAddressMode.Wrap,
             AddressModeV = SamplerAddressMode.Wrap,
@@ -124,7 +124,7 @@ namespace Veldrid
         ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 0
         /// </summary>
-        public static readonly SamplerDescription Linear = new SamplerDescription
+        public static readonly SamplerDescription Linear = SamplerDescription
         {
             AddressModeU = SamplerAddressMode.Wrap,
             AddressModeV = SamplerAddressMode.Wrap,
@@ -148,7 +148,7 @@ namespace Veldrid
         ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 4
         /// </summary>
-        public static readonly SamplerDescription Aniso4x = new SamplerDescription
+        public static readonly SamplerDescription Aniso4x = SamplerDescription
         {
             AddressModeU = SamplerAddressMode.Wrap,
             AddressModeV = SamplerAddressMode.Wrap,
@@ -186,16 +186,16 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                (int32)AddressModeU,
-                (int32)AddressModeV,
-                (int32)AddressModeW,
-                (int32)Filter,
+                (int)AddressModeU,
+                (int)AddressModeV,
+                (int)AddressModeW,
+                (int)Filter,
                 ComparisonKind.GetHashCode(),
                 MaximumAnisotropy.GetHashCode(),
                 MinimumLod.GetHashCode(),
                 MaximumLod.GetHashCode(),
                 LodBias.GetHashCode(),
-                (int32)BorderColor);
+                (int)BorderColor);
         }
     }
 }

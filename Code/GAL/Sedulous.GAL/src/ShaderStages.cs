@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A bitmask representing a set of shader stages.

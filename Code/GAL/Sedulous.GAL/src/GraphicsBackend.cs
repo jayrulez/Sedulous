@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// The specific graphics API used by the <see cref="GraphicsDevice"/>.

@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A <see cref="BindableResource"/> that represents a section of a <see cref="DeviceBuffer"/>. This can be used in place of
@@ -28,7 +28,7 @@ namespace Veldrid
         /// <param name="buffer">The underlying <see cref="DeviceBuffer"/> that this range will refer to.</param>
         /// <param name="offset">The offset, in bytes, from the beginning of the buffer that this range will start at.</param>
         /// <param name="sizeInBytes">The total number of bytes that this range will encompass.</param>
-        public DeviceBufferRange(DeviceBuffer buffer, uint32 offset, uint32 sizeInBytes)
+        public this(DeviceBuffer buffer, uint32 offset, uint32 sizeInBytes)
         {
             Buffer = buffer;
             Offset = offset;
@@ -42,7 +42,7 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(DeviceBufferRange other)
         {
-            return Buffer == other.Buffer && Offset.Equals(other.Offset) && SizeInBytes.Equals(other.SizeInBytes);
+            return Buffer == other.Buffer && Offset == other.Offset && SizeInBytes == other.SizeInBytes;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Veldrid
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public int GetHashCode()
         {
-            int32 bufferHash = Buffer?.GetHashCode() ?? 0;
+            int bufferHash = Buffer != null ? HashCode.Generate(Buffer) : 0;
             return HashHelper.Combine(bufferHash, Offset.GetHashCode(), SizeInBytes.GetHashCode());
         }
     }

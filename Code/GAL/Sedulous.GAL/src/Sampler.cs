@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A bindable device resource which controls how texture values are sampled within a shader.
@@ -12,7 +12,7 @@ namespace Veldrid
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

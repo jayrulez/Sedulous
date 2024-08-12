@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A device resource used to bind a particular set of <see cref="BindableResource"/> objects to a <see cref="CommandList"/>.
@@ -9,7 +9,7 @@ namespace Veldrid
     /// </summary>
     public abstract class ResourceSet : DeviceResource, IDisposable
     {
-        internal ResourceSet(ref ResourceSetDescription description)
+        internal this(ref ResourceSetDescription description)
         {
 #if VALIDATE_USAGE
             Layout = description.Layout;
@@ -21,7 +21,7 @@ namespace Veldrid
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

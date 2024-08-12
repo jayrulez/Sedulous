@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A device resource which describes the layout and kind of <see cref="BindableResource"/> objects available
@@ -14,7 +14,7 @@ namespace Veldrid
         internal readonly uint32 DynamicBufferCount;
 #endif
 
-        internal ResourceLayout(ref ResourceLayoutDescription description)
+        internal this(ref ResourceLayoutDescription description)
         {
 #if VALIDATE_USAGE
             Description = description;
@@ -32,7 +32,7 @@ namespace Veldrid
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

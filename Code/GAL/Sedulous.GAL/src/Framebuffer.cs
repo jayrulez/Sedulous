@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// A device resource used to control which color and depth textures are rendered to.
     /// See <see cref="FramebufferDescription"/>.
@@ -13,47 +14,47 @@ namespace Veldrid
         /// <summary>
         /// Gets the depth attachment associated with this instance. May be null if no depth texture is used.
         /// </summary>
-        public virtual FramebufferAttachment? DepthTarget { get; }
+        public virtual ref FramebufferAttachmentDescription? DepthTarget { get; }
 
         /// <summary>
         /// Gets the collection of color attachments associated with this instance. May be empty.
         /// </summary>
-        public virtual IReadOnlyList<FramebufferAttachment> ColorTargets { get; }
+        public virtual ref FramebufferAttachmentList ColorTargets { get; }
 
         /// <summary>
-        /// Gets an <see cref="Veldrid.OutputDescription"/> which describes the number and formats of the depth and color targets
+        /// Gets an <see cref="Sedulous.GAL.OutputDescription"/> which describes the number and formats of the depth and color targets
         /// in this instance.
         /// </summary>
-        public virtual OutputDescription OutputDescription { get; }
+        public virtual ref OutputDescription OutputDescription { get; }
 
         /// <summary>
         /// Gets the width of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual uint32 Width { get; }
+        public virtual ref uint32 Width { get; }
 
         /// <summary>
         /// Gets the height of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual uint32 Height { get; }
+        public virtual ref uint32 Height { get; }
 
-        internal Framebuffer() { }
+        internal this() { }
 
-        internal Framebuffer(
+        internal this(
             FramebufferAttachmentDescription? depthTargetDesc,
-            IReadOnlyList<FramebufferAttachmentDescription> colorTargetDescs)
+            FramebufferAttachmentList colorTargetDescs)
         {
             if (depthTargetDesc != null)
             {
                 FramebufferAttachmentDescription depthAttachment = depthTargetDesc.Value;
-                DepthTarget = new FramebufferAttachment(
+                DepthTarget = FramebufferAttachmentDescription(
                     depthAttachment.Target,
                     depthAttachment.ArrayLayer,
                     depthAttachment.MipLevel);
             }
-            FramebufferAttachment[] colorTargets = new FramebufferAttachment[colorTargetDescs.Count];
-            for (int32 i = 0; i < colorTargets.Length; i++)
+            FramebufferAttachmentList colorTargets = .() { Count = colorTargetDescs.Count };
+            for (int i = 0; i < colorTargets.Count; i++)
             {
-                colorTargets[i] = new FramebufferAttachment(
+                colorTargets[i] = FramebufferAttachmentDescription(
                     colorTargetDescs[i].Target,
                     colorTargetDescs[i].ArrayLayer,
                     colorTargetDescs[i].MipLevel);
@@ -75,19 +76,19 @@ namespace Veldrid
                 mipLevel = DepthTarget.Value.MipLevel;
             }
 
-            Util.GetMipDimensions(dimTex, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out _);
+            Util.GetMipDimensions(dimTex, mipLevel, var mipWidth, var mipHeight, ?);
             Width = mipWidth;
             Height = mipHeight;
 
 
-            OutputDescription = OutputDescription.CreateFromFramebuffer(this);
+            OutputDescription = /*OutputDescription*/.CreateFromFramebuffer(this);
         }
 
         /// <summary>
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// Identifies how a <see cref="MappableResource"/> will be mapped into CPU address space.

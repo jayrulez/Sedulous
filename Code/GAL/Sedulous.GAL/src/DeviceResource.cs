@@ -1,4 +1,5 @@
-﻿namespace Veldrid
+using System;
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A resource owned by a <see cref="GraphicsDevice"/>, which can be given a string identifier for debugging and
@@ -10,6 +11,6 @@
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        string Name { get; set; }
+        String Name { get; set; }
     }
 }

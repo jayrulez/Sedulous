@@ -1,13 +1,13 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     internal struct MappedResourceCacheKey : IEquatable<MappedResourceCacheKey>, IHashable
     {
         public readonly MappableResource Resource;
         public readonly uint32 Subresource;
 
-        public MappedResourceCacheKey(MappableResource resource, uint32 subresource)
+        public this(MappableResource resource, uint32 subresource)
         {
             Resource = resource;
             Subresource = subresource;
@@ -15,13 +15,13 @@ namespace Veldrid
 
         public bool Equals(MappedResourceCacheKey other)
         {
-            return Resource.Equals(other.Resource)
-                && Subresource.Equals(other.Subresource);
+            return Resource === other.Resource
+                && Subresource == other.Subresource;
         }
 
         public int GetHashCode()
         {
-            return HashHelper.Combine(Resource.GetHashCode(), Subresource.GetHashCode());
+            return HashHelper.Combine(HashCode.Generate(Resource), Subresource.GetHashCode());
         }
     }
 }

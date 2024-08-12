@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing how values are blended into each individual color target.
@@ -16,7 +16,7 @@ namespace Veldrid
         /// An array of <see cref="BlendAttachmentDescription"/> describing how blending is performed for each color target
         /// used in the <see cref="Pipeline"/>.
         /// </summary>
-        public BlendAttachmentDescription[] AttachmentStates;
+        public BlendAttachmentList AttachmentStates;
         /// <summary>
         /// Enables alpha-to-coverage, which causes a fragment's alpha value to be used when determining multi-sample coverage.
         /// </summary>
@@ -27,10 +27,10 @@ namespace Veldrid
         /// </summary>
         /// <param name="blendFactor">The constant blend color.</param>
         /// <param name="attachmentStates">The blend attachment states.</param>
-        public BlendStateDescription(RgbaFloat blendFactor, params BlendAttachmentDescription[] attachmentStates)
+        public this(RgbaFloat blendFactor, params BlendAttachmentDescription[] attachmentStates)
         {
             BlendFactor = blendFactor;
-            AttachmentStates = attachmentStates;
+            AttachmentStates = .(attachmentStates);
             AlphaToCoverageEnabled = false;
         }
 
@@ -41,54 +41,54 @@ namespace Veldrid
         /// <param name="alphaToCoverageEnabled">Enables alpha-to-coverage, which causes a fragment's alpha value to be
         /// used when determining multi-sample coverage.</param>
         /// <param name="attachmentStates">The blend attachment states.</param>
-        public BlendStateDescription(
+        public this(
             RgbaFloat blendFactor,
             bool alphaToCoverageEnabled,
             params BlendAttachmentDescription[] attachmentStates)
         {
             BlendFactor = blendFactor;
-            AttachmentStates = attachmentStates;
+            AttachmentStates = .(attachmentStates);
             AlphaToCoverageEnabled = alphaToCoverageEnabled;
         }
 
         /// <summary>
         /// Describes a blend state in which a single color target is blended with <see cref="BlendAttachmentDescription.OverrideBlend"/>.
         /// </summary>
-        public static readonly BlendStateDescription SingleOverrideBlend = new BlendStateDescription
+        public static readonly BlendStateDescription SingleOverrideBlend = BlendStateDescription
         {
-            AttachmentStates = new BlendAttachmentDescription[] { BlendAttachmentDescription.OverrideBlend }
+            AttachmentStates = .(BlendAttachmentDescription.OverrideBlend)
         };
 
         /// <summary>
         /// Describes a blend state in which a single color target is blended with <see cref="BlendAttachmentDescription.AlphaBlend"/>.
         /// </summary>
-        public static readonly BlendStateDescription SingleAlphaBlend = new BlendStateDescription
+        public static readonly BlendStateDescription SingleAlphaBlend = BlendStateDescription
         {
-            AttachmentStates = new BlendAttachmentDescription[] { BlendAttachmentDescription.AlphaBlend }
+            AttachmentStates = .(BlendAttachmentDescription.AlphaBlend)
         };
 
         /// <summary>
         /// Describes a blend state in which a single color target is blended with <see cref="BlendAttachmentDescription.AdditiveBlend"/>.
         /// </summary>
-        public static readonly BlendStateDescription SingleAdditiveBlend = new BlendStateDescription
+        public static readonly BlendStateDescription SingleAdditiveBlend = BlendStateDescription
         {
-            AttachmentStates = new BlendAttachmentDescription[] { BlendAttachmentDescription.AdditiveBlend }
+            AttachmentStates = .(BlendAttachmentDescription.AdditiveBlend)
         };
 
         /// <summary>
         /// Describes a blend state in which a single color target is blended with <see cref="BlendAttachmentDescription.Disabled"/>.
         /// </summary>
-        public static readonly BlendStateDescription SingleDisabled = new BlendStateDescription
+        public static readonly BlendStateDescription SingleDisabled = BlendStateDescription
         {
-            AttachmentStates = new BlendAttachmentDescription[] { BlendAttachmentDescription.Disabled }
+            AttachmentStates = .(BlendAttachmentDescription.Disabled)
         };
 
         /// <summary>
         /// Describes an empty blend state in which no color targets are used.
         /// </summary>
-        public static readonly BlendStateDescription Empty = new BlendStateDescription
+        public static readonly BlendStateDescription Empty = BlendStateDescription
         {
-            AttachmentStates = Array.Empty<BlendAttachmentDescription>()
+            AttachmentStates = .()
         };
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace Veldrid
         public bool Equals(BlendStateDescription other)
         {
             return BlendFactor.Equals(other.BlendFactor)
-                && AlphaToCoverageEnabled.Equals(other.AlphaToCoverageEnabled)
-                && Util.ArrayEqualsEquatable(AttachmentStates, other.AttachmentStates);
+                && AlphaToCoverageEnabled == other.AlphaToCoverageEnabled
+                && AttachmentStates == other.AttachmentStates;
         }
 
         /// <summary>
@@ -112,13 +112,13 @@ namespace Veldrid
             return HashHelper.Combine(
                 BlendFactor.GetHashCode(),
                 AlphaToCoverageEnabled.GetHashCode(),
-                HashHelper.Array(AttachmentStates));
+                AttachmentStates.GetHashCode());
         }
 
         internal BlendStateDescription ShallowClone()
         {
             BlendStateDescription result = this;
-            result.AttachmentStates = Util.ShallowClone(result.AttachmentStates);
+            //result.AttachmentStates = Util.ShallowClone(result.AttachmentStates);
             return result;
         }
     }

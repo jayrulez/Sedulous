@@ -1,7 +1,9 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// Describes a graphics <see cref="Pipeline"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
@@ -57,7 +59,7 @@ namespace Veldrid
         /// <param name="resourceLayouts">An array of <see cref="ResourceLayout"/>, which controls the layout of shader resoruces
         /// in the <see cref="Pipeline"/>.</param>
         /// <param name="outputs">A description of the output attachments used by the <see cref="Pipeline"/>.</param>
-        public GraphicsPipelineDescription(
+        public this(
             BlendStateDescription blendState,
             DepthStencilStateDescription depthStencilStateDescription,
             RasterizerStateDescription rasterizerState,
@@ -76,7 +78,7 @@ namespace Veldrid
             ResourceBindingModel = null;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Constructs a new <see cref="GraphicsPipelineDescription"/>.
         /// </summary>
         /// <param name="blendState">A description of the blend state, which controls how color values are blended into each
@@ -91,7 +93,7 @@ namespace Veldrid
         /// <param name="resourceLayout">A <see cref="ResourceLayout"/>, which controls the layout of shader resoruces in the
         /// <see cref="Pipeline"/>.</param>
         /// <param name="outputs">A description of the output attachments used by the <see cref="Pipeline"/>.</param>
-        public GraphicsPipelineDescription(
+        public this(
             BlendStateDescription blendState,
             DepthStencilStateDescription depthStencilStateDescription,
             RasterizerStateDescription rasterizerState,
@@ -108,7 +110,7 @@ namespace Veldrid
             ResourceLayouts = new[] { resourceLayout };
             Outputs = outputs;
             ResourceBindingModel = null;
-        }
+        }*/
 
         /// <summary>
         /// Constructs a new <see cref="GraphicsPipelineDescription"/>.
@@ -127,7 +129,7 @@ namespace Veldrid
         /// <param name="outputs">A description of the output attachments used by the <see cref="Pipeline"/>.</param>
         /// <param name="resourceBindingModel">The <see cref="ResourceBindingModel"/> to use for this pipeline. Overrides
         /// the value specified in <see cref="GraphicsDeviceOptions"/>.</param>
-        public GraphicsPipelineDescription(
+        public this(
             BlendStateDescription blendState,
             DepthStencilStateDescription depthStencilStateDescription,
             RasterizerStateDescription rasterizerState,

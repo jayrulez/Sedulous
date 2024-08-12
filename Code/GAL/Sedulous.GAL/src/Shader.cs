@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A device resource encapsulating a single shader module.
@@ -8,7 +8,7 @@ namespace Veldrid
     /// </summary>
     public abstract class Shader : DeviceResource, IDisposable
     {
-        internal Shader(ShaderStages stage, string entryPoint)
+        internal this(ShaderStages stage, String entryPoint)
         {
             Stage = stage;
             EntryPoint = entryPoint;
@@ -22,13 +22,13 @@ namespace Veldrid
         /// <summary>
         /// The name of the entry point function.
         /// </summary>
-        public string EntryPoint { get; }
+        public String EntryPoint { get; }
 
         /// <summary>
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

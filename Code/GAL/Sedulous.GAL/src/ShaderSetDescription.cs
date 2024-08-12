@@ -1,7 +1,9 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// A <see cref="Pipeline"/> component describing a full set of shader stages and vertex layouts.
     /// </summary>
@@ -35,7 +37,7 @@ namespace Veldrid
         /// <param name="shaders">An array of <see cref="Shader"/> objects, one for each shader stage which is to be active
         /// in the <see cref="Pipeline"/>. At a minimum, every graphics Pipeline must include a Vertex and Fragment shader. All
         /// other stages are optional, but if either Tessellation stage is present, then the other must also be.</param>
-        public ShaderSetDescription(VertexLayoutDescription[] vertexLayouts, Shader[] shaders)
+        public this(VertexLayoutDescription[] vertexLayouts, Shader[] shaders)
         {
             VertexLayouts = vertexLayouts;
             Shaders = shaders;
@@ -54,7 +56,7 @@ namespace Veldrid
         /// <param name="specializations">An array of <see cref="SpecializationConstant"/> used to override specialization
         /// constants in the created <see cref="Pipeline"/>. Each element in this array describes a single ID-value pair, which
         /// will be matched with the constants specified in each <see cref="Shader"/>.</param>
-        public ShaderSetDescription(
+        public this(
             VertexLayoutDescription[] vertexLayouts,
             Shader[] shaders,
             SpecializationConstant[] specializations)

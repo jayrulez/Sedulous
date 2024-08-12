@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="CommandList"/>, for creation using a <see cref="ResourceFactory"/>.
@@ -15,15 +15,6 @@ namespace Veldrid
         public bool Equals(CommandListDescription other)
         {
             return true;
-        }
-
-        /// <summary>
-        /// Returns the hash code for this instance.
-        /// </summary>
-        /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public int GetHashCode()
-        {
-            return base.GetHashCode();
         }
     }
 }

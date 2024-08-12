@@ -1,25 +1,27 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     internal static class Util
     {
-        [DebuggerNonUserCode]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //[DebuggerNonUserCode]
+        [Inline]
         internal static TDerived AssertSubtype<TBase, TDerived>(TBase value) where TDerived : class, TBase where TBase : class
         {
 #if DEBUG
             if (value == null)
             {
-                throw new VeldridException($"Expected object of type {typeof(TDerived).FullName} but received null instead.");
+                Runtime.GALError(scope $"Expected object of type {typeof(TDerived).GetFullName(.. scope .())} but received null instead.");
             }
 
-            if (!(value is TDerived derived))
+			let derived = value as TDerived;
+            if (derived == null)
             {
-                throw new VeldridException($"object {value} must be derived type {typeof(TDerived).FullName} to be used in this context.");
+                Runtime.GALError(scope $"object {value} must be derived type {typeof(TDerived).GetFullName(.. scope .())} to be used in this context.");
             }
 
             return derived;
@@ -35,7 +37,7 @@ namespace Veldrid
             {
                 array = new T[size];
             }
-            else if (array.Length < size)
+            else if (array.Count < size)
             {
                 Array.Resize(ref array, (int32)size);
             }
@@ -43,10 +45,10 @@ namespace Veldrid
 
         internal static uint32 USizeOf<T>() where T : struct
         {
-            return (uint32)Unsafe.SizeOf<T>();
+            return (uint32)sizeof(T);
         }
 
-        internal static string GetString(uint8* stringStart)
+        internal static String GetString(uint8* stringStart)
         {
             int32 characters = 0;
             while (stringStart[characters] != 0)
@@ -54,7 +56,7 @@ namespace Veldrid
                 characters++;
             }
 
-            return Encoding.UTF8.GetString(stringStart, characters);
+            return new String((char8*)stringStart, characters);
         }
 
         internal static bool NullableEquals<T>(T? left, T? right) where T : struct, IEquatable<T>
@@ -74,14 +76,14 @@ namespace Veldrid
                 return left == right;
             }
 
-            if (left.Length != right.Length)
+            if (left.Count != right.Count)
             {
                 return false;
             }
 
-            for (int32 i = 0; i < left.Length; i++)
+            for (int i = 0; i < left.Count; i++)
             {
-                if (!ReferenceEquals(left[i], right[i]))
+                if (!(left[i] === right[i]))
                 {
                     return false;
                 }
@@ -97,12 +99,12 @@ namespace Veldrid
                 return left == right;
             }
 
-            if (left.Length != right.Length)
+            if (left.Count != right.Count)
             {
                 return false;
             }
 
-            for (int32 i = 0; i < left.Length; i++)
+            for (int i = 0; i < left.Count; i++)
             {
                 if (!left[i].Equals(right[i]))
                 {
@@ -117,7 +119,7 @@ namespace Veldrid
         {
             if (array != null)
             {
-                Array.Clear(array, 0, array.Length);
+                Array.Clear(array, 0, array.Count);
             }
         }
 
@@ -173,7 +175,7 @@ namespace Veldrid
             uint32 offset = 0;
             for (uint32 level = 0; level < mipLevel; level++)
             {
-                GetMipDimensions(tex, level, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                GetMipDimensions(tex, level, var mipWidth, var mipHeight, var mipDepth);
                 uint32 storageWidth = Math.Max(mipWidth, blockSize);
                 uint32 storageHeight = Math.Max(mipHeight, blockSize);
                 offset += FormatHelpers.GetRegionSize(storageWidth, storageHeight, mipDepth, tex.Format);
@@ -193,7 +195,7 @@ namespace Veldrid
             uint32 layerPitch = 0;
             for (uint32 level = 0; level < tex.MipLevels; level++)
             {
-                GetMipDimensions(tex, level, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                GetMipDimensions(tex, level, var mipWidth, var mipHeight, var mipDepth);
                 uint32 storageWidth = Math.Max(mipWidth, blockSize);
                 uint32 storageHeight = Math.Max(mipHeight, blockSize);
                 layerPitch += FormatHelpers.GetRegionSize(storageWidth, storageHeight, mipDepth, tex.Format);
@@ -228,10 +230,9 @@ namespace Veldrid
             if (srcRowPitch == dstRowPitch && srcDepthPitch == dstDepthPitch)
             {
                 uint32 totalCopySize = depth * srcDepthPitch;
-                Buffer.MemoryCopy(
-                    src,
+                Internal.MemCpy(
                     dst,
-                    totalCopySize,
+                    src,
                     totalCopySize);
             }
             else
@@ -249,37 +250,37 @@ namespace Veldrid
                             + srcRowPitch * (yy + compressedSrcY)
                             + blockSizeInBytes * compressedSrcX;
 
-                        Unsafe.CopyBlock(rowCopyDst, rowCopySrc, rowSize);
+                        Internal.MemCpy(rowCopyDst, rowCopySrc, rowSize);
                     }
             }
         }
 
-        internal static T[] ShallowClone<T>(T[] array)
+        /*internal static T[] ShallowClone<T>(T[] array)
         {
             return (T[])array.Clone();
-        }
+        }*/
 
         public static DeviceBufferRange GetBufferRange(BindableResource resource, uint32 additionalOffset)
         {
-            if (resource is DeviceBufferRange range)
+            if (let range = resource as DeviceBufferRange?)
             {
-                return new DeviceBufferRange(range.Buffer, range.Offset + additionalOffset, range.SizeInBytes);
+                return DeviceBufferRange(range.Buffer, range.Offset + additionalOffset, range.SizeInBytes);
             }
             else
             {
                 DeviceBuffer buffer = (DeviceBuffer)resource;
-                return new DeviceBufferRange(buffer, additionalOffset, buffer.SizeInBytes);
+                return DeviceBufferRange(buffer, additionalOffset, buffer.SizeInBytes);
             }
         }
 
         public static bool GetDeviceBuffer(BindableResource resource, out DeviceBuffer buffer)
         {
-            if (resource is DeviceBuffer db)
+            if (let db = resource as DeviceBuffer)
             {
                 buffer = db;
                 return true;
             }
-            else if (resource is DeviceBufferRange range)
+            else if (let range = resource as DeviceBufferRange?)
             {
                 buffer = range.Buffer;
                 return true;
@@ -291,32 +292,32 @@ namespace Veldrid
 
         internal static TextureView GetTextureView(GraphicsDevice gd, BindableResource resource)
         {
-            if (resource is TextureView view)
+            if (let view= resource as TextureView)
             {
                 return view;
             }
-            else if (resource is Texture tex)
+            else if (let tex= resource as Texture)
             {
                 return tex.GetFullTextureView(gd);
             }
             else
             {
-                throw new VeldridException(
-                    $"Unexpected resource type. Expected Texture or TextureView but found {resource.GetType().Name}");
+                Runtime.GALError(
+                    scope $"Unexpected resource type. Expected Texture or TextureView but found {resource.GetType().GetName(.. scope .())}");
             }
         }
 
-        internal static void PackIntPtr(IntPtr sourcePtr, out uint32 low, out uint32 high)
+        internal static void PackIntPtr(void* sourcePtr, out uint32 low, out uint32 high)
         {
-            uint64 src64 = (uint64)sourcePtr;
+            uint64 src64 = (uint64)(int)sourcePtr;
             low = (uint32)(src64 & 0x00000000FFFFFFFF);
-            high = (uint32)((src64 & 0xFFFFFFFF00000000u) >> 32);
+            high = (uint32)((src64 & 0xFFFFFFFF00000000) >> 32);
         }
 
-        internal static IntPtr UnpackIntPtr(uint32 low, uint32 high)
+        internal static void* UnpackIntPtr(uint32 low, uint32 high)
         {
             uint64 src64 = low | ((uint64)high << 32);
-            return (IntPtr)src64;
+            return (void*)(int)src64;
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a single element of a vertex.
@@ -10,7 +10,7 @@ namespace Veldrid
         /// <summary>
         /// The name of the element.
         /// </summary>
-        public string Name;
+        public String Name;
         /// <summary>
         /// The semantic type of the element.
         /// NOTE: When using Veldrid.SPIRV, all vertex elements will use
@@ -32,7 +32,7 @@ namespace Veldrid
         /// <param name="name">The name of the element.</param>
         /// <param name="semantic">The semantic type of the element.</param>
         /// <param name="format">The format of the element.</param>
-        public VertexElementDescription(string name, VertexElementSemantic semantic, VertexElementFormat format)
+        public this(String name, VertexElementSemantic semantic, VertexElementFormat format)
             : this(name, format, semantic)
         {
         }
@@ -43,8 +43,8 @@ namespace Veldrid
         /// <param name="name">The name of the element.</param>
         /// <param name="semantic">The semantic type of the element.</param>
         /// <param name="format">The format of the element.</param>
-        public VertexElementDescription(
-            string name,
+        public this(
+            String name,
             VertexElementFormat format,
             VertexElementSemantic semantic)
         {
@@ -61,8 +61,8 @@ namespace Veldrid
         /// <param name="semantic">The semantic type of the element.</param>
         /// <param name="format">The format of the element.</param>
         /// <param name="offset">The offset in bytes from the beginning of the vertex.</param>
-        public VertexElementDescription(
-            string name,
+        public this(
+            String name,
             VertexElementSemantic semantic,
             VertexElementFormat format,
             uint32 offset)
@@ -94,9 +94,9 @@ namespace Veldrid
         {
             return HashHelper.Combine(
                 Name.GetHashCode(),
-                (int32)Format,
-                (int32)Semantic,
-                (int32)Offset);
+                (int)Format,
+                (int)Semantic,
+                (int)Offset);
         }
     }
 }

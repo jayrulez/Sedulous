@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a 3-dimensional region.
@@ -41,7 +41,7 @@ namespace Veldrid
         /// <param name="height">The height.</param>
         /// <param name="minDepth">The minimum depth.</param>
         /// <param name="maxDepth">The maximum depth.</param>
-        public Viewport(float x, float y, float width, float height, float minDepth, float maxDepth)
+        public this(float x, float y, float width, float height, float minDepth, float maxDepth)
         {
             X = x;
             Y = y;

@@ -1,4 +1,4 @@
-namespace Veldrid
+namespace Sedulous.GAL
 {
     internal static class BlendHelper
     {

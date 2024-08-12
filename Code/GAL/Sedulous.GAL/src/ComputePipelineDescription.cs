@@ -1,7 +1,9 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// Describes a compute <see cref="Pipeline"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
@@ -44,7 +46,7 @@ namespace Veldrid
         /// <param name="threadGroupSizeX">The X dimension of the thread group size.</param>
         /// <param name="threadGroupSizeY">The Y dimension of the thread group size.</param>
         /// <param name="threadGroupSizeZ">The Z dimension of the thread group size.</param>
-        public ComputePipelineDescription(
+        public this(
             Shader computeShader,
             ResourceLayout[] resourceLayouts,
             uint32 threadGroupSizeX,
@@ -59,7 +61,7 @@ namespace Veldrid
             Specializations = null;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Constructs a new ComputePipelineDescription.
         /// </summary>
         /// <param name="shaderStage">The compute <see cref="Shader"/> to be used in the Pipeline. This must be a Shader with
@@ -68,7 +70,7 @@ namespace Veldrid
         /// <param name="threadGroupSizeX">The X dimension of the thread group size.</param>
         /// <param name="threadGroupSizeY">The Y dimension of the thread group size.</param>
         /// <param name="threadGroupSizeZ">The Z dimension of the thread group size.</param>
-        public ComputePipelineDescription(
+        public this(
             Shader shaderStage,
             ResourceLayout resourceLayout,
             uint32 threadGroupSizeX,
@@ -81,9 +83,9 @@ namespace Veldrid
             ThreadGroupSizeY = threadGroupSizeY;
             ThreadGroupSizeZ = threadGroupSizeZ;
             Specializations = null;
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Constructs a new ComputePipelineDescription.
         /// </summary>
         /// <param name="shaderStage">The compute <see cref="Shader"/> to be used in the Pipeline. This must be a Shader with
@@ -95,7 +97,7 @@ namespace Veldrid
         /// <param name="specializations">An array of <see cref="SpecializationConstant"/> used to override specialization
         /// constants in the created <see cref="Pipeline"/>. Each element in this array describes a single ID-value pair, which
         /// will be matched with the constants specified in the <see cref="Shader"/>.</param>
-        public ComputePipelineDescription(
+        public this(
             Shader shaderStage,
             ResourceLayout resourceLayout,
             uint32 threadGroupSizeX,
@@ -109,7 +111,7 @@ namespace Veldrid
             ThreadGroupSizeY = threadGroupSizeY;
             ThreadGroupSizeZ = threadGroupSizeZ;
             Specializations = specializations;
-        }
+        }*/
 
         /// <summary>
         /// Element-wise equality.
@@ -118,11 +120,11 @@ namespace Veldrid
         /// <returns>True if all elements and all array elements are equal; false otherswise.</returns>
         public bool Equals(ComputePipelineDescription other)
         {
-            return ComputeShader.Equals(other.ComputeShader)
+            return ComputeShader === other.ComputeShader
                 && Util.ArrayEquals(ResourceLayouts, other.ResourceLayouts)
-                && ThreadGroupSizeX.Equals(other.ThreadGroupSizeX)
-                && ThreadGroupSizeY.Equals(other.ThreadGroupSizeY)
-                && ThreadGroupSizeZ.Equals(other.ThreadGroupSizeZ);
+                && ThreadGroupSizeX == other.ThreadGroupSizeX
+                && ThreadGroupSizeY == other.ThreadGroupSizeY
+                && ThreadGroupSizeZ == other.ThreadGroupSizeZ;
         }
 
         /// <summary>
@@ -132,7 +134,7 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                ComputeShader.GetHashCode(),
+                HashCode.Generate(ComputeShader),
                 HashHelper.Array(ResourceLayouts),
                 ThreadGroupSizeX.GetHashCode(),
                 ThreadGroupSizeY.GetHashCode(),

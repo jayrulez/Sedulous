@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Enumerates the optional features supported by a given <see cref="GraphicsDevice"/>.
@@ -96,7 +96,7 @@
         /// </summary>
         public bool ShaderFloat64 { get; }
 
-        internal GraphicsDeviceFeatures(
+        internal this(
             bool computeShader,
             bool geometryShader,
             bool tessellationShaders,

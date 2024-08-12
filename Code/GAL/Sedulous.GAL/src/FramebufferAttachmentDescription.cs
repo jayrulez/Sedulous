@@ -1,7 +1,10 @@
 using System;
+using Sedulous.Foundation.Collections;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	public typealias FramebufferAttachmentList = FixedList<FramebufferAttachmentDescription, const 8>;
+
     /// <summary>
     /// Describes a single attachment (color or depth) for a <see cref="Framebuffer"/>.
     /// </summary>
@@ -32,7 +35,7 @@ namespace Veldrid
         /// with the <see cref="TextureUsage.DepthStencil"/> flag.</param>
         /// <param name="arrayLayer">The array layer to render to. This value must be less than <see cref="Texture.ArrayLayers"/>
         /// in the target <see cref="Texture"/>.</param>
-        public FramebufferAttachmentDescription(Texture target, uint32 arrayLayer)
+        public this(Texture target, uint32 arrayLayer)
             : this(target, arrayLayer, 0)
         { }
 
@@ -46,7 +49,7 @@ namespace Veldrid
         /// in the target <see cref="Texture"/>.</param>
         /// <param name="mipLevel">The mip level to render to. This value must be less than <see cref="Texture.MipLevels"/> in
         /// the target <see cref="Texture"/>.</param>
-        public FramebufferAttachmentDescription(Texture target, uint32 arrayLayer, uint32 mipLevel)
+        public this(Texture target, uint32 arrayLayer, uint32 mipLevel)
         {
 #if VALIDATE_USAGE
             uint32 effectiveArrayLayers = target.ArrayLayers;
@@ -57,13 +60,13 @@ namespace Veldrid
 
             if (arrayLayer >= effectiveArrayLayers)
             {
-                throw new VeldridException(
-                    $"{nameof(arrayLayer)} must be less than {nameof(target)}.{nameof(Texture.ArrayLayers)}.");
+                Runtime.GALError(
+                    scope $"{nameof(arrayLayer)} must be less than {nameof(target)}.{nameof(Texture.ArrayLayers)}.");
             }
             if (mipLevel >= target.MipLevels)
             {
-                throw new VeldridException(
-                    $"{nameof(mipLevel)} must be less than {nameof(target)}.{nameof(Texture.MipLevels)}.");
+                Runtime.GALError(
+                    scope $"{nameof(mipLevel)} must be less than {nameof(target)}.{nameof(Texture.MipLevels)}.");
             }
 #endif
             Target = target;
@@ -78,7 +81,7 @@ namespace Veldrid
         /// <returns>True if all elements and all array elements are equal; false otherswise.</returns>
         public bool Equals(FramebufferAttachmentDescription other)
         {
-            return Target.Equals(other.Target) && ArrayLayer.Equals(other.ArrayLayer) && MipLevel.Equals(other.MipLevel);
+            return Target === other.Target && ArrayLayer == other.ArrayLayer && MipLevel == other.MipLevel;
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace Veldrid
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public int GetHashCode()
         {
-            return HashHelper.Combine(Target.GetHashCode(), ArrayLayer.GetHashCode(), MipLevel.GetHashCode());
+            return HashHelper.Combine(HashCode.Generate(Target), ArrayLayer.GetHashCode(), MipLevel.GetHashCode());
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes how stencil tests are performed in a <see cref="Pipeline"/>'s depth-stencil state.
@@ -31,7 +31,7 @@ namespace Veldrid
         /// <param name="pass">The operation performed on samples that pass the stencil test.</param>
         /// <param name="depthFail">The operation performed on samples that pass the stencil test but fail the depth test.</param>
         /// <param name="comparison">The comparison operator used in the stencil test.</param>
-        public StencilBehaviorDescription(
+        public this(
             StencilOperation fail,
             StencilOperation pass,
             StencilOperation depthFail,
@@ -59,7 +59,7 @@ namespace Veldrid
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public int GetHashCode()
         {
-            return HashHelper.Combine((int32)Fail, (int32)Pass, (int32)DepthFail, (int32)Comparison);
+            return HashHelper.Combine((int)Fail, (int)Pass, (int)DepthFail, (int)Comparison);
         }
     }
 }

@@ -5,3 +5,6 @@ Dependencies = {corlib = "*", "Sedulous.Foundation" = "*"}
 Name = "Sedulous.GAL"
 TargetType = "BeefLib"
 StartupObject = "Sedulous.GAL.Program"
+
+[Configs.Debug.Win64]
+PreprocessorMacros = ["DEBUG", "VALIDATE_USAGE"]

@@ -1,7 +1,9 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	using internal Sedulous.GAL;
+
     /// <summary>
     /// Describes the layout of <see cref="BindableResource"/> objects for a <see cref="Pipeline"/>.
     /// </summary>
@@ -18,7 +20,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="elements">An array of <see cref="ResourceLayoutElementDescription"/> objects, describing the properties
         /// of each resource element in the <see cref="ResourceLayout"/>.</param>
-        public ResourceLayoutDescription(params ResourceLayoutElementDescription[] elements)
+        public this(params ResourceLayoutElementDescription[] elements)
         {
             Elements = elements;
         }

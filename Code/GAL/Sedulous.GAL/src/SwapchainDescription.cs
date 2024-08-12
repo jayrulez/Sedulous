@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="Swapchain"/>, for creation via a <see cref="ResourceFactory"/>.
@@ -47,7 +47,7 @@ namespace Veldrid
         /// If null, then no depth target will be created.</param>
         /// <param name="syncToVerticalBlank">Indicates whether presentation of the Swapchain will be synchronized to the window
         /// system's vertical refresh rate.</param>
-        public SwapchainDescription(
+        public this(
             SwapchainSource source,
             uint32 width,
             uint32 height,
@@ -75,7 +75,7 @@ namespace Veldrid
         /// <param name="syncToVerticalBlank">Indicates whether presentation of the Swapchain will be synchronized to the window
         /// system's vertical refresh rate.</param>
         /// <param name="colorSrgb">Indicates whether the color target of the Swapchain will use an sRGB PixelFormat.</param>
-        public SwapchainDescription(
+        public this(
             SwapchainSource source,
             uint32 width,
             uint32 height,
@@ -98,12 +98,12 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(SwapchainDescription other)
         {
-            return Source.Equals(other.Source)
-                && Width.Equals(other.Width)
-                && Height.Equals(other.Height)
+            return Source === other.Source
+                && Width == other.Width
+                && Height == other.Height
                 && DepthFormat == other.DepthFormat
-                && SyncToVerticalBlank.Equals(other.SyncToVerticalBlank)
-                && ColorSrgb.Equals(other.ColorSrgb);
+                && SyncToVerticalBlank == other.SyncToVerticalBlank
+                && ColorSrgb == other.ColorSrgb;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                Source.GetHashCode(),
+                HashCode.Generate(Source),
                 Width.GetHashCode(),
                 Height.GetHashCode(),
                 DepthFormat.GetHashCode(),

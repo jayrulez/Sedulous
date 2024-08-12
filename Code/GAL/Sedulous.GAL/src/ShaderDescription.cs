@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="Shader"/>, for creation using a <see cref="ResourceFactory"/>.
@@ -25,7 +25,7 @@ namespace Veldrid
         /// <summary>
         /// The name of the entry point function in the shader module to be used in this stage.
         /// </summary>
-        public string EntryPoint;
+        public String EntryPoint;
 
         /// <summary>
         /// Indicates whether the shader should be debuggable. This flag only has an effect if <see cref="ShaderBytes"/> contains
@@ -39,7 +39,7 @@ namespace Veldrid
         /// <param name="stage">The shader stage to create.</param>
         /// <param name="shaderBytes">An array containing the raw shader bytes.</param>
         /// <param name="entryPoint">The name of the entry point function in the shader module to be used in this stage.</param>
-        public ShaderDescription(ShaderStages stage, uint8[] shaderBytes, string entryPoint)
+        public this(ShaderStages stage, uint8[] shaderBytes, String entryPoint)
         {
             Stage = stage;
             ShaderBytes = shaderBytes;
@@ -55,7 +55,7 @@ namespace Veldrid
         /// <param name="entryPoint">The name of the entry point function in the shader module to be used in this stage.</param>
         /// <param name="debug">Indicates whether the shader should be debuggable. This flag only has an effect if
         /// <paramref name="shaderBytes"/> contains shader code that will be compiled.</param>
-        public ShaderDescription(ShaderStages stage, uint8[] shaderBytes, string entryPoint, bool debug)
+        public this(ShaderStages stage, uint8[] shaderBytes, String entryPoint, bool debug)
         {
             Stage = stage;
             ShaderBytes = shaderBytes;
@@ -73,7 +73,7 @@ namespace Veldrid
             return Stage == other.Stage
                 && ShaderBytes == other.ShaderBytes
                 && EntryPoint.Equals(other.EntryPoint)
-                && Debug.Equals(other.Debug);
+                && Debug == other.Debug;
         }
 
         /// <summary>
@@ -83,8 +83,8 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                (int32)Stage,
-                ShaderBytes.GetHashCode(),
+                (int)Stage,
+                HashCode.Generate(ShaderBytes),
                 EntryPoint.GetHashCode(),
                 Debug.GetHashCode());
         }

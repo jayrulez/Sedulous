@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes the properties that are supported for a particular combination of <see cref="PixelFormat"/>,
@@ -41,7 +41,7 @@
             return (_sampleCounts & (1 << bit)) != 0;
         }
 
-        internal PixelFormatProperties(
+        internal this(
             uint32 maxWidth,
             uint32 maxHeight,
             uint32 maxDepth,

@@ -1,6 +1,7 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     internal static class HashHelper
     {
@@ -50,17 +51,17 @@ namespace Veldrid
             return Combine(value1, Combine(value2, Combine(value3, Combine(value4, Combine(value5, Combine(value6, Combine(value7, Combine(value8, Combine(value9, value10)))))))));
         }
 
-        public static int Array<T>(T[] items)
+        public static int Array<T>(T[] items) where T : IHashable
         {
-            if (items == null || items.Length == 0)
+            if (items == null || items.Count == 0)
             {
                 return 0;
             }
 
             int hash = items[0].GetHashCode();
-            for (int i = 1; i < items.Length; i++)
+            for (int i = 1; i < items.Count; i++)
             {
-                hash = Combine(hash, items[i]?.GetHashCode() ?? i);
+                hash = Combine(hash, items[i] != null ? items[i].GetHashCode() : i);
             }
 
             return hash;

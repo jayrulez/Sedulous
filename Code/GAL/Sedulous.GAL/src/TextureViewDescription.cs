@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="TextureView"/>, for creation using a <see cref="ResourceFactory"/>.
@@ -41,7 +41,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="target">The desired target <see cref="Texture"/>. This <see cref="Texture"/> must have been created
         /// with the <see cref="TextureUsage.Sampled"/> usage flag.</param>
-        public TextureViewDescription(Texture target)
+        public this(Texture target)
         {
             Target = target;
             BaseMipLevel = 0;
@@ -60,7 +60,7 @@ namespace Veldrid
         /// This format must be "compatible" with the target Texture's. For uncompressed formats, the overall size and number of
         /// components in this format must be equal to the underlying format. For compressed formats, it is only possible to use
         /// the same PixelFormat or its sRGB/non-sRGB counterpart.</param>
-        public TextureViewDescription(Texture target, PixelFormat format)
+        public this(Texture target, PixelFormat format)
         {
             Target = target;
             BaseMipLevel = 0;
@@ -79,7 +79,7 @@ namespace Veldrid
         /// <param name="mipLevels">The number of mip levels visible in the view.</param>
         /// <param name="baseArrayLayer">The base array layer visible in the view.</param>
         /// <param name="arrayLayers">The number of array layers visible in the view.</param>
-        public TextureViewDescription(Texture target, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
+        public this(Texture target, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
         {
             Target = target;
             BaseMipLevel = baseMipLevel;
@@ -102,7 +102,7 @@ namespace Veldrid
         /// <param name="mipLevels">The number of mip levels visible in the view.</param>
         /// <param name="baseArrayLayer">The base array layer visible in the view.</param>
         /// <param name="arrayLayers">The number of array layers visible in the view.</param>
-        public TextureViewDescription(Texture target, PixelFormat format, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
+        public this(Texture target, PixelFormat format, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
         {
             Target = target;
             BaseMipLevel = baseMipLevel;
@@ -119,11 +119,11 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(TextureViewDescription other)
         {
-            return Target.Equals(other.Target)
-                && BaseMipLevel.Equals(other.BaseMipLevel)
-                && MipLevels.Equals(other.MipLevels)
-                && BaseArrayLayer.Equals(other.BaseArrayLayer)
-                && ArrayLayers.Equals(other.ArrayLayers)
+            return Target === other.Target
+                && BaseMipLevel == other.BaseMipLevel
+                && MipLevels == other.MipLevels
+                && BaseArrayLayer == other.BaseArrayLayer
+                && ArrayLayers == other.ArrayLayers
                 && Format == other.Format;
         }
 
@@ -134,12 +134,12 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                Target.GetHashCode(),
+                HashCode.Generate(Target),
                 BaseMipLevel.GetHashCode(),
                 MipLevels.GetHashCode(),
                 BaseArrayLayer.GetHashCode(),
                 ArrayLayers.GetHashCode(),
-                Format?.GetHashCode() ?? 0);
+                Format != null ? Format.GetHashCode() : 0);
         }
     }
 }

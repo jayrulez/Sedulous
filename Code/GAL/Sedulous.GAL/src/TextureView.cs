@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A bindable device resource which provides a shader with access to a sampled <see cref="Texture"/> object.
@@ -34,7 +34,7 @@ namespace Veldrid
         /// </summary>
         public PixelFormat Format { get; }
 
-        internal TextureView(ref TextureViewDescription description)
+        internal this(ref TextureViewDescription description)
         {
             Target = description.Target;
             BaseMipLevel = description.BaseMipLevel;
@@ -48,7 +48,7 @@ namespace Veldrid
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.
         /// </summary>
-        public abstract string Name { get; set; }
+        public abstract String Name { get; set; }
 
         /// <summary>
         /// A bool indicating whether this instance has been disposed.

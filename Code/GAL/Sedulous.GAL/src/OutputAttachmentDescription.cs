@@ -1,7 +1,10 @@
 using System;
+using Sedulous.Foundation.Collections;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
+	public typealias OutputAttachmentList = FixedList<OutputAttachmentDescription, const 8>;
+
     /// <summary>
     /// Describes an individual output attachment and its format.
     /// </summary>
@@ -16,7 +19,7 @@ namespace Veldrid
         /// Constructs a new <see cref="OutputAttachmentDescription"/>.
         /// </summary>
         /// <param name="format">THe format of the <see cref="Texture"/> attachment.</param>
-        public OutputAttachmentDescription(PixelFormat format)
+        public this(PixelFormat format)
         {
             Format = format;
         }

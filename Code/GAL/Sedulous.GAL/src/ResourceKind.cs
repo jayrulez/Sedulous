@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL
 {
     /// <summary>
     /// The kind of a <see cref="BindableResource"/> object.
@@ -35,7 +35,7 @@
         /// <see cref="PixelFormat"/>.</remarks>
         TextureReadWrite,
         /// <summary>
-        /// A <see cref="Veldrid.Sampler"/>.
+        /// A <see cref="Sedulous.GAL.Sampler"/>.
         /// </summary>
         Sampler,
     }

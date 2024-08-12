@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Describes a <see cref="Texture"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct TextureDescription : IEquatable<TextureDescription>
+    public struct TextureDescription : IEquatable<TextureDescription>, IHashable
     {
         /// <summary>
         /// The total width, in texels.
@@ -64,7 +64,7 @@ namespace Veldrid
         /// as a color target in a <see cref="Framebuffer"/>, then <see cref="TextureUsage.RenderTarget"/> must be included.
         /// If the Texture will be used as a 2D cubemap, then <see cref="TextureUsage.Cubemap"/> must be included.</param>
         /// <param name="type">The type of Texture to create.</param>
-        public TextureDescription(
+        public this(
             uint32 width,
             uint32 height,
             uint32 depth,
@@ -102,7 +102,7 @@ namespace Veldrid
         /// <param name="type">The type of Texture to create.</param>
         /// <param name="sampleCount">The number of samples. If any other value than <see cref="TextureSampleCount.Count1"/> is
         /// provided, then this describes a multisample texture.</param>
-        public TextureDescription(
+        public this(
             uint32 width,
             uint32 height,
             uint32 depth,
@@ -144,7 +144,7 @@ namespace Veldrid
             PixelFormat format,
             TextureUsage usage)
         {
-            return new TextureDescription(
+            return TextureDescription(
                 width,
                 1,
                 1,
@@ -178,7 +178,7 @@ namespace Veldrid
             PixelFormat format,
             TextureUsage usage)
         {
-            return new TextureDescription(
+            return TextureDescription(
                 width,
                 height,
                 1,
@@ -215,7 +215,7 @@ namespace Veldrid
             TextureUsage usage,
             TextureSampleCount sampleCount)
         {
-            return new TextureDescription(
+            return TextureDescription(
                 width,
                 height,
                 1,
@@ -248,7 +248,7 @@ namespace Veldrid
             PixelFormat format,
             TextureUsage usage)
         {
-            return new TextureDescription(
+            return TextureDescription(
                 width,
                 height,
                 depth,
@@ -267,11 +267,11 @@ namespace Veldrid
         /// <returns>True if all elements are equal; false otherswise.</returns>
         public bool Equals(TextureDescription other)
         {
-            return Width.Equals(other.Width)
-                && Height.Equals(other.Height)
-                && Depth.Equals(other.Depth)
-                && MipLevels.Equals(other.MipLevels)
-                && ArrayLayers.Equals(other.ArrayLayers)
+            return Width == other.Width
+                && Height == other.Height
+                && Depth == other.Depth
+                && MipLevels == other.MipLevels
+                && ArrayLayers == other.ArrayLayers
                 && Format == other.Format
                 && Usage == other.Usage
                 && Type == other.Type
@@ -290,10 +290,10 @@ namespace Veldrid
                 Depth.GetHashCode(),
                 MipLevels.GetHashCode(),
                 ArrayLayers.GetHashCode(),
-                (int32)Format,
-                (int32)Usage,
-                (int32)Type,
-                (int32)SampleCount);
+                (int)Format,
+                (int)Usage,
+                (int)Type,
+                (int)SampleCount);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing the properties of the rasterizer.
@@ -36,7 +36,7 @@ namespace Veldrid
         /// <param name="frontFace">Controls the winding order used to determine the front face of primitives.</param>
         /// <param name="depthClipEnabled">Controls whether depth clipping is enabled.</param>
         /// <param name="scissorTestEnabled">Controls whether the scissor test is enabled.</param>
-        public RasterizerStateDescription(
+        public this(
             FaceCullMode cullMode,
             PolygonFillMode fillMode,
             FrontFace frontFace,
@@ -60,11 +60,11 @@ namespace Veldrid
         ///     DepthClipEnabled = true
         ///     ScissorTestEnabled = false
         /// </summary>
-        public static readonly RasterizerStateDescription Default = new RasterizerStateDescription
+        public static readonly RasterizerStateDescription Default = RasterizerStateDescription
         {
             CullMode = FaceCullMode.Back,
             FillMode = PolygonFillMode.Solid,
-            FrontFace = FrontFace.Clockwise,
+            FrontFace = /*FrontFace*/.Clockwise,
             DepthClipEnabled = true,
             ScissorTestEnabled = false,
         };
@@ -79,11 +79,11 @@ namespace Veldrid
         ///     DepthClipEnabled = true
         ///     ScissorTestEnabled = false
         /// </summary>
-        public static readonly RasterizerStateDescription CullNone = new RasterizerStateDescription
+        public static readonly RasterizerStateDescription CullNone = RasterizerStateDescription
         {
             CullMode = FaceCullMode.None,
             FillMode = PolygonFillMode.Solid,
-            FrontFace = FrontFace.Clockwise,
+            FrontFace = /*FrontFace*/.Clockwise,
             DepthClipEnabled = true,
             ScissorTestEnabled = false,
         };
@@ -98,8 +98,8 @@ namespace Veldrid
             return CullMode == other.CullMode
                 && FillMode == other.FillMode
                 && FrontFace == other.FrontFace
-                && DepthClipEnabled.Equals(other.DepthClipEnabled)
-                && ScissorTestEnabled.Equals(other.ScissorTestEnabled);
+                && DepthClipEnabled == other.DepthClipEnabled
+                && ScissorTestEnabled == other.ScissorTestEnabled;
         }
 
         /// <summary>
