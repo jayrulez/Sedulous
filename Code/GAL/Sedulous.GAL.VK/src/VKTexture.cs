@@ -1,6 +1,7 @@
 using Bulkan;
 using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
+using static Sedulous.GAL.VK.VKFormats;
 using System.Diagnostics;
 using System;
 
@@ -82,23 +83,23 @@ namespace Sedulous.GAL.VK
 
             if (!isStaging)
             {
-                VkImageCreateInfo imageCI = VkImageCreateInfo.New();
+                VkImageCreateInfo imageCI = VkImageCreateInfo() {sType = .VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO};
                 imageCI.mipLevels = MipLevels;
                 imageCI.arrayLayers = _actualImageArrayLayers;
                 imageCI.imageType = VKFormats.VdToVkTextureType(Type);
                 imageCI.extent.width = Width;
                 imageCI.extent.height = Height;
                 imageCI.extent.depth = Depth;
-                imageCI.initialLayout = VkImageLayout.Preinitialized;
+                imageCI.initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_PREINITIALIZED;
                 imageCI.usage = VKFormats.VdToVkTextureUsage(Usage);
-                imageCI.tiling = isStaging ? VkImageTiling.Linear : VkImageTiling.Optimal;
+                imageCI.tiling = isStaging ? VkImageTiling.VK_IMAGE_TILING_LINEAR : VkImageTiling.VK_IMAGE_TILING_OPTIMAL;
                 imageCI.format = VkFormat;
-                imageCI.flags = VkImageCreateFlags.MutableFormat;
+                imageCI.flags = VkImageCreateFlags.VK_IMAGE_CREATE_MUTABLE_FORMAT_BIT;
 
                 imageCI.samples = VkSampleCount;
                 if (isCubemap)
                 {
-                    imageCI.flags |= VkImageCreateFlags.CubeCompatible;
+                    imageCI.flags |= VkImageCreateFlags.VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
                 }
 
                 uint32 subresourceCount = MipLevels * _actualImageArrayLayers * Depth;
@@ -190,10 +191,10 @@ namespace Sedulous.GAL.VK
                 }
 
                 // Use "host cached" memory when available, for better performance of GPU -> CPU transfers
-                var propertyFlags = VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent | VkMemoryPropertyFlags.HostCached;
-                if (!TryFindMemoryType(_gd.PhysicalDeviceMemProperties, bufferMemReqs.memoryTypeBits, propertyFlags, out _))
+                var propertyFlags = VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+                if (!TryFindMemoryType(_gd.PhysicalDeviceMemProperties, bufferMemReqs.memoryTypeBits, propertyFlags, ?))
                 {
-                    propertyFlags ^= VkMemoryPropertyFlags.HostCached;
+                    propertyFlags ^= VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
                 }
                 _memoryBlock = _gd.MemoryManager.Allocate(
                     _gd.PhysicalDeviceMemProperties,
@@ -212,11 +213,11 @@ namespace Sedulous.GAL.VK
 
             ClearIfRenderTarget();
             TransitionIfSampled();
-            RefCount = new ResourceRefCount(RefCountedDispose);
+            RefCount = new ResourceRefCount(new => RefCountedDispose);
         }
 
         // Used to construct Swapchain textures.
-        internal VKTexture(
+        internal this(
             VKGraphicsDevice gd,
             uint32 width,
             uint32 height,
@@ -241,11 +242,11 @@ namespace Sedulous.GAL.VK
             SampleCount = sampleCount;
             VkSampleCount = VKFormats.VdToVkSampleCount(sampleCount);
             _optimalImage = existingImage;
-            _imageLayouts = new[] { VkImageLayout.Undefined };
+            _imageLayouts = new .[](VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED);
             _isSwapchainTexture = true;
 
             ClearIfRenderTarget();
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
         private void ClearIfRenderTarget()
@@ -253,11 +254,11 @@ namespace Sedulous.GAL.VK
             // If the image is going to be used as a render target, we need to clear the data before its first use.
             if ((Usage & TextureUsage.RenderTarget) != 0)
             {
-                _gd.ClearColorTexture(this, new VkClearColorValue(0, 0, 0, 0));
+                _gd.ClearColorTexture(this, VkClearColorValue(0, 0, 0, 0));
             }
             else if ((Usage & TextureUsage.DepthStencil) != 0)
             {
-                _gd.ClearDepthTexture(this, new VkClearDepthStencilValue(0, 0));
+                _gd.ClearDepthTexture(this, VkClearDepthStencilValue(0, 0));
             }
         }
 
@@ -265,37 +266,38 @@ namespace Sedulous.GAL.VK
         {
             if ((Usage & TextureUsage.Sampled) != 0)
             {
-                _gd.TransitionImageLayout(this, VkImageLayout.ShaderReadOnlyOptimal);
+                _gd.TransitionImageLayout(this, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             }
         }
 
         internal VkSubresourceLayout GetSubresourceLayout(uint32 subresource)
         {
             bool staging = _stagingBuffer.Handle != 0;
-            Util.GetMipLevelAndArrayLayer(this, subresource, out uint32 mipLevel, out uint32 arrayLayer);
+            Util.GetMipLevelAndArrayLayer(this, subresource, var mipLevel, var arrayLayer);
             if (!staging)
             {
                 VkImageAspectFlags aspect = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil
-                  ? (VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil)
-                  : VkImageAspectFlags.Color;
-                VkImageSubresource imageSubresource = new VkImageSubresource
+                  ? (VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT)
+                  : VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
+                VkImageSubresource imageSubresource = VkImageSubresource()
                 {
                     arrayLayer = arrayLayer,
                     mipLevel = mipLevel,
                     aspectMask = aspect,
                 };
 
-                vkGetImageSubresourceLayout(_gd.Device, _optimalImage, ref imageSubresource, out VkSubresourceLayout layout);
+				VkSubresourceLayout layout = .();
+                vkGetImageSubresourceLayout(_gd.Device, _optimalImage, &imageSubresource, &layout);
                 return layout;
             }
             else
             {
-                uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-                Util.GetMipDimensions(this, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4 : 1;
+                Util.GetMipDimensions(this, mipLevel, var mipWidth, var mipHeight, var mipDepth);
                 uint32 rowPitch = FormatHelpers.GetRowPitch(mipWidth, Format);
                 uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, mipHeight, Format);
 
-                VkSubresourceLayout layout = new VkSubresourceLayout()
+                VkSubresourceLayout layout = VkSubresourceLayout()
                 {
                     rowPitch = rowPitch,
                     depthPitch = depthPitch,
@@ -316,7 +318,7 @@ namespace Sedulous.GAL.VK
             uint32 layerCount,
             VkImageLayout newLayout)
         {
-            if (_stagingBuffer != Vulkan.VkBuffer.Null)
+            if (_stagingBuffer != .Null)
             {
                 return;
             }
@@ -340,12 +342,12 @@ namespace Sedulous.GAL.VK
                 if ((Usage & TextureUsage.DepthStencil) != 0)
                 {
                     aspectMask = FormatHelpers.IsStencilFormat(Format)
-                        ? VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil
-                        : VkImageAspectFlags.Depth;
+                        ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT
+                        : VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT;
                 }
                 else
                 {
-                    aspectMask = VkImageAspectFlags.Color;
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
                 }
                 VulkanUtil.TransitionImageLayout(
                     cb,
@@ -376,7 +378,7 @@ namespace Sedulous.GAL.VK
             uint32 layerCount,
             VkImageLayout newLayout)
         {
-            if (_stagingBuffer != Vulkan.VkBuffer.Null)
+            if (_stagingBuffer != .Null)
             {
                 return;
             }
@@ -394,12 +396,12 @@ namespace Sedulous.GAL.VK
                         if ((Usage & TextureUsage.DepthStencil) != 0)
                         {
                             aspectMask = FormatHelpers.IsStencilFormat(Format)
-                                ? VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil
-                                : VkImageAspectFlags.Depth;
+                                ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT
+                                : VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT;
                         }
                         else
                         {
-                            aspectMask = VkImageAspectFlags.Color;
+                            aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
                         }
                         VulkanUtil.TransitionImageLayout(
                             cb,
@@ -423,7 +425,7 @@ namespace Sedulous.GAL.VK
             return _imageLayouts[CalculateSubresource(mipLevel, arrayLayer)];
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
@@ -435,7 +437,7 @@ namespace Sedulous.GAL.VK
 
         internal void SetStagingDimensions(uint32 width, uint32 height, uint32 depth, PixelFormat format)
         {
-            Debug.Assert(_stagingBuffer != Vulkan.VkBuffer.Null);
+            Debug.Assert(_stagingBuffer != .Null);
             Debug.Assert(Usage == TextureUsage.Staging);
             _width = width;
             _height = height;
@@ -443,7 +445,7 @@ namespace Sedulous.GAL.VK
             _format = format;
         }
 
-        private protected override void DisposeCore()
+        protected override void DisposeCore()
         {
             RefCount.Decrement();
         }

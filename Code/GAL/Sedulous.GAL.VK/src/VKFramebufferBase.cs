@@ -1,21 +1,22 @@
-﻿using System.Collections.Generic;
-using Vulkan;
+using Bulkan;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL.VK;
+
     internal abstract class VKFramebufferBase : Framebuffer
     {
-        public VKFramebufferBase(
+        public this(
             FramebufferAttachmentDescription? depthTexture,
-            IReadOnlyList<FramebufferAttachmentDescription> colorTextures)
+            FramebufferAttachmentList colorTextures)
             : base(depthTexture, colorTextures)
         {
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
-        public VKFramebufferBase()
+        public this()
         {
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
         public ResourceRefCount RefCount { get; }
@@ -30,7 +31,7 @@ namespace Sedulous.GAL.VK
 
         protected abstract void DisposeCore();
 
-        public abstract Vulkan.VkFramebuffer CurrentFramebuffer { get; }
+        public abstract VkFramebuffer CurrentFramebuffer { get; }
         public abstract VkRenderPass RenderPassNoClear_Init { get; }
         public abstract VkRenderPass RenderPassNoClear_Load { get; }
         public abstract VkRenderPass RenderPassClear { get; }

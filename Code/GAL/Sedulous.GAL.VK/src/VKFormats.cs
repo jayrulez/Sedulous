@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Vulkan;
+using System;
+using Bulkan;
 
 namespace Sedulous.GAL.VK
 {
-    internal static partial class VKFormats
+    public static class VKFormats
     {
         internal static VkSamplerAddressMode VdToVkSamplerAddressMode(SamplerAddressMode mode)
         {
@@ -508,8 +507,8 @@ namespace Sedulous.GAL.VK
                     return PixelFormat.R32_UInt;
                 case VkFormat.R32Sint:
                     return PixelFormat.R32_SInt;
-                case VkFormat.R32Sfloat:
-                case VkFormat.D32Sfloat:
+                case VkFormat.R32Sfloat,
+					 VkFormat.D32Sfloat:
                     return PixelFormat.R32_Float;
 
                 case VkFormat.R8g8Unorm:

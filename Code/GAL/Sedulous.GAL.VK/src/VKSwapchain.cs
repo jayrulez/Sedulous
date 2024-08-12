@@ -1,19 +1,19 @@
-using System.Linq;
-using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.GAL.VK
 {
-    internal class VKSwapchain : Swapchain
+	using internal Sedulous.GAL.VK;
+
+    public class VKSwapchain : Swapchain
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkSurfaceKHR _surface;
         private VkSwapchainKHR _deviceSwapchain;
         private readonly VKSwapchainFramebuffer _framebuffer;
-        private Vulkan.VkFence _imageAvailableFence;
+        private VkFence _imageAvailableFence;
         private readonly uint32 _presentQueueIndex;
         private readonly VkQueue _presentQueue;
         private bool _syncToVBlank;
@@ -21,10 +21,10 @@ namespace Sedulous.GAL.VK
         private readonly bool _colorSrgb;
         private bool? _newSyncToVBlank;
         private uint32 _currentImageIndex;
-        private string _name;
+        private String _name;
         private bool _disposed;
 
-        public override string Name { get => _name; set { _name = value; _gd.SetResourceName(this, value); } }
+        public override String Name { get => _name; set { _name = value; _gd.SetResourceName(this, value); } }
         public override Framebuffer Framebuffer => _framebuffer;
         public override bool SyncToVerticalBlank
         {
@@ -42,15 +42,15 @@ namespace Sedulous.GAL.VK
 
         public VkSwapchainKHR DeviceSwapchain => _deviceSwapchain;
         public uint32 ImageIndex => _currentImageIndex;
-        public Vulkan.VkFence ImageAvailableFence => _imageAvailableFence;
+        public VkFence ImageAvailableFence => _imageAvailableFence;
         public VkSurfaceKHR Surface => _surface;
         public VkQueue PresentQueue => _presentQueue;
         public uint32 PresentQueueIndex => _presentQueueIndex;
-        public ResourceRefCount RefCount { get; }
+        internal ResourceRefCount RefCount { get; }
 
-        public VKSwapchain(VKGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, VkSurfaceKHR.Null) { }
+        public this(VKGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, .Null) { }
 
-        public VKSwapchain(VKGraphicsDevice gd, ref SwapchainDescription description, VkSurfaceKHR existingSurface)
+        public this(VKGraphicsDevice gd, ref SwapchainDescription description, VkSurfaceKHR existingSurface)
         {
             _gd = gd;
             _syncToVBlank = description.SyncToVerticalBlank;
@@ -70,7 +70,7 @@ namespace Sedulous.GAL.VK
             {
                 Runtime.GALError($"The system does not support presenting the given Vulkan surface.");
             }
-            vkGetDeviceQueue(_gd.Device, _presentQueueIndex, 0, out _presentQueue);
+            vkGetDeviceQueue(_gd.Device, _presentQueueIndex, 0, &_presentQueue);
 
             _framebuffer = new VKSwapchainFramebuffer(gd, this, _surface, description.Width, description.Height, description.DepthFormat);
 

@@ -1,24 +1,27 @@
-﻿using System.Collections.Generic;
-using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System;
 using System.Diagnostics;
+using System.Collections;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     internal class VKFramebuffer : VKFramebufferBase
     {
         private readonly VKGraphicsDevice _gd;
-        private readonly Vulkan.VkFramebuffer _deviceFramebuffer;
+        private readonly VkFramebuffer _deviceFramebuffer;
         private readonly VkRenderPass _renderPassNoClearLoad;
         private readonly VkRenderPass _renderPassNoClear;
         private readonly VkRenderPass _renderPassClear;
-        private readonly List<VkImageView> _attachmentViews = new List<VkImageView>();
+        private readonly List<VkImageView> _attachmentViews = new List<VkImageView>() ~ delete _;
         private bool _destroyed;
-        private string _name;
+        private String _name;
 
-        public override Vulkan.VkFramebuffer CurrentFramebuffer => _deviceFramebuffer;
+        public override VkFramebuffer CurrentFramebuffer => _deviceFramebuffer;
         public override VkRenderPass RenderPassNoClear_Init => _renderPassNoClear;
         public override VkRenderPass RenderPassNoClear_Load => _renderPassNoClearLoad;
         public override VkRenderPass RenderPassClear => _renderPassClear;
@@ -30,7 +33,7 @@ namespace Sedulous.GAL.VK
 
         public override bool IsDisposed => _destroyed;
 
-        public VKFramebuffer(VKGraphicsDevice gd, ref FramebufferDescription description, bool isPresented)
+        public this(VKGraphicsDevice gd, in FramebufferDescription description, bool isPresented)
             : base(description.DepthTarget, description.ColorTargets)
         {
             _gd = gd;
@@ -41,18 +44,18 @@ namespace Sedulous.GAL.VK
 
             uint32 colorAttachmentCount = (uint32)ColorTargets.Count;
             StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
-            for (int32 i = 0; i < colorAttachmentCount; i++)
+            for (int i = 0; i < colorAttachmentCount; i++)
             {
                 VKTexture vkColorTex = Util.AssertSubtype<Texture, VKTexture>(ColorTargets[i].Target);
                 VkAttachmentDescription colorAttachmentDesc = new VkAttachmentDescription();
                 colorAttachmentDesc.format = vkColorTex.VkFormat;
                 colorAttachmentDesc.samples = vkColorTex.VkSampleCount;
-                colorAttachmentDesc.loadOp = VkAttachmentLoadOp.Load;
-                colorAttachmentDesc.storeOp = VkAttachmentStoreOp.Store;
-                colorAttachmentDesc.stencilLoadOp = VkAttachmentLoadOp.DontCare;
-                colorAttachmentDesc.stencilStoreOp = VkAttachmentStoreOp.DontCare;
+                colorAttachmentDesc.loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+                colorAttachmentDesc.storeOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+                colorAttachmentDesc.stencilLoadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+                colorAttachmentDesc.stencilStoreOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
                 colorAttachmentDesc.initialLayout = isPresented
-                    ? VkImageLayout.PresentSrcKHR
+                    ? VkImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
                     : ((vkColorTex.Usage & TextureUsage.Sampled) != 0)
                         ? VkImageLayout.ShaderReadOnlyOptimal
                         : VkImageLayout.ColorAttachmentOptimal;
@@ -118,7 +121,7 @@ namespace Sedulous.GAL.VK
             VkResult creationResult = vkCreateRenderPass(_gd.Device, ref renderPassCI, null, out _renderPassNoClear);
             CheckResult(creationResult);
 
-            for (int32 i = 0; i < colorAttachmentCount; i++)
+            for (int i = 0; i < colorAttachmentCount; i++)
             {
                 attachments[i].loadOp = VkAttachmentLoadOp.Load;
                 attachments[i].initialLayout = VkImageLayout.ColorAttachmentOptimal;
@@ -151,17 +154,17 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            for (int32 i = 0; i < colorAttachmentCount; i++)
+            for (int i = 0; i < colorAttachmentCount; i++)
             {
                 attachments[i].loadOp = VkAttachmentLoadOp.Clear;
                 attachments[i].initialLayout = VkImageLayout.Undefined;
             }
 
-            creationResult = vkCreateRenderPass(_gd.Device, ref renderPassCI, null, out _renderPassClear);
+            creationResult = vkCreateRenderPass(_gd.Device, &renderPassCI, null, &_renderPassClear);
             CheckResult(creationResult);
 
             VkFramebufferCreateInfo fbCI = VkFramebufferCreateInfo.New();
-            uint32 fbAttachmentsCount = (uint32)description.ColorTargets.Length;
+            uint32 fbAttachmentsCount = (uint32)description.ColorTargets.Count;
             if (description.DepthTarget != null)
             {
                 fbAttachmentsCount += 1;
@@ -227,9 +230,9 @@ namespace Sedulous.GAL.VK
             Util.GetMipDimensions(
                 dimTex,
                 mipLevel,
-                out uint32 mipWidth,
-                out uint32 mipHeight,
-                out _);
+                var mipWidth,
+                var mipHeight,
+                ?);
 
             fbCI.width = mipWidth;
             fbCI.height = mipHeight;
@@ -239,7 +242,7 @@ namespace Sedulous.GAL.VK
             fbCI.layers = 1;
             fbCI.renderPass = _renderPassNoClear;
 
-            creationResult = vkCreateFramebuffer(_gd.Device, ref fbCI, null, out _deviceFramebuffer);
+            creationResult = vkCreateFramebuffer(_gd.Device, &fbCI, null, &_deviceFramebuffer);
             CheckResult(creationResult);
 
             if (DepthTarget != null)
@@ -251,9 +254,9 @@ namespace Sedulous.GAL.VK
 
         public override void TransitionToIntermediateLayout(VkCommandBuffer cb)
         {
-            for (int32 i = 0; i < ColorTargets.Count; i++)
+            for (int i = 0; i < ColorTargets.Count; i++)
             {
-                FramebufferAttachment ca = ColorTargets[i];
+                FramebufferAttachmentDescription ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
                 vkTex.SetImageLayout(ca.MipLevel, ca.ArrayLayer, VkImageLayout.ColorAttachmentOptimal);
             }
@@ -269,9 +272,9 @@ namespace Sedulous.GAL.VK
 
         public override void TransitionToFinalLayout(VkCommandBuffer cb)
         {
-            for (int32 i = 0; i < ColorTargets.Count; i++)
+            for (int i = 0; i < ColorTargets.Count; i++)
             {
-                FramebufferAttachment ca = ColorTargets[i];
+                FramebufferAttachmentDescription ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
                 if ((vkTex.Usage & TextureUsage.Sampled) != 0)
                 {
@@ -296,7 +299,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

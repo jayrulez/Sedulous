@@ -5,7 +5,7 @@ using Bulkan;
 
 namespace Sedulous.GAL.VK
 {
-    internal static class VKFormats
+    extension VKFormats
     {
         internal static VkFormat VdToVkPixelFormat(PixelFormat format, bool toDepthFormat = false)
         {
