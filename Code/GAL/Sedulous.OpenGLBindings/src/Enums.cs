@@ -37,7 +37,7 @@ namespace Sedulous.OpenGLBindings
         ColorAttachment15 = 36079
     }
 
-    [Flags]
+    // [Flags]
     public enum ClearBufferMask
     {
         None = 0,
@@ -1879,7 +1879,7 @@ namespace Sedulous.OpenGLBindings
         ReadWrite = ((int)0x88BA),
     }
 
-    [Flags]
+    // [Flags]
     public enum BufferAccessMask : int
     {
         Read = ((int)0x0001),

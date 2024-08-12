@@ -80,7 +80,7 @@ namespace Veldrid
     /// <summary>
     /// Miscellaneous options for an element in a <see cref="ResourceLayout"/>.
     /// </summary>
-    [Flags]
+    // [Flags]
     public enum ResourceLayoutElementOptions
     {
         /// <summary>

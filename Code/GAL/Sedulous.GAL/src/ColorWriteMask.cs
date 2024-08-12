@@ -5,7 +5,7 @@ namespace Veldrid
     /// <summary>
     /// A color bitmask representing the components which can be written to.
     /// </summary>
-    [Flags]
+    // [Flags]
     public enum ColorWriteMask
     {
         /// <summary>

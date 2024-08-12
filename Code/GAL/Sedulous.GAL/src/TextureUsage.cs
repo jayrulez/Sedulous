@@ -5,7 +5,7 @@ namespace Veldrid
     /// <summary>
     /// A bitmask indicating how a <see cref="Texture"/> is permitted to be used.
     /// </summary>
-    [Flags]
+    // [Flags]
     public enum TextureUsage : byte
     {
         /// <summary>

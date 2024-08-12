@@ -2,7 +2,7 @@ using System;
 
 namespace Sedulous.MetalBindings
 {
-    [Flags]
+    // [Flags]
     public enum MTLColorWriteMask
     {
         None = 0,

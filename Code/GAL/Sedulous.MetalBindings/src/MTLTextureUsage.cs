@@ -2,7 +2,7 @@ using System;
 
 namespace Sedulous.MetalBindings
 {
-    [Flags]
+    // [Flags]
     public enum MTLTextureUsage
     {
         Unknown = 0,

@@ -5,7 +5,7 @@ namespace Veldrid
     /// <summary>
     /// A bitmask describing the permitted uses of a <see cref="DeviceBuffer"/> object.
     /// </summary>
-    [Flags]
+    // [Flags]
     public enum BufferUsage : byte
     {
         /// <summary>
