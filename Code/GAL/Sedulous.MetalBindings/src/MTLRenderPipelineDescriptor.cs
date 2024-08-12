@@ -36,13 +36,13 @@ namespace Sedulous.MetalBindings
         public MTLPixelFormat depthAttachmentPixelFormat
         {
             get => (MTLPixelFormat)uint_objc_msgSend(NativePtr, sel_depthAttachmentPixelFormat);
-            set => objc_msgSend(NativePtr, sel_setDepthAttachmentPixelFormat, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setDepthAttachmentPixelFormat, (uint32)value);
         }
 
         public MTLPixelFormat stencilAttachmentPixelFormat
         {
             get => (MTLPixelFormat)uint_objc_msgSend(NativePtr, sel_stencilAttachmentPixelFormat);
-            set => objc_msgSend(NativePtr, sel_setStencilAttachmentPixelFormat, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setStencilAttachmentPixelFormat, (uint32)value);
         }
 
         public UIntPtr sampleCount

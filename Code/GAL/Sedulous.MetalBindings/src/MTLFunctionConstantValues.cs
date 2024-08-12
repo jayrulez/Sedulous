@@ -13,7 +13,7 @@ namespace Sedulous.MetalBindings
 
         public void setConstantValuetypeatIndex(void* value, MTLDataType type, UIntPtr index)
         {
-            ObjectiveCRuntime.objc_msgSend(NativePtr, sel_setConstantValuetypeatIndex, value, (uint)type, index);
+            ObjectiveCRuntime.objc_msgSend(NativePtr, sel_setConstantValuetypeatIndex, value, (uint32)type, index);
         }
 
         private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLFunctionConstantValues));

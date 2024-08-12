@@ -3,7 +3,7 @@
     /// <summary>
     /// Describes how new values are compared with existing values in a depth or stencil comparison.
     /// </summary>
-    public enum ComparisonKind : byte
+    public enum ComparisonKind : uint8
     {
         /// <summary>
         /// The comparison never succeeds.

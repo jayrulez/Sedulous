@@ -58,7 +58,7 @@ namespace Sedulous.GAL.OpenGL
         /// A delegate which is invoked when the main Swapchain is resized. This may be null, in which case
         /// no special action is taken when the Swapchain is resized.
         /// </summary>
-        public Action<uint, uint> ResizeSwapchain { get; }
+        public Action<uint32, uint32> ResizeSwapchain { get; }
 
         /// <summary>
         /// Constructs a new OpenGLPlatformInfo.
@@ -122,7 +122,7 @@ namespace Sedulous.GAL.OpenGL
             Action swapBuffers,
             Action<bool> setSyncToVerticalBlank,
             Action setSwapchainFramebuffer,
-            Action<uint, uint> resizeSwapchain)
+            Action<uint32, uint32> resizeSwapchain)
         {
             OpenGLContextHandle = openGLContextHandle;
             GetProcAddress = getProcAddress;

@@ -14,13 +14,13 @@ namespace Sedulous.GAL.VK
         private VkSwapchainKHR _deviceSwapchain;
         private readonly VKSwapchainFramebuffer _framebuffer;
         private Vulkan.VkFence _imageAvailableFence;
-        private readonly uint _presentQueueIndex;
+        private readonly uint32 _presentQueueIndex;
         private readonly VkQueue _presentQueue;
         private bool _syncToVBlank;
         private readonly SwapchainSource _swapchainSource;
         private readonly bool _colorSrgb;
         private bool? _newSyncToVBlank;
-        private uint _currentImageIndex;
+        private uint32 _currentImageIndex;
         private string _name;
         private bool _disposed;
 
@@ -41,11 +41,11 @@ namespace Sedulous.GAL.VK
         public override bool IsDisposed => _disposed;
 
         public VkSwapchainKHR DeviceSwapchain => _deviceSwapchain;
-        public uint ImageIndex => _currentImageIndex;
+        public uint32 ImageIndex => _currentImageIndex;
         public Vulkan.VkFence ImageAvailableFence => _imageAvailableFence;
         public VkSurfaceKHR Surface => _surface;
         public VkQueue PresentQueue => _presentQueue;
-        public uint PresentQueueIndex => _presentQueueIndex;
+        public uint32 PresentQueueIndex => _presentQueueIndex;
         public ResourceRefCount RefCount { get; }
 
         public VKSwapchain(VKGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, VkSurfaceKHR.Null) { }
@@ -81,13 +81,13 @@ namespace Sedulous.GAL.VK
             vkCreateFence(_gd.Device, ref fenceCI, null, out _imageAvailableFence);
 
             AcquireNextImage(_gd.Device, VkSemaphore.Null, _imageAvailableFence);
-            vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, ulong.MaxValue);
+            vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, uint64.MaxValue);
             vkResetFences(_gd.Device, 1, ref _imageAvailableFence);
 
             RefCount = new ResourceRefCount(DisposeCore);
         }
 
-        public override void Resize(uint width, uint height)
+        public override void Resize(uint32 width, uint32 height)
         {
             RecreateAndReacquire(width, height);
         }
@@ -105,7 +105,7 @@ namespace Sedulous.GAL.VK
             VkResult result = vkAcquireNextImageKHR(
                 device,
                 _deviceSwapchain,
-                ulong.MaxValue,
+                uint64.MaxValue,
                 semaphore,
                 fence,
                 ref _currentImageIndex);
@@ -123,19 +123,19 @@ namespace Sedulous.GAL.VK
             return true;
         }
 
-        private void RecreateAndReacquire(uint width, uint height)
+        private void RecreateAndReacquire(uint32 width, uint32 height)
         {
             if (CreateSwapchain(width, height))
             {
                 if (AcquireNextImage(_gd.Device, VkSemaphore.Null, _imageAvailableFence))
                 {
-                    vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, ulong.MaxValue);
+                    vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, uint64.MaxValue);
                     vkResetFences(_gd.Device, 1, ref _imageAvailableFence);
                 }
             }
         }
 
-        private bool CreateSwapchain(uint width, uint height)
+        private bool CreateSwapchain(uint32 width, uint32 height)
         {
             // Obtain the surface capabilities first -- this will indicate whether the surface has been lost.
             VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_gd.PhysicalDevice, _surface, out VkSurfaceCapabilitiesKHR surfaceCapabilities);
@@ -156,7 +156,7 @@ namespace Sedulous.GAL.VK
             }
 
             _currentImageIndex = 0;
-            uint surfaceFormatCount = 0;
+            uint32 surfaceFormatCount = 0;
             result = vkGetPhysicalDeviceSurfaceFormatsKHR(_gd.PhysicalDevice, _surface, ref surfaceFormatCount, null);
             CheckResult(result);
             VkSurfaceFormatKHR[] formats = new VkSurfaceFormatKHR[surfaceFormatCount];
@@ -193,7 +193,7 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            uint presentModeCount = 0;
+            uint32 presentModeCount = 0;
             result = vkGetPhysicalDeviceSurfacePresentModesKHR(_gd.PhysicalDevice, _surface, ref presentModeCount, null);
             CheckResult(result);
             VkPresentModeKHR[] presentModes = new VkPresentModeKHR[presentModeCount];
@@ -221,22 +221,22 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            uint maxImageCount = surfaceCapabilities.maxImageCount == 0 ? uint.MaxValue : surfaceCapabilities.maxImageCount;
-            uint imageCount = Math.Min(maxImageCount, surfaceCapabilities.minImageCount + 1);
+            uint32 maxImageCount = surfaceCapabilities.maxImageCount == 0 ? uint32.MaxValue : surfaceCapabilities.maxImageCount;
+            uint32 imageCount = Math.Min(maxImageCount, surfaceCapabilities.minImageCount + 1);
 
             VkSwapchainCreateInfoKHR swapchainCI = VkSwapchainCreateInfoKHR.New();
             swapchainCI.surface = _surface;
             swapchainCI.presentMode = presentMode;
             swapchainCI.imageFormat = surfaceFormat.format;
             swapchainCI.imageColorSpace = surfaceFormat.colorSpace;
-            uint clampedWidth = Util.Clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
-            uint clampedHeight = Util.Clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
+            uint32 clampedWidth = Util.Clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
+            uint32 clampedHeight = Util.Clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
             swapchainCI.imageExtent = new VkExtent2D { width = clampedWidth, height = clampedHeight };
             swapchainCI.minImageCount = imageCount;
             swapchainCI.imageArrayLayers = 1;
             swapchainCI.imageUsage = VkImageUsageFlags.ColorAttachment | VkImageUsageFlags.TransferDst;
 
-            FixedArray2<uint> queueFamilyIndices = new FixedArray2<uint>(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
+            FixedArray2<uint32> queueFamilyIndices = new FixedArray2<uint32>(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
 
             if (_gd.GraphicsQueueIndex != _gd.PresentQueueIndex)
             {
@@ -268,10 +268,10 @@ namespace Sedulous.GAL.VK
             return true;
         }
 
-        private bool GetPresentQueueIndex(out uint queueFamilyIndex)
+        private bool GetPresentQueueIndex(out uint32 queueFamilyIndex)
         {
-            uint graphicsQueueIndex = _gd.GraphicsQueueIndex;
-            uint presentQueueIndex = _gd.PresentQueueIndex;
+            uint32 graphicsQueueIndex = _gd.GraphicsQueueIndex;
+            uint32 presentQueueIndex = _gd.PresentQueueIndex;
 
             if (QueueSupportsPresent(graphicsQueueIndex, _surface))
             {
@@ -288,7 +288,7 @@ namespace Sedulous.GAL.VK
             return false;
         }
 
-        private bool QueueSupportsPresent(uint queueFamilyIndex, VkSurfaceKHR surface)
+        private bool QueueSupportsPresent(uint32 queueFamilyIndex, VkSurfaceKHR surface)
         {
             VkResult result = vkGetPhysicalDeviceSurfaceSupportKHR(
                 _gd.PhysicalDevice,

@@ -11,19 +11,19 @@ namespace Veldrid
         /// <summary>
         /// The red component.
         /// </summary>
-        public readonly byte R;
+        public readonly uint8 R;
         /// <summary>
         /// The green component.
         /// </summary>
-        public readonly byte G;
+        public readonly uint8 G;
         /// <summary>
         /// The blue component.
         /// </summary>
-        public readonly byte B;
+        public readonly uint8 B;
         /// <summary>
         /// The alpha component.
         /// </summary>
-        public readonly byte A;
+        public readonly uint8 A;
 
         /// <summary>
         /// Red (255, 0, 0, 255)
@@ -89,7 +89,7 @@ namespace Veldrid
         /// <param name="g">The green component.</param>
         /// <param name="b">The blue component.</param>
         /// <param name="a">The alpha component.</param>
-        public RgbaByte(byte r, byte g, byte b, byte a)
+        public RgbaByte(uint8 r, uint8 g, uint8 b, uint8 a)
         {
             R = r;
             G = g;
@@ -123,7 +123,7 @@ namespace Veldrid
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(R.GetHashCode(), G.GetHashCode(), B.GetHashCode(), A.GetHashCode());
         }

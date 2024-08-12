@@ -52,7 +52,7 @@ namespace Veldrid
         /// <summary>
         /// The total size, in bytes, of an RgbaFloat value.
         /// </summary>
-        public static readonly int SizeInBytes = 16;
+        public static readonly int32 SizeInBytes = 16;
 
         /// <summary>
         /// Red (1, 0, 0, 1)
@@ -147,7 +147,7 @@ namespace Veldrid
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(R.GetHashCode(), G.GetHashCode(), B.GetHashCode(), A.GetHashCode());
         }

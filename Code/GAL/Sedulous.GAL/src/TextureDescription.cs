@@ -10,23 +10,23 @@ namespace Veldrid
         /// <summary>
         /// The total width, in texels.
         /// </summary>
-        public uint Width;
+        public uint32 Width;
         /// <summary>
         /// The total height, in texels.
         /// </summary>
-        public uint Height;
+        public uint32 Height;
         /// <summary>
         /// The total depth, in texels.
         /// </summary>
-        public uint Depth;
+        public uint32 Depth;
         /// <summary>
         /// The number of mipmap levels.
         /// </summary>
-        public uint MipLevels;
+        public uint32 MipLevels;
         /// <summary>
         /// The number of array layers.
         /// </summary>
-        public uint ArrayLayers;
+        public uint32 ArrayLayers;
         /// <summary>
         /// The format of individual texture elements.
         /// </summary>
@@ -65,11 +65,11 @@ namespace Veldrid
         /// If the Texture will be used as a 2D cubemap, then <see cref="TextureUsage.Cubemap"/> must be included.</param>
         /// <param name="type">The type of Texture to create.</param>
         public TextureDescription(
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             PixelFormat format,
             TextureUsage usage,
             TextureType type)
@@ -103,11 +103,11 @@ namespace Veldrid
         /// <param name="sampleCount">The number of samples. If any other value than <see cref="TextureSampleCount.Count1"/> is
         /// provided, then this describes a multisample texture.</param>
         public TextureDescription(
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             PixelFormat format,
             TextureUsage usage,
             TextureType type,
@@ -138,9 +138,9 @@ namespace Veldrid
         /// </param>
         /// <returns>A new TextureDescription for a non-multisampled 1D Texture.</returns>
         public static TextureDescription Texture1D(
-            uint width,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             PixelFormat format,
             TextureUsage usage)
         {
@@ -171,10 +171,10 @@ namespace Veldrid
         /// If the Texture will be used as a 2D cubemap, then <see cref="TextureUsage.Cubemap"/> must be included.</param>
         /// <returns>A new TextureDescription for a non-multisampled 2D Texture.</returns>
         public static TextureDescription Texture2D(
-            uint width,
-            uint height,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 height,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             PixelFormat format,
             TextureUsage usage)
         {
@@ -207,10 +207,10 @@ namespace Veldrid
         /// provided, then this describes a multisample texture.</param>
         /// <returns>A new TextureDescription for a 2D Texture.</returns>
         public static TextureDescription Texture2D(
-            uint width,
-            uint height,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 height,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             PixelFormat format,
             TextureUsage usage,
             TextureSampleCount sampleCount)
@@ -241,10 +241,10 @@ namespace Veldrid
         /// as a color target in a <see cref="Framebuffer"/>, then <see cref="TextureUsage.RenderTarget"/> must be included.</param>
         /// <returns>A new TextureDescription for a 3D Texture.</returns>
         public static TextureDescription Texture3D(
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevels,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevels,
             PixelFormat format,
             TextureUsage usage)
         {
@@ -282,7 +282,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 Width.GetHashCode(),
@@ -290,10 +290,10 @@ namespace Veldrid
                 Depth.GetHashCode(),
                 MipLevels.GetHashCode(),
                 ArrayLayers.GetHashCode(),
-                (int)Format,
-                (int)Usage,
-                (int)Type,
-                (int)SampleCount);
+                (int32)Format,
+                (int32)Usage,
+                (int32)Type,
+                (int32)SampleCount);
         }
     }
 }

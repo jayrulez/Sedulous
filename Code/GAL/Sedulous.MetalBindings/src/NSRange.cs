@@ -13,7 +13,7 @@ namespace Sedulous.MetalBindings
             this.length = length;
         }
 
-        public NSRange(uint location, uint length)
+        public NSRange(uint32 location, uint32 length)
         {
             this.location = (UIntPtr)location;
             this.length = (UIntPtr)length;

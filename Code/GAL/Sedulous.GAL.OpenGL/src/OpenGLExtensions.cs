@@ -7,12 +7,12 @@ namespace Sedulous.GAL.OpenGL
     {
         private readonly HashSet<string> _extensions;
         private readonly GraphicsBackend _backend;
-        private readonly int _major;
-        private readonly int _minor;
+        private readonly int32 _major;
+        private readonly int32 _minor;
 
-        public int Count => _extensions.Count;
+        public int32 Count => _extensions.Count;
 
-        internal OpenGLExtensions(HashSet<string> extensions, GraphicsBackend backend, int major, int minor)
+        internal OpenGLExtensions(HashSet<string> extensions, GraphicsBackend backend, int32 major, int32 minor)
         {
             _extensions = extensions;
             _backend = backend;
@@ -103,7 +103,7 @@ namespace Sedulous.GAL.OpenGL
             return _extensions.Contains(extension);
         }
 
-        public bool GLVersion(int major, int minor)
+        public bool GLVersion(int32 major, int32 minor)
         {
             if (_backend == GraphicsBackend.OpenGL)
             {
@@ -120,7 +120,7 @@ namespace Sedulous.GAL.OpenGL
             return false;
         }
 
-        public bool GLESVersion(int major, int minor)
+        public bool GLESVersion(int32 major, int32 minor)
         {
             if (_backend == GraphicsBackend.OpenGLES)
             {

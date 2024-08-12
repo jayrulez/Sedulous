@@ -9,7 +9,7 @@ namespace Sedulous.GAL.OpenGL
     {
         private readonly OpenGLGraphicsDevice _gd;
         private bool _needsTextureView;
-        private uint _textureView;
+        private uint32 _textureView;
         private bool _disposeRequested;
         private bool _disposed;
         public override bool IsDisposed => _disposeRequested;
@@ -21,7 +21,7 @@ namespace Sedulous.GAL.OpenGL
         public new OpenGLTexture Target { get; }
         public TextureTarget TextureTarget { get; private set; }
 
-        public uint GLTargetTexture
+        public uint32 GLTargetTexture
         {
             get
             {

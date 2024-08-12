@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines how texture values are sampled from a texture.
     /// </summary>
-    public enum SamplerFilter : byte
+    public enum SamplerFilter : uint8
     {
         /// <summary>
         /// Point sampling is used for minification, magnification, and mip-level sampling.

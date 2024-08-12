@@ -49,7 +49,7 @@ namespace Veldrid
         /// <summary>
         /// Gets the queue family index of the graphics VkQueue.
         /// </summary>
-        public uint GraphicsQueueFamilyIndex => _gd.GraphicsQueueIndex;
+        public uint32 GraphicsQueueFamilyIndex => _gd.GraphicsQueueIndex;
 
         /// <summary>
         /// Gets the driver name of the device. May be null.
@@ -73,12 +73,12 @@ namespace Veldrid
         /// </summary>
         /// <param name="texture">The Texture whose currently-tracked VkImageLayout will be overridden.</param>
         /// <param name="layout">The new VkImageLayout value.</param>
-        public void OverrideImageLayout(Texture texture, uint layout)
+        public void OverrideImageLayout(Texture texture, uint32 layout)
         {
             VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(texture);
-            for (uint layer = 0; layer < vkTex.ArrayLayers; layer++)
+            for (uint32 layer = 0; layer < vkTex.ArrayLayers; layer++)
             {
-                for (uint level = 0; level < vkTex.MipLevels; level++)
+                for (uint32 level = 0; level < vkTex.MipLevels; level++)
                 {
                     vkTex.SetImageLayout(level, layer, (VkImageLayout)layout);
                 }
@@ -91,7 +91,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="texture">The Texture whose underlying VkImage will be returned.</param>
         /// <returns>The underlying VkImage for the given Texture.</returns>
-        public ulong GetVkImage(Texture texture)
+        public uint64 GetVkImage(Texture texture)
         {
             VKTexture vkTexture = Util.AssertSubtype<Texture, VKTexture>(texture);
             if ((vkTexture.Usage & TextureUsage.Staging) != 0)
@@ -109,7 +109,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="texture">The Texture whose underlying VkImage will be transitioned.</param>
         /// <param name="layout">The new VkImageLayout value.</param>
-        public void TransitionImageLayout(Texture texture, uint layout)
+        public void TransitionImageLayout(Texture texture, uint32 layout)
         {
             _gd.TransitionImageLayout(Util.AssertSubtype<Texture, VKTexture>(texture), (VkImageLayout)layout);
         }
@@ -119,7 +119,7 @@ namespace Veldrid
             VkExtensionProperties[] vkProps = _gd.GetDeviceExtensionProperties();
             ExtensionProperties[] veldridProps = new ExtensionProperties[vkProps.Length];
 
-            for (int i = 0; i < vkProps.Length; i++)
+            for (int32 i = 0; i < vkProps.Length; i++)
             {
                 VkExtensionProperties prop = vkProps[i];
                 veldridProps[i] = new ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
@@ -131,9 +131,9 @@ namespace Veldrid
         public readonly struct ExtensionProperties
         {
             public readonly string Name;
-            public readonly uint SpecVersion;
+            public readonly uint32 SpecVersion;
 
-            public ExtensionProperties(string name, uint specVersion)
+            public ExtensionProperties(string name, uint32 specVersion)
             {
                 Name = name ?? throw new ArgumentNullException(nameof(name));
                 SpecVersion = specVersion;

@@ -20,7 +20,7 @@ namespace Veldrid
         /// For Metal shaders, this array must contain Metal bitcode (a "metallib" file), or UTF8-encoded Metal shading language
         /// text.
         /// </summary>
-        public byte[] ShaderBytes;
+        public uint8[] ShaderBytes;
 
         /// <summary>
         /// The name of the entry point function in the shader module to be used in this stage.
@@ -39,7 +39,7 @@ namespace Veldrid
         /// <param name="stage">The shader stage to create.</param>
         /// <param name="shaderBytes">An array containing the raw shader bytes.</param>
         /// <param name="entryPoint">The name of the entry point function in the shader module to be used in this stage.</param>
-        public ShaderDescription(ShaderStages stage, byte[] shaderBytes, string entryPoint)
+        public ShaderDescription(ShaderStages stage, uint8[] shaderBytes, string entryPoint)
         {
             Stage = stage;
             ShaderBytes = shaderBytes;
@@ -55,7 +55,7 @@ namespace Veldrid
         /// <param name="entryPoint">The name of the entry point function in the shader module to be used in this stage.</param>
         /// <param name="debug">Indicates whether the shader should be debuggable. This flag only has an effect if
         /// <paramref name="shaderBytes"/> contains shader code that will be compiled.</param>
-        public ShaderDescription(ShaderStages stage, byte[] shaderBytes, string entryPoint, bool debug)
+        public ShaderDescription(ShaderStages stage, uint8[] shaderBytes, string entryPoint, bool debug)
         {
             Stage = stage;
             ShaderBytes = shaderBytes;
@@ -80,10 +80,10 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
-                (int)Stage,
+                (int32)Stage,
                 ShaderBytes.GetHashCode(),
                 EntryPoint.GetHashCode(),
                 Debug.GetHashCode());

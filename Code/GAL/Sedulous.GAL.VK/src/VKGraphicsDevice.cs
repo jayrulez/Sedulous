@@ -13,7 +13,7 @@ namespace Sedulous.GAL.VK
 {
     internal class VKGraphicsDevice : GraphicsDevice
     {
-        private const uint VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001;
+        private const uint32 VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001;
         private static readonly FixedUtf8String s_name = "Veldrid-VKGraphicsDevice";
         private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(CheckIsSupported, isThreadSafe: true);
 
@@ -29,8 +29,8 @@ namespace Sedulous.GAL.VK
         private VkPhysicalDeviceFeatures _physicalDeviceFeatures;
         private VkPhysicalDeviceMemoryProperties _physicalDeviceMemProperties;
         private VkDevice _device;
-        private uint _graphicsQueueIndex;
-        private uint _presentQueueIndex;
+        private uint32 _graphicsQueueIndex;
+        private uint32 _presentQueueIndex;
         private VkCommandPool _graphicsCommandPool;
         private readonly object _graphicsCommandPoolLock = new object();
         private VkQueue _graphicsQueue;
@@ -45,7 +45,7 @@ namespace Sedulous.GAL.VK
         private readonly ConcurrentDictionary<VkFormat, VkFilter> _filters = new ConcurrentDictionary<VkFormat, VkFilter>();
         private readonly BackendInfoVulkan _vulkanInfo;
 
-        private const int SharedCommandPoolCount = 4;
+        private const int32 SharedCommandPoolCount = 4;
         private Stack<SharedCommandPool> _sharedGraphicsCommandPools = new Stack<SharedCommandPool>();
         private VKDescriptorPoolManager _descriptorPoolManager;
         private bool _standardValidationSupported;
@@ -57,8 +57,8 @@ namespace Sedulous.GAL.VK
         private vkCreateMetalSurfaceEXT_t _createMetalSurfaceEXT;
 
         // Staging Resources
-        private const uint MinStagingBufferSize = 64;
-        private const uint MaxStagingBufferSize = 512;
+        private const uint32 MinStagingBufferSize = 64;
+        private const uint32 MaxStagingBufferSize = 512;
 
         private readonly object _stagingResourcesLock = new object();
         private readonly List<VKTexture> _availableStagingTextures = new List<VKTexture>();
@@ -100,8 +100,8 @@ namespace Sedulous.GAL.VK
         public VkPhysicalDevice PhysicalDevice => _physicalDevice;
         public VkPhysicalDeviceMemoryProperties PhysicalDeviceMemProperties => _physicalDeviceMemProperties;
         public VkQueue GraphicsQueue => _graphicsQueue;
-        public uint GraphicsQueueIndex => _graphicsQueueIndex;
-        public uint PresentQueueIndex => _presentQueueIndex;
+        public uint32 GraphicsQueueIndex => _graphicsQueueIndex;
+        public uint32 PresentQueueIndex => _presentQueueIndex;
         public string DriverName => _driverName;
         public string DriverInfo => _driverInfo;
         public VKDeviceMemoryManager MemoryManager => _memoryManager;
@@ -174,7 +174,7 @@ namespace Sedulous.GAL.VK
 
             CreateDescriptorPool();
             CreateGraphicsCommandPool();
-            for (int i = 0; i < SharedCommandPoolCount; i++)
+            for (int32 i = 0; i < SharedCommandPoolCount; i++)
             {
                 _sharedGraphicsCommandPools.Push(new SharedCommandPool(this, true));
             }
@@ -193,9 +193,9 @@ namespace Sedulous.GAL.VK
 
         private void SubmitCommandList(
             CommandList cl,
-            uint waitSemaphoreCount,
+            uint32 waitSemaphoreCount,
             VkSemaphore* waitSemaphoresPtr,
-            uint signalSemaphoreCount,
+            uint32 signalSemaphoreCount,
             VkSemaphore* signalSemaphoresPtr,
             Fence fence)
         {
@@ -209,9 +209,9 @@ namespace Sedulous.GAL.VK
         private void SubmitCommandBuffer(
             VKCommandList vkCL,
             VkCommandBuffer vkCB,
-            uint waitSemaphoreCount,
+            uint32 waitSemaphoreCount,
             VkSemaphore* waitSemaphoresPtr,
-            uint signalSemaphoreCount,
+            uint32 signalSemaphoreCount,
             VkSemaphore* signalSemaphoresPtr,
             Fence fence)
         {
@@ -263,7 +263,7 @@ namespace Sedulous.GAL.VK
         {
             lock (_submittedFencesLock)
             {
-                for (int i = 0; i < _submittedFences.Count; i++)
+                for (int32 i = 0; i < _submittedFences.Count; i++)
                 {
                     FenceSubmissionInfo fsi = _submittedFences[i];
                     if (vkGetFenceStatus(_device, fsi.Fence) == VkResult.Success)
@@ -352,7 +352,7 @@ namespace Sedulous.GAL.VK
             VkPresentInfoKHR presentInfo = VkPresentInfoKHR.New();
             presentInfo.swapchainCount = 1;
             presentInfo.pSwapchains = &deviceSwapchain;
-            uint imageIndex = vkSC.ImageIndex;
+            uint32 imageIndex = vkSC.ImageIndex;
             presentInfo.pImageIndices = &imageIndex;
 
             object presentLock = vkSC.PresentQueueIndex == _graphicsQueueIndex ? _graphicsQueueLock : vkSC;
@@ -362,7 +362,7 @@ namespace Sedulous.GAL.VK
                 if (vkSC.AcquireNextImage(_device, VkSemaphore.Null, vkSC.ImageAvailableFence))
                 {
                     Vulkan.VkFence fence = vkSC.ImageAvailableFence;
-                    vkWaitForFences(_device, 1, ref fence, true, ulong.MaxValue);
+                    vkWaitForFences(_device, 1, ref fence, true, uint64.MaxValue);
                     vkResetFences(_device, 1, ref fence);
                 }
             }
@@ -380,7 +380,7 @@ namespace Sedulous.GAL.VK
                     case VKCommandList commandList:
                         SetDebugMarkerName(
                             VkDebugReportObjectTypeEXT.CommandBufferEXT,
-                            (ulong)commandList.CommandBuffer.Handle,
+                            (uint64)commandList.CommandBuffer.Handle,
                             string.Format("{0}_CommandBuffer", name));
                         SetDebugMarkerName(
                             VkDebugReportObjectTypeEXT.CommandPoolEXT,
@@ -430,7 +430,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private void SetDebugMarkerName(VkDebugReportObjectTypeEXT type, ulong target, string name)
+        private void SetDebugMarkerName(VkDebugReportObjectTypeEXT type, uint64 target, string name)
         {
             Debug.Assert(_setObjectNameDelegate != null);
 
@@ -438,8 +438,8 @@ namespace Sedulous.GAL.VK
             nameInfo.objectType = type;
             nameInfo.@object = target;
 
-            int byteCount = Encoding.UTF8.GetByteCount(name);
-            byte* utf8Ptr = stackalloc byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(name);
+            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
             fixed (char* namePtr = name)
             {
                 Encoding.UTF8.GetBytes(namePtr, name.Length, utf8Ptr, byteCount);
@@ -576,12 +576,12 @@ namespace Sedulous.GAL.VK
             }
 
             instanceCI.enabledExtensionCount = instanceExtensions.Count;
-            instanceCI.ppEnabledExtensionNames = (byte**)instanceExtensions.Data;
+            instanceCI.ppEnabledExtensionNames = (uint8**)instanceExtensions.Data;
 
             instanceCI.enabledLayerCount = instanceLayers.Count;
             if (instanceLayers.Count > 0)
             {
-                instanceCI.ppEnabledLayerNames = (byte**)instanceLayers.Data;
+                instanceCI.ppEnabledLayerNames = (uint8**)instanceLayers.Data;
             }
 
             VkResult result = vkCreateInstance(ref instanceCI, null, out _instance);
@@ -637,14 +637,14 @@ namespace Sedulous.GAL.VK
             CheckResult(result);
         }
 
-        private uint DebugCallback(
-            uint flags,
+        private uint32 DebugCallback(
+            uint32 flags,
             VkDebugReportObjectTypeEXT objectType,
-            ulong @object,
+            uint64 @object,
             UIntPtr location,
-            int messageCode,
-            byte* pLayerPrefix,
-            byte* pMessage,
+            int32 messageCode,
+            uint8* pLayerPrefix,
+            uint8* pMessage,
             void* pUserData)
         {
             string message = Util.GetString(pMessage);
@@ -670,7 +670,7 @@ namespace Sedulous.GAL.VK
 
         private void CreatePhysicalDevice()
         {
-            uint deviceCount = 0;
+            uint32 deviceCount = 0;
             vkEnumeratePhysicalDevices(_instance, ref deviceCount, null);
             if (deviceCount == 0)
             {
@@ -683,9 +683,9 @@ namespace Sedulous.GAL.VK
             _physicalDevice = physicalDevices[0];
 
             vkGetPhysicalDeviceProperties(_physicalDevice, out _physicalDeviceProperties);
-            fixed (byte* utf8NamePtr = _physicalDeviceProperties.deviceName)
+            fixed (uint8* utf8NamePtr = _physicalDeviceProperties.deviceName)
             {
-                _deviceName = Encoding.UTF8.GetString(utf8NamePtr, (int)MaxPhysicalDeviceNameSize).TrimEnd('\0');
+                _deviceName = Encoding.UTF8.GetString(utf8NamePtr, (int32)MaxPhysicalDeviceNameSize).TrimEnd('\0');
             }
 
             _vendorName = "id:" + _physicalDeviceProperties.vendorID.ToString("x8");
@@ -699,13 +699,13 @@ namespace Sedulous.GAL.VK
 
         public VkExtensionProperties[] GetDeviceExtensionProperties()
         {
-            uint propertyCount = 0;
-            VkResult result = vkEnumerateDeviceExtensionProperties(_physicalDevice, (byte*)null, &propertyCount, null);
+            uint32 propertyCount = 0;
+            VkResult result = vkEnumerateDeviceExtensionProperties(_physicalDevice, (uint8*)null, &propertyCount, null);
             CheckResult(result);
-            VkExtensionProperties[] props = new VkExtensionProperties[(int)propertyCount];
+            VkExtensionProperties[] props = new VkExtensionProperties[(int32)propertyCount];
             fixed (VkExtensionProperties* properties = props)
             {
-                result = vkEnumerateDeviceExtensionProperties(_physicalDevice, (byte*)null, &propertyCount, properties);
+                result = vkEnumerateDeviceExtensionProperties(_physicalDevice, (uint8*)null, &propertyCount, properties);
                 CheckResult(result);
             }
             return props;
@@ -715,12 +715,12 @@ namespace Sedulous.GAL.VK
         {
             GetQueueFamilyIndices(surface);
 
-            HashSet<uint> familyIndices = new HashSet<uint> { _graphicsQueueIndex, _presentQueueIndex };
+            HashSet<uint32> familyIndices = new HashSet<uint32> { _graphicsQueueIndex, _presentQueueIndex };
             VkDeviceQueueCreateInfo* queueCreateInfos = stackalloc VkDeviceQueueCreateInfo[familyIndices.Count];
-            uint queueCreateInfosCount = (uint)familyIndices.Count;
+            uint32 queueCreateInfosCount = (uint32)familyIndices.Count;
 
-            int i = 0;
-            for (uint index in familyIndices)
+            int32 i = 0;
+            for (uint32 index in familyIndices)
             {
                 VkDeviceQueueCreateInfo queueCreateInfo = VkDeviceQueueCreateInfo.New();
                 queueCreateInfo.queueFamilyIndex = _graphicsQueueIndex;
@@ -741,11 +741,11 @@ namespace Sedulous.GAL.VK
             bool hasDedicatedAllocation = false;
             bool hasDriverProperties = false;
             IntPtr[] activeExtensions = new IntPtr[props.Length];
-            uint activeExtensionCount = 0;
+            uint32 activeExtensionCount = 0;
 
             fixed (VkExtensionProperties* properties = props)
             {
-                for (int property = 0; property < props.Length; property++)
+                for (int32 property = 0; property < props.Length; property++)
                 {
                     string extensionName = Util.GetString(properties[property].extensionName);
                     if (extensionName == "VK_EXT_debug_marker")
@@ -818,12 +818,12 @@ namespace Sedulous.GAL.VK
                 layerNames.Add(CommonStrings.KhronosValidationLayerName);
             }
             deviceCreateInfo.enabledLayerCount = layerNames.Count;
-            deviceCreateInfo.ppEnabledLayerNames = (byte**)layerNames.Data;
+            deviceCreateInfo.ppEnabledLayerNames = (uint8**)layerNames.Data;
 
             fixed (IntPtr* activeExtensionsPtr = activeExtensions)
             {
                 deviceCreateInfo.enabledExtensionCount = activeExtensionCount;
-                deviceCreateInfo.ppEnabledExtensionNames = (byte**)activeExtensionsPtr;
+                deviceCreateInfo.ppEnabledExtensionNames = (uint8**)activeExtensionsPtr;
 
                 VkResult result = vkCreateDevice(_physicalDevice, ref deviceCreateInfo, null, out _device);
                 CheckResult(result);
@@ -872,8 +872,8 @@ namespace Sedulous.GAL.VK
 
         private IntPtr GetInstanceProcAddr(string name)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(name);
-            byte* utf8Ptr = stackalloc byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(name);
+            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
 
             fixed (char* namePtr = name)
             {
@@ -896,8 +896,8 @@ namespace Sedulous.GAL.VK
 
         private IntPtr GetDeviceProcAddr(string name)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(name);
-            byte* utf8Ptr = stackalloc byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(name);
+            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
 
             fixed (char* namePtr = name)
             {
@@ -920,7 +920,7 @@ namespace Sedulous.GAL.VK
 
         private void GetQueueFamilyIndices(VkSurfaceKHR surface)
         {
-            uint queueFamilyCount = 0;
+            uint32 queueFamilyCount = 0;
             vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, ref queueFamilyCount, null);
             VkQueueFamilyProperties[] qfp = new VkQueueFamilyProperties[queueFamilyCount];
             vkGetPhysicalDeviceQueueFamilyProperties(_physicalDevice, ref queueFamilyCount, out qfp[0]);
@@ -928,7 +928,7 @@ namespace Sedulous.GAL.VK
             bool foundGraphics = false;
             bool foundPresent = surface == VkSurfaceKHR.Null;
 
-            for (uint i = 0; i < qfp.Length; i++)
+            for (uint32 i = 0; i < qfp.Length; i++)
             {
                 if ((qfp[i].queueFlags & VkQueueFlags.Graphics) != 0)
                 {
@@ -967,14 +967,14 @@ namespace Sedulous.GAL.VK
             CheckResult(result);
         }
 
-        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint subresource)
+        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource)
         {
             VkMemoryBlock memoryBlock = default(VkMemoryBlock);
             IntPtr mappedPtr = IntPtr.Zero;
-            uint sizeInBytes;
-            uint offset = 0;
-            uint rowPitch = 0;
-            uint depthPitch = 0;
+            uint32 sizeInBytes;
+            uint32 offset = 0;
+            uint32 rowPitch = 0;
+            uint32 depthPitch = 0;
             if (resource is VKBuffer buffer)
             {
                 memoryBlock = buffer.Memory;
@@ -985,10 +985,10 @@ namespace Sedulous.GAL.VK
                 VKTexture texture = Util.AssertSubtype<MappableResource, VKTexture>(resource);
                 VkSubresourceLayout layout = texture.GetSubresourceLayout(subresource);
                 memoryBlock = texture.Memory;
-                sizeInBytes = (uint)layout.size;
-                offset = (uint)layout.offset;
-                rowPitch = (uint)layout.rowPitch;
-                depthPitch = (uint)layout.depthPitch;
+                sizeInBytes = (uint32)layout.size;
+                offset = (uint32)layout.offset;
+                rowPitch = (uint32)layout.rowPitch;
+                depthPitch = (uint32)layout.depthPitch;
             }
 
             if (memoryBlock.DeviceMemory.Handle != 0)
@@ -1003,7 +1003,7 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            byte* dataPtr = (byte*)mappedPtr.ToPointer() + offset;
+            uint8* dataPtr = (uint8*)mappedPtr.ToPointer() + offset;
             return new MappedResource(
                 resource,
                 mode,
@@ -1014,7 +1014,7 @@ namespace Sedulous.GAL.VK
                 depthPitch);
         }
 
-        protected override void UnmapCore(MappableResource resource, uint subresource)
+        protected override void UnmapCore(MappableResource resource, uint32 subresource)
         {
             VkMemoryBlock memoryBlock = default(VkMemoryBlock);
             if (resource is VKBuffer buffer)
@@ -1166,7 +1166,7 @@ namespace Sedulous.GAL.VK
                vkProps.maxExtent.depth,
                vkProps.maxMipLevels,
                vkProps.maxArrayLayers,
-               (uint)vkProps.sampleCounts);
+               (uint32)vkProps.sampleCounts);
             return true;
         }
 
@@ -1184,23 +1184,23 @@ namespace Sedulous.GAL.VK
             return filter;
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(buffer);
             VKBuffer copySrcVkBuffer = null;
             IntPtr mappedPtr;
-            byte* destPtr;
+            uint8* destPtr;
             bool isPersistentMapped = vkBuffer.Memory.IsPersistentMapped;
             if (isPersistentMapped)
             {
                 mappedPtr = (IntPtr)vkBuffer.Memory.BlockMappedPointer;
-                destPtr = (byte*)mappedPtr + bufferOffsetInBytes;
+                destPtr = (uint8*)mappedPtr + bufferOffsetInBytes;
             }
             else
             {
                 copySrcVkBuffer = GetFreeStagingBuffer(sizeInBytes);
                 mappedPtr = (IntPtr)copySrcVkBuffer.Memory.BlockMappedPointer;
-                destPtr = (byte*)mappedPtr;
+                destPtr = (uint8*)mappedPtr;
             }
 
             Unsafe.CopyBlock(destPtr, source.ToPointer(), sizeInBytes);
@@ -1240,7 +1240,7 @@ namespace Sedulous.GAL.VK
             return sharedPool;
         }
 
-        private IntPtr MapBuffer(VKBuffer buffer, uint numBytes)
+        private IntPtr MapBuffer(VKBuffer buffer, uint32 numBytes)
         {
             if (buffer.Memory.IsPersistentMapped)
             {
@@ -1266,34 +1266,34 @@ namespace Sedulous.GAL.VK
         private protected override void UpdateTextureCore(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x,
-            uint y,
-            uint z,
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevel,
-            uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x,
+            uint32 y,
+            uint32 z,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevel,
+            uint32 arrayLayer)
         {
             VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(texture);
             bool isStaging = (vkTex.Usage & TextureUsage.Staging) != 0;
             if (isStaging)
             {
                 VkMemoryBlock memBlock = vkTex.Memory;
-                uint subresource = texture.CalculateSubresource(mipLevel, arrayLayer);
+                uint32 subresource = texture.CalculateSubresource(mipLevel, arrayLayer);
                 VkSubresourceLayout layout = vkTex.GetSubresourceLayout(subresource);
-                byte* imageBasePtr = (byte*)memBlock.BlockMappedPointer + layout.offset;
+                uint8* imageBasePtr = (uint8*)memBlock.BlockMappedPointer + layout.offset;
 
-                uint srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
-                uint srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
+                uint32 srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
+                uint32 srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
                 Util.CopyTextureRegion(
                     source.ToPointer(),
                     0, 0, 0,
                     srcRowPitch, srcDepthPitch,
                     imageBasePtr,
                     x, y, z,
-                    (uint)layout.rowPitch, (uint)layout.depthPitch,
+                    (uint32)layout.rowPitch, (uint32)layout.depthPitch,
                     width, height, depth,
                     texture.Format);
             }
@@ -1316,12 +1316,12 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private VKTexture GetFreeStagingTexture(uint width, uint height, uint depth, PixelFormat format)
+        private VKTexture GetFreeStagingTexture(uint32 width, uint32 height, uint32 depth, PixelFormat format)
         {
-            uint totalSize = FormatHelpers.GetRegionSize(width, height, depth, format);
+            uint32 totalSize = FormatHelpers.GetRegionSize(width, height, depth, format);
             lock (_stagingResourcesLock)
             {
-                for (int i = 0; i < _availableStagingTextures.Count; i++)
+                for (int32 i = 0; i < _availableStagingTextures.Count; i++)
                 {
                     VKTexture tex = _availableStagingTextures[i];
                     if (tex.Memory.Size >= totalSize)
@@ -1333,8 +1333,8 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            uint texWidth = Math.Max(256, width);
-            uint texHeight = Math.Max(256, height);
+            uint32 texWidth = Math.Max(256, width);
+            uint32 texHeight = Math.Max(256, height);
             VKTexture newTex = (VKTexture)ResourceFactory.CreateTexture(TextureDescription.Texture3D(
                 texWidth, texHeight, depth, 1, format, TextureUsage.Staging));
             newTex.SetStagingDimensions(width, height, depth, format);
@@ -1342,11 +1342,11 @@ namespace Sedulous.GAL.VK
             return newTex;
         }
 
-        private VKBuffer GetFreeStagingBuffer(uint size)
+        private VKBuffer GetFreeStagingBuffer(uint32 size)
         {
             lock (_stagingResourcesLock)
             {
-                for (int i = 0; i < _availableStagingBuffers.Count; i++)
+                for (int32 i = 0; i < _availableStagingBuffers.Count; i++)
                 {
                     VKBuffer buffer = _availableStagingBuffers[i];
                     if (buffer.SizeInBytes >= size)
@@ -1357,7 +1357,7 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            uint newBufferSize = Math.Max(MinStagingBufferSize, size);
+            uint32 newBufferSize = Math.Max(MinStagingBufferSize, size);
             VKBuffer newBuffer = (VKBuffer)ResourceFactory.CreateBuffer(
                 new BufferDescription(newBufferSize, BufferUsage.Staging));
             return newBuffer;
@@ -1369,23 +1369,23 @@ namespace Sedulous.GAL.VK
             vkResetFences(_device, 1, ref vkFence);
         }
 
-        public override bool WaitForFence(Fence fence, ulong nanosecondTimeout)
+        public override bool WaitForFence(Fence fence, uint64 nanosecondTimeout)
         {
             Vulkan.VkFence vkFence = Util.AssertSubtype<Fence, VKFence>(fence).DeviceFence;
             VkResult result = vkWaitForFences(_device, 1, ref vkFence, true, nanosecondTimeout);
             return result == VkResult.Success;
         }
 
-        public override bool WaitForFences(Fence[] fences, bool waitAll, ulong nanosecondTimeout)
+        public override bool WaitForFences(Fence[] fences, bool waitAll, uint64 nanosecondTimeout)
         {
-            int fenceCount = fences.Length;
+            int32 fenceCount = fences.Length;
             Vulkan.VkFence* fencesPtr = stackalloc Vulkan.VkFence[fenceCount];
-            for (int i = 0; i < fenceCount; i++)
+            for (int32 i = 0; i < fenceCount; i++)
             {
                 fencesPtr[i] = Util.AssertSubtype<Fence, VKFence>(fences[i]).DeviceFence;
             }
 
-            VkResult result = vkWaitForFences(_device, (uint)fenceCount, fencesPtr, waitAll, nanosecondTimeout);
+            VkResult result = vkWaitForFences(_device, (uint32)fenceCount, fencesPtr, waitAll, nanosecondTimeout);
             return result == VkResult.Success;
         }
 
@@ -1417,7 +1417,7 @@ namespace Sedulous.GAL.VK
                 return false;
             }
 
-            uint physicalDeviceCount = 0;
+            uint32 physicalDeviceCount = 0;
             result = vkEnumeratePhysicalDevices(testInstance, ref physicalDeviceCount, null);
             if (result != VkResult.Success || physicalDeviceCount == 0)
             {
@@ -1470,7 +1470,7 @@ namespace Sedulous.GAL.VK
 
         internal void ClearColorTexture(VKTexture texture, VkClearColorValue color)
         {
-            uint effectiveLayers = texture.ArrayLayers;
+            uint32 effectiveLayers = texture.ArrayLayers;
             if ((texture.Usage & TextureUsage.Cubemap) != 0)
             {
                 effectiveLayers *= 6;
@@ -1492,7 +1492,7 @@ namespace Sedulous.GAL.VK
 
         internal void ClearDepthTexture(VKTexture texture, VkClearDepthStencilValue clearValue)
         {
-            uint effectiveLayers = texture.ArrayLayers;
+            uint32 effectiveLayers = texture.ArrayLayers;
             if ((texture.Usage & TextureUsage.Cubemap) != 0)
             {
                 effectiveLayers *= 6;
@@ -1520,11 +1520,11 @@ namespace Sedulous.GAL.VK
             pool.EndAndSubmit(cb);
         }
 
-        internal override uint GetUniformBufferMinOffsetAlignmentCore()
-            => (uint)_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
+        internal override uint32 GetUniformBufferMinOffsetAlignmentCore()
+            => (uint32)_physicalDeviceProperties.limits.minUniformBufferOffsetAlignment;
 
-        internal override uint GetStructuredBufferMinOffsetAlignmentCore()
-            => (uint)_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
+        internal override uint32 GetStructuredBufferMinOffsetAlignmentCore()
+            => (uint32)_physicalDeviceProperties.limits.minStorageBufferOffsetAlignment;
 
         internal void TransitionImageLayout(VKTexture texture, VkImageLayout layout)
         {
@@ -1637,21 +1637,21 @@ namespace Sedulous.GAL.VK
 
         public VkStructureType sType;
         public void* pNext;
-        public uint flags;
+        public uint32 flags;
         public void* pLayer;
     }
 
     internal struct VkPhysicalDeviceDriverProperties
     {
-        public const int DriverNameLength = 256;
-        public const int DriverInfoLength = 256;
+        public const int32 DriverNameLength = 256;
+        public const int32 DriverInfoLength = 256;
         public const VkStructureType VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DRIVER_PROPERTIES = (VkStructureType)1000196000;
 
         public VkStructureType sType;
         public void* pNext;
         public VkDriverId driverID;
-        public fixed byte driverName[DriverNameLength];
-        public fixed byte driverInfo[DriverInfoLength];
+        public fixed uint8 driverName[DriverNameLength];
+        public fixed uint8 driverInfo[DriverInfoLength];
         public VkConformanceVersion conformanceVersion;
 
         public static VkPhysicalDeviceDriverProperties New()
@@ -1666,9 +1666,9 @@ namespace Sedulous.GAL.VK
 
     internal struct VkConformanceVersion
     {
-        public byte major;
-        public byte minor;
-        public byte subminor;
-        public byte patch;
+        public uint8 major;
+        public uint8 minor;
+        public uint8 subminor;
+        public uint8 patch;
     }
 }

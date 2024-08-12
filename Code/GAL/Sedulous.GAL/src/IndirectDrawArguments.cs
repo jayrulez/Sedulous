@@ -8,18 +8,18 @@
         /// <summary>
         /// The number of vertices to draw.
         /// </summary>
-        public uint VertexCount;
+        public uint32 VertexCount;
         /// <summary>
         /// The number of instances to draw.
         /// </summary>
-        public uint InstanceCount;
+        public uint32 InstanceCount;
         /// <summary>
         /// The first vertex to draw. Subsequent vertices are incremented by 1.
         /// </summary>
-        public uint FirstVertex;
+        public uint32 FirstVertex;
         /// <summary>
         /// The first instance to draw. Subsequent instances are incrmented by 1.
         /// </summary>
-        public uint FirstInstance;
+        public uint32 FirstInstance;
     }
 }

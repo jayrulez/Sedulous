@@ -59,7 +59,7 @@ namespace Veldrid
                 sampleCount = fb.DepthTarget.Value.Target.SampleCount;
             }
             OutputAttachmentDescription[] colorAttachments = new OutputAttachmentDescription[fb.ColorTargets.Count];
-            for (int i = 0; i < colorAttachments.Length; i++)
+            for (int32 i = 0; i < colorAttachments.Length; i++)
             {
                 colorAttachments[i] = new OutputAttachmentDescription(fb.ColorTargets[i].Target.Format);
                 sampleCount = fb.ColorTargets[i].Target.SampleCount;
@@ -84,12 +84,12 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 DepthAttachment.GetHashCode(),
                 HashHelper.Array(ColorAttachments),
-                (int)SampleCount);
+                (int32)SampleCount);
         }
     }
 }

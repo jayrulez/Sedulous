@@ -13,26 +13,26 @@ namespace Sedulous.GAL.VK
         private readonly VkMemoryBlock _memoryBlock;
         private readonly Vulkan.VkBuffer _stagingBuffer;
         private PixelFormat _format; // Static for regular images -- may change for shared staging images
-        private readonly uint _actualImageArrayLayers;
+        private readonly uint32 _actualImageArrayLayers;
         private bool _destroyed;
 
         // Immutable except for shared staging Textures.
-        private uint _width;
-        private uint _height;
-        private uint _depth;
+        private uint32 _width;
+        private uint32 _height;
+        private uint32 _depth;
 
-        public override uint Width => _width;
+        public override uint32 Width => _width;
 
-        public override uint Height => _height;
+        public override uint32 Height => _height;
 
-        public override uint Depth => _depth;
+        public override uint32 Depth => _depth;
 
         public override PixelFormat Format => _format;
 
-        public override uint MipLevels { get; }
+        public override uint32 MipLevels { get; }
 
-        public override uint ArrayLayers { get; }
-        public uint ActualArrayLayers => _actualImageArrayLayers;
+        public override uint32 ArrayLayers { get; }
+        public uint32 ActualArrayLayers => _actualImageArrayLayers;
 
         public override TextureUsage Usage { get; }
 
@@ -98,7 +98,7 @@ namespace Sedulous.GAL.VK
                     imageCI.flags |= VkImageCreateFlags.CubeCompatible;
                 }
 
-                uint subresourceCount = MipLevels * _actualImageArrayLayers * Depth;
+                uint32 subresourceCount = MipLevels * _actualImageArrayLayers * Depth;
                 VkResult result = vkCreateImage(gd.Device, ref imageCI, null, out _optimalImage);
                 CheckResult(result);
 
@@ -136,21 +136,21 @@ namespace Sedulous.GAL.VK
                 CheckResult(result);
 
                 _imageLayouts = new VkImageLayout[subresourceCount];
-                for (int i = 0; i < _imageLayouts.Length; i++)
+                for (int32 i = 0; i < _imageLayouts.Length; i++)
                 {
                     _imageLayouts[i] = VkImageLayout.Preinitialized;
                 }
             }
             else // isStaging
             {
-                uint depthPitch = FormatHelpers.GetDepthPitch(
+                uint32 depthPitch = FormatHelpers.GetDepthPitch(
                     FormatHelpers.GetRowPitch(Width, Format),
                     Height,
                     Format);
-                uint stagingSize = depthPitch * Depth;
-                for (uint level = 1; level < MipLevels; level++)
+                uint32 stagingSize = depthPitch * Depth;
+                for (uint32 level = 1; level < MipLevels; level++)
                 {
-                    Util.GetMipDimensions(this, level, out uint mipWidth, out uint mipHeight, out uint mipDepth);
+                    Util.GetMipDimensions(this, level, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
 
                     depthPitch = FormatHelpers.GetDepthPitch(
                         FormatHelpers.GetRowPitch(mipWidth, Format),
@@ -215,10 +215,10 @@ namespace Sedulous.GAL.VK
         // Used to construct Swapchain textures.
         internal VKTexture(
             VKGraphicsDevice gd,
-            uint width,
-            uint height,
-            uint mipLevels,
-            uint arrayLayers,
+            uint32 width,
+            uint32 height,
+            uint32 mipLevels,
+            uint32 arrayLayers,
             VkFormat vkFormat,
             TextureUsage usage,
             TextureSampleCount sampleCount,
@@ -266,10 +266,10 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        internal VkSubresourceLayout GetSubresourceLayout(uint subresource)
+        internal VkSubresourceLayout GetSubresourceLayout(uint32 subresource)
         {
             bool staging = _stagingBuffer.Handle != 0;
-            Util.GetMipLevelAndArrayLayer(this, subresource, out uint mipLevel, out uint arrayLayer);
+            Util.GetMipLevelAndArrayLayer(this, subresource, out uint32 mipLevel, out uint32 arrayLayer);
             if (!staging)
             {
                 VkImageAspectFlags aspect = (Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil
@@ -287,10 +287,10 @@ namespace Sedulous.GAL.VK
             }
             else
             {
-                uint blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-                Util.GetMipDimensions(this, mipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-                uint rowPitch = FormatHelpers.GetRowPitch(mipWidth, Format);
-                uint depthPitch = FormatHelpers.GetDepthPitch(rowPitch, mipHeight, Format);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
+                Util.GetMipDimensions(this, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                uint32 rowPitch = FormatHelpers.GetRowPitch(mipWidth, Format);
+                uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, mipHeight, Format);
 
                 VkSubresourceLayout layout = new VkSubresourceLayout()
                 {
@@ -307,10 +307,10 @@ namespace Sedulous.GAL.VK
 
         internal void TransitionImageLayout(
             VkCommandBuffer cb,
-            uint baseMipLevel,
-            uint levelCount,
-            uint baseArrayLayer,
-            uint layerCount,
+            uint32 baseMipLevel,
+            uint32 levelCount,
+            uint32 baseArrayLayer,
+            uint32 layerCount,
             VkImageLayout newLayout)
         {
             if (_stagingBuffer != Vulkan.VkBuffer.Null)
@@ -320,9 +320,9 @@ namespace Sedulous.GAL.VK
 
             VkImageLayout oldLayout = _imageLayouts[CalculateSubresource(baseMipLevel, baseArrayLayer)];
 #if DEBUG
-            for (uint level = 0; level < levelCount; level++)
+            for (uint32 level = 0; level < levelCount; level++)
             {
-                for (uint layer = 0; layer < layerCount; layer++)
+                for (uint32 layer = 0; layer < layerCount; layer++)
                 {
                     if (_imageLayouts[CalculateSubresource(baseMipLevel + level, baseArrayLayer + layer)] != oldLayout)
                     {
@@ -355,9 +355,9 @@ namespace Sedulous.GAL.VK
                     _imageLayouts[CalculateSubresource(baseMipLevel, baseArrayLayer)],
                     newLayout);
 
-                for (uint level = 0; level < levelCount; level++)
+                for (uint32 level = 0; level < levelCount; level++)
                 {
-                    for (uint layer = 0; layer < layerCount; layer++)
+                    for (uint32 layer = 0; layer < layerCount; layer++)
                     {
                         _imageLayouts[CalculateSubresource(baseMipLevel + level, baseArrayLayer + layer)] = newLayout;
                     }
@@ -367,10 +367,10 @@ namespace Sedulous.GAL.VK
 
         internal void TransitionImageLayoutNonmatching(
             VkCommandBuffer cb,
-            uint baseMipLevel,
-            uint levelCount,
-            uint baseArrayLayer,
-            uint layerCount,
+            uint32 baseMipLevel,
+            uint32 levelCount,
+            uint32 baseArrayLayer,
+            uint32 layerCount,
             VkImageLayout newLayout)
         {
             if (_stagingBuffer != Vulkan.VkBuffer.Null)
@@ -378,11 +378,11 @@ namespace Sedulous.GAL.VK
                 return;
             }
 
-            for (uint level = baseMipLevel; level < baseMipLevel + levelCount; level++)
+            for (uint32 level = baseMipLevel; level < baseMipLevel + levelCount; level++)
             {
-                for (uint layer = baseArrayLayer; layer < baseArrayLayer + layerCount; layer++)
+                for (uint32 layer = baseArrayLayer; layer < baseArrayLayer + layerCount; layer++)
                 {
-                    uint subresource = CalculateSubresource(level, layer);
+                    uint32 subresource = CalculateSubresource(level, layer);
                     VkImageLayout oldLayout = _imageLayouts[subresource];
 
                     if (oldLayout != newLayout)
@@ -415,7 +415,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        internal VkImageLayout GetImageLayout(uint mipLevel, uint arrayLayer)
+        internal VkImageLayout GetImageLayout(uint32 mipLevel, uint32 arrayLayer)
         {
             return _imageLayouts[CalculateSubresource(mipLevel, arrayLayer)];
         }
@@ -430,7 +430,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        internal void SetStagingDimensions(uint width, uint height, uint depth, PixelFormat format)
+        internal void SetStagingDimensions(uint32 width, uint32 height, uint32 depth, PixelFormat format)
         {
             Debug.Assert(_stagingBuffer != Vulkan.VkBuffer.Null);
             Debug.Assert(Usage == TextureUsage.Staging);
@@ -470,7 +470,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        internal void SetImageLayout(uint mipLevel, uint arrayLayer, VkImageLayout layout)
+        internal void SetImageLayout(uint32 mipLevel, uint32 arrayLayer, VkImageLayout layout)
         {
             _imageLayouts[CalculateSubresource(mipLevel, arrayLayer)] = layout;
         }

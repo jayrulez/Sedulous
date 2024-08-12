@@ -53,7 +53,7 @@ namespace Veldrid
                 if (description.BlendState.AttachmentStates.Length > 0)
                 {
                     BlendAttachmentDescription attachmentState = description.BlendState.AttachmentStates[0];
-                    for (int i = 1; i < description.BlendState.AttachmentStates.Length; i++)
+                    for (int32 i = 1; i < description.BlendState.AttachmentStates.Length; i++)
                     {
                         if (!attachmentState.Equals(description.BlendState.AttachmentStates[i]))
                         {
@@ -66,7 +66,7 @@ namespace Veldrid
             for (VertexLayoutDescription layoutDesc in description.ShaderSet.VertexLayouts)
             {
                 bool hasExplicitLayout = false;
-                uint minOffset = 0;
+                uint32 minOffset = 0;
                 for (VertexElementDescription elementDesc in layoutDesc.Elements)
                 {
                     if (hasExplicitLayout && elementDesc.Offset == 0)
@@ -190,7 +190,7 @@ namespace Veldrid
         /// The properties of the Texture will be determined from the <see cref="TextureDescription"/> passed in. These
         /// properties must match the true properties of the existing native texture.
         /// </remarks>
-        public Texture CreateTexture(ulong nativeTexture, TextureDescription description)
+        public Texture CreateTexture(uint64 nativeTexture, TextureDescription description)
             => CreateTextureCore(nativeTexture, ref description);
 
         /// <summary>
@@ -210,14 +210,14 @@ namespace Veldrid
         /// The properties of the Texture will be determined from the <see cref="TextureDescription"/> passed in. These
         /// properties must match the true properties of the existing native texture.
         /// </remarks>
-        public Texture CreateTexture(ulong nativeTexture, ref TextureDescription description)
+        public Texture CreateTexture(uint64 nativeTexture, ref TextureDescription description)
             => CreateTextureCore(nativeTexture, ref description);
 
         /// <summary></summary>
         /// <param name="nativeTexture"></param>
         /// <param name="description"></param>
         /// <returns></returns>
-        protected abstract Texture CreateTextureCore(ulong nativeTexture, ref TextureDescription description);
+        protected abstract Texture CreateTextureCore(uint64 nativeTexture, ref TextureDescription description);
 
         // TODO: private protected
         /// <summary>

@@ -14,7 +14,7 @@ namespace Sedulous.GAL.D3D11
         private readonly PixelFormat? _depthFormat;
         private readonly IDXGISwapChain _dxgiSwapChain;
         private bool _vsync;
-        private int _syncInterval;
+        private int32 _syncInterval;
         private D3D11Framebuffer _framebuffer;
         private D3D11Texture _depthTexture;
         private float _pixelScale = 1f;
@@ -31,8 +31,8 @@ namespace Sedulous.GAL.D3D11
             {
                 unsafe
                 {
-                    byte* pname = stackalloc byte[1024];
-                    int size = 1024 - 1;
+                    uint8* pname = stackalloc uint8[1024];
+                    int32 size = 1024 - 1;
                     _dxgiSwapChain.GetPrivateData(CommonGuid.DebugObjectName, ref size, new IntPtr(pname));
                     pname[size] = 0;
                     return Marshal.PtrToStringAnsi(new IntPtr(pname));
@@ -66,7 +66,7 @@ namespace Sedulous.GAL.D3D11
 
         public IDXGISwapChain DxgiSwapChain => _dxgiSwapChain;
 
-        public int SyncInterval => _syncInterval;
+        public int32 SyncInterval => _syncInterval;
 
         public D3D11Swapchain(D3D11GraphicsDevice gd, ref SwapchainDescription description)
         {
@@ -85,7 +85,7 @@ namespace Sedulous.GAL.D3D11
                     BufferCount = 2,
                     Windowed = true,
                     BufferDescription = new ModeDescription(
-                        (int)description.Width, (int)description.Height, _colorFormat),
+                        (int32)description.Width, (int32)description.Height, _colorFormat),
                     OutputWindow = win32Source.Hwnd,
                     SampleDescription = new SampleDescription(1, 0),
                     SwapEffect = SwapEffect.Discard,
@@ -108,8 +108,8 @@ namespace Sedulous.GAL.D3D11
                     AlphaMode = AlphaMode.Ignore,
                     BufferCount = 2,
                     Format = _colorFormat,
-                    Height = (int)(description.Height * _pixelScale),
-                    Width = (int)(description.Width * _pixelScale),
+                    Height = (int32)(description.Height * _pixelScale),
+                    Width = (int32)(description.Width * _pixelScale),
                     SampleDescription = new SampleDescription(1, 0),
                     SwapEffect = SwapEffect.FlipSequential,
                     BufferUsage = Usage.RenderTargetOutput,
@@ -145,7 +145,7 @@ namespace Sedulous.GAL.D3D11
             Resize(description.Width, description.Height);
         }
 
-        public override void Resize(uint width, uint height)
+        public override void Resize(uint32 width, uint32 height)
         {
             lock (_referencedCLsLock)
             {
@@ -170,11 +170,11 @@ namespace Sedulous.GAL.D3D11
                 _framebuffer.Dispose();
             }
 
-            uint actualWidth = (uint)(width * _pixelScale);
-            uint actualHeight = (uint)(height * _pixelScale);
+            uint32 actualWidth = (uint32)(width * _pixelScale);
+            uint32 actualHeight = (uint32)(height * _pixelScale);
             if (resizeBuffers)
             {
-                _dxgiSwapChain.ResizeBuffers(2, (int)actualWidth, (int)actualHeight, _colorFormat, SwapChainFlags.None).CheckError();
+                _dxgiSwapChain.ResizeBuffers(2, (int32)actualWidth, (int32)actualHeight, _colorFormat, SwapChainFlags.None).CheckError();
             }
 
             // Get the backbuffer from the swapchain

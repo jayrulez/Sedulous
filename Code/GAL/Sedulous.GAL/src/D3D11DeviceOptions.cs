@@ -16,6 +16,6 @@ namespace Veldrid
         /// Set of device specific flags.
         /// See <see cref="Vortice.Direct3D11.DeviceCreationFlags"/> for details.
         /// </summary>
-        public uint DeviceCreationFlags;
+        public uint32 DeviceCreationFlags;
     }
 }

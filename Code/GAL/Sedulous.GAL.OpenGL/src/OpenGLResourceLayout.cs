@@ -16,7 +16,7 @@
             Elements = Util.ShallowClone(description.Elements);
         }
 
-        public bool IsDynamicBuffer(uint slot)
+        public bool IsDynamicBuffer(uint32 slot)
         {
             return (Elements[slot].Options & ResourceLayoutElementOptions.DynamicBinding) != 0;
         }

@@ -19,16 +19,16 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        public static bool TryFindMemoryType(VkPhysicalDeviceMemoryProperties memProperties, uint typeFilter, VkMemoryPropertyFlags properties, out uint typeIndex)
+        public static bool TryFindMemoryType(VkPhysicalDeviceMemoryProperties memProperties, uint32 typeFilter, VkMemoryPropertyFlags properties, out uint32 typeIndex)
         {
             typeIndex = 0;
 
-            for (int i = 0; i < memProperties.memoryTypeCount; i++)
+            for (int32 i = 0; i < memProperties.memoryTypeCount; i++)
             {
                 if (((typeFilter & (1 << i)) != 0)
-                    && (memProperties.GetMemoryType((uint)i).propertyFlags & properties) == properties)
+                    && (memProperties.GetMemoryType((uint32)i).propertyFlags & properties) == properties)
                 {
-                    typeIndex = (uint)i;
+                    typeIndex = (uint32)i;
                     return true;
                 }
             }
@@ -38,7 +38,7 @@ namespace Sedulous.GAL.VK
 
         public static string[] EnumerateInstanceLayers()
         {
-            uint propCount = 0;
+            uint32 propCount = 0;
             VkResult result = vkEnumerateInstanceLayerProperties(ref propCount, null);
             CheckResult(result);
             if (propCount == 0)
@@ -50,9 +50,9 @@ namespace Sedulous.GAL.VK
             vkEnumerateInstanceLayerProperties(ref propCount, ref props[0]);
 
             string[] ret = new string[propCount];
-            for (int i = 0; i < propCount; i++)
+            for (int32 i = 0; i < propCount; i++)
             {
-                fixed (byte* layerNamePtr = props[i].layerName)
+                fixed (uint8* layerNamePtr = props[i].layerName)
                 {
                     ret[i] = Util.GetString(layerNamePtr);
                 }
@@ -70,8 +70,8 @@ namespace Sedulous.GAL.VK
                 return Array.Empty<string>();
             }
 
-            uint propCount = 0;
-            VkResult result = vkEnumerateInstanceExtensionProperties((byte*)null, ref propCount, null);
+            uint32 propCount = 0;
+            VkResult result = vkEnumerateInstanceExtensionProperties((uint8*)null, ref propCount, null);
             if (result != VkResult.Success)
             {
                 return Array.Empty<string>();
@@ -83,12 +83,12 @@ namespace Sedulous.GAL.VK
             }
 
             VkExtensionProperties[] props = new VkExtensionProperties[propCount];
-            vkEnumerateInstanceExtensionProperties((byte*)null, ref propCount, ref props[0]);
+            vkEnumerateInstanceExtensionProperties((uint8*)null, ref propCount, ref props[0]);
 
             string[] ret = new string[propCount];
-            for (int i = 0; i < propCount; i++)
+            for (int32 i = 0; i < propCount; i++)
             {
-                fixed (byte* extensionNamePtr = props[i].extensionName)
+                fixed (uint8* extensionNamePtr = props[i].extensionName)
                 {
                     ret[i] = Util.GetString(extensionNamePtr);
                 }
@@ -102,8 +102,8 @@ namespace Sedulous.GAL.VK
         {
             try
             {
-                uint propCount;
-                vkEnumerateInstanceExtensionProperties((byte*)null, &propCount, null);
+                uint32 propCount;
+                vkEnumerateInstanceExtensionProperties((uint8*)null, &propCount, null);
                 return true;
             }
             catch { return false; }
@@ -112,10 +112,10 @@ namespace Sedulous.GAL.VK
         public static void TransitionImageLayout(
             VkCommandBuffer cb,
             VkImage image,
-            uint baseMipLevel,
-            uint levelCount,
-            uint baseArrayLayer,
-            uint layerCount,
+            uint32 baseMipLevel,
+            uint32 levelCount,
+            uint32 baseArrayLayer,
+            uint32 layerCount,
             VkImageAspectFlags aspectMask,
             VkImageLayout oldLayout,
             VkImageLayout newLayout)
@@ -316,7 +316,7 @@ namespace Sedulous.GAL.VK
 
     internal static class VkPhysicalDeviceMemoryPropertiesEx
     {
-        public static VkMemoryType GetMemoryType(this VkPhysicalDeviceMemoryProperties memoryProperties, uint index)
+        public static VkMemoryType GetMemoryType(this VkPhysicalDeviceMemoryProperties memoryProperties, uint32 index)
         {
             return (&memoryProperties.memoryTypes_0)[index];
         }

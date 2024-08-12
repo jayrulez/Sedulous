@@ -19,15 +19,15 @@ namespace Veldrid
         /// <summary>
         /// The X dimension of the thread group size.
         /// </summary>
-        public uint ThreadGroupSizeX;
+        public uint32 ThreadGroupSizeX;
         /// <summary>
         /// The Y dimension of the thread group size.
         /// </summary>
-        public uint ThreadGroupSizeY;
+        public uint32 ThreadGroupSizeY;
         /// <summary>
         /// The Z dimension of the thread group size.
         /// </summary>
-        public uint ThreadGroupSizeZ;
+        public uint32 ThreadGroupSizeZ;
         /// <summary>
         /// An array of <see cref="SpecializationConstant"/> used to override specialization constants in the created
         /// <see cref="Pipeline"/>. Each element in this array describes a single ID-value pair, which will be matched with the
@@ -47,9 +47,9 @@ namespace Veldrid
         public ComputePipelineDescription(
             Shader computeShader,
             ResourceLayout[] resourceLayouts,
-            uint threadGroupSizeX,
-            uint threadGroupSizeY,
-            uint threadGroupSizeZ)
+            uint32 threadGroupSizeX,
+            uint32 threadGroupSizeY,
+            uint32 threadGroupSizeZ)
         {
             ComputeShader = computeShader;
             ResourceLayouts = resourceLayouts;
@@ -71,9 +71,9 @@ namespace Veldrid
         public ComputePipelineDescription(
             Shader shaderStage,
             ResourceLayout resourceLayout,
-            uint threadGroupSizeX,
-            uint threadGroupSizeY,
-            uint threadGroupSizeZ)
+            uint32 threadGroupSizeX,
+            uint32 threadGroupSizeY,
+            uint32 threadGroupSizeZ)
         {
             ComputeShader = shaderStage;
             ResourceLayouts = new[] { resourceLayout };
@@ -98,9 +98,9 @@ namespace Veldrid
         public ComputePipelineDescription(
             Shader shaderStage,
             ResourceLayout resourceLayout,
-            uint threadGroupSizeX,
-            uint threadGroupSizeY,
-            uint threadGroupSizeZ,
+            uint32 threadGroupSizeX,
+            uint32 threadGroupSizeY,
+            uint32 threadGroupSizeZ,
             SpecializationConstant[] specializations)
         {
             ComputeShader = shaderStage;
@@ -129,7 +129,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 ComputeShader.GetHashCode(),

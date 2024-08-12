@@ -6,7 +6,7 @@ namespace Sedulous.GAL.VK
     internal class ResourceRefCount
     {
         private readonly Action _disposeAction;
-        private int _refCount;
+        private int32 _refCount;
 
         public ResourceRefCount(Action disposeAction)
         {
@@ -14,9 +14,9 @@ namespace Sedulous.GAL.VK
             _refCount = 1;
         }
 
-        public int Increment()
+        public int32 Increment()
         {
-            int ret = Interlocked.Increment(ref _refCount);
+            int32 ret = Interlocked.Increment(ref _refCount);
 #if VALIDATE_USAGE
             if (ret == 0)
             {
@@ -26,9 +26,9 @@ namespace Sedulous.GAL.VK
             return ret;
         }
 
-        public int Decrement()
+        public int32 Decrement()
         {
-            int ret = Interlocked.Decrement(ref _refCount);
+            int32 ret = Interlocked.Decrement(ref _refCount);
             if (ret == 0)
             {
                 _disposeAction();

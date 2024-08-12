@@ -97,17 +97,17 @@ namespace Veldrid
         /// multiple of this value. When binding a <see cref="ResourceSet"/> to a <see cref="CommandList"/> with an overload
         /// accepting dynamic offsets, each offset must be a multiple of this value.
         /// </summary>
-        public uint UniformBufferMinOffsetAlignment => GetUniformBufferMinOffsetAlignmentCore();
+        public uint32 UniformBufferMinOffsetAlignment => GetUniformBufferMinOffsetAlignmentCore();
 
         /// <summary>
         /// The required alignment, in bytes, for structured buffer offsets. <see cref="DeviceBufferRange.Offset"/> must be a
         /// multiple of this value. When binding a <see cref="ResourceSet"/> to a <see cref="CommandList"/> with an overload
         /// accepting dynamic offsets, each offset must be a multiple of this value.
         /// </summary>
-        public uint StructuredBufferMinOffsetAlignment => GetStructuredBufferMinOffsetAlignmentCore();
+        public uint32 StructuredBufferMinOffsetAlignment => GetStructuredBufferMinOffsetAlignmentCore();
 
-        internal abstract uint GetUniformBufferMinOffsetAlignmentCore();
-        internal abstract uint GetStructuredBufferMinOffsetAlignmentCore();
+        internal abstract uint32 GetUniformBufferMinOffsetAlignmentCore();
+        internal abstract uint32 GetStructuredBufferMinOffsetAlignmentCore();
 
         /// <summary>
         /// Submits the given <see cref="CommandList"/> for execution by this device.
@@ -141,7 +141,7 @@ namespace Veldrid
         /// <param name="fence">The <see cref="Fence"/> instance to wait on.</param>
         public void WaitForFence(Fence fence)
         {
-            if (!WaitForFence(fence, ulong.MaxValue))
+            if (!WaitForFence(fence, uint64.MaxValue))
             {
                 throw new VeldridException("The operation timed out before the Fence was signaled.");
             }
@@ -155,7 +155,7 @@ namespace Veldrid
         /// <param name="timeout">A TimeSpan indicating the maximum time to wait on the Fence.</param>
         /// <returns>True if the Fence was signaled. False if the timeout was reached instead.</returns>
         public bool WaitForFence(Fence fence, TimeSpan timeout)
-            => WaitForFence(fence, (ulong)timeout.TotalMilliseconds * 1_000_000);
+            => WaitForFence(fence, (uint64)timeout.TotalMilliseconds * 1_000_000);
         /// <summary>
         /// Blocks the calling thread until the given <see cref="Fence"/> becomes signaled, or until a time greater than the
         /// given TimeSpan has elapsed.
@@ -163,7 +163,7 @@ namespace Veldrid
         /// <param name="fence">The <see cref="Fence"/> instance to wait on.</param>
         /// <param name="nanosecondTimeout">A value in nanoseconds, indicating the maximum time to wait on the Fence.</param>
         /// <returns>True if the Fence was signaled. False if the timeout was reached instead.</returns>
-        public abstract bool WaitForFence(Fence fence, ulong nanosecondTimeout);
+        public abstract bool WaitForFence(Fence fence, uint64 nanosecondTimeout);
 
         /// <summary>
         /// Blocks the calling thread until one or all of the given <see cref="Fence"/> instances have become signaled.
@@ -173,7 +173,7 @@ namespace Veldrid
         /// If false, then this method only waits until one of the Fences become signaled.</param>
         public void WaitForFences(Fence[] fences, bool waitAll)
         {
-            if (!WaitForFences(fences, waitAll, ulong.MaxValue))
+            if (!WaitForFences(fences, waitAll, uint64.MaxValue))
             {
                 throw new VeldridException("The operation timed out before the Fence(s) were signaled.");
             }
@@ -189,7 +189,7 @@ namespace Veldrid
         /// <param name="timeout">A TimeSpan indicating the maximum time to wait on the Fences.</param>
         /// <returns>True if the Fence was signaled. False if the timeout was reached instead.</returns>
         public bool WaitForFences(Fence[] fences, bool waitAll, TimeSpan timeout)
-            => WaitForFences(fences, waitAll, (ulong)timeout.TotalMilliseconds * 1_000_000);
+            => WaitForFences(fences, waitAll, (uint64)timeout.TotalMilliseconds * 1_000_000);
 
         /// <summary>
         /// Blocks the calling thread until one or all of the given <see cref="Fence"/> instances have become signaled,
@@ -198,9 +198,9 @@ namespace Veldrid
         /// <param name="fences">An array of <see cref="Fence"/> objects to wait on.</param>
         /// <param name="waitAll">If true, then this method blocks until all of the given Fences become signaled.
         /// If false, then this method only waits until one of the Fences become signaled.</param>
-        /// <param name="nanosecondTimeout">A value in nanoseconds, indicating the maximum time to wait on the Fence.  Pass ulong.MaxValue to wait indefinitely.</param>
+        /// <param name="nanosecondTimeout">A value in nanoseconds, indicating the maximum time to wait on the Fence.  Pass uint64.MaxValue to wait indefinitely.</param>
         /// <returns>True if the Fence was signaled. False if the timeout was reached instead.</returns>
-        public abstract bool WaitForFences(Fence[] fences, bool waitAll, ulong nanosecondTimeout);
+        public abstract bool WaitForFences(Fence[] fences, bool waitAll, uint64 nanosecondTimeout);
 
         /// <summary>
         /// Resets the given <see cref="Fence"/> to the unsignaled state.
@@ -241,12 +241,12 @@ namespace Veldrid
         /// <summary>
         /// Notifies this instance that the main window has been resized. This causes the <see cref="SwapchainFramebuffer"/> to
         /// be appropriately resized and recreated.
-        /// This is equivalent to calling <see cref="MainSwapchain"/>.<see cref="Swapchain.Resize(uint, uint)"/>.
+        /// This is equivalent to calling <see cref="MainSwapchain"/>.<see cref="Swapchain.Resize(uint32, uint32)"/>.
         /// This method can only be called if this GraphicsDevice was created with a main Swapchain.
         /// </summary>
         /// <param name="width">The new width of the main window.</param>
         /// <param name="height">The new height of the main window.</param>
-        public void ResizeMainWindow(uint width, uint height)
+        public void ResizeMainWindow(uint32 width, uint32 height)
         {
             if (MainSwapchain == null)
             {
@@ -292,7 +292,7 @@ namespace Veldrid
         /// <param name="subresource">The subresource to map. Subresources are indexed first by mip slice, then by array layer.
         /// For <see cref="DeviceBuffer"/> resources, this parameter must be 0.</param>
         /// <returns>A <see cref="MappedResource"/> structure describing the mapped data region.</returns>
-        public MappedResource Map(MappableResource resource, MapMode mode, uint subresource)
+        public MappedResource Map(MappableResource resource, MapMode mode, uint32 subresource)
         {
 #if VALIDATE_USAGE
             if (resource is DeviceBuffer buffer)
@@ -335,7 +335,7 @@ namespace Veldrid
         /// <param name="mode"></param>
         /// <param name="subresource"></param>
         /// <returns></returns>
-        protected abstract MappedResource MapCore(MappableResource resource, MapMode mode, uint subresource);
+        protected abstract MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource);
 
         /// <summary>
         /// Maps a <see cref="DeviceBuffer"/> or <see cref="Texture"/> into a CPU-accessible data region, and returns a structured
@@ -356,7 +356,7 @@ namespace Veldrid
         /// <param name="subresource">The subresource to map. Subresources are indexed first by mip slice, then by array layer.</param>
         /// <typeparam name="T">The blittable value type which mapped data is viewed as.</typeparam>
         /// <returns>A <see cref="MappedResource"/> structure describing the mapped data region.</returns>
-        public MappedResourceView<T> Map<T>(MappableResource resource, MapMode mode, uint subresource) where T : unmanaged
+        public MappedResourceView<T> Map<T>(MappableResource resource, MapMode mode, uint32 subresource) where T : unmanaged
         {
             MappedResource mappedResource = Map(resource, mode, subresource);
             return new MappedResourceView<T>(mappedResource);
@@ -374,7 +374,7 @@ namespace Veldrid
         /// <param name="resource">The resource to unmap.</param>
         /// <param name="subresource">The subresource to unmap. Subresources are indexed first by mip slice, then by array layer.
         /// For <see cref="DeviceBuffer"/> resources, this parameter must be 0.</param>
-        public void Unmap(MappableResource resource, uint subresource)
+        public void Unmap(MappableResource resource, uint32 subresource)
         {
             UnmapCore(resource, subresource);
         }
@@ -383,7 +383,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="resource"></param>
         /// <param name="subresource"></param>
-        protected abstract void UnmapCore(MappableResource resource, uint subresource);
+        protected abstract void UnmapCore(MappableResource resource, uint32 subresource);
 
         /// <summary>
         /// Updates a portion of a <see cref="Texture"/> resource with new data.
@@ -406,10 +406,10 @@ namespace Veldrid
         public void UpdateTexture(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer)
         {
 #if VALIDATE_USAGE
             ValidateUpdateTextureParameters(texture, sizeInBytes, x, y, z, width, height, depth, mipLevel, arrayLayer);
@@ -436,9 +436,9 @@ namespace Veldrid
         public void UpdateTexture<T>(
             Texture texture,
             T[] source,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer) where T : unmanaged
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer) where T : unmanaged
         {
             UpdateTexture(texture, (ReadOnlySpan<T>)source, x, y, z, width, height, depth, mipLevel, arrayLayer);
         }
@@ -462,11 +462,11 @@ namespace Veldrid
         public void UpdateTexture<T>(
             Texture texture,
             ReadOnlySpan<T> source,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer) where T : unmanaged
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer) where T : unmanaged
         {
-            uint sizeInBytes = (uint)(sizeof(T) * source.Length);
+            uint32 sizeInBytes = (uint32)(sizeof(T) * source.Length);
 #if VALIDATE_USAGE
             ValidateUpdateTextureParameters(texture, sizeInBytes, x, y, z, width, height, depth, mipLevel, arrayLayer);
 #endif
@@ -502,9 +502,9 @@ namespace Veldrid
         public void UpdateTexture<T>(
             Texture texture,
             Span<T> source,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer) where T : unmanaged
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer) where T : unmanaged
         {
             UpdateTexture(texture, (ReadOnlySpan<T>)source, x, y, z, width, height, depth, mipLevel, arrayLayer);
         }
@@ -512,31 +512,31 @@ namespace Veldrid
         private protected abstract void UpdateTextureCore(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer);
+            uint32 sizeInBytes,
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer);
 
         [Conditional("VALIDATE_USAGE")]
         private static void ValidateUpdateTextureParameters(
             Texture texture,
-            uint sizeInBytes,
-            uint x, uint y, uint z,
-            uint width, uint height, uint depth,
-            uint mipLevel, uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x, uint32 y, uint32 z,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 mipLevel, uint32 arrayLayer)
         {
             if (FormatHelpers.IsCompressedFormat(texture.Format))
             {
                 if (x % 4 != 0 || y % 4 != 0 || height % 4 != 0 || width % 4 != 0)
                 {
-                    Util.GetMipDimensions(texture, mipLevel, out uint mipWidth, out uint mipHeight, out _);
+                    Util.GetMipDimensions(texture, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out _);
                     if (width != mipWidth && height != mipHeight)
                     {
                         throw new VeldridException($"Updates to block-compressed textures must use a region that is block-size aligned and sized.");
                     }
                 }
             }
-            uint expectedSize = FormatHelpers.GetRegionSize(width, height, depth, texture.Format);
+            uint32 expectedSize = FormatHelpers.GetRegionSize(width, height, depth, texture.Format);
             if (sizeInBytes < expectedSize)
             {
                 throw new VeldridException(
@@ -545,7 +545,7 @@ namespace Veldrid
 
             // Compressed textures don't necessarily need to have a Texture.Width and Texture.Height that are a multiple of 4.
             // But the mipdata width and height *does* need to be a multiple of 4.
-            uint roundedTextureWidth, roundedTextureHeight;
+            uint32 roundedTextureWidth, roundedTextureHeight;
             if (FormatHelpers.IsCompressedFormat(texture.Format))
             {
                 roundedTextureWidth = (texture.Width + 3) / 4 * 4;
@@ -568,7 +568,7 @@ namespace Veldrid
                     $"{nameof(mipLevel)} ({mipLevel}) must be less than the Texture's mip level count ({texture.MipLevels}).");
             }
 
-            uint effectiveArrayLayers = texture.ArrayLayers;
+            uint32 effectiveArrayLayers = texture.ArrayLayers;
             if ((texture.Usage & TextureUsage.Cubemap) != 0)
             {
                 effectiveArrayLayers *= 6;
@@ -591,13 +591,13 @@ namespace Veldrid
         /// <param name="source">The value to upload.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             T source) where T : unmanaged
         {
-            ref byte sourceByteRef = ref Unsafe.AsRef<byte>(Unsafe.AsPointer(ref source));
-            fixed (byte* ptr = &sourceByteRef)
+            ref uint8 sourceByteRef = ref Unsafe.AsRef<uint8>(Unsafe.AsPointer(ref source));
+            fixed (uint8* ptr = &sourceByteRef)
             {
-                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)ptr, (uint)sizeof(T));
+                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)ptr, (uint32)sizeof(T));
             }
         }
 
@@ -612,13 +612,13 @@ namespace Veldrid
         /// <param name="source">A reference to the single value to upload.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             ref T source) where T : unmanaged
         {
-            ref byte sourceByteRef = ref Unsafe.AsRef<byte>(Unsafe.AsPointer(ref source));
-            fixed (byte* ptr = &sourceByteRef)
+            ref uint8 sourceByteRef = ref Unsafe.AsRef<uint8>(Unsafe.AsPointer(ref source));
+            fixed (uint8* ptr = &sourceByteRef)
             {
-                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)ptr, (uint)sizeof(T));
+                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)ptr, (uint32)sizeof(T));
             }
         }
 
@@ -634,12 +634,12 @@ namespace Veldrid
         /// <param name="sizeInBytes">The total size of the uploaded data, in bytes.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             ref T source,
-            uint sizeInBytes) where T : unmanaged
+            uint32 sizeInBytes) where T : unmanaged
         {
-            ref byte sourceByteRef = ref Unsafe.AsRef<byte>(Unsafe.AsPointer(ref source));
-            fixed (byte* ptr = &sourceByteRef)
+            ref uint8 sourceByteRef = ref Unsafe.AsRef<uint8>(Unsafe.AsPointer(ref source));
+            fixed (uint8* ptr = &sourceByteRef)
             {
                 UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)ptr, sizeInBytes);
             }
@@ -656,7 +656,7 @@ namespace Veldrid
         /// <param name="source">An array containing the data to upload.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             T[] source) where T : unmanaged
         {
             UpdateBuffer(buffer, bufferOffsetInBytes, (ReadOnlySpan<T>)source);
@@ -673,12 +673,12 @@ namespace Veldrid
         /// <param name="source">A readonly span containing the data to upload.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             ReadOnlySpan<T> source) where T : unmanaged
         {
             fixed (void* pin = &MemoryMarshal.GetReference(source))
             {
-                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)pin, (uint)(sizeof(T) * source.Length));
+                UpdateBuffer(buffer, bufferOffsetInBytes, (IntPtr)pin, (uint32)(sizeof(T) * source.Length));
             }
         }
 
@@ -693,7 +693,7 @@ namespace Veldrid
         /// <param name="source">A span containing the data to upload.</param>
         public void UpdateBuffer<T>(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             Span<T> source) where T : unmanaged
         {
             UpdateBuffer(buffer, bufferOffsetInBytes, (ReadOnlySpan<T>)source);
@@ -709,9 +709,9 @@ namespace Veldrid
         /// <param name="sizeInBytes">The total size of the uploaded data, in bytes.</param>
         public void UpdateBuffer(
             DeviceBuffer buffer,
-            uint bufferOffsetInBytes,
+            uint32 bufferOffsetInBytes,
             IntPtr source,
-            uint sizeInBytes)
+            uint32 sizeInBytes)
         {
             if (bufferOffsetInBytes + sizeInBytes > buffer.SizeInBytes)
             {
@@ -725,7 +725,7 @@ namespace Veldrid
             UpdateBufferCore(buffer, bufferOffsetInBytes, source, sizeInBytes);
         }
 
-        private protected abstract void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes);
+        private protected abstract void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes);
 
         /// <summary>
         /// Gets whether or not the given <see cref="PixelFormat"/>, <see cref="TextureType"/>, and <see cref="TextureUsage"/>
@@ -1055,7 +1055,7 @@ namespace Veldrid
         /// <param name="width">The initial width of the window.</param>
         /// <param name="height">The initial height of the window.</param>
         /// <returns>A new <see cref="GraphicsDevice"/> using the Direct3D 11 API.</returns>
-        public static GraphicsDevice CreateD3D11(GraphicsDeviceOptions options, IntPtr hwnd, uint width, uint height)
+        public static GraphicsDevice CreateD3D11(GraphicsDeviceOptions options, IntPtr hwnd, uint32 width, uint32 height)
         {
             SwapchainDescription swapchainDescription = new SwapchainDescription(
                 SwapchainSource.CreateWin32(hwnd, IntPtr.Zero),
@@ -1087,8 +1087,8 @@ namespace Veldrid
         {
             SwapchainDescription swapchainDescription = new SwapchainDescription(
                 SwapchainSource.CreateUwp(swapChainPanel, logicalDpi),
-                (uint)renderWidth,
-                (uint)renderHeight,
+                (uint32)renderWidth,
+                (uint32)renderHeight,
                 options.SwapchainDepthFormat,
                 options.SyncToVerticalBlank,
                 options.SwapchainSrgbFormat);
@@ -1153,7 +1153,7 @@ namespace Veldrid
         /// <param name="width">The initial width of the window.</param>
         /// <param name="height">The initial height of the window.</param>
         /// <returns>A new <see cref="GraphicsDevice"/> using the Vulkan API.</returns>
-        public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, Vk.VKSurfaceSource surfaceSource, uint width, uint height)
+        public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, Vk.VKSurfaceSource surfaceSource, uint32 width, uint32 height)
         {
             SwapchainDescription scDesc = new SwapchainDescription(
                 surfaceSource.GetSurfaceSource(),
@@ -1179,8 +1179,8 @@ namespace Veldrid
         public static GraphicsDevice CreateOpenGL(
             GraphicsDeviceOptions options,
             OpenGL.OpenGLPlatformInfo platformInfo,
-            uint width,
-            uint height)
+            uint32 width,
+            uint32 height)
         {
             return new OpenGL.OpenGLGraphicsDevice(options, platformInfo, width, height);
         }

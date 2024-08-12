@@ -14,19 +14,19 @@ namespace Veldrid
         /// <summary>
         /// The base mip level visible in the view. Must be less than <see cref="Texture.MipLevels"/>.
         /// </summary>
-        public uint BaseMipLevel;
+        public uint32 BaseMipLevel;
         /// <summary>
         /// The number of mip levels visible in the view.
         /// </summary>
-        public uint MipLevels;
+        public uint32 MipLevels;
         /// <summary>
         /// The base array layer visible in the view.
         /// </summary>
-        public uint BaseArrayLayer;
+        public uint32 BaseArrayLayer;
         /// <summary>
         /// The number of array layers visible in the view.
         /// </summary>
-        public uint ArrayLayers;
+        public uint32 ArrayLayers;
         /// <summary>
         /// An optional <see cref="PixelFormat"/> which specifies how the data within <see cref="Target"/> will be viewed.
         /// If this value is null, then the created TextureView will use the same <see cref="PixelFormat"/> as the target
@@ -79,7 +79,7 @@ namespace Veldrid
         /// <param name="mipLevels">The number of mip levels visible in the view.</param>
         /// <param name="baseArrayLayer">The base array layer visible in the view.</param>
         /// <param name="arrayLayers">The number of array layers visible in the view.</param>
-        public TextureViewDescription(Texture target, uint baseMipLevel, uint mipLevels, uint baseArrayLayer, uint arrayLayers)
+        public TextureViewDescription(Texture target, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
         {
             Target = target;
             BaseMipLevel = baseMipLevel;
@@ -102,7 +102,7 @@ namespace Veldrid
         /// <param name="mipLevels">The number of mip levels visible in the view.</param>
         /// <param name="baseArrayLayer">The base array layer visible in the view.</param>
         /// <param name="arrayLayers">The number of array layers visible in the view.</param>
-        public TextureViewDescription(Texture target, PixelFormat format, uint baseMipLevel, uint mipLevels, uint baseArrayLayer, uint arrayLayers)
+        public TextureViewDescription(Texture target, PixelFormat format, uint32 baseMipLevel, uint32 mipLevels, uint32 baseArrayLayer, uint32 arrayLayers)
         {
             Target = target;
             BaseMipLevel = baseMipLevel;
@@ -131,7 +131,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 Target.GetHashCode(),

@@ -28,7 +28,7 @@ namespace Sedulous.GAL.MTL
                 && description.ShaderBytes[3] == 0x42)
             {
                 DispatchQueue queue = Dispatch.dispatch_get_global_queue(QualityOfServiceLevel.QOS_CLASS_USER_INTERACTIVE, 0);
-                fixed (byte* shaderBytesPtr = description.ShaderBytes)
+                fixed (uint8* shaderBytesPtr = description.ShaderBytes)
                 {
                     DispatchData dispatchData = Dispatch.dispatch_data_create(
                         shaderBytesPtr,

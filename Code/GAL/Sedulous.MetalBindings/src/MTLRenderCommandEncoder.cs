@@ -110,27 +110,27 @@ namespace Sedulous.MetalBindings
             => objc_msgSend(NativePtr, sel_setScissorRects, scissorRects, count);
 
         public void setCullMode(MTLCullMode cullMode)
-            => objc_msgSend(NativePtr, sel_setCullMode, (uint)cullMode);
+            => objc_msgSend(NativePtr, sel_setCullMode, (uint32)cullMode);
 
         public void setFrontFacing(MTLWinding frontFaceWinding)
-            => objc_msgSend(NativePtr, sel_setFrontFacingWinding, (uint)frontFaceWinding);
+            => objc_msgSend(NativePtr, sel_setFrontFacingWinding, (uint32)frontFaceWinding);
 
         public void setDepthStencilState(MTLDepthStencilState depthStencilState)
             => objc_msgSend(NativePtr, sel_setDepthStencilState, depthStencilState.NativePtr);
 
         public void setDepthClipMode(MTLDepthClipMode depthClipMode)
-            => objc_msgSend(NativePtr, sel_setDepthClipMode, (uint)depthClipMode);
+            => objc_msgSend(NativePtr, sel_setDepthClipMode, (uint32)depthClipMode);
 
         public void endEncoding() => objc_msgSend(NativePtr, sel_endEncoding);
 
-        public void setStencilReferenceValue(uint stencilReference)
+        public void setStencilReferenceValue(uint32 stencilReference)
             => objc_msgSend(NativePtr, sel_setStencilReferenceValue, stencilReference);
 
         public void setBlendColor(float red, float green, float blue, float alpha)
             => objc_msgSend(NativePtr, sel_setBlendColor, red, green, blue, alpha);
 
         public void setTriangleFillMode(MTLTriangleFillMode fillMode)
-            => objc_msgSend(NativePtr, sel_setTriangleFillMode, (uint)fillMode);
+            => objc_msgSend(NativePtr, sel_setTriangleFillMode, (uint32)fillMode);
 
         public void pushDebugGroup(NSString @string)
             => objc_msgSend(NativePtr, Selectors.pushDebugGroup, @string.NativePtr);

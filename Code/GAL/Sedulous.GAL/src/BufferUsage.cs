@@ -6,11 +6,11 @@ namespace Veldrid
     /// A bitmask describing the permitted uses of a <see cref="DeviceBuffer"/> object.
     /// </summary>
     // [Flags]
-    public enum BufferUsage : byte
+    public enum BufferUsage : uint8
     {
         /// <summary>
         /// Indicates that a <see cref="DeviceBuffer"/> can be used as the source of vertex data for drawing commands.
-        /// This flag enables the use of a Buffer in the <see cref="CommandList.SetVertexBuffer(uint, DeviceBuffer)"/> method.
+        /// This flag enables the use of a Buffer in the <see cref="CommandList.SetVertexBuffer(uint32, DeviceBuffer)"/> method.
         /// </summary>
         VertexBuffer = 1 << 0,
         /// <summary>

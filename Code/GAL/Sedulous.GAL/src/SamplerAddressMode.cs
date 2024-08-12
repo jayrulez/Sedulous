@@ -3,7 +3,7 @@
     /// <summary>
     /// An addressing mode for texture coordinates.
     /// </summary>
-    public enum SamplerAddressMode : byte
+    public enum SamplerAddressMode : uint8
     {
         /// <summary>
         /// Texture coordinates are wrapped upon overflow.

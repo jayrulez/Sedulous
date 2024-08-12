@@ -271,7 +271,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        internal static uint GetSpecializationConstantSize(ShaderConstantType type)
+        internal static uint32 GetSpecializationConstantSize(ShaderConstantType type)
         {
             switch (type)
             {

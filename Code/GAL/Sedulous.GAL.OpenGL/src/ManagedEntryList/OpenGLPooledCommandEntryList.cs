@@ -44,7 +44,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
             _commands.Add(_beginEntryPool.Rent());
         }
 
-        public void ClearColorTarget(uint index, RgbaFloat clearColor)
+        public void ClearColorTarget(uint32 index, RgbaFloat clearColor)
         {
             _commands.Add(_clearColorTargetEntryPool.Rent().Init(index, clearColor));
         }
@@ -54,32 +54,32 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
             _commands.Add(_clearDepthTargetEntryPool.Rent().Init(depth));
         }
 
-        public void Draw(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        public void Draw(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             _commands.Add(_drawEntryPool.Rent().Init(vertexCount, instanceCount, vertexStart, instanceStart));
         }
 
-        public void Dispatch(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public void Dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             _commands.Add(_dispatchEntryPool.Rent().Init(groupCountX, groupCountY, groupCountZ));
         }
 
-        public void DrawIndexed(uint indexCount, uint instanceCount, uint indexStart, int vertexOffset, uint instanceStart)
+        public void DrawIndexed(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             _commands.Add(_drawIndexedEntryPool.Rent().Init(indexCount, instanceCount, indexStart, vertexOffset, instanceStart));
         }
 
-        public void DrawIndirect(Buffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndirect(Buffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             _commands.Add(_drawIndirectEntryPool.Rent().Init(indirectBuffer, offset, drawCount, stride));
         }
 
-        public void DrawIndexedIndirect(Buffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndexedIndirect(Buffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             _commands.Add(_drawIndexedIndirectEntryPool.Rent().Init(indirectBuffer, offset, drawCount, stride));
         }
 
-        public void DispatchIndirect(Buffer indirectBuffer, uint offset)
+        public void DispatchIndirect(Buffer indirectBuffer, uint32 offset)
         {
             _commands.Add(_dispatchIndirectEntryPool.Rent().Init(indirectBuffer, offset));
         }
@@ -104,32 +104,32 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
             _commands.Add(_setPipelineEntryPool.Rent().Init(pipeline));
         }
 
-        public void SetGraphicsResourceSet(uint slot, ResourceSet rs)
+        public void SetGraphicsResourceSet(uint32 slot, ResourceSet rs)
         {
             _commands.Add(_setGraphicsResourceSetEntryPool.Rent().Init(slot, rs));
         }
 
-        public void SetComputeResourceSet(uint slot, ResourceSet rs)
+        public void SetComputeResourceSet(uint32 slot, ResourceSet rs)
         {
             _commands.Add(_setComputeResourceSetEntryPool.Rent().Init(slot, rs));
         }
 
-        public void SetScissorRect(uint index, uint x, uint y, uint width, uint height)
+        public void SetScissorRect(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             _commands.Add(_setScissorRectEntryPool.Rent().Init(index, x, y, width, height));
         }
 
-        public void SetVertexBuffer(uint index, Buffer vb)
+        public void SetVertexBuffer(uint32 index, Buffer vb)
         {
             _commands.Add(_setVertexBufferEntryPool.Rent().Init(index, vb));
         }
 
-        public void SetViewport(uint index, ref Viewport viewport)
+        public void SetViewport(uint32 index, ref Viewport viewport)
         {
             _commands.Add(_setViewportEntryPool.Rent().Init(index, ref viewport));
         }
 
-        public void UpdateBuffer(Buffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        public void UpdateBuffer(Buffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             StagingBlock stagingBlock = _memoryPool.Stage(source, sizeInBytes);
             _commands.Add(_updateBufferEntryPool.Rent().Init(buffer, bufferOffsetInBytes, stagingBlock));
@@ -138,15 +138,15 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
         public void UpdateTexture(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x,
-            uint y,
-            uint z,
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevel,
-            uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x,
+            uint32 y,
+            uint32 z,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevel,
+            uint32 arrayLayer)
         {
             StagingBlock stagingBlock = _memoryPool.Stage(source, sizeInBytes);
             _commands.Add(_updateTextureEntryPool.Rent().Init(texture, stagingBlock, x, y, z, width, height, depth, mipLevel, arrayLayer));
@@ -155,14 +155,14 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
         public void UpdateTextureCube(
             Texture textureCube,
             IntPtr source,
-            uint sizeInBytes,
+            uint32 sizeInBytes,
             CubeFace face,
-            uint x,
-            uint y,
-            uint width,
-            uint height,
-            uint mipLevel,
-            uint arrayLayer)
+            uint32 x,
+            uint32 y,
+            uint32 width,
+            uint32 height,
+            uint32 mipLevel,
+            uint32 arrayLayer)
         {
             StagingBlock stagingBlock = _memoryPool.Stage(source, sizeInBytes);
             _commands.Add(_updateTextureCubeEntryPool.Rent().Init(textureCube, stagingBlock, face, x, y, width, height, mipLevel, arrayLayer));
@@ -252,7 +252,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
                         _setViewportEntryPool.Return(sve);
                         break;
                     case UpdateBufferEntry ube:
-                        fixed (byte* dataPtr = &ube.StagingBlock.Array[0])
+                        fixed (uint8* dataPtr = &ube.StagingBlock.Array[0])
                         {
                             executor.UpdateBuffer(
                                 ube.Buffer,
@@ -264,7 +264,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
                         }
                         break;
                     case UpdateTextureEntry ute:
-                        fixed (byte* dataPtr = &ute.StagingBlock.Array[0])
+                        fixed (uint8* dataPtr = &ute.StagingBlock.Array[0])
                         {
                             executor.UpdateTexture(
                             ute.Texture,
@@ -282,7 +282,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
                         ute.StagingBlock.Free();
                         break;
                     case UpdateTextureCubeEntry utce:
-                        fixed (byte* dataPtr = &utce.StagingBlock.Array[0])
+                        fixed (uint8* dataPtr = &utce.StagingBlock.Array[0])
                         {
                             executor.UpdateTextureCube(
                                 utce.TextureCube,

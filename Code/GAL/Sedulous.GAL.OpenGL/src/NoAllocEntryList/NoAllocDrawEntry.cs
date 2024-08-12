@@ -2,12 +2,12 @@
 {
     internal struct NoAllocDrawEntry
     {
-        public uint VertexCount;
-        public uint InstanceCount;
-        public uint VertexStart;
-        public uint InstanceStart;
+        public uint32 VertexCount;
+        public uint32 InstanceCount;
+        public uint32 VertexStart;
+        public uint32 InstanceStart;
 
-        public NoAllocDrawEntry(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        public NoAllocDrawEntry(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             VertexCount = vertexCount;
             InstanceCount = instanceCount;

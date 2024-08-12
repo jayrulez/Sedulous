@@ -1,6 +1,6 @@
 namespace Sedulous.MetalBindings
 {
-    public enum MTLPrimitiveType : uint
+    public enum MTLPrimitiveType : uint32
     {
         Point = 0,
         Line = 1,

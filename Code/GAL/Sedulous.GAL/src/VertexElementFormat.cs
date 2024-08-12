@@ -3,7 +3,7 @@
     /// <summary>
     /// The format of an individual vertex element.
     /// </summary>
-    public enum VertexElementFormat : byte
+    public enum VertexElementFormat : uint8
     {
         /// <summary>
         /// One 32-bit floating point value.

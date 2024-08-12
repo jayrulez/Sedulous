@@ -7,7 +7,7 @@ namespace Sedulous.MetalBindings
     {
         public readonly IntPtr NativePtr;
 
-        public MTLVertexAttributeDescriptor this[uint index]
+        public MTLVertexAttributeDescriptor this[uint32 index]
         {
             get
             {

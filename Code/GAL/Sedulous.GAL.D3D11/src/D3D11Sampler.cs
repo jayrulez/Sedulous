@@ -21,7 +21,7 @@ namespace Sedulous.GAL.D3D11
                 Filter = D3D11Formats.ToD3D11Filter(description.Filter, description.ComparisonKind.HasValue),
                 MinLOD = description.MinimumLod,
                 MaxLOD = description.MaximumLod,
-                MaxAnisotropy = (int)description.MaximumAnisotropy,
+                MaxAnisotropy = (int32)description.MaximumAnisotropy,
                 ComparisonFunc = comparision,
                 MipLODBias = description.LodBias,
                 BorderColor = ToRawColor4(description.BorderColor)

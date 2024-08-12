@@ -12,7 +12,7 @@ namespace Veldrid
         /// <summary>
         /// The total capacity, in bytes, of the buffer. This value is fixed upon creation.
         /// </summary>
-        public abstract uint SizeInBytes { get; }
+        public abstract uint32 SizeInBytes { get; }
 
         /// <summary>
         /// A bitmask indicating how this instance is permitted to be used.

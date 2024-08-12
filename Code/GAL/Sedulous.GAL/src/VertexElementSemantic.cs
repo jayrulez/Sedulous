@@ -6,7 +6,7 @@
     /// When using Veldrid.SPIRV to cross-compile a vertex shader to HLSL, all vertex elements will
     /// use <see cref="VertexElementSemantic.TextureCoordinate"/>.
     /// </summary>
-    public enum VertexElementSemantic : byte
+    public enum VertexElementSemantic : uint8
     {
         /// <summary>
         /// A position.

@@ -65,7 +65,7 @@ namespace Sedulous.GAL.MTL
             return new MTLTexture(ref description, _gd);
         }
 
-        protected override Texture CreateTextureCore(ulong nativeTexture, ref TextureDescription description)
+        protected override Texture CreateTextureCore(uint64 nativeTexture, ref TextureDescription description)
         {
             return new MTLTexture(nativeTexture, ref description);
         }

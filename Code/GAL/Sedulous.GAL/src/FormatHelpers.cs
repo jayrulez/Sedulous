@@ -5,7 +5,7 @@ namespace Veldrid
 {
     internal static class FormatHelpers
     {
-        public static int GetElementCount(VertexElementFormat format)
+        public static int32 GetElementCount(VertexElementFormat format)
         {
             switch (format)
             {
@@ -49,7 +49,7 @@ namespace Veldrid
             }
         }
 
-        internal static uint GetSampleCountUInt32(TextureSampleCount sampleCount)
+        internal static uint32 GetSampleCountUInt32(TextureSampleCount sampleCount)
         {
             switch (sampleCount)
             {
@@ -104,7 +104,7 @@ namespace Veldrid
                 || format == PixelFormat.ETC2_R8_G8_B8_A8_UNorm;
         }
 
-        internal static uint GetRowPitch(uint width, PixelFormat format)
+        internal static uint32 GetRowPitch(uint32 width, PixelFormat format)
         {
             switch (format)
             {
@@ -134,7 +134,7 @@ namespace Veldrid
             }
         }
 
-        public static uint GetBlockSizeInBytes(PixelFormat format)
+        public static uint32 GetBlockSizeInBytes(PixelFormat format)
         {
             switch (format)
             {
@@ -179,7 +179,7 @@ namespace Veldrid
             throw new NotImplementedException();
         }
 
-        internal static uint GetNumRows(uint height, PixelFormat format)
+        internal static uint32 GetNumRows(uint32 height, PixelFormat format)
         {
             switch (format)
             {
@@ -207,14 +207,14 @@ namespace Veldrid
             }
         }
 
-        internal static uint GetDepthPitch(uint rowPitch, uint height, PixelFormat format)
+        internal static uint32 GetDepthPitch(uint32 rowPitch, uint32 height, PixelFormat format)
         {
             return rowPitch * GetNumRows(height, format);
         }
 
-        internal static uint GetRegionSize(uint width, uint height, uint depth, PixelFormat format)
+        internal static uint32 GetRegionSize(uint32 width, uint32 height, uint32 depth, PixelFormat format)
         {
-            uint blockSizeInBytes;
+            uint32 blockSizeInBytes;
             if (IsCompressedFormat(format))
             {
                 Debug.Assert((width % 4 == 0 || width < 4) && (height % 4 == 0 || height < 4));
@@ -230,7 +230,7 @@ namespace Veldrid
             return width * height * depth * blockSizeInBytes;
         }
 
-        internal static TextureSampleCount GetSampleCount(uint samples)
+        internal static TextureSampleCount GetSampleCount(uint32 samples)
         {
             switch (samples)
             {

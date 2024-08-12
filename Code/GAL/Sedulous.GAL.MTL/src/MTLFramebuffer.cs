@@ -16,11 +16,11 @@ namespace Sedulous.GAL.MTL
         public override MTLRenderPassDescriptor CreateRenderPassDescriptor()
         {
             MTLRenderPassDescriptor ret = MTLRenderPassDescriptor.New();
-            for (int i = 0; i < ColorTargets.Count; i++)
+            for (int32 i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment colorTarget = ColorTargets[i];
                 MTLTexture mtlTarget = Util.AssertSubtype<Texture, MTLTexture>(colorTarget.Target);
-                MTLRenderPassColorAttachmentDescriptor colorDescriptor = ret.colorAttachments[(uint)i];
+                MTLRenderPassColorAttachmentDescriptor colorDescriptor = ret.colorAttachments[(uint32)i];
                 colorDescriptor.texture = mtlTarget.DeviceTexture;
                 colorDescriptor.loadAction = MTLLoadAction.Load;
                 colorDescriptor.slice = (UIntPtr)colorTarget.ArrayLayer;

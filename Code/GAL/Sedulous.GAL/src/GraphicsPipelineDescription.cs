@@ -170,13 +170,13 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 BlendState.GetHashCode(),
                 DepthStencilState.GetHashCode(),
                 RasterizerState.GetHashCode(),
-                (int)PrimitiveTopology,
+                (int32)PrimitiveTopology,
                 ShaderSet.GetHashCode(),
                 HashHelper.Array(ResourceLayouts),
                 ResourceBindingModel.GetHashCode(),

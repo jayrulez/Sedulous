@@ -9,7 +9,7 @@ namespace Sedulous.MetalBindings
         public UIntPtr width;
         public UIntPtr height;
 
-        public MTLScissorRect(uint x, uint y, uint width, uint height)
+        public MTLScissorRect(uint32 x, uint32 y, uint32 width, uint32 height)
         {
             this.x = (UIntPtr)x;
             this.y = (UIntPtr)y;

@@ -17,13 +17,13 @@ namespace Sedulous.MetalBindings
         public MTLLoadAction loadAction
         {
             get => (MTLLoadAction)uint_objc_msgSend(NativePtr, Selectors.loadAction);
-            set => objc_msgSend(NativePtr, Selectors.setLoadAction, (uint)value);
+            set => objc_msgSend(NativePtr, Selectors.setLoadAction, (uint32)value);
         }
 
         public MTLStoreAction storeAction
         {
             get => (MTLStoreAction)uint_objc_msgSend(NativePtr, Selectors.storeAction);
-            set => objc_msgSend(NativePtr, Selectors.setStoreAction, (uint)value);
+            set => objc_msgSend(NativePtr, Selectors.setStoreAction, (uint32)value);
         }
 
         public MTLTexture resolveTexture

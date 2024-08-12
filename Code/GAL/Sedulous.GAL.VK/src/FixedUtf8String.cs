@@ -8,9 +8,9 @@ namespace Sedulous.GAL.VK
     internal class FixedUtf8String : IDisposable
     {
         private GCHandle _handle;
-        private uint _numBytes;
+        private uint32 _numBytes;
 
-        public byte* StringPtr => (byte*)_handle.AddrOfPinnedObject().ToPointer();
+        public uint8* StringPtr => (uint8*)_handle.AddrOfPinnedObject().ToPointer();
 
         public FixedUtf8String(string s)
         {
@@ -19,17 +19,17 @@ namespace Sedulous.GAL.VK
                 throw new ArgumentNullException(nameof(s));
             }
 
-            int byteCount = Encoding.UTF8.GetByteCount(s);
-            byte[] text = new byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(s);
+            uint8[] text = new uint8[byteCount + 1];
             _handle = GCHandle.Alloc(text, GCHandleType.Pinned);
-            _numBytes = (uint)text.Length - 1; // Includes null terminator
-            int encodedCount = Encoding.UTF8.GetBytes(s, 0, s.Length, text, 0);
+            _numBytes = (uint32)text.Length - 1; // Includes null terminator
+            int32 encodedCount = Encoding.UTF8.GetBytes(s, 0, s.Length, text, 0);
             Debug.Assert(encodedCount == byteCount);
         }
 
         private string GetString()
         {
-            return Encoding.UTF8.GetString(StringPtr, (int)_numBytes);
+            return Encoding.UTF8.GetString(StringPtr, (int32)_numBytes);
         }
 
         public void Dispose()
@@ -39,7 +39,7 @@ namespace Sedulous.GAL.VK
 
         public override string ToString() => GetString();
 
-        public static implicit operator byte* (FixedUtf8String utf8String) => utf8String.StringPtr;
+        public static implicit operator uint8* (FixedUtf8String utf8String) => utf8String.StringPtr;
         public static implicit operator IntPtr(FixedUtf8String utf8String) => new IntPtr(utf8String.StringPtr);
         public static implicit operator FixedUtf8String(string s) => new FixedUtf8String(s);
         public static implicit operator string(FixedUtf8String utf8String) => utf8String.GetString();

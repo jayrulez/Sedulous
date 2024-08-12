@@ -10,13 +10,13 @@ namespace Sedulous.OpenGLBindings
         /// <summary>
         /// The raw value of the <see cref="GLboolean"/>. A value of 0 represents "false", all other values represent "true".
         /// </summary>
-        public byte Value;
+        public uint8 Value;
 
         /// <summary>
         /// Constructs a new <see cref="GLboolean"/> with the given raw value. 
         /// </summary>
         /// <param name="value"></param>
-        public GLboolean(byte value)
+        public GLboolean(uint8 value)
         {
             Value = value;
         }
@@ -47,7 +47,7 @@ namespace Sedulous.OpenGLBindings
             return obj is GLboolean b && Equals(b);
         }
 
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return Value.GetHashCode();
         }
@@ -58,9 +58,9 @@ namespace Sedulous.OpenGLBindings
         }
 
         public static implicit operator bool(GLboolean b) => b.Value != 0;
-        public static implicit operator uint(GLboolean b) => b.Value;
+        public static implicit operator uint32(GLboolean b) => b.Value;
         public static implicit operator GLboolean(bool b) => b ? True : False;
-        public static implicit operator GLboolean(byte value) => new GLboolean(value);
+        public static implicit operator GLboolean(uint8 value) => new GLboolean(value);
 
         public static bool operator ==(GLboolean left, GLboolean right) => left.Value == right.Value;
         public static bool operator !=(GLboolean left, GLboolean right) => left.Value != right.Value;

@@ -2,10 +2,10 @@
 {
     internal class SetViewportEntry : OpenGLCommandEntry
     {
-        public uint Index;
+        public uint32 Index;
         public Viewport Viewport;
 
-        public SetViewportEntry(uint index, ref Viewport viewport)
+        public SetViewportEntry(uint32 index, ref Viewport viewport)
         {
             Index = index;
             Viewport = viewport;
@@ -13,7 +13,7 @@
 
         public SetViewportEntry() { }
 
-        public SetViewportEntry Init(uint index, ref Viewport viewport)
+        public SetViewportEntry Init(uint32 index, ref Viewport viewport)
         {
             Index = index;
             Viewport = viewport;

@@ -29,14 +29,14 @@
         public bool SamplerLodBias { get; }
         /// <summary>
         /// Indicates whether a non-zero "vertexStart" value can be used in
-        /// <see cref="CommandList.Draw(uint, uint, uint, uint)"/> and
-        /// <see cref="CommandList.DrawIndexed(uint, uint, uint, int, uint)"/>.
+        /// <see cref="CommandList.Draw(uint32, uint32, uint32, uint32)"/> and
+        /// <see cref="CommandList.DrawIndexed(uint32, uint32, uint32, int32, uint32)"/>.
         /// </summary>
         public bool DrawBaseVertex { get; }
         /// <summary>
         /// Indicates whether a non-zero "instanceStart" value can be used in
-        /// <see cref="CommandList.Draw(uint, uint, uint, uint)"/> and
-        /// <see cref="CommandList.DrawIndexed(uint, uint, uint, int, uint)"/>.
+        /// <see cref="CommandList.Draw(uint32, uint32, uint32, uint32)"/> and
+        /// <see cref="CommandList.DrawIndexed(uint32, uint32, uint32, int32, uint32)"/>.
         /// </summary>
         public bool DrawBaseInstance { get; }
         /// <summary>

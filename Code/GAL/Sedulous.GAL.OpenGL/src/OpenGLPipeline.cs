@@ -10,7 +10,7 @@ namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLPipeline : Pipeline, OpenGLDeferredResource
     {
-        private const uint GL_INVALID_INDEX = 0xFFFFFFFF;
+        private const uint32 GL_INVALID_INDEX = 0xFFFFFFFF;
         private readonly OpenGLGraphicsDevice _gd;
 
 #if !VALIDATE_USAGE
@@ -29,18 +29,18 @@ namespace Sedulous.GAL.OpenGL
         public override bool IsComputePipeline { get; }
         public Shader ComputeShader { get; }
 
-        private uint _program;
+        private uint32 _program;
         private bool _disposeRequested;
         private bool _disposed;
 
         private SetBindingsInfo[] _setInfos;
 
-        public int[] VertexStrides { get; }
+        public int32[] VertexStrides { get; }
 
-        public uint Program => _program;
+        public uint32 Program => _program;
 
-        public uint GetUniformBufferCount(uint setSlot) => _setInfos[setSlot].UniformBufferCount;
-        public uint GetShaderStorageBufferCount(uint setSlot) => _setInfos[setSlot].ShaderStorageBufferCount;
+        public uint32 GetUniformBufferCount(uint32 setSlot) => _setInfos[setSlot].UniformBufferCount;
+        public uint32 GetShaderStorageBufferCount(uint32 setSlot) => _setInfos[setSlot].ShaderStorageBufferCount;
 
         public override string Name { get; set; }
 
@@ -57,11 +57,11 @@ namespace Sedulous.GAL.OpenGL
             RasterizerState = description.RasterizerState;
             PrimitiveTopology = description.PrimitiveTopology;
 
-            int numVertexBuffers = description.ShaderSet.VertexLayouts.Length;
-            VertexStrides = new int[numVertexBuffers];
-            for (int i = 0; i < numVertexBuffers; i++)
+            int32 numVertexBuffers = description.ShaderSet.VertexLayouts.Length;
+            VertexStrides = new int32[numVertexBuffers];
+            for (int32 i = 0; i < numVertexBuffers; i++)
             {
-                VertexStrides[i] = (int)description.ShaderSet.VertexLayouts[i].Stride;
+                VertexStrides[i] = (int32)description.ShaderSet.VertexLayouts[i].Stride;
             }
 
 #if !VALIDATE_USAGE
@@ -75,7 +75,7 @@ namespace Sedulous.GAL.OpenGL
             _gd = gd;
             IsComputePipeline = true;
             ComputeShader = description.ComputeShader;
-            VertexStrides = Array.Empty<int>();
+            VertexStrides = Array.Empty<int32>();
 #if !VALIDATE_USAGE
             ResourceLayouts = Util.ShallowClone(description.ResourceLayouts);
 #endif
@@ -117,10 +117,10 @@ namespace Sedulous.GAL.OpenGL
                 CheckLastError();
             }
 
-            uint slot = 0;
+            uint32 slot = 0;
             for (VertexLayoutDescription layoutDesc in VertexLayouts)
             {
-                for (int i = 0; i < layoutDesc.Elements.Length; i++)
+                for (int32 i = 0; i < layoutDesc.Elements.Length; i++)
                 {
                     BindAttribLocation(slot, layoutDesc.Elements[i].Name);
                     slot += 1;
@@ -134,9 +134,9 @@ namespace Sedulous.GAL.OpenGL
             slot = 0;
             for (VertexLayoutDescription layoutDesc in VertexLayouts)
             {
-                for (int i = 0; i < layoutDesc.Elements.Length; i++)
+                for (int32 i = 0; i < layoutDesc.Elements.Length; i++)
                 {
-                    int location = GetAttribLocation(layoutDesc.Elements[i].Name);
+                    int32 location = GetAttribLocation(layoutDesc.Elements[i].Name);
                     if (location == -1)
                     {
                         throw new VeldridException("There was no attribute variable with the name " + layoutDesc.Elements[i].Name);
@@ -147,44 +147,44 @@ namespace Sedulous.GAL.OpenGL
             }
 #endif
 
-            int linkStatus;
+            int32 linkStatus;
             glGetProgramiv(_program, GetProgramParameterName.LinkStatus, &linkStatus);
             CheckLastError();
             if (linkStatus != 1)
             {
-                byte* infoLog = stackalloc byte[4096];
-                uint bytesWritten;
+                uint8* infoLog = stackalloc uint8[4096];
+                uint32 bytesWritten;
                 glGetProgramInfoLog(_program, 4096, &bytesWritten, infoLog);
                 CheckLastError();
-                string log = Encoding.UTF8.GetString(infoLog, (int)bytesWritten);
+                string log = Encoding.UTF8.GetString(infoLog, (int32)bytesWritten);
                 throw new VeldridException($"Error linking GL program: {log}");
             }
 
             ProcessResourceSetLayouts(ResourceLayouts);
         }
 
-        int GetAttribLocation(string elementName)
+        int32 GetAttribLocation(string elementName)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(elementName) + 1;
-            byte* elementNamePtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetByteCount(elementName) + 1;
+            uint8* elementNamePtr = stackalloc uint8[byteCount];
             fixed (char* charPtr = elementName)
             {
-                int bytesWritten = Encoding.UTF8.GetBytes(charPtr, elementName.Length, elementNamePtr, byteCount);
+                int32 bytesWritten = Encoding.UTF8.GetBytes(charPtr, elementName.Length, elementNamePtr, byteCount);
                 Debug.Assert(bytesWritten == byteCount - 1);
             }
             elementNamePtr[byteCount - 1] = 0; // Add null terminator.
 
-            int location = glGetAttribLocation(_program, elementNamePtr);
+            int32 location = glGetAttribLocation(_program, elementNamePtr);
             return location;
         }
 
-        void BindAttribLocation(uint slot, string elementName)
+        void BindAttribLocation(uint32 slot, string elementName)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(elementName) + 1;
-            byte* elementNamePtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetByteCount(elementName) + 1;
+            uint8* elementNamePtr = stackalloc uint8[byteCount];
             fixed (char* charPtr = elementName)
             {
-                int bytesWritten = Encoding.UTF8.GetBytes(charPtr, elementName.Length, elementNamePtr, byteCount);
+                int32 bytesWritten = Encoding.UTF8.GetBytes(charPtr, elementName.Length, elementNamePtr, byteCount);
                 Debug.Assert(bytesWritten == byteCount - 1);
             }
             elementNamePtr[byteCount - 1] = 0; // Add null terminator.
@@ -195,41 +195,41 @@ namespace Sedulous.GAL.OpenGL
 
         private void ProcessResourceSetLayouts(ResourceLayout[] layouts)
         {
-            int resourceLayoutCount = layouts.Length;
+            int32 resourceLayoutCount = layouts.Length;
             _setInfos = new SetBindingsInfo[resourceLayoutCount];
-            int lastTextureLocation = -1;
-            int relativeTextureIndex = -1;
-            int relativeImageIndex = -1;
-            uint storageBlockIndex = 0; // Tracks OpenGL ES storage buffers.
-            for (uint setSlot = 0; setSlot < resourceLayoutCount; setSlot++)
+            int32 lastTextureLocation = -1;
+            int32 relativeTextureIndex = -1;
+            int32 relativeImageIndex = -1;
+            uint32 storageBlockIndex = 0; // Tracks OpenGL ES storage buffers.
+            for (uint32 setSlot = 0; setSlot < resourceLayoutCount; setSlot++)
             {
                 ResourceLayout setLayout = layouts[setSlot];
                 OpenGLResourceLayout glSetLayout = Util.AssertSubtype<ResourceLayout, OpenGLResourceLayout>(setLayout);
                 ResourceLayoutElementDescription[] resources = glSetLayout.Elements;
 
-                Dictionary<uint, OpenGLUniformBinding> uniformBindings = new Dictionary<uint, OpenGLUniformBinding>();
-                Dictionary<uint, OpenGLTextureBindingSlotInfo> textureBindings = new Dictionary<uint, OpenGLTextureBindingSlotInfo>();
-                Dictionary<uint, OpenGLSamplerBindingSlotInfo> samplerBindings = new Dictionary<uint, OpenGLSamplerBindingSlotInfo>();
-                Dictionary<uint, OpenGLShaderStorageBinding> storageBufferBindings = new Dictionary<uint, OpenGLShaderStorageBinding>();
+                Dictionary<uint32, OpenGLUniformBinding> uniformBindings = new Dictionary<uint32, OpenGLUniformBinding>();
+                Dictionary<uint32, OpenGLTextureBindingSlotInfo> textureBindings = new Dictionary<uint32, OpenGLTextureBindingSlotInfo>();
+                Dictionary<uint32, OpenGLSamplerBindingSlotInfo> samplerBindings = new Dictionary<uint32, OpenGLSamplerBindingSlotInfo>();
+                Dictionary<uint32, OpenGLShaderStorageBinding> storageBufferBindings = new Dictionary<uint32, OpenGLShaderStorageBinding>();
 
-                List<int> samplerTrackedRelativeTextureIndices = new List<int>();
-                for (uint i = 0; i < resources.Length; i++)
+                List<int32> samplerTrackedRelativeTextureIndices = new List<int32>();
+                for (uint32 i = 0; i < resources.Length; i++)
                 {
                     ResourceLayoutElementDescription resource = resources[i];
                     if (resource.Kind == ResourceKind.UniformBuffer)
                     {
-                        uint blockIndex = GetUniformBlockIndex(resource.Name);
+                        uint32 blockIndex = GetUniformBlockIndex(resource.Name);
                         if (blockIndex != GL_INVALID_INDEX)
                         {
-                            int blockSize;
+                            int32 blockSize;
                             glGetActiveUniformBlockiv(_program, blockIndex, ActiveUniformBlockParameter.UniformBlockDataSize, &blockSize);
                             CheckLastError();
-                            uniformBindings[i] = new OpenGLUniformBinding(_program, blockIndex, (uint)blockSize);
+                            uniformBindings[i] = new OpenGLUniformBinding(_program, blockIndex, (uint32)blockSize);
                         }
                     }
                     else if (resource.Kind == ResourceKind.TextureReadOnly)
                     {
-                        int location = GetUniformLocation(resource.Name);
+                        int32 location = GetUniformLocation(resource.Name);
                         relativeTextureIndex += 1;
                         textureBindings[i] = new OpenGLTextureBindingSlotInfo() { RelativeIndex = relativeTextureIndex, UniformLocation = location };
                         lastTextureLocation = location;
@@ -237,14 +237,14 @@ namespace Sedulous.GAL.OpenGL
                     }
                     else if (resource.Kind == ResourceKind.TextureReadWrite)
                     {
-                        int location = GetUniformLocation(resource.Name);
+                        int32 location = GetUniformLocation(resource.Name);
                         relativeImageIndex += 1;
                         textureBindings[i] = new OpenGLTextureBindingSlotInfo() { RelativeIndex = relativeImageIndex, UniformLocation = location };
                     }
                     else if (resource.Kind == ResourceKind.StructuredBufferReadOnly
                         || resource.Kind == ResourceKind.StructuredBufferReadWrite)
                     {
-                        uint storageBlockBinding;
+                        uint32 storageBlockBinding;
                         if (_gd.BackendType == GraphicsBackend.OpenGL)
                         {
                             storageBlockBinding = GetProgramResourceIndex(resource.Name, ProgramInterface.ShaderStorageBlock);
@@ -261,7 +261,7 @@ namespace Sedulous.GAL.OpenGL
                     {
                         Debug.Assert(resource.Kind == ResourceKind.Sampler);
 
-                        int[] relativeIndices = samplerTrackedRelativeTextureIndices.ToArray();
+                        int32[] relativeIndices = samplerTrackedRelativeTextureIndices.ToArray();
                         samplerTrackedRelativeTextureIndices.Clear();
                         samplerBindings[i] = new OpenGLSamplerBindingSlotInfo()
                         {
@@ -274,29 +274,29 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        uint GetUniformBlockIndex(string resourceName)
+        uint32 GetUniformBlockIndex(string resourceName)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
-            byte* resourceNamePtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
+            uint8* resourceNamePtr = stackalloc uint8[byteCount];
             fixed (char* charPtr = resourceName)
             {
-                int bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
+                int32 bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
                 Debug.Assert(bytesWritten == byteCount - 1);
             }
             resourceNamePtr[byteCount - 1] = 0; // Add null terminator.
 
-            uint blockIndex = glGetUniformBlockIndex(_program, resourceNamePtr);
+            uint32 blockIndex = glGetUniformBlockIndex(_program, resourceNamePtr);
             CheckLastError();
 #if DEBUG && GL_VALIDATE_SHADER_RESOURCE_NAMES
             if (blockIndex == GL_INVALID_INDEX)
             {
-                uint uniformBufferIndex = 0;
-                uint bufferNameByteCount = 64;
-                byte* bufferNamePtr = stackalloc byte[(int)bufferNameByteCount];
+                uint32 uniformBufferIndex = 0;
+                uint32 bufferNameByteCount = 64;
+                uint8* bufferNamePtr = stackalloc uint8[(int32)bufferNameByteCount];
                 var names = new List<string>();
                 while (true)
                 {
-                    uint actualLength;
+                    uint32 actualLength;
                     glGetActiveUniformBlockName(_program, uniformBufferIndex, bufferNameByteCount, &actualLength, bufferNamePtr);
 
                     if (glGetError() != 0)
@@ -304,7 +304,7 @@ namespace Sedulous.GAL.OpenGL
                         break;
                     }
 
-                    string name = Encoding.UTF8.GetString(bufferNamePtr, (int)actualLength);
+                    string name = Encoding.UTF8.GetString(bufferNamePtr, (int32)actualLength);
                     names.Add(name);
                     uniformBufferIndex++;
                 }
@@ -315,18 +315,18 @@ namespace Sedulous.GAL.OpenGL
             return blockIndex;
         }
 
-        int GetUniformLocation(string resourceName)
+        int32 GetUniformLocation(string resourceName)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
-            byte* resourceNamePtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
+            uint8* resourceNamePtr = stackalloc uint8[byteCount];
             fixed (char* charPtr = resourceName)
             {
-                int bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
+                int32 bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
                 Debug.Assert(bytesWritten == byteCount - 1);
             }
             resourceNamePtr[byteCount - 1] = 0; // Add null terminator.
 
-            int location = glGetUniformLocation(_program, resourceNamePtr);
+            int32 location = glGetUniformLocation(_program, resourceNamePtr);
             CheckLastError();
 
 #if DEBUG && GL_VALIDATE_SHADER_RESOURCE_NAMES
@@ -338,19 +338,19 @@ namespace Sedulous.GAL.OpenGL
             return location;
         }
 
-        uint GetProgramResourceIndex(string resourceName, ProgramInterface resourceType)
+        uint32 GetProgramResourceIndex(string resourceName, ProgramInterface resourceType)
         {
-            int byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
+            int32 byteCount = Encoding.UTF8.GetByteCount(resourceName) + 1;
 
-            byte* resourceNamePtr = stackalloc byte[byteCount];
+            uint8* resourceNamePtr = stackalloc uint8[byteCount];
             fixed (char* charPtr = resourceName)
             {
-                int bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
+                int32 bytesWritten = Encoding.UTF8.GetBytes(charPtr, resourceName.Length, resourceNamePtr, byteCount);
                 Debug.Assert(bytesWritten == byteCount - 1);
             }
             resourceNamePtr[byteCount - 1] = 0; // Add null terminator.
 
-            uint binding = glGetProgramResourceIndex(_program, resourceType, resourceNamePtr);
+            uint32 binding = glGetProgramResourceIndex(_program, resourceType, resourceNamePtr);
             CheckLastError();
 #if DEBUG && GL_VALIDATE_SHADER_RESOURCE_NAMES
             if (binding == GL_INVALID_INDEX)
@@ -364,16 +364,16 @@ namespace Sedulous.GAL.OpenGL
 #if DEBUG && GL_VALIDATE_SHADER_RESOURCE_NAMES
         void ReportInvalidUniformName(string uniformName)
         {
-            uint uniformIndex = 0;
-            uint resourceNameByteCount = 64;
-            byte* resourceNamePtr = stackalloc byte[(int)resourceNameByteCount];
+            uint32 uniformIndex = 0;
+            uint32 resourceNameByteCount = 64;
+            uint8* resourceNamePtr = stackalloc uint8[(int32)resourceNameByteCount];
 
             var names = new List<string>();
             while (true)
             {
-                uint actualLength;
-                int size;
-                uint type;
+                uint32 actualLength;
+                int32 size;
+                uint32 type;
                 glGetActiveUniform(_program, uniformIndex, resourceNameByteCount,
                     &actualLength, &size, &type, resourceNamePtr);
 
@@ -382,7 +382,7 @@ namespace Sedulous.GAL.OpenGL
                     break;
                 }
 
-                string name = Encoding.UTF8.GetString(resourceNamePtr, (int)actualLength);
+                string name = Encoding.UTF8.GetString(resourceNamePtr, (int32)actualLength);
                 names.Add(name);
                 uniformIndex++;
             }
@@ -398,24 +398,24 @@ namespace Sedulous.GAL.OpenGL
                 return;
             }
 
-            int maxLength = 0;
-            int resourceCount = 0;
+            int32 maxLength = 0;
+            int32 resourceCount = 0;
             glGetProgramInterfaceiv(_program, resourceType, ProgramInterfaceParameterName.MaxNameLength, &maxLength);
             glGetProgramInterfaceiv(_program, resourceType, ProgramInterfaceParameterName.ActiveResources, &resourceCount);
-            byte* resourceNamePtr = stackalloc byte[maxLength];
+            uint8* resourceNamePtr = stackalloc uint8[maxLength];
 
             var names = new List<string>();
-            for (uint resourceIndex = 0; resourceIndex < resourceCount; resourceIndex++)
+            for (uint32 resourceIndex = 0; resourceIndex < resourceCount; resourceIndex++)
             {
-                uint actualLength;
-                glGetProgramResourceName(_program, resourceType, resourceIndex, (uint)maxLength, &actualLength, resourceNamePtr);
+                uint32 actualLength;
+                glGetProgramResourceName(_program, resourceType, resourceIndex, (uint32)maxLength, &actualLength, resourceNamePtr);
 
                 if (glGetError() != 0)
                 {
                     break;
                 }
 
-                string name = Encoding.UTF8.GetString(resourceNamePtr, (int)actualLength);
+                string name = Encoding.UTF8.GetString(resourceNamePtr, (int32)actualLength);
                 names.Add(name);
             }
 
@@ -435,44 +435,44 @@ namespace Sedulous.GAL.OpenGL
             glLinkProgram(_program);
             CheckLastError();
 
-            int linkStatus;
+            int32 linkStatus;
             glGetProgramiv(_program, GetProgramParameterName.LinkStatus, &linkStatus);
             CheckLastError();
             if (linkStatus != 1)
             {
-                byte* infoLog = stackalloc byte[4096];
-                uint bytesWritten;
+                uint8* infoLog = stackalloc uint8[4096];
+                uint32 bytesWritten;
                 glGetProgramInfoLog(_program, 4096, &bytesWritten, infoLog);
                 CheckLastError();
-                string log = Encoding.UTF8.GetString(infoLog, (int)bytesWritten);
+                string log = Encoding.UTF8.GetString(infoLog, (int32)bytesWritten);
                 throw new VeldridException($"Error linking GL program: {log}");
             }
 
             ProcessResourceSetLayouts(ResourceLayouts);
         }
 
-        public bool GetUniformBindingForSlot(uint set, uint slot, out OpenGLUniformBinding binding)
+        public bool GetUniformBindingForSlot(uint32 set, uint32 slot, out OpenGLUniformBinding binding)
         {
             Debug.Assert(_setInfos != null, "EnsureResourcesCreated must be called before accessing resource set information.");
             SetBindingsInfo setInfo = _setInfos[set];
             return setInfo.GetUniformBindingForSlot(slot, out binding);
         }
 
-        public bool GetTextureBindingInfo(uint set, uint slot, out OpenGLTextureBindingSlotInfo binding)
+        public bool GetTextureBindingInfo(uint32 set, uint32 slot, out OpenGLTextureBindingSlotInfo binding)
         {
             Debug.Assert(_setInfos != null, "EnsureResourcesCreated must be called before accessing resource set information.");
             SetBindingsInfo setInfo = _setInfos[set];
             return setInfo.GetTextureBindingInfo(slot, out binding);
         }
 
-        public bool GetSamplerBindingInfo(uint set, uint slot, out OpenGLSamplerBindingSlotInfo binding)
+        public bool GetSamplerBindingInfo(uint32 set, uint32 slot, out OpenGLSamplerBindingSlotInfo binding)
         {
             Debug.Assert(_setInfos != null, "EnsureResourcesCreated must be called before accessing resource set information.");
             SetBindingsInfo setInfo = _setInfos[set];
             return setInfo.GetSamplerBindingInfo(slot, out binding);
         }
 
-        public bool GetStorageBufferBindingForSlot(uint set, uint slot, out OpenGLShaderStorageBinding binding)
+        public bool GetStorageBufferBindingForSlot(uint32 set, uint32 slot, out OpenGLShaderStorageBinding binding)
         {
             Debug.Assert(_setInfos != null, "EnsureResourcesCreated must be called before accessing resource set information.");
             SetBindingsInfo setInfo = _setInfos[set];
@@ -502,44 +502,44 @@ namespace Sedulous.GAL.OpenGL
 
     internal struct SetBindingsInfo
     {
-        private readonly Dictionary<uint, OpenGLUniformBinding> _uniformBindings;
-        private readonly Dictionary<uint, OpenGLTextureBindingSlotInfo> _textureBindings;
-        private readonly Dictionary<uint, OpenGLSamplerBindingSlotInfo> _samplerBindings;
-        private readonly Dictionary<uint, OpenGLShaderStorageBinding> _storageBufferBindings;
+        private readonly Dictionary<uint32, OpenGLUniformBinding> _uniformBindings;
+        private readonly Dictionary<uint32, OpenGLTextureBindingSlotInfo> _textureBindings;
+        private readonly Dictionary<uint32, OpenGLSamplerBindingSlotInfo> _samplerBindings;
+        private readonly Dictionary<uint32, OpenGLShaderStorageBinding> _storageBufferBindings;
 
-        public uint UniformBufferCount { get; }
-        public uint ShaderStorageBufferCount { get; }
+        public uint32 UniformBufferCount { get; }
+        public uint32 ShaderStorageBufferCount { get; }
 
         public SetBindingsInfo(
-            Dictionary<uint, OpenGLUniformBinding> uniformBindings,
-            Dictionary<uint, OpenGLTextureBindingSlotInfo> textureBindings,
-            Dictionary<uint, OpenGLSamplerBindingSlotInfo> samplerBindings,
-            Dictionary<uint, OpenGLShaderStorageBinding> storageBufferBindings)
+            Dictionary<uint32, OpenGLUniformBinding> uniformBindings,
+            Dictionary<uint32, OpenGLTextureBindingSlotInfo> textureBindings,
+            Dictionary<uint32, OpenGLSamplerBindingSlotInfo> samplerBindings,
+            Dictionary<uint32, OpenGLShaderStorageBinding> storageBufferBindings)
         {
             _uniformBindings = uniformBindings;
-            UniformBufferCount = (uint)uniformBindings.Count;
+            UniformBufferCount = (uint32)uniformBindings.Count;
             _textureBindings = textureBindings;
             _samplerBindings = samplerBindings;
             _storageBufferBindings = storageBufferBindings;
-            ShaderStorageBufferCount = (uint)storageBufferBindings.Count;
+            ShaderStorageBufferCount = (uint32)storageBufferBindings.Count;
         }
 
-        public bool GetTextureBindingInfo(uint slot, out OpenGLTextureBindingSlotInfo binding)
+        public bool GetTextureBindingInfo(uint32 slot, out OpenGLTextureBindingSlotInfo binding)
         {
             return _textureBindings.TryGetValue(slot, out binding);
         }
 
-        public bool GetSamplerBindingInfo(uint slot, out OpenGLSamplerBindingSlotInfo binding)
+        public bool GetSamplerBindingInfo(uint32 slot, out OpenGLSamplerBindingSlotInfo binding)
         {
             return _samplerBindings.TryGetValue(slot, out binding);
         }
 
-        public bool GetUniformBindingForSlot(uint slot, out OpenGLUniformBinding binding)
+        public bool GetUniformBindingForSlot(uint32 slot, out OpenGLUniformBinding binding)
         {
             return _uniformBindings.TryGetValue(slot, out binding);
         }
 
-        public bool GetStorageBufferBindingForSlot(uint slot, out OpenGLShaderStorageBinding binding)
+        public bool GetStorageBufferBindingForSlot(uint32 slot, out OpenGLShaderStorageBinding binding)
         {
             return _storageBufferBindings.TryGetValue(slot, out binding);
         }
@@ -551,11 +551,11 @@ namespace Sedulous.GAL.OpenGL
         /// The relative index of this binding with relation to the other textures used by a shader.
         /// Generally, this is the texture unit that the binding will be placed into.
         /// </summary>
-        public int RelativeIndex;
+        public int32 RelativeIndex;
         /// <summary>
         /// The uniform location of the binding in the shader program.
         /// </summary>
-        public int UniformLocation;
+        public int32 UniformLocation;
     }
 
     internal struct OpenGLSamplerBindingSlotInfo
@@ -564,16 +564,16 @@ namespace Sedulous.GAL.OpenGL
         /// The relative indices of this binding with relation to the other textures used by a shader.
         /// Generally, these are the texture units that the sampler will be bound to.
         /// </summary>
-        public int[] RelativeIndices;
+        public int32[] RelativeIndices;
     }
 
     internal class OpenGLUniformBinding
     {
-        public uint Program { get; }
-        public uint BlockLocation { get; }
-        public uint BlockSize { get; }
+        public uint32 Program { get; }
+        public uint32 BlockLocation { get; }
+        public uint32 BlockSize { get; }
 
-        public OpenGLUniformBinding(uint program, uint blockLocation, uint blockSize)
+        public OpenGLUniformBinding(uint32 program, uint32 blockLocation, uint32 blockSize)
         {
             Program = program;
             BlockLocation = blockLocation;
@@ -583,9 +583,9 @@ namespace Sedulous.GAL.OpenGL
 
     internal class OpenGLShaderStorageBinding
     {
-        public uint StorageBlockBinding { get; }
+        public uint32 StorageBlockBinding { get; }
 
-        public OpenGLShaderStorageBinding(uint storageBlockBinding)
+        public OpenGLShaderStorageBinding(uint32 storageBlockBinding)
         {
             StorageBlockBinding = storageBlockBinding;
         }

@@ -11,8 +11,8 @@ namespace Sedulous.MetalBindings
 
         public ObjCClass(string name)
         {
-            int byteCount = Encoding.UTF8.GetMaxByteCount(name.Length);
-            byte* utf8BytesPtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetMaxByteCount(name.Length);
+            uint8* utf8BytesPtr = stackalloc uint8[byteCount];
             fixed (char* namePtr = name)
             {
                 Encoding.UTF8.GetBytes(namePtr, name.Length, utf8BytesPtr, byteCount);
@@ -23,8 +23,8 @@ namespace Sedulous.MetalBindings
 
         public IntPtr GetProperty(string propertyName)
         {
-            int byteCount = Encoding.UTF8.GetMaxByteCount(propertyName.Length);
-            byte* utf8BytesPtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetMaxByteCount(propertyName.Length);
+            uint8* utf8BytesPtr = stackalloc uint8[byteCount];
             fixed (char* namePtr = propertyName)
             {
                 Encoding.UTF8.GetBytes(namePtr, propertyName.Length, utf8BytesPtr, byteCount);
@@ -48,7 +48,7 @@ namespace Sedulous.MetalBindings
             return Unsafe.AsRef<T>(&value);
         }
 
-        public ObjectiveCMethod* class_copyMethodList(out uint count)
+        public ObjectiveCMethod* class_copyMethodList(out uint32 count)
         {
             return ObjectiveCRuntime.class_copyMethodList(this, out count);
         }

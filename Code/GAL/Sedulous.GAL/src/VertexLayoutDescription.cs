@@ -10,7 +10,7 @@ namespace Veldrid
         /// <summary>
         /// The number of bytes in between successive elements in the <see cref="DeviceBuffer"/>.
         /// </summary>
-        public uint Stride;
+        public uint32 Stride;
         /// <summary>
         /// An array of <see cref="VertexElementDescription"/> objects, each describing a single element of vertex data.
         /// </summary>
@@ -21,7 +21,7 @@ namespace Veldrid
         /// For example, an InstanceStepRate of 3 indicates that 3 instances will be drawn with the same value for this layout. The
         /// next 3 instances will be drawn with the next value, and so on.
         /// </summary>
-        public uint InstanceStepRate;
+        public uint32 InstanceStepRate;
 
         /// <summary>
         /// Constructs a new VertexLayoutDescription.
@@ -29,7 +29,7 @@ namespace Veldrid
         /// <param name="stride">The number of bytes in between successive elements in the <see cref="DeviceBuffer"/>.</param>
         /// <param name="elements">An array of <see cref="VertexElementDescription"/> objects, each describing a single element
         /// of vertex data.</param>
-        public VertexLayoutDescription(uint stride, params VertexElementDescription[] elements)
+        public VertexLayoutDescription(uint32 stride, params VertexElementDescription[] elements)
         {
             Stride = stride;
             Elements = elements;
@@ -46,7 +46,7 @@ namespace Veldrid
         /// per-vertex elements, this value should be 0.
         /// For example, an InstanceStepRate of 3 indicates that 3 instances will be drawn with the same value for this element.
         /// The next 3 instances will be drawn with the next value for this element, and so on.</param>
-        public VertexLayoutDescription(uint stride, uint instanceStepRate, params VertexElementDescription[] elements)
+        public VertexLayoutDescription(uint32 stride, uint32 instanceStepRate, params VertexElementDescription[] elements)
         {
             Stride = stride;
             Elements = elements;
@@ -61,10 +61,10 @@ namespace Veldrid
         public VertexLayoutDescription(params VertexElementDescription[] elements)
         {
             Elements = elements;
-            uint computedStride = 0;
-            for (int i = 0; i < elements.Length; i++)
+            uint32 computedStride = 0;
+            for (int32 i = 0; i < elements.Length; i++)
             {
-                uint elementSize = FormatSizeHelpers.GetSizeInBytes(elements[i].Format);
+                uint32 elementSize = FormatSizeHelpers.GetSizeInBytes(elements[i].Format);
                 if (elements[i].Offset != 0)
                 {
                     computedStride = elements[i].Offset + elementSize;
@@ -95,7 +95,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(Stride.GetHashCode(), HashHelper.Array(Elements), InstanceStepRate.GetHashCode());
         }

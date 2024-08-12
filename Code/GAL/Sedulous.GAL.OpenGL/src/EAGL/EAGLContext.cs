@@ -21,7 +21,7 @@ namespace Sedulous.GAL.OpenGL.EAGL
         public static EAGLContext Create(EAGLRenderingAPI api)
         {
             EAGLContext ret = s_class.Alloc<EAGLContext>();
-            objc_msgSend(ret.NativePtr, sel_initWithAPI, (uint)api);
+            objc_msgSend(ret.NativePtr, sel_initWithAPI, (uint32)api);
             return ret;
         }
 

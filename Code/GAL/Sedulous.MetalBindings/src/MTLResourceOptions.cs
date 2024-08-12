@@ -1,6 +1,6 @@
 namespace Sedulous.MetalBindings
 {
-    public enum MTLResourceOptions : ulong
+    public enum MTLResourceOptions : uint64
     {
         CPUCacheModeDefaultCache = MTLCPUCacheMode.DefaultCache,
         CPUCacheModeWriteCombined = MTLCPUCacheMode.WriteCombined,
@@ -10,6 +10,6 @@ namespace Sedulous.MetalBindings
         StorageModePrivate = MTLStorageMode.Private << 4,
         StorageModeMemoryless = MTLStorageMode.Memoryless << 4,
 
-        HazardTrackingModeUntracked = (uint)(0x1UL << 8),
+        HazardTrackingModeUntracked = (uint32)(0x1UL << 8),
     }
 }

@@ -4,9 +4,9 @@
     {
         public readonly Tracked<DeviceBuffer> Buffer;
         public IndexFormat Format;
-        public uint Offset;
+        public uint32 Offset;
 
-        public NoAllocSetIndexBufferEntry(Tracked<DeviceBuffer> ib, IndexFormat format, uint offset)
+        public NoAllocSetIndexBufferEntry(Tracked<DeviceBuffer> ib, IndexFormat format, uint32 offset)
         {
             Buffer = ib;
             Format = format;

@@ -3,7 +3,7 @@
     /// <summary>
     /// Indicates how the rasterizer will fill polygons.
     /// </summary>
-    public enum PolygonFillMode : byte
+    public enum PolygonFillMode : uint8
     {
         /// <summary>
         /// Polygons are filled completely.

@@ -17,7 +17,7 @@ namespace Sedulous.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, CGRect a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern void objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, uint b);
+        public static extern void objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, uint32 b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, NSRange b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -49,7 +49,7 @@ namespace Sedulous.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, MTLScissorRect a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern void objc_msgSend(IntPtr receiver, Selector selector, void* a, uint b, UIntPtr c);
+        public static extern void objc_msgSend(IntPtr receiver, Selector selector, void* a, uint32 b, UIntPtr c);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, void* a, UIntPtr b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -145,13 +145,13 @@ namespace Sedulous.MetalBindings
             MTLOrigin destinationOrigin);
 
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern byte* bytePtr_objc_msgSend(IntPtr receiver, Selector selector);
+        public static extern uint8* bytePtr_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern CGSize CGSize_objc_msgSend(IntPtr receiver, Selector selector);
 
 
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern byte byte_objc_msgSend(IntPtr receiver, Selector selector);
+        public static extern uint8 byte_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern Bool8 bool8_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -161,9 +161,9 @@ namespace Sedulous.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern Bool8 bool8_objc_msgSend(IntPtr receiver, Selector selector, UIntPtr a, IntPtr b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern Bool8 bool8_objc_msgSend(IntPtr receiver, Selector selector, uint a);
+        public static extern Bool8 bool8_objc_msgSend(IntPtr receiver, Selector selector, uint32 a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern uint uint_objc_msgSend(IntPtr receiver, Selector selector);
+        public static extern uint32 uint_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern float float_objc_msgSend(IntPtr receiver, Selector selector);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -178,11 +178,11 @@ namespace Sedulous.MetalBindings
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, IntPtr a, out NSError error);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint a, uint b, NSRange c, NSRange d);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint32 a, uint32 b, NSRange c, NSRange d);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, MTLComputePipelineDescriptor a, uint b, IntPtr c, out NSError error);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, MTLComputePipelineDescriptor a, uint32 b, IntPtr c, out NSError error);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint a);
+        public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, uint32 a);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, Selector selector, UIntPtr a);
 
@@ -213,11 +213,11 @@ namespace Sedulous.MetalBindings
         }
 
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern void objc_msgSend(IntPtr receiver, Selector selector, byte b);
+        public static extern void objc_msgSend(IntPtr receiver, Selector selector, uint8 b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, Bool8 b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
-        public static extern void objc_msgSend(IntPtr receiver, Selector selector, uint b);
+        public static extern void objc_msgSend(IntPtr receiver, Selector selector, uint32 b);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
         public static extern void objc_msgSend(IntPtr receiver, Selector selector, float a, float b, float c, float d);
         [DllImport(ObjCLibrary, EntryPoint = "objc_msgSend")]
@@ -247,36 +247,36 @@ namespace Sedulous.MetalBindings
         public static bool UseStret<T>() => false;
 
         [DllImport(ObjCLibrary)]
-        public static extern IntPtr sel_registerName(byte* namePtr);
+        public static extern IntPtr sel_registerName(uint8* namePtr);
 
         [DllImport(ObjCLibrary)]
-        public static extern byte* sel_getName(IntPtr selector);
+        public static extern uint8* sel_getName(IntPtr selector);
 
         [DllImport(ObjCLibrary)]
-        public static extern IntPtr objc_getClass(byte* namePtr);
+        public static extern IntPtr objc_getClass(uint8* namePtr);
 
         [DllImport(ObjCLibrary)]
         public static extern ObjCClass object_getClass(IntPtr obj);
 
         [DllImport(ObjCLibrary)]
-        public static extern IntPtr class_getProperty(ObjCClass cls, byte* namePtr);
+        public static extern IntPtr class_getProperty(ObjCClass cls, uint8* namePtr);
 
         [DllImport(ObjCLibrary)]
-        public static extern byte* class_getName(ObjCClass cls);
+        public static extern uint8* class_getName(ObjCClass cls);
 
         [DllImport(ObjCLibrary)]
-        public static extern byte* property_copyAttributeValue(IntPtr property, byte* attributeNamePtr);
+        public static extern uint8* property_copyAttributeValue(IntPtr property, uint8* attributeNamePtr);
 
         [DllImport(ObjCLibrary)]
         public static extern Selector method_getName(ObjectiveCMethod method);
 
         [DllImport(ObjCLibrary)]
-        public static extern ObjectiveCMethod* class_copyMethodList(ObjCClass cls, out uint outCount);
+        public static extern ObjectiveCMethod* class_copyMethodList(ObjCClass cls, out uint32 outCount);
 
         [DllImport(ObjCLibrary)]
         public static extern void free(IntPtr receiver);
         public static void retain(IntPtr receiver) => objc_msgSend(receiver, "retain");
         public static void release(IntPtr receiver) => objc_msgSend(receiver, "release");
-        public static ulong GetRetainCount(IntPtr receiver) => (ulong)UIntPtr_objc_msgSend(receiver, "retainCount");
+        public static uint64 GetRetainCount(IntPtr receiver) => (uint64)UIntPtr_objc_msgSend(receiver, "retainCount");
     }
 }

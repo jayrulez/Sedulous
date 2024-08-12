@@ -120,7 +120,7 @@ namespace Sedulous.MetalBindings
             => bool8_objc_msgSend(NativePtr, sel_supportsTextureSampleCount, sampleCount);
 
         public Bool8 supportsFeatureSet(MTLFeatureSet featureSet)
-            => bool8_objc_msgSend(NativePtr, sel_supportsFeatureSet, (uint)featureSet);
+            => bool8_objc_msgSend(NativePtr, sel_supportsFeatureSet, (uint32)featureSet);
 
         public Bool8 isDepth24Stencil8PixelFormatSupported
             => bool8_objc_msgSend(NativePtr, sel_isDepth24Stencil8PixelFormatSupported);

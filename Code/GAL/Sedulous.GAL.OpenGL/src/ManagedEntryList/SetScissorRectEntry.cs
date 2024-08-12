@@ -2,13 +2,13 @@
 {
     internal class SetScissorRectEntry : OpenGLCommandEntry
     {
-        public uint Index;
-        public uint X;
-        public uint Y;
-        public uint Width;
-        public uint Height;
+        public uint32 Index;
+        public uint32 X;
+        public uint32 Y;
+        public uint32 Width;
+        public uint32 Height;
 
-        public SetScissorRectEntry(uint index, uint x, uint y, uint width, uint height)
+        public SetScissorRectEntry(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             Index = index;
             X = x;
@@ -19,7 +19,7 @@
 
         public SetScissorRectEntry() { }
 
-        public SetScissorRectEntry Init(uint index, uint x, uint y, uint width, uint height)
+        public SetScissorRectEntry Init(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             Index = index;
             X = x;

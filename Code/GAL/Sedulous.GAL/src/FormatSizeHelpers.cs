@@ -12,7 +12,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="format">An uncompressed pixel format</param>
         /// <returns>The number of bytes required to store a single pixel in the given format</returns>
-        public static uint GetSizeInBytes(PixelFormat format)
+        public static uint32 GetSizeInBytes(PixelFormat format)
         {
             switch (format)
             {
@@ -101,7 +101,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="format">A vertex element format</param>
         /// <returns>The number of bytes required to store an element in the given format</returns>
-        public static uint GetSizeInBytes(VertexElementFormat format)
+        public static uint32 GetSizeInBytes(VertexElementFormat format)
         {
             switch (format)
             {

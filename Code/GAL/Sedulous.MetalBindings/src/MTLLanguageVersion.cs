@@ -1,6 +1,6 @@
 namespace Sedulous.MetalBindings
 {
-    public enum MTLLanguageVersion : uint
+    public enum MTLLanguageVersion : uint32
     {
         Version1_0 = (1 << 16),
         Version1_1 = (1 << 16) + 1,

@@ -12,7 +12,7 @@ namespace Sedulous.MetalBindings
         public MTLVertexStepFunction stepFunction
         {
             get => (MTLVertexStepFunction)uint_objc_msgSend(NativePtr, sel_stepFunction);
-            set => objc_msgSend(NativePtr, sel_setStepFunction, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setStepFunction, (uint32)value);
         }
 
         public UIntPtr stride

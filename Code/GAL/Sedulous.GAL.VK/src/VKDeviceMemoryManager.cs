@@ -9,15 +9,15 @@ namespace Sedulous.GAL.VK
 {
     internal class VKDeviceMemoryManager : IDisposable
     {
-        private const ulong MinDedicatedAllocationSizeDynamic = 1024 * 1024 * 64;
-        private const ulong MinDedicatedAllocationSizeNonDynamic = 1024 * 1024 * 256;
+        private const uint64 MinDedicatedAllocationSizeDynamic = 1024 * 1024 * 64;
+        private const uint64 MinDedicatedAllocationSizeNonDynamic = 1024 * 1024 * 256;
         private readonly VkDevice _device;
         private readonly VkPhysicalDevice _physicalDevice;
-        private readonly ulong _bufferImageGranularity;
+        private readonly uint64 _bufferImageGranularity;
         private readonly object _lock = new object();
-        private ulong _totalAllocatedBytes;
-        private readonly Dictionary<uint, ChunkAllocatorSet> _allocatorsByMemoryTypeUnmapped = new Dictionary<uint, ChunkAllocatorSet>();
-        private readonly Dictionary<uint, ChunkAllocatorSet> _allocatorsByMemoryType = new Dictionary<uint, ChunkAllocatorSet>();
+        private uint64 _totalAllocatedBytes;
+        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryTypeUnmapped = new Dictionary<uint32, ChunkAllocatorSet>();
+        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryType = new Dictionary<uint32, ChunkAllocatorSet>();
 
         private readonly vkGetBufferMemoryRequirements2_t _getBufferMemoryRequirements2;
         private readonly vkGetImageMemoryRequirements2_t _getImageMemoryRequirements2;
@@ -25,7 +25,7 @@ namespace Sedulous.GAL.VK
         public VKDeviceMemoryManager(
             VkDevice device,
             VkPhysicalDevice physicalDevice,
-            ulong bufferImageGranularity,
+            uint64 bufferImageGranularity,
             vkGetBufferMemoryRequirements2_t getBufferMemoryRequirements2,
             vkGetImageMemoryRequirements2_t getImageMemoryRequirements2)
         {
@@ -38,11 +38,11 @@ namespace Sedulous.GAL.VK
 
         public VkMemoryBlock Allocate(
             VkPhysicalDeviceMemoryProperties memProperties,
-            uint memoryTypeBits,
+            uint32 memoryTypeBits,
             VkMemoryPropertyFlags flags,
             bool persistentMapped,
-            ulong size,
-            ulong alignment)
+            uint64 size,
+            uint64 alignment)
         {
             return Allocate(
                 memProperties,
@@ -58,11 +58,11 @@ namespace Sedulous.GAL.VK
 
         public VkMemoryBlock Allocate(
             VkPhysicalDeviceMemoryProperties memProperties,
-            uint memoryTypeBits,
+            uint32 memoryTypeBits,
             VkMemoryPropertyFlags flags,
             bool persistentMapped,
-            ulong size,
-            ulong alignment,
+            uint64 size,
+            uint64 alignment,
             bool dedicated,
             VkImage dedicatedImage,
             Vulkan.VkBuffer dedicatedBuffer)
@@ -100,7 +100,7 @@ namespace Sedulous.GAL.VK
                     throw new VeldridException("No suitable memory type.");
                 }
 
-                ulong minDedicatedAllocationSize = persistentMapped
+                uint64 minDedicatedAllocationSize = persistentMapped
                     ? MinDedicatedAllocationSizeDynamic
                     : MinDedicatedAllocationSizeNonDynamic;
 
@@ -167,7 +167,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private ChunkAllocatorSet GetAllocator(uint memoryTypeIndex, bool persistentMapped)
+        private ChunkAllocatorSet GetAllocator(uint32 memoryTypeIndex, bool persistentMapped)
         {
             ChunkAllocatorSet ret = null;
             if (persistentMapped)
@@ -193,18 +193,18 @@ namespace Sedulous.GAL.VK
         private class ChunkAllocatorSet : IDisposable
         {
             private readonly VkDevice _device;
-            private readonly uint _memoryTypeIndex;
+            private readonly uint32 _memoryTypeIndex;
             private readonly bool _persistentMapped;
             private readonly List<ChunkAllocator> _allocators = new List<ChunkAllocator>();
 
-            public ChunkAllocatorSet(VkDevice device, uint memoryTypeIndex, bool persistentMapped)
+            public ChunkAllocatorSet(VkDevice device, uint32 memoryTypeIndex, bool persistentMapped)
             {
                 _device = device;
                 _memoryTypeIndex = memoryTypeIndex;
                 _persistentMapped = persistentMapped;
             }
 
-            public bool Allocate(ulong size, ulong alignment, out VkMemoryBlock block)
+            public bool Allocate(uint64 size, uint64 alignment, out VkMemoryBlock block)
             {
                 for (ChunkAllocator allocator in _allocators)
                 {
@@ -241,21 +241,21 @@ namespace Sedulous.GAL.VK
 
         private class ChunkAllocator : IDisposable
         {
-            private const ulong PersistentMappedChunkSize = 1024 * 1024 * 64;
-            private const ulong UnmappedChunkSize = 1024 * 1024 * 256;
+            private const uint64 PersistentMappedChunkSize = 1024 * 1024 * 64;
+            private const uint64 UnmappedChunkSize = 1024 * 1024 * 256;
             private readonly VkDevice _device;
-            private readonly uint _memoryTypeIndex;
+            private readonly uint32 _memoryTypeIndex;
             private readonly bool _persistentMapped;
             private readonly List<VkMemoryBlock> _freeBlocks = new List<VkMemoryBlock>();
             private readonly VkDeviceMemory _memory;
             private readonly void* _mappedPtr;
 
-            private ulong _totalMemorySize;
-            private ulong _totalAllocatedBytes = 0;
+            private uint64 _totalMemorySize;
+            private uint64 _totalAllocatedBytes = 0;
 
             public VkDeviceMemory Memory => _memory;
 
-            public ChunkAllocator(VkDevice device, uint memoryTypeIndex, bool persistentMapped)
+            public ChunkAllocator(VkDevice device, uint32 memoryTypeIndex, bool persistentMapped)
             {
                 _device = device;
                 _memoryTypeIndex = memoryTypeIndex;
@@ -286,17 +286,17 @@ namespace Sedulous.GAL.VK
                 _freeBlocks.Add(initialBlock);
             }
 
-            public bool Allocate(ulong size, ulong alignment, out VkMemoryBlock block)
+            public bool Allocate(uint64 size, uint64 alignment, out VkMemoryBlock block)
             {
                 checked
                 {
-                    for (int i = 0; i < _freeBlocks.Count; i++)
+                    for (int32 i = 0; i < _freeBlocks.Count; i++)
                     {
                         VkMemoryBlock freeBlock = _freeBlocks[i];
-                        ulong alignedBlockSize = freeBlock.Size;
+                        uint64 alignedBlockSize = freeBlock.Size;
                         if (freeBlock.Offset % alignment != 0)
                         {
-                            ulong alignmentCorrection = (alignment - freeBlock.Offset % alignment);
+                            uint64 alignmentCorrection = (alignment - freeBlock.Offset % alignment);
                             if (alignedBlockSize <= alignmentCorrection)
                             {
                                 continue;
@@ -345,7 +345,7 @@ namespace Sedulous.GAL.VK
 
             public void Free(VkMemoryBlock block)
             {
-                for (int i = 0; i < _freeBlocks.Count; i++)
+                for (int32 i = 0; i < _freeBlocks.Count; i++)
                 {
                     if (_freeBlocks[i].Offset > block.Offset)
                     {
@@ -367,10 +367,10 @@ namespace Sedulous.GAL.VK
 
             private void MergeContiguousBlocks()
             {
-                int contiguousLength = 1;
-                for (int i = 0; i < _freeBlocks.Count - 1; i++)
+                int32 contiguousLength = 1;
+                for (int32 i = 0; i < _freeBlocks.Count - 1; i++)
                 {
-                    ulong blockStart = _freeBlocks[i].Offset;
+                    uint64 blockStart = _freeBlocks[i].Offset;
                     while (i + contiguousLength < _freeBlocks.Count
                         && _freeBlocks[i + contiguousLength - 1].End == _freeBlocks[i + contiguousLength].Offset)
                     {
@@ -379,7 +379,7 @@ namespace Sedulous.GAL.VK
 
                     if (contiguousLength > 1)
                     {
-                        ulong blockEnd = _freeBlocks[i + contiguousLength - 1].End;
+                        uint64 blockEnd = _freeBlocks[i + contiguousLength - 1].End;
                         _freeBlocks.RemoveRange(i, contiguousLength);
                         VkMemoryBlock mergedBlock = new VkMemoryBlock(
                             Memory,
@@ -409,10 +409,10 @@ namespace Sedulous.GAL.VK
 
             private bool BlocksOverlap(VkMemoryBlock first, VkMemoryBlock second)
             {
-                ulong firstStart = first.Offset;
-                ulong firstEnd = first.Offset + first.Size;
-                ulong secondStart = second.Offset;
-                ulong secondEnd = second.Offset + second.Size;
+                uint64 firstStart = first.Offset;
+                uint64 firstEnd = first.Offset + first.Size;
+                uint64 secondStart = second.Offset;
+                uint64 secondEnd = second.Offset + second.Size;
 
                 return (firstStart <= secondStart && firstEnd > secondStart
                     || firstStart >= secondStart && firstEnd <= secondEnd
@@ -434,12 +434,12 @@ namespace Sedulous.GAL.VK
 
         public void Dispose()
         {
-            for (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
+            for (KeyValuePair<uint32, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
             {
                 kvp.Value.Dispose();
             }
 
-            for (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
+            for (KeyValuePair<uint32, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
             {
                 kvp.Value.Dispose();
             }
@@ -457,23 +457,23 @@ namespace Sedulous.GAL.VK
     [DebuggerDisplay("[Mem:{DeviceMemory.Handle}] Off:{Offset}, Size:{Size} End:{Offset+Size}")]
     internal struct VkMemoryBlock : IEquatable<VkMemoryBlock>
     {
-        public readonly uint MemoryTypeIndex;
+        public readonly uint32 MemoryTypeIndex;
         public readonly VkDeviceMemory DeviceMemory;
         public readonly void* BaseMappedPointer;
         public readonly bool DedicatedAllocation;
 
-        public ulong Offset;
-        public ulong Size;
+        public uint64 Offset;
+        public uint64 Size;
 
-        public void* BlockMappedPointer => ((byte*)BaseMappedPointer) + Offset;
+        public void* BlockMappedPointer => ((uint8*)BaseMappedPointer) + Offset;
         public bool IsPersistentMapped => BaseMappedPointer != null;
-        public ulong End => Offset + Size;
+        public uint64 End => Offset + Size;
 
         public VkMemoryBlock(
             VkDeviceMemory memory,
-            ulong offset,
-            ulong size,
-            uint memoryTypeIndex,
+            uint64 offset,
+            uint64 size,
+            uint32 memoryTypeIndex,
             void* mappedPtr,
             bool dedicatedAllocation)
         {

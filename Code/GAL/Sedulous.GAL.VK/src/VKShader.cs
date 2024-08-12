@@ -22,10 +22,10 @@ namespace Sedulous.GAL.VK
             _gd = gd;
 
             VkShaderModuleCreateInfo shaderModuleCI = VkShaderModuleCreateInfo.New();
-            fixed (byte* codePtr = description.ShaderBytes)
+            fixed (uint8* codePtr = description.ShaderBytes)
             {
                 shaderModuleCI.codeSize = (UIntPtr)description.ShaderBytes.Length;
-                shaderModuleCI.pCode = (uint*)codePtr;
+                shaderModuleCI.pCode = (uint32*)codePtr;
                 VkResult result = vkCreateShaderModule(gd.Device, ref shaderModuleCI, null, out _shaderModule);
                 CheckResult(result);
             }

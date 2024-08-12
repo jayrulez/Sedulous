@@ -8,7 +8,7 @@ namespace Sedulous.MetalBindings
         public UIntPtr y;
         public UIntPtr z;
 
-        public MTLOrigin(uint x, uint y, uint z)
+        public MTLOrigin(uint32 x, uint32 y, uint32 z)
         {
             this.x = (UIntPtr)x;
             this.y = (UIntPtr)y;

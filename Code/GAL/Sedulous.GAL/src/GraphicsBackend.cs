@@ -3,7 +3,7 @@
     /// <summary>
     /// The specific graphics API used by the <see cref="GraphicsDevice"/>.
     /// </summary>
-    public enum GraphicsBackend : byte
+    public enum GraphicsBackend : uint8
     {
         /// <summary>
         /// Direct3D 11.

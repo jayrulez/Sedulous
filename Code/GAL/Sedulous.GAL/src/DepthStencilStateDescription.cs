@@ -35,15 +35,15 @@ namespace Veldrid
         /// <summary>
         /// Controls the portion of the stencil buffer used for reading.
         /// </summary>
-        public byte StencilReadMask;
+        public uint8 StencilReadMask;
         /// <summary>
         /// Controls the portion of the stencil buffer used for writing.
         /// </summary>
-        public byte StencilWriteMask;
+        public uint8 StencilWriteMask;
         /// <summary>
         /// The reference value to use when doing a stencil test.
         /// </summary>
-        public uint StencilReference;
+        public uint32 StencilReference;
 
         /// <summary>
         /// Constructs a new <see cref="DepthStencilStateDescription"/>. This describes a depth-stencil state with no stencil
@@ -86,9 +86,9 @@ namespace Veldrid
             bool stencilTestEnabled,
             StencilBehaviorDescription stencilFront,
             StencilBehaviorDescription stencilBack,
-            byte stencilReadMask,
-            byte stencilWriteMask,
-            uint stencilReference)
+            uint8 stencilReadMask,
+            uint8 stencilWriteMask,
+            uint32 stencilReference)
         {
             DepthTestEnabled = depthTestEnabled;
             DepthWriteEnabled = depthWriteEnabled;
@@ -199,12 +199,12 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 DepthTestEnabled.GetHashCode(),
                 DepthWriteEnabled.GetHashCode(),
-                (int)DepthComparison,
+                (int32)DepthComparison,
                 StencilTestEnabled.GetHashCode(),
                 StencilFront.GetHashCode(),
                 StencilBack.GetHashCode(),

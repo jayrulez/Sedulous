@@ -2,22 +2,22 @@
 {
     internal struct DescriptorResourceCounts
     {
-        public readonly uint UniformBufferCount;
-        public readonly uint SampledImageCount;
-        public readonly uint SamplerCount;
-        public readonly uint StorageBufferCount;
-        public readonly uint StorageImageCount;
-        public readonly uint UniformBufferDynamicCount;
-        public readonly uint StorageBufferDynamicCount;
+        public readonly uint32 UniformBufferCount;
+        public readonly uint32 SampledImageCount;
+        public readonly uint32 SamplerCount;
+        public readonly uint32 StorageBufferCount;
+        public readonly uint32 StorageImageCount;
+        public readonly uint32 UniformBufferDynamicCount;
+        public readonly uint32 StorageBufferDynamicCount;
 
         public DescriptorResourceCounts(
-            uint uniformBufferCount,
-            uint uniformBufferDynamicCount,
-            uint sampledImageCount,
-            uint samplerCount,
-            uint storageBufferCount,
-            uint storageBufferDynamicCount,
-            uint storageImageCount)
+            uint32 uniformBufferCount,
+            uint32 uniformBufferDynamicCount,
+            uint32 sampledImageCount,
+            uint32 samplerCount,
+            uint32 storageBufferCount,
+            uint32 storageBufferDynamicCount,
+            uint32 storageImageCount)
         {
             UniformBufferCount = uniformBufferCount;
             UniformBufferDynamicCount = uniformBufferDynamicCount;

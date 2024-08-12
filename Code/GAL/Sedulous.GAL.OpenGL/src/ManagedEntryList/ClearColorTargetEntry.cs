@@ -2,10 +2,10 @@
 {
     internal class ClearColorTargetEntry : OpenGLCommandEntry
     {
-        public uint Index;
+        public uint32 Index;
         public RgbaFloat ClearColor;
 
-        public ClearColorTargetEntry(uint index, RgbaFloat clearColor)
+        public ClearColorTargetEntry(uint32 index, RgbaFloat clearColor)
         {
             Index = index;
             ClearColor = clearColor;
@@ -13,7 +13,7 @@
 
         public ClearColorTargetEntry() { }
 
-        public ClearColorTargetEntry Init(uint index, RgbaFloat clearColor)
+        public ClearColorTargetEntry Init(uint32 index, RgbaFloat clearColor)
         {
             Index = index;
             ClearColor = clearColor;

@@ -21,7 +21,7 @@ namespace Sedulous.GAL.D3D11
         private readonly string _deviceName;
         private readonly string _vendorName;
         private readonly GraphicsApiVersion _apiVersion;
-        private readonly int _deviceId;
+        private readonly int32 _deviceId;
         private readonly ID3D11DeviceContext _immediateContext;
         private readonly D3D11ResourceFactory _d3d11ResourceFactory;
         private readonly D3D11Swapchain _mainSwapchain;
@@ -63,7 +63,7 @@ namespace Sedulous.GAL.D3D11
 
         public bool SupportsCommandLists => _supportsCommandLists;
 
-        public int DeviceId => _deviceId;
+        public int32 DeviceId => _deviceId;
 
         public override Swapchain MainSwapchain => _mainSwapchain;
 
@@ -130,7 +130,7 @@ namespace Sedulous.GAL.D3D11
 
                 AdapterDescription desc = _dxgiAdapter.Description;
                 _deviceName = desc.Description;
-                _vendorName = "id:" + ((uint)desc.VendorId).ToString("x8");
+                _vendorName = "id:" + ((uint32)desc.VendorId).ToString("x8");
                 _deviceId = desc.DeviceId;
             }
 
@@ -206,7 +206,7 @@ namespace Sedulous.GAL.D3D11
         {
             if (options.Debug)
             {
-                d3D11DeviceOptions.DeviceCreationFlags |= (uint)DeviceCreationFlags.Debug;
+                d3D11DeviceOptions.DeviceCreationFlags |= (uint32)DeviceCreationFlags.Debug;
             }
 
             return d3D11DeviceOptions;
@@ -266,7 +266,7 @@ namespace Sedulous.GAL.D3D11
             return TextureSampleCount.Count1;
         }
 
-        private bool CheckFormatMultisample(Format format, int sampleCount)
+        private bool CheckFormatMultisample(Format format, int32 sampleCount)
         {
             return _device.CheckMultisampleQualityLevels(format, sampleCount) != 0;
         }
@@ -296,10 +296,10 @@ namespace Sedulous.GAL.D3D11
                 return false;
             }
 
-            const uint MaxTextureDimension = 16384;
-            const uint MaxVolumeExtent = 2048;
+            const uint32 MaxTextureDimension = 16384;
+            const uint32 MaxVolumeExtent = 2048;
 
-            uint sampleCounts = 0;
+            uint32 sampleCounts = 0;
             if (CheckFormatMultisample(dxgiFormat, 1)) { sampleCounts |= (1 << 0); }
             if (CheckFormatMultisample(dxgiFormat, 2)) { sampleCounts |= (1 << 1); }
             if (CheckFormatMultisample(dxgiFormat, 4)) { sampleCounts |= (1 << 2); }
@@ -311,13 +311,13 @@ namespace Sedulous.GAL.D3D11
                 MaxTextureDimension,
                 type == TextureType.Texture1D ? 1 : MaxTextureDimension,
                 type != TextureType.Texture3D ? 1 : MaxVolumeExtent,
-                uint.MaxValue,
+                uint32.MaxValue,
                 type == TextureType.Texture3D ? 1 : MaxVolumeExtent,
                 sampleCounts);
             return true;
         }
 
-        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint subresource)
+        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource)
         {
             MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
             lock (_mappedResourceLock)
@@ -357,24 +357,24 @@ namespace Sedulous.GAL.D3D11
                         D3D11Texture texture = Util.AssertSubtype<MappableResource, D3D11Texture>(resource);
                         lock (_immediateContextLock)
                         {
-                            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint mipLevel, out uint arrayLayer);
+                            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint32 mipLevel, out uint32 arrayLayer);
                             _immediateContext.Map(
                                 texture.DeviceTexture,
-                                (int)mipLevel,
-                                (int)arrayLayer,
+                                (int32)mipLevel,
+                                (int32)arrayLayer,
                                 D3D11Formats.VdToD3D11MapMode(false, mode),
                                 Vortice.Direct3D11.MapFlags.None,
-                                out int mipSize,
+                                out int32 mipSize,
                                 out MappedSubresource msr);
 
                             info.MappedResource = new MappedResource(
                                 resource,
                                 mode,
                                 msr.DataPointer,
-                                texture.Height * (uint)msr.RowPitch,
+                                texture.Height * (uint32)msr.RowPitch,
                                 subresource,
-                                (uint)msr.RowPitch,
-                                (uint)msr.DepthPitch);
+                                (uint32)msr.RowPitch,
+                                (uint32)msr.DepthPitch);
                             info.RefCount = 1;
                             info.Mode = mode;
                             _mappedResources.Add(key, info);
@@ -386,7 +386,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        protected override void UnmapCore(MappableResource resource, uint subresource)
+        protected override void UnmapCore(MappableResource resource, uint32 subresource)
         {
             MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
             bool commitUnmap;
@@ -411,7 +411,7 @@ namespace Sedulous.GAL.D3D11
                         else
                         {
                             D3D11Texture texture = Util.AssertSubtype<MappableResource, D3D11Texture>(resource);
-                            _immediateContext.Unmap(texture.DeviceTexture, (int)subresource);
+                            _immediateContext.Unmap(texture.DeviceTexture, (int32)subresource);
                         }
 
                         bool result = _mappedResources.Remove(key);
@@ -425,7 +425,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             D3D11Buffer d3dBuffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
             if (sizeInBytes == 0)
@@ -442,7 +442,7 @@ namespace Sedulous.GAL.D3D11
 
             if (useUpdateSubresource)
             {
-                Box? subregion = new Box((int)bufferOffsetInBytes, 0, 0, (int)(sizeInBytes + bufferOffsetInBytes), 1, 1);
+                Box? subregion = new Box((int32)bufferOffsetInBytes, 0, 0, (int32)(sizeInBytes + bufferOffsetInBytes), 1, 1);
 
                 if (isUniformBuffer)
                 {
@@ -459,13 +459,13 @@ namespace Sedulous.GAL.D3D11
                 MappedResource mr = MapCore(buffer, MapMode.Write, 0);
                 if (sizeInBytes < 1024)
                 {
-                    Unsafe.CopyBlock((byte*)mr.Data + bufferOffsetInBytes, source.ToPointer(), sizeInBytes);
+                    Unsafe.CopyBlock((uint8*)mr.Data + bufferOffsetInBytes, source.ToPointer(), sizeInBytes);
                 }
                 else
                 {
                     Buffer.MemoryCopy(
                         source.ToPointer(),
-                        (byte*)mr.Data + bufferOffsetInBytes,
+                        (uint8*)mr.Data + bufferOffsetInBytes,
                         buffer.SizeInBytes,
                         sizeInBytes);
                 }
@@ -475,11 +475,11 @@ namespace Sedulous.GAL.D3D11
             {
                 D3D11Buffer staging = GetFreeStagingBuffer(sizeInBytes);
                 UpdateBuffer(staging, 0, source, sizeInBytes);
-                Box sourceRegion = new Box(0, 0, 0, (int)sizeInBytes, 1, 1);
+                Box sourceRegion = new Box(0, 0, 0, (int32)sizeInBytes, 1, 1);
                 lock (_immediateContextLock)
                 {
                     _immediateContext.CopySubresourceRegion(
-                        d3dBuffer.Buffer, 0, (int)bufferOffsetInBytes, 0, 0,
+                        d3dBuffer.Buffer, 0, (int32)bufferOffsetInBytes, 0, 0,
                         staging.Buffer, 0,
                         sourceRegion);
                 }
@@ -491,7 +491,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private D3D11Buffer GetFreeStagingBuffer(uint sizeInBytes)
+        private D3D11Buffer GetFreeStagingBuffer(uint32 sizeInBytes)
         {
             lock (_stagingResourcesLock)
             {
@@ -514,26 +514,26 @@ namespace Sedulous.GAL.D3D11
         private protected override void UpdateTextureCore(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x,
-            uint y,
-            uint z,
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevel,
-            uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x,
+            uint32 y,
+            uint32 z,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevel,
+            uint32 arrayLayer)
         {
             D3D11Texture d3dTex = Util.AssertSubtype<Texture, D3D11Texture>(texture);
             bool useMap = (texture.Usage & TextureUsage.Staging) == TextureUsage.Staging;
             if (useMap)
             {
-                uint subresource = texture.CalculateSubresource(mipLevel, arrayLayer);
+                uint32 subresource = texture.CalculateSubresource(mipLevel, arrayLayer);
                 MappedResourceCacheKey key = new MappedResourceCacheKey(texture, subresource);
                 MappedResource map = MapCore(texture, MapMode.Write, subresource);
 
-                uint denseRowSize = FormatHelpers.GetRowPitch(width, texture.Format);
-                uint denseSliceSize = FormatHelpers.GetDepthPitch(denseRowSize, height, texture.Format);
+                uint32 denseRowSize = FormatHelpers.GetRowPitch(width, texture.Format);
+                uint32 denseSliceSize = FormatHelpers.GetDepthPitch(denseRowSize, height, texture.Format);
 
                 Util.CopyTextureRegion(
                     source.ToPointer(),
@@ -549,17 +549,17 @@ namespace Sedulous.GAL.D3D11
             }
             else
             {
-                int subresource = D3D11Util.ComputeSubresource(mipLevel, texture.MipLevels, arrayLayer);
+                int32 subresource = D3D11Util.ComputeSubresource(mipLevel, texture.MipLevels, arrayLayer);
                 Box resourceRegion = new Box(
-                    left: (int)x,
-                    right: (int)(x + width),
-                    top: (int)y,
-                    front: (int)z,
-                    bottom: (int)(y + height),
-                    back: (int)(z + depth));
+                    left: (int32)x,
+                    right: (int32)(x + width),
+                    top: (int32)y,
+                    front: (int32)z,
+                    bottom: (int32)(y + height),
+                    back: (int32)(z + depth));
 
-                uint srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
-                uint srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
+                uint32 srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
+                uint32 srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
                 lock (_immediateContextLock)
                 {
                     _immediateContext.UpdateSubresource(
@@ -567,31 +567,31 @@ namespace Sedulous.GAL.D3D11
                         subresource,
                         resourceRegion,
                         source,
-                        (int)srcRowPitch,
-                        (int)srcDepthPitch);
+                        (int32)srcRowPitch,
+                        (int32)srcDepthPitch);
                 }
             }
         }
 
-        public override bool WaitForFence(Fence fence, ulong nanosecondTimeout)
+        public override bool WaitForFence(Fence fence, uint64 nanosecondTimeout)
         {
             return Util.AssertSubtype<Fence, D3D11Fence>(fence).Wait(nanosecondTimeout);
         }
 
-        public override bool WaitForFences(Fence[] fences, bool waitAll, ulong nanosecondTimeout)
+        public override bool WaitForFences(Fence[] fences, bool waitAll, uint64 nanosecondTimeout)
         {
-            int msTimeout;
-            if (nanosecondTimeout == ulong.MaxValue)
+            int32 msTimeout;
+            if (nanosecondTimeout == uint64.MaxValue)
             {
                 msTimeout = -1;
             }
             else
             {
-                msTimeout = (int)Math.Min(nanosecondTimeout / 1_000_000, int.MaxValue);
+                msTimeout = (int32)Math.Min(nanosecondTimeout / 1_000_000, int32.MaxValue);
             }
 
             ManualResetEvent[] events = GetResetEventArray(fences.Length);
-            for (int i = 0; i < fences.Length; i++)
+            for (int32 i = 0; i < fences.Length; i++)
             {
                 events[i] = Util.AssertSubtype<Fence, D3D11Fence>(fences[i]).ResetEvent;
             }
@@ -602,7 +602,7 @@ namespace Sedulous.GAL.D3D11
             }
             else
             {
-                int index = WaitHandle.WaitAny(events, msTimeout);
+                int32 index = WaitHandle.WaitAny(events, msTimeout);
                 result = index != WaitHandle.WaitTimeout;
             }
 
@@ -614,11 +614,11 @@ namespace Sedulous.GAL.D3D11
         private readonly object _resetEventsLock = new object();
         private readonly List<ManualResetEvent[]> _resetEvents = new List<ManualResetEvent[]>();
 
-        private ManualResetEvent[] GetResetEventArray(int length)
+        private ManualResetEvent[] GetResetEventArray(int32 length)
         {
             lock (_resetEventsLock)
             {
-                for (int i = _resetEvents.Count - 1; i > 0; i--)
+                for (int32 i = _resetEvents.Count - 1; i > 0; i--)
                 {
                     ManualResetEvent[] array = _resetEvents[i];
                     if (array.Length == length)
@@ -646,9 +646,9 @@ namespace Sedulous.GAL.D3D11
             Util.AssertSubtype<Fence, D3D11Fence>(fence).Reset();
         }
 
-        internal override uint GetUniformBufferMinOffsetAlignmentCore() => 256u;
+        internal override uint32 GetUniformBufferMinOffsetAlignmentCore() => 256u;
 
-        internal override uint GetStructuredBufferMinOffsetAlignmentCore() => 16;
+        internal override uint32 GetStructuredBufferMinOffsetAlignmentCore() => 16;
 
         protected override void PlatformDispose()
         {
@@ -665,7 +665,7 @@ namespace Sedulous.GAL.D3D11
 
             if (IsDebugEnabled)
             {
-                uint refCount = _device.Release();
+                uint32 refCount = _device.Release();
                 if (refCount > 0)
                 {
                     ID3D11Debug deviceDebug = _device.QueryInterfaceOrNull<ID3D11Debug>();

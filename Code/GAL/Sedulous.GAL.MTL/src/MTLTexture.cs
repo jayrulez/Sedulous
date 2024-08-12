@@ -18,15 +18,15 @@ namespace Sedulous.GAL.MTL
 
         public override PixelFormat Format { get; }
 
-        public override uint Width { get; }
+        public override uint32 Width { get; }
 
-        public override uint Height { get; }
+        public override uint32 Height { get; }
 
-        public override uint Depth { get; }
+        public override uint32 Depth { get; }
 
-        public override uint MipLevels { get; }
+        public override uint32 MipLevels { get; }
 
-        public override uint ArrayLayers { get; }
+        public override uint32 ArrayLayers { get; }
 
         public override TextureUsage Usage { get; }
 
@@ -76,13 +76,13 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                uint blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-                uint totalStorageSize = 0;
-                for (uint level = 0; level < MipLevels; level++)
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
+                uint32 totalStorageSize = 0;
+                for (uint32 level = 0; level < MipLevels; level++)
                 {
-                    Util.GetMipDimensions(this, level, out uint levelWidth, out uint levelHeight, out uint levelDepth);
-                    uint storageWidth = Math.Max(levelWidth, blockSize);
-                    uint storageHeight = Math.Max(levelHeight, blockSize);
+                    Util.GetMipDimensions(this, level, out uint32 levelWidth, out uint32 levelHeight, out uint32 levelDepth);
+                    uint32 storageWidth = Math.Max(levelWidth, blockSize);
+                    uint32 storageHeight = Math.Max(levelHeight, blockSize);
                     totalStorageSize += levelDepth * FormatHelpers.GetDepthPitch(
                         FormatHelpers.GetRowPitch(levelWidth, Format),
                         levelHeight,
@@ -96,7 +96,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        public MTLTexture(ulong nativeTexture, ref TextureDescription description)
+        public MTLTexture(uint64 nativeTexture, ref TextureDescription description)
         {
             DeviceTexture = new MetalBindings.MTLTexture((IntPtr)nativeTexture);
             Width = description.Width;
@@ -118,24 +118,24 @@ namespace Sedulous.GAL.MTL
                     (Usage & TextureUsage.Cubemap) != 0);
         }
 
-        internal uint GetSubresourceSize(uint mipLevel, uint arrayLayer)
+        internal uint32 GetSubresourceSize(uint32 mipLevel, uint32 arrayLayer)
         {
-            uint blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-            Util.GetMipDimensions(this, mipLevel, out uint width, out uint height, out uint depth);
-            uint storageWidth = Math.Max(blockSize, width);
-            uint storageHeight = Math.Max(blockSize, height);
+            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
+            Util.GetMipDimensions(this, mipLevel, out uint32 width, out uint32 height, out uint32 depth);
+            uint32 storageWidth = Math.Max(blockSize, width);
+            uint32 storageHeight = Math.Max(blockSize, height);
             return depth * FormatHelpers.GetDepthPitch(
                 FormatHelpers.GetRowPitch(storageWidth, Format),
                 storageHeight,
                 Format);
         }
 
-        internal void GetSubresourceLayout(uint mipLevel, uint arrayLayer, out uint rowPitch, out uint depthPitch)
+        internal void GetSubresourceLayout(uint32 mipLevel, uint32 arrayLayer, out uint32 rowPitch, out uint32 depthPitch)
         {
-            uint blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-            Util.GetMipDimensions(this, mipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-            uint storageWidth = Math.Max(blockSize, mipWidth);
-            uint storageHeight = Math.Max(blockSize, mipHeight);
+            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
+            Util.GetMipDimensions(this, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+            uint32 storageWidth = Math.Max(blockSize, mipWidth);
+            uint32 storageHeight = Math.Max(blockSize, mipHeight);
             rowPitch = FormatHelpers.GetRowPitch(storageWidth, Format);
             depthPitch = FormatHelpers.GetDepthPitch(rowPitch, storageHeight, Format);
         }

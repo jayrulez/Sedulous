@@ -3,12 +3,12 @@
     internal struct NoAllocCopyBufferEntry
     {
         public readonly Tracked<DeviceBuffer> Source;
-        public readonly uint SourceOffset;
+        public readonly uint32 SourceOffset;
         public readonly Tracked<DeviceBuffer> Destination;
-        public readonly uint DestinationOffset;
-        public readonly uint SizeInBytes;
+        public readonly uint32 DestinationOffset;
+        public readonly uint32 SizeInBytes;
 
-        public NoAllocCopyBufferEntry(Tracked<DeviceBuffer> source, uint sourceOffset, Tracked<DeviceBuffer> destination, uint destinationOffset, uint sizeInBytes)
+        public NoAllocCopyBufferEntry(Tracked<DeviceBuffer> source, uint32 sourceOffset, Tracked<DeviceBuffer> destination, uint32 destinationOffset, uint32 sizeInBytes)
         {
             Source = source;
             SourceOffset = sourceOffset;

@@ -71,9 +71,9 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
-            return HashHelper.Combine(Name.GetHashCode(), (int)Kind, (int)Stages, (int)Options);
+            return HashHelper.Combine(Name.GetHashCode(), (int32)Kind, (int32)Stages, (int32)Options);
         }
     }
 
@@ -90,7 +90,7 @@ namespace Veldrid
         /// <summary>
         /// Can be applied to a buffer type resource (<see cref="ResourceKind.StructuredBufferReadOnly"/>,
         /// <see cref="ResourceKind.StructuredBufferReadWrite"/>, or <see cref="ResourceKind.UniformBuffer"/>), allowing it to be
-        /// bound with a dynamic offset using <see cref="CommandList.SetGraphicsResourceSet(uint, ResourceSet, uint[])"/>.
+        /// bound with a dynamic offset using <see cref="CommandList.SetGraphicsResourceSet(uint32, ResourceSet, uint32[])"/>.
         /// Offsets specified this way must be a multiple of <see cref="GraphicsDevice.UniformBufferMinOffsetAlignment"/> or
         /// <see cref="GraphicsDevice.StructuredBufferMinOffsetAlignment"/>.
         /// </summary>

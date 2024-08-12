@@ -23,10 +23,10 @@ namespace Sedulous.GAL.VK
         public override VkRenderPass RenderPassNoClear_Load => _renderPassNoClearLoad;
         public override VkRenderPass RenderPassClear => _renderPassClear;
 
-        public override uint RenderableWidth => Width;
-        public override uint RenderableHeight => Height;
+        public override uint32 RenderableWidth => Width;
+        public override uint32 RenderableHeight => Height;
 
-        public override uint AttachmentCount { get; }
+        public override uint32 AttachmentCount { get; }
 
         public override bool IsDisposed => _destroyed;
 
@@ -39,9 +39,9 @@ namespace Sedulous.GAL.VK
 
             StackList<VkAttachmentDescription> attachments = new StackList<VkAttachmentDescription>();
 
-            uint colorAttachmentCount = (uint)ColorTargets.Count;
+            uint32 colorAttachmentCount = (uint32)ColorTargets.Count;
             StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
-            for (int i = 0; i < colorAttachmentCount; i++)
+            for (int32 i = 0; i < colorAttachmentCount; i++)
             {
                 VKTexture vkColorTex = Util.AssertSubtype<Texture, VKTexture>(ColorTargets[i].Target);
                 VkAttachmentDescription colorAttachmentDesc = new VkAttachmentDescription();
@@ -60,7 +60,7 @@ namespace Sedulous.GAL.VK
                 attachments.Add(colorAttachmentDesc);
 
                 VkAttachmentReference colorAttachmentRef = new VkAttachmentReference();
-                colorAttachmentRef.attachment = (uint)i;
+                colorAttachmentRef.attachment = (uint32)i;
                 colorAttachmentRef.layout = VkImageLayout.ColorAttachmentOptimal;
                 colorAttachmentRefs.Add(colorAttachmentRef);
             }
@@ -84,7 +84,7 @@ namespace Sedulous.GAL.VK
                     : VkImageLayout.DepthStencilAttachmentOptimal;
                 depthAttachmentDesc.finalLayout = VkImageLayout.DepthStencilAttachmentOptimal;
 
-                depthAttachmentRef.attachment = (uint)description.ColorTargets.Length;
+                depthAttachmentRef.attachment = (uint32)description.ColorTargets.Length;
                 depthAttachmentRef.layout = VkImageLayout.DepthStencilAttachmentOptimal;
             }
 
@@ -118,7 +118,7 @@ namespace Sedulous.GAL.VK
             VkResult creationResult = vkCreateRenderPass(_gd.Device, ref renderPassCI, null, out _renderPassNoClear);
             CheckResult(creationResult);
 
-            for (int i = 0; i < colorAttachmentCount; i++)
+            for (int32 i = 0; i < colorAttachmentCount; i++)
             {
                 attachments[i].loadOp = VkAttachmentLoadOp.Load;
                 attachments[i].initialLayout = VkImageLayout.ColorAttachmentOptimal;
@@ -151,7 +151,7 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            for (int i = 0; i < colorAttachmentCount; i++)
+            for (int32 i = 0; i < colorAttachmentCount; i++)
             {
                 attachments[i].loadOp = VkAttachmentLoadOp.Clear;
                 attachments[i].initialLayout = VkImageLayout.Undefined;
@@ -161,14 +161,14 @@ namespace Sedulous.GAL.VK
             CheckResult(creationResult);
 
             VkFramebufferCreateInfo fbCI = VkFramebufferCreateInfo.New();
-            uint fbAttachmentsCount = (uint)description.ColorTargets.Length;
+            uint32 fbAttachmentsCount = (uint32)description.ColorTargets.Length;
             if (description.DepthTarget != null)
             {
                 fbAttachmentsCount += 1;
             }
 
-            VkImageView* fbAttachments = stackalloc VkImageView[(int)fbAttachmentsCount];
-            for (int i = 0; i < colorAttachmentCount; i++)
+            VkImageView* fbAttachments = stackalloc VkImageView[(int32)fbAttachmentsCount];
+            for (int32 i = 0; i < colorAttachmentCount; i++)
             {
                 VKTexture vkColorTarget = Util.AssertSubtype<Texture, VKTexture>(description.ColorTargets[i].Target);
                 VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
@@ -211,7 +211,7 @@ namespace Sedulous.GAL.VK
             }
 
             Texture dimTex;
-            uint mipLevel;
+            uint32 mipLevel;
             if (ColorTargets.Count > 0)
             {
                 dimTex = ColorTargets[0].Target;
@@ -227,8 +227,8 @@ namespace Sedulous.GAL.VK
             Util.GetMipDimensions(
                 dimTex,
                 mipLevel,
-                out uint mipWidth,
-                out uint mipHeight,
+                out uint32 mipWidth,
+                out uint32 mipHeight,
                 out _);
 
             fbCI.width = mipWidth;
@@ -246,12 +246,12 @@ namespace Sedulous.GAL.VK
             {
                 AttachmentCount += 1;
             }
-            AttachmentCount += (uint)ColorTargets.Count;
+            AttachmentCount += (uint32)ColorTargets.Count;
         }
 
         public override void TransitionToIntermediateLayout(VkCommandBuffer cb)
         {
-            for (int i = 0; i < ColorTargets.Count; i++)
+            for (int32 i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
@@ -269,7 +269,7 @@ namespace Sedulous.GAL.VK
 
         public override void TransitionToFinalLayout(VkCommandBuffer cb)
         {
-            for (int i = 0; i < ColorTargets.Count; i++)
+            for (int32 i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);

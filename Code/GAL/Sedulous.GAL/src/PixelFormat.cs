@@ -7,7 +7,7 @@
     /// type, UNorm identifies an unsigned integer type which is normalized, meaning it occupies the full space of the integer
     /// type. The SRgb suffix for normalized integer formats indicates that the RGB components are stored in sRGB format.
     /// </summary>
-    public enum PixelFormat : byte
+    public enum PixelFormat : uint8
     {
         /// <summary>
         /// RGBA component order. Each component is an 8-bit unsigned normalized integer.

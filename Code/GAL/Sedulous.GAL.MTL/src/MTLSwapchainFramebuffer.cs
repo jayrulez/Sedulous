@@ -13,8 +13,8 @@ namespace Sedulous.GAL.MTL
         private readonly MTLSwapchain _parentSwapchain;
         private bool _disposed;
 
-        public override uint Width => _placeholderTexture.Width;
-        public override uint Height => _placeholderTexture.Height;
+        public override uint32 Width => _placeholderTexture.Width;
+        public override uint32 Height => _placeholderTexture.Height;
 
         public override OutputDescription OutputDescription { get; }
 
@@ -30,8 +30,8 @@ namespace Sedulous.GAL.MTL
         public MTLSwapchainFramebuffer(
             MTLGraphicsDevice gd,
             MTLSwapchain parent,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             PixelFormat? depthFormat,
             PixelFormat colorFormat)
             : base()
@@ -55,7 +55,7 @@ namespace Sedulous.GAL.MTL
             _colorTargets = new[] { new FramebufferAttachment(_placeholderTexture, 0) };
         }
 
-        private void RecreateDepthTexture(uint width, uint height)
+        private void RecreateDepthTexture(uint32 width, uint32 height)
         {
             Debug.Assert(_depthFormat.HasValue);
             if (_depthTexture != null)
@@ -68,7 +68,7 @@ namespace Sedulous.GAL.MTL
                     width, height, 1, 1, _depthFormat.Value, TextureUsage.DepthStencil)));
         }
 
-        public void Resize(uint width, uint height)
+        public void Resize(uint32 width, uint32 height)
         {
             _placeholderTexture.Resize(width, height);
 

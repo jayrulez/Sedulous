@@ -9,7 +9,7 @@ namespace Sedulous.MetalBindings
     {
         public readonly IntPtr NativePtr;
 
-        public MTLRenderPassColorAttachmentDescriptor this[uint index]
+        public MTLRenderPassColorAttachmentDescriptor this[uint32 index]
         {
             get
             {

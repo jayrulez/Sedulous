@@ -8,10 +8,10 @@ namespace Sedulous.GAL.MTL
         private string _name;
         private bool _disposed;
 
-        public override uint SizeInBytes { get; }
+        public override uint32 SizeInBytes { get; }
         public override BufferUsage Usage { get; }
 
-        public uint ActualCapacity { get; }
+        public uint32 ActualCapacity { get; }
 
         public override string Name
         {
@@ -32,7 +32,7 @@ namespace Sedulous.GAL.MTL
         public MTLBuffer(ref BufferDescription bd, MTLGraphicsDevice gd)
         {
             SizeInBytes = bd.SizeInBytes;
-            uint roundFactor = (4 - (SizeInBytes % 4)) % 4;
+            uint32 roundFactor = (4 - (SizeInBytes % 4)) % 4;
             ActualCapacity = SizeInBytes + roundFactor;
             Usage = bd.Usage;
             DeviceBuffer = gd.Device.newBufferWithLengthOptions(

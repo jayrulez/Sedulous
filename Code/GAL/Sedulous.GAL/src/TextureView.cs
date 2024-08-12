@@ -15,19 +15,19 @@ namespace Veldrid
         /// <summary>
         /// The base mip level visible in the view.
         /// </summary>
-        public uint BaseMipLevel { get; }
+        public uint32 BaseMipLevel { get; }
         /// <summary>
         /// The number of mip levels visible in the view.
         /// </summary>
-        public uint MipLevels { get; }
+        public uint32 MipLevels { get; }
         /// <summary>
         /// The base array layer visible in the view.
         /// </summary>
-        public uint BaseArrayLayer { get; }
+        public uint32 BaseArrayLayer { get; }
         /// <summary>
         /// The number of array layers visible in the view.
         /// </summary>
-        public uint ArrayLayers { get; }
+        public uint32 ArrayLayers { get; }
         /// <summary>
         /// The format used to interpret the contents of the target Texture. This may be different from the target Texture's
         /// true storage format, but it will be the same size.

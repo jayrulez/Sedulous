@@ -5,10 +5,10 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
     internal class UpdateBufferEntry : OpenGLCommandEntry
     {
         public DeviceBuffer Buffer;
-        public uint BufferOffsetInBytes;
+        public uint32 BufferOffsetInBytes;
         public StagingBlock StagingBlock;
 
-        public UpdateBufferEntry(DeviceBuffer buffer, uint bufferOffsetInBytes, StagingBlock stagingBlock)
+        public UpdateBufferEntry(DeviceBuffer buffer, uint32 bufferOffsetInBytes, StagingBlock stagingBlock)
         {
             Buffer = buffer;
             BufferOffsetInBytes = bufferOffsetInBytes;
@@ -17,7 +17,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
 
         public UpdateBufferEntry() { }
 
-        public UpdateBufferEntry Init(DeviceBuffer buffer, uint bufferOffsetInBytes, StagingBlock stagingBlock)
+        public UpdateBufferEntry Init(DeviceBuffer buffer, uint32 bufferOffsetInBytes, StagingBlock stagingBlock)
         {
             Buffer = buffer;
             BufferOffsetInBytes = bufferOffsetInBytes;

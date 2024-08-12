@@ -2,20 +2,20 @@
 {
     internal class DispatchEntry : OpenGLCommandEntry
     {
-        public uint GroupCountX;
-        public uint GroupCountY;
-        public uint GroupCountZ;
+        public uint32 GroupCountX;
+        public uint32 GroupCountY;
+        public uint32 GroupCountZ;
 
         public DispatchEntry() { }
 
-        public DispatchEntry(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public DispatchEntry(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             GroupCountX = groupCountX;
             GroupCountY = groupCountY;
             GroupCountZ = groupCountZ;
         }
 
-        public DispatchEntry Init(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public DispatchEntry Init(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             GroupCountX = groupCountX;
             GroupCountY = groupCountY;

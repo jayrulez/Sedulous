@@ -11,7 +11,7 @@ namespace Veldrid
         /// <summary>
         /// The desired capacity, in bytes, of the <see cref="DeviceBuffer"/>.
         /// </summary>
-        public uint SizeInBytes;
+        public uint32 SizeInBytes;
         /// <summary>
         /// Indicates how the <see cref="DeviceBuffer"/> will be used.
         /// </summary>
@@ -20,7 +20,7 @@ namespace Veldrid
         /// For structured buffers, this value indicates the size in bytes of a single structure element, and must be non-zero.
         /// For all other buffer types, this value must be zero.
         /// </summary>
-        public uint StructureByteStride;
+        public uint32 StructureByteStride;
         /// <summary>
         /// Indicates that this is a raw buffer. This should be combined with
         /// <see cref="BufferUsage.StructuredBufferReadWrite"/>. This affects how the buffer is bound in the D3D11 backend.
@@ -32,7 +32,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="sizeInBytes">The desired capacity, in bytes.</param>
         /// <param name="usage">Indicates how the <see cref="DeviceBuffer"/> will be used.</param>
-        public BufferDescription(uint sizeInBytes, BufferUsage usage)
+        public BufferDescription(uint32 sizeInBytes, BufferUsage usage)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -47,7 +47,7 @@ namespace Veldrid
         /// <param name="usage">Indicates how the <see cref="DeviceBuffer"/> will be used.</param>
         /// <param name="structureByteStride">For structured buffers, this value indicates the size in bytes of a single
         /// structure element, and must be non-zero. For all other buffer types, this value must be zero.</param>
-        public BufferDescription(uint sizeInBytes, BufferUsage usage, uint structureByteStride)
+        public BufferDescription(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -65,7 +65,7 @@ namespace Veldrid
         /// <param name="rawBuffer">Indicates that this is a raw buffer. This should be combined with
         /// <see cref="BufferUsage.StructuredBufferReadWrite"/>. This affects how the buffer is bound in the D3D11 backend.
         /// </param>
-        public BufferDescription(uint sizeInBytes, BufferUsage usage, uint structureByteStride, bool rawBuffer)
+        public BufferDescription(uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride, bool rawBuffer)
         {
             SizeInBytes = sizeInBytes;
             Usage = usage;
@@ -90,11 +90,11 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 SizeInBytes.GetHashCode(),
-                (int)Usage,
+                (int32)Usage,
                 StructureByteStride.GetHashCode(),
                 RawBuffer.GetHashCode());
         }

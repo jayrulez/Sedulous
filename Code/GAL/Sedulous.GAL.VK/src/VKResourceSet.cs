@@ -38,19 +38,19 @@ namespace Sedulous.GAL.VK
             _descriptorAllocationToken = _gd.DescriptorPoolManager.Allocate(_descriptorCounts, dsl);
 
             BindableResource[] boundResources = description.BoundResources;
-            uint descriptorWriteCount = (uint)boundResources.Length;
-            VkWriteDescriptorSet* descriptorWrites = stackalloc VkWriteDescriptorSet[(int)descriptorWriteCount];
-            VkDescriptorBufferInfo* bufferInfos = stackalloc VkDescriptorBufferInfo[(int)descriptorWriteCount];
-            VkDescriptorImageInfo* imageInfos = stackalloc VkDescriptorImageInfo[(int)descriptorWriteCount];
+            uint32 descriptorWriteCount = (uint32)boundResources.Length;
+            VkWriteDescriptorSet* descriptorWrites = stackalloc VkWriteDescriptorSet[(int32)descriptorWriteCount];
+            VkDescriptorBufferInfo* bufferInfos = stackalloc VkDescriptorBufferInfo[(int32)descriptorWriteCount];
+            VkDescriptorImageInfo* imageInfos = stackalloc VkDescriptorImageInfo[(int32)descriptorWriteCount];
 
-            for (int i = 0; i < descriptorWriteCount; i++)
+            for (int32 i = 0; i < descriptorWriteCount; i++)
             {
                 VkDescriptorType type = vkLayout.DescriptorTypes[i];
 
                 descriptorWrites[i].sType = VkStructureType.WriteDescriptorSet;
                 descriptorWrites[i].descriptorCount = 1;
                 descriptorWrites[i].descriptorType = type;
-                descriptorWrites[i].dstBinding = (uint)i;
+                descriptorWrites[i].dstBinding = (uint32)i;
                 descriptorWrites[i].dstSet = _descriptorAllocationToken.Set;
 
                 if (type == VkDescriptorType.UniformBuffer || type == VkDescriptorType.UniformBufferDynamic

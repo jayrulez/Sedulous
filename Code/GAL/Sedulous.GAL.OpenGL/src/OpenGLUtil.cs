@@ -8,13 +8,13 @@ namespace Sedulous.GAL.OpenGL
 {
     internal static class OpenGLUtil
     {
-        private static int? MaxLabelLength;
+        private static int32? MaxLabelLength;
 
         [Conditional("DEBUG")]
         [DebuggerNonUserCode]
         internal static void CheckLastError()
         {
-            uint error = glGetError();
+            uint32 error = glGetError();
             if (error != 0)
             {
                 if (Debugger.IsAttached)
@@ -26,14 +26,14 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        internal static void SetObjectLabel(ObjectLabelIdentifier identifier, uint target, string name)
+        internal static void SetObjectLabel(ObjectLabelIdentifier identifier, uint32 target, string name)
         {
             if (HasGlObjectLabel)
             {
-                int byteCount = Encoding.UTF8.GetByteCount(name);
+                int32 byteCount = Encoding.UTF8.GetByteCount(name);
                 if (MaxLabelLength == null)
                 {
-                    int maxLabelLength = -1;
+                    int32 maxLabelLength = -1;
                     glGetIntegerv(GetPName.MaxLabelLength, &maxLabelLength);
                     CheckLastError();
                     MaxLabelLength = maxLabelLength;
@@ -44,21 +44,21 @@ namespace Sedulous.GAL.OpenGL
                     byteCount = Encoding.UTF8.GetByteCount(name);
                 }
 
-                Span<byte> utf8bytes = stackalloc byte[128];
-                if(byteCount + 1 > 128) utf8bytes = new byte[byteCount + 1];
+                Span<uint8> utf8bytes = stackalloc uint8[128];
+                if(byteCount + 1 > 128) utf8bytes = new uint8[byteCount + 1];
 
                 fixed (char* namePtr = name)
-                fixed (byte* utf8bytePtr = utf8bytes)
+                fixed (uint8* utf8bytePtr = utf8bytes)
                 {
-                    int written = Encoding.UTF8.GetBytes(namePtr, name.Length, utf8bytePtr, byteCount);
+                    int32 written = Encoding.UTF8.GetBytes(namePtr, name.Length, utf8bytePtr, byteCount);
                     utf8bytePtr[written] = 0;
-                    glObjectLabel(identifier, target, (uint)byteCount, utf8bytePtr);
+                    glObjectLabel(identifier, target, (uint32)byteCount, utf8bytePtr);
                     CheckLastError();
                 }
             }
         }
 
-        internal static TextureTarget GetTextureTarget(OpenGLTexture glTex, uint arrayLayer)
+        internal static TextureTarget GetTextureTarget(OpenGLTexture glTex, uint32 arrayLayer)
         {
             if ((glTex.Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {

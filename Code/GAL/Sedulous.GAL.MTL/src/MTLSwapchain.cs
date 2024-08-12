@@ -39,8 +39,8 @@ namespace Sedulous.GAL.MTL
             _gd = gd;
             _syncToVerticalBlank = description.SyncToVerticalBlank;
 
-            uint width;
-            uint height;
+            uint32 width;
+            uint32 height;
 
             SwapchainSource source = description.Source;
             if (source is NSWindowSwapchainSource nsWindowSource)
@@ -48,8 +48,8 @@ namespace Sedulous.GAL.MTL
                 NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
                 NSView contentView = nswindow.contentView;
                 CGSize windowContentSize = contentView.frame.size;
-                width = (uint)windowContentSize.width;
-                height = (uint)windowContentSize.height;
+                width = (uint32)windowContentSize.width;
+                height = (uint32)windowContentSize.height;
 
                 if (!CAMetalLayer.TryCast(contentView.layer, out _metalLayer))
                 {
@@ -62,8 +62,8 @@ namespace Sedulous.GAL.MTL
             {
                 NSView contentView = new NSView(nsViewSource.NSView);
                 CGSize windowContentSize = contentView.frame.size;
-                width = (uint)windowContentSize.width;
-                height = (uint)windowContentSize.height;
+                width = (uint32)windowContentSize.width;
+                height = (uint32)windowContentSize.height;
 
                 if (!CAMetalLayer.TryCast(contentView.layer, out _metalLayer))
                 {
@@ -79,8 +79,8 @@ namespace Sedulous.GAL.MTL
 
                 _uiView = new UIView(uiViewSource.UIView);
                 CGSize viewSize = _uiView.frame.size;
-                width = (uint)(viewSize.width * nativeScale);
-                height = (uint)(viewSize.height * nativeScale);
+                width = (uint32)(viewSize.width * nativeScale);
+                height = (uint32)(viewSize.height * nativeScale);
 
                 if (!CAMetalLayer.TryCast(_uiView.layer, out _metalLayer))
                 {
@@ -131,14 +131,14 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        public override void Resize(uint width, uint height)
+        public override void Resize(uint32 width, uint32 height)
         {
             if (_uiView.NativePtr != IntPtr.Zero)
             {
                 UIScreen mainScreen = UIScreen.mainScreen;
                 CGFloat nativeScale = mainScreen.nativeScale;
-                width = (uint)(width * nativeScale);
-                height = (uint)(height * nativeScale);
+                width = (uint32)(width * nativeScale);
+                height = (uint32)(height * nativeScale);
 
                 _metalLayer.frame = _uiView.frame;
             }

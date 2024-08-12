@@ -3,7 +3,7 @@
     /// <summary>
     /// Controls the influence of components in a blend operation.
     /// </summary>
-    public enum BlendFactor : byte
+    public enum BlendFactor : uint8
     {
         /// <summary>
         /// Each component is multiplied by 0.

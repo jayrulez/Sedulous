@@ -20,8 +20,8 @@ namespace Sedulous.GAL.VK
 
         public ResourceRefCount RefCount { get; }
 
-        public abstract uint RenderableWidth { get; }
-        public abstract uint RenderableHeight { get; }
+        public abstract uint32 RenderableWidth { get; }
+        public abstract uint32 RenderableHeight { get; }
 
         public override void Dispose()
         {
@@ -34,7 +34,7 @@ namespace Sedulous.GAL.VK
         public abstract VkRenderPass RenderPassNoClear_Init { get; }
         public abstract VkRenderPass RenderPassNoClear_Load { get; }
         public abstract VkRenderPass RenderPassClear { get; }
-        public abstract uint AttachmentCount { get; }
+        public abstract uint32 AttachmentCount { get; }
         public abstract void TransitionToIntermediateLayout(VkCommandBuffer cb);
         public abstract void TransitionToFinalLayout(VkCommandBuffer cb);
     }

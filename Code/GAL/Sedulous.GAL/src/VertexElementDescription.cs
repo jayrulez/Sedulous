@@ -24,7 +24,7 @@ namespace Veldrid
         /// <summary>
         /// The offset in bytes from the beginning of the vertex.
         /// </summary>
-        public uint Offset;
+        public uint32 Offset;
 
         /// <summary>
         /// Constructs a new VertexElementDescription describing a per-vertex element.
@@ -65,7 +65,7 @@ namespace Veldrid
             string name,
             VertexElementSemantic semantic,
             VertexElementFormat format,
-            uint offset)
+            uint32 offset)
         {
             Name = name;
             Format = format;
@@ -90,13 +90,13 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 Name.GetHashCode(),
-                (int)Format,
-                (int)Semantic,
-                (int)Offset);
+                (int32)Format,
+                (int32)Semantic,
+                (int32)Offset);
         }
     }
 }

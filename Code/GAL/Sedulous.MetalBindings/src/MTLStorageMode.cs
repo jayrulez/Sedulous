@@ -1,6 +1,6 @@
 namespace Sedulous.MetalBindings
 {
-    public enum MTLStorageMode : ulong
+    public enum MTLStorageMode : uint64
     {
         Shared = 0,
         Managed = 1,

@@ -3,7 +3,7 @@
     /// <summary>
     /// Indicates which face will be culled.
     /// </summary>
-    public enum FaceCullMode : byte
+    public enum FaceCullMode : uint8
     {
         /// <summary>
         /// The back face.

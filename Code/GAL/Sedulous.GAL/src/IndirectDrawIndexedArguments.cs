@@ -9,22 +9,22 @@
         /// <summary>
         /// The number of indices to use in the indexed draw.
         /// </summary>
-        public uint IndexCount;
+        public uint32 IndexCount;
         /// <summary>
         /// The number of instances to draw.
         /// </summary>
-        public uint InstanceCount;
+        public uint32 InstanceCount;
         /// <summary>
         /// The value which is used as the start of the indices used for the draw.
         /// </summary>
-        public uint FirstIndex;
+        public uint32 FirstIndex;
         /// <summary>
         /// An offset which is added to each vertex element referenced by the index <see cref="DeviceBuffer"/>.
         /// </summary>
-        public int VertexOffset;
+        public int32 VertexOffset;
         /// <summary>
         /// The first instance to draw. Subsequent instances (if InstanceCount > 1) are incremented by 1.
         /// </summary>
-        public uint FirstInstance;
+        public uint32 FirstInstance;
     }
 }

@@ -34,7 +34,7 @@ namespace Sedulous.GAL.D3D11
             ref RasterizerStateDescription rasterDesc,
             bool multisample,
             VertexLayoutDescription[] vertexLayouts,
-            byte[] vsBytecode,
+            uint8[] vsBytecode,
             out ID3D11BlendState blendState,
             out ID3D11DepthStencilState depthState,
             out ID3D11RasterizerState rasterState,
@@ -68,7 +68,7 @@ namespace Sedulous.GAL.D3D11
             BlendAttachmentDescription[] attachmentStates = description.AttachmentStates;
             Vortice.Direct3D11.BlendDescription d3dBlendStateDesc = new Vortice.Direct3D11.BlendDescription();
 
-            for (int i = 0; i < attachmentStates.Length; i++)
+            for (int32 i = 0; i < attachmentStates.Length; i++)
             {
                 BlendAttachmentDescription state = attachmentStates[i];
                 d3dBlendStateDesc.RenderTarget[i].BlendEnable = state.BlendEnabled;
@@ -156,7 +156,7 @@ namespace Sedulous.GAL.D3D11
             return _device.CreateRasterizerState(rssDesc);
         }
 
-        private ID3D11InputLayout GetInputLayout(VertexLayoutDescription[] vertexLayouts, byte[] vsBytecode)
+        private ID3D11InputLayout GetInputLayout(VertexLayoutDescription[] vertexLayouts, uint8[] vsBytecode)
         {
             Debug.Assert(Monitor.IsEntered(_lock));
 
@@ -173,35 +173,35 @@ namespace Sedulous.GAL.D3D11
             return inputLayout;
         }
 
-        private ID3D11InputLayout CreateNewInputLayout(VertexLayoutDescription[] vertexLayouts, byte[] vsBytecode)
+        private ID3D11InputLayout CreateNewInputLayout(VertexLayoutDescription[] vertexLayouts, uint8[] vsBytecode)
         {
-            int totalCount = 0;
-            for (int i = 0; i < vertexLayouts.Length; i++)
+            int32 totalCount = 0;
+            for (int32 i = 0; i < vertexLayouts.Length; i++)
             {
                 totalCount += vertexLayouts[i].Elements.Length;
             }
 
-            int element = 0; // Total element index across slots.
+            int32 element = 0; // Total element index across slots.
             InputElementDescription[] elements = new InputElementDescription[totalCount];
             SemanticIndices si = new SemanticIndices();
-            for (int slot = 0; slot < vertexLayouts.Length; slot++)
+            for (int32 slot = 0; slot < vertexLayouts.Length; slot++)
             {
                 VertexElementDescription[] elementDescs = vertexLayouts[slot].Elements;
-                uint stepRate = vertexLayouts[slot].InstanceStepRate;
-                int currentOffset = 0;
-                for (int i = 0; i < elementDescs.Length; i++)
+                uint32 stepRate = vertexLayouts[slot].InstanceStepRate;
+                int32 currentOffset = 0;
+                for (int32 i = 0; i < elementDescs.Length; i++)
                 {
                     VertexElementDescription desc = elementDescs[i];
                     elements[element] = new InputElementDescription(
                         GetSemanticString(desc.Semantic),
                         SemanticIndices.GetAndIncrement(ref si, desc.Semantic),
                         D3D11Formats.ToDxgiFormat(desc.Format),
-                        desc.Offset != 0 ? (int)desc.Offset : currentOffset,
+                        desc.Offset != 0 ? (int32)desc.Offset : currentOffset,
                         slot,
                         stepRate == 0 ? InputClassification.PerVertexData : InputClassification.PerInstanceData,
-                        (int)stepRate);
+                        (int32)stepRate);
 
-                    currentOffset += (int)FormatSizeHelpers.GetSizeInBytes(desc.Format);
+                    currentOffset += (int32)FormatSizeHelpers.GetSizeInBytes(desc.Format);
                     element += 1;
                 }
             }
@@ -248,12 +248,12 @@ namespace Sedulous.GAL.D3D11
 
         private struct SemanticIndices
         {
-            private int _position;
-            private int _texCoord;
-            private int _normal;
-            private int _color;
+            private int32 _position;
+            private int32 _texCoord;
+            private int32 _normal;
+            private int32 _color;
 
-            public static int GetAndIncrement(ref SemanticIndices si, VertexElementSemantic type)
+            public static int32 GetAndIncrement(ref SemanticIndices si, VertexElementSemantic type)
             {
                 switch (type)
                 {
@@ -281,7 +281,7 @@ namespace Sedulous.GAL.D3D11
             public static InputLayoutCacheKey CreatePermanentKey(VertexLayoutDescription[] original)
             {
                 VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[original.Length];
-                for (int i = 0; i < original.Length; i++)
+                for (int32 i = 0; i < original.Length; i++)
                 {
                     vertexLayouts[i].Stride = original[i].Stride;
                     vertexLayouts[i].InstanceStepRate = original[i].InstanceStepRate;
@@ -296,7 +296,7 @@ namespace Sedulous.GAL.D3D11
                 return Util.ArrayEqualsEquatable(VertexLayouts, other.VertexLayouts);
             }
 
-            public override int GetHashCode()
+            public override int32 GetHashCode()
             {
                 return HashHelper.Array(VertexLayouts);
             }
@@ -319,7 +319,7 @@ namespace Sedulous.GAL.D3D11
                     && Multisampled.Equals(other.Multisampled);
             }
 
-            public override int GetHashCode()
+            public override int32 GetHashCode()
             {
                 return HashHelper.Combine(VeldridDescription.GetHashCode(), Multisampled.GetHashCode());
             }

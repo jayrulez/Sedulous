@@ -1,6 +1,6 @@
 namespace Sedulous.MetalBindings
 {
-    public enum MTLPixelFormat : uint
+    public enum MTLPixelFormat : uint32
     {
         Invalid = 0,
 

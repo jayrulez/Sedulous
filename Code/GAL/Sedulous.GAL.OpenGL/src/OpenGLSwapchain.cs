@@ -6,7 +6,7 @@ namespace Sedulous.GAL.OpenGL
     {
         private readonly OpenGLGraphicsDevice _gd;
         private readonly OpenGLSwapchainFramebuffer _framebuffer;
-        private readonly Action<uint, uint> _resizeAction;
+        private readonly Action<uint32, uint32> _resizeAction;
         private bool _disposed;
 
         public override Framebuffer Framebuffer => _framebuffer;
@@ -17,14 +17,14 @@ namespace Sedulous.GAL.OpenGL
         public OpenGLSwapchain(
             OpenGLGraphicsDevice gd,
             OpenGLSwapchainFramebuffer framebuffer,
-            Action<uint, uint> resizeAction)
+            Action<uint32, uint32> resizeAction)
         {
             _gd = gd;
             _framebuffer = framebuffer;
             _resizeAction = resizeAction;
         }
 
-        public override void Resize(uint width, uint height)
+        public override void Resize(uint32 width, uint32 height)
         {
             _framebuffer.Resize(width, height);
             _resizeAction?.Invoke(width, height);

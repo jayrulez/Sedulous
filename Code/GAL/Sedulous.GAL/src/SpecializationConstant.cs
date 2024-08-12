@@ -12,7 +12,7 @@ namespace Veldrid
         /// <summary>
         /// The constant variable ID, as defined in the <see cref="Shader"/>.
         /// </summary>
-        public uint ID;
+        public uint32 ID;
         /// <summary>
         /// The type of data stored in this instance. Must be a scalar numeric type.
         /// </summary>
@@ -21,7 +21,7 @@ namespace Veldrid
         /// An 8-byte block storing the contents of the specialization value. This is treated as an untyped buffer and is
         /// interepreted according to <see cref="Type"/>.
         /// </summary>
-        public ulong Data;
+        public uint64 Data;
 
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/>.
@@ -30,7 +30,7 @@ namespace Veldrid
         /// <param name="type">The type of data stored in this instance. Must be a scalar numeric type.</param>
         /// <param name="data">An 8-byte block storing the contents of the specialization value. This is treated as an untyped
         /// buffer and is interepreted according to <see cref="Type"/>.</param>
-        public SpecializationConstant(uint id, ShaderConstantType type, ulong data)
+        public SpecializationConstant(uint32 id, ShaderConstantType type, uint64 data)
         {
             ID = id;
             Type = type;
@@ -42,59 +42,59 @@ namespace Veldrid
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, bool value) : this(id, ShaderConstantType.Bool, Store(value ? (byte)1u : (byte)0u)) { }
+        public SpecializationConstant(uint32 id, bool value) : this(id, ShaderConstantType.Bool, Store(value ? (uint8)1u : (uint8)0u)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 16-bit unsigned integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, ushort value) : this(id, ShaderConstantType.UInt16, Store(value)) { }
+        public SpecializationConstant(uint32 id, uint16 value) : this(id, ShaderConstantType.UInt16, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 16-bit signed integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, short value) : this(id, ShaderConstantType.Int16, Store(value)) { }
+        public SpecializationConstant(uint32 id, int16 value) : this(id, ShaderConstantType.Int16, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 32-bit unsigned integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, uint value) : this(id, ShaderConstantType.UInt32, Store(value)) { }
+        public SpecializationConstant(uint32 id, uint32 value) : this(id, ShaderConstantType.UInt32, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 32-bit signed integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, int value) : this(id, ShaderConstantType.Int32, Store(value)) { }
+        public SpecializationConstant(uint32 id, int32 value) : this(id, ShaderConstantType.Int32, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 64-bit unsigned integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, ulong value) : this(id, ShaderConstantType.UInt64, Store(value)) { }
+        public SpecializationConstant(uint32 id, uint64 value) : this(id, ShaderConstantType.UInt64, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 64-bit signed integer.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, long value) : this(id, ShaderConstantType.Int64, Store(value)) { }
+        public SpecializationConstant(uint32 id, int64 value) : this(id, ShaderConstantType.Int64, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 32-bit floating-point value.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, float value) : this(id, ShaderConstantType.Float, Store(value)) { }
+        public SpecializationConstant(uint32 id, float value) : this(id, ShaderConstantType.Float, Store(value)) { }
         /// <summary>
         /// Constructs a new <see cref="SpecializationConstant"/> for a 64-bit floating-point value.
         /// </summary>
         /// <param name="id">The constant variable ID.</param>
         /// <param name="value">The constant value.</param>
-        public SpecializationConstant(uint id, double value) : this(id, ShaderConstantType.Double, Store(value)) { }
+        public SpecializationConstant(uint32 id, double value) : this(id, ShaderConstantType.Double, Store(value)) { }
 
-        internal static ulong Store<T>(T value)
+        internal static uint64 Store<T>(T value)
         {
-            ulong ret;
+            uint64 ret;
             Unsafe.Write(&ret, value);
             return ret;
         }
@@ -113,9 +113,9 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
-            return HashHelper.Combine(ID.GetHashCode(), (int)Type, Data.GetHashCode());
+            return HashHelper.Combine(ID.GetHashCode(), (int32)Type, Data.GetHashCode());
         }
     }
 }

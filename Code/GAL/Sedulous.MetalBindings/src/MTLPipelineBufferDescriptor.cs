@@ -12,7 +12,7 @@ namespace Sedulous.MetalBindings
         public MTLMutability mutability
         {
             get => (MTLMutability)uint_objc_msgSend(NativePtr, sel_mutability);
-            set => objc_msgSend(NativePtr, sel_setMutability, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setMutability, (uint32)value);
         }
 
         private static readonly Selector sel_mutability = "mutability";

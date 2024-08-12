@@ -11,7 +11,7 @@ namespace Veldrid
     {
 #if VALIDATE_USAGE
         internal readonly ResourceLayoutDescription Description;
-        internal readonly uint DynamicBufferCount;
+        internal readonly uint32 DynamicBufferCount;
 #endif
 
         internal ResourceLayout(ref ResourceLayoutDescription description)

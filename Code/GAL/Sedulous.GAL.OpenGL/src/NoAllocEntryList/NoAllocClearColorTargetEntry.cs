@@ -2,10 +2,10 @@
 {
     internal struct NoAllocClearColorTargetEntry
     {
-        public readonly uint Index;
+        public readonly uint32 Index;
         public readonly RgbaFloat ClearColor;
 
-        public NoAllocClearColorTargetEntry(uint index, RgbaFloat clearColor)
+        public NoAllocClearColorTargetEntry(uint32 index, RgbaFloat clearColor)
         {
             Index = index;
             ClearColor = clearColor;

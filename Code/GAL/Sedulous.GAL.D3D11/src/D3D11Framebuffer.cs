@@ -31,7 +31,7 @@ namespace Sedulous.GAL.D3D11
                     if (d3dDepthTarget.SampleCount == TextureSampleCount.Count1)
                     {
                         dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2D;
-                        dsvDesc.Texture2D.MipSlice = (int)description.DepthTarget.Value.MipLevel;
+                        dsvDesc.Texture2D.MipSlice = (int32)description.DepthTarget.Value.MipLevel;
                     }
                     else
                     {
@@ -43,14 +43,14 @@ namespace Sedulous.GAL.D3D11
                     if (d3dDepthTarget.SampleCount == TextureSampleCount.Count1)
                     {
                         dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2DArray;
-                        dsvDesc.Texture2DArray.FirstArraySlice = (int)description.DepthTarget.Value.ArrayLayer;
+                        dsvDesc.Texture2DArray.FirstArraySlice = (int32)description.DepthTarget.Value.ArrayLayer;
                         dsvDesc.Texture2DArray.ArraySize = 1;
-                        dsvDesc.Texture2DArray.MipSlice = (int)description.DepthTarget.Value.MipLevel;
+                        dsvDesc.Texture2DArray.MipSlice = (int32)description.DepthTarget.Value.MipLevel;
                     }
                     else
                     {
                         dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2DMultisampledArray;
-                        dsvDesc.Texture2DMSArray.FirstArraySlice = (int)description.DepthTarget.Value.ArrayLayer;
+                        dsvDesc.Texture2DMSArray.FirstArraySlice = (int32)description.DepthTarget.Value.ArrayLayer;
                         dsvDesc.Texture2DMSArray.ArraySize = 1;
                     }
                 }
@@ -61,7 +61,7 @@ namespace Sedulous.GAL.D3D11
             if (description.ColorTargets != null && description.ColorTargets.Length > 0)
             {
                 RenderTargetViews = new ID3D11RenderTargetView[description.ColorTargets.Length];
-                for (int i = 0; i < RenderTargetViews.Length; i++)
+                for (int32 i = 0; i < RenderTargetViews.Length; i++)
                 {
                     D3D11Texture d3dColorTarget = Util.AssertSubtype<Texture, D3D11Texture>(description.ColorTargets[i].Target);
                     RenderTargetViewDescription rtvDesc = new RenderTargetViewDescription
@@ -76,8 +76,8 @@ namespace Sedulous.GAL.D3D11
                             rtvDesc.Texture2DArray = new Texture2DArrayRenderTargetView
                             {
                                 ArraySize = 1,
-                                FirstArraySlice = (int)description.ColorTargets[i].ArrayLayer,
-                                MipSlice = (int)description.ColorTargets[i].MipLevel
+                                FirstArraySlice = (int32)description.ColorTargets[i].ArrayLayer,
+                                MipSlice = (int32)description.ColorTargets[i].MipLevel
                             };
                         }
                         else
@@ -86,7 +86,7 @@ namespace Sedulous.GAL.D3D11
                             rtvDesc.Texture2DMSArray = new Texture2DMultisampledArrayRenderTargetView
                             {
                                 ArraySize = 1,
-                                FirstArraySlice = (int)description.ColorTargets[i].ArrayLayer
+                                FirstArraySlice = (int32)description.ColorTargets[i].ArrayLayer
                             };
                         }
                     }
@@ -95,7 +95,7 @@ namespace Sedulous.GAL.D3D11
                         if (d3dColorTarget.SampleCount == TextureSampleCount.Count1)
                         {
                             rtvDesc.ViewDimension = RenderTargetViewDimension.Texture2D;
-                            rtvDesc.Texture2D.MipSlice = (int)description.ColorTargets[i].MipLevel;
+                            rtvDesc.Texture2D.MipSlice = (int32)description.ColorTargets[i].MipLevel;
                         }
                         else
                         {
@@ -117,7 +117,7 @@ namespace Sedulous.GAL.D3D11
             set
             {
                 _name = value;
-                for (int i = 0; i < RenderTargetViews.Length; i++)
+                for (int32 i = 0; i < RenderTargetViews.Length; i++)
                 {
                     RenderTargetViews[i].DebugName = value + "_RTV" + i;
                 }

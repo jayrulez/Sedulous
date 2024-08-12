@@ -70,10 +70,10 @@ namespace Sedulous.GAL.VK
 
         private PoolInfo CreateNewPool()
         {
-            uint totalSets = 1000;
-            uint descriptorCount = 100;
-            uint poolSizeCount = 7;
-            VkDescriptorPoolSize* sizes = stackalloc VkDescriptorPoolSize[(int)poolSizeCount];
+            uint32 totalSets = 1000;
+            uint32 descriptorCount = 100;
+            uint32 poolSizeCount = 7;
+            VkDescriptorPoolSize* sizes = stackalloc VkDescriptorPoolSize[(int32)poolSizeCount];
             sizes[0].type = VkDescriptorType.UniformBuffer;
             sizes[0].descriptorCount = descriptorCount;
             sizes[1].type = VkDescriptorType.SampledImage;
@@ -113,17 +113,17 @@ namespace Sedulous.GAL.VK
         {
             public readonly VkDescriptorPool Pool;
 
-            public uint RemainingSets;
+            public uint32 RemainingSets;
 
-            public uint UniformBufferCount;
-            public uint UniformBufferDynamicCount;
-            public uint SampledImageCount;
-            public uint SamplerCount;
-            public uint StorageBufferCount;
-            public uint StorageBufferDynamicCount;
-            public uint StorageImageCount;
+            public uint32 UniformBufferCount;
+            public uint32 UniformBufferDynamicCount;
+            public uint32 SampledImageCount;
+            public uint32 SamplerCount;
+            public uint32 StorageBufferCount;
+            public uint32 StorageBufferDynamicCount;
+            public uint32 StorageImageCount;
 
-            public PoolInfo(VkDescriptorPool pool, uint totalSets, uint descriptorCount)
+            public PoolInfo(VkDescriptorPool pool, uint32 totalSets, uint32 descriptorCount)
             {
                 Pool = pool;
                 RemainingSets = totalSets;

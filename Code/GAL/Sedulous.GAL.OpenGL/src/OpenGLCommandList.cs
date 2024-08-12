@@ -57,42 +57,42 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        private protected override void ClearColorTargetCore(uint index, RgbaFloat clearColor)
+        private protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
         {
             _currentCommands.ClearColorTarget(index, clearColor);
         }
 
-        private protected override void ClearDepthStencilCore(float depth, byte stencil)
+        private protected override void ClearDepthStencilCore(float depth, uint8 stencil)
         {
             _currentCommands.ClearDepthTarget(depth, stencil);
         }
 
-        private protected override void DrawCore(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        private protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             _currentCommands.Draw(vertexCount, instanceCount, vertexStart, instanceStart);
         }
 
-        private protected override void DrawIndexedCore(uint indexCount, uint instanceCount, uint indexStart, int vertexOffset, uint instanceStart)
+        private protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             _currentCommands.DrawIndexed(indexCount, instanceCount, indexStart, vertexOffset, instanceStart);
         }
 
-        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             _currentCommands.DrawIndirect(indirectBuffer, offset, drawCount, stride);
         }
 
-        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             _currentCommands.DrawIndexedIndirect(indirectBuffer, offset, drawCount, stride);
         }
 
-        public override void Dispatch(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public override void Dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             _currentCommands.Dispatch(groupCountX, groupCountY, groupCountZ);
         }
 
-        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint offset)
+        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint32 offset)
         {
             _currentCommands.DispatchIndirect(indirectBuffer, offset);
         }
@@ -112,7 +112,7 @@ namespace Sedulous.GAL.OpenGL
             _currentCommands.SetFramebuffer(fb);
         }
 
-        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint offset)
+        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             _currentCommands.SetIndexBuffer(buffer, format, offset);
         }
@@ -122,27 +122,27 @@ namespace Sedulous.GAL.OpenGL
             _currentCommands.SetPipeline(pipeline);
         }
 
-        protected override void SetGraphicsResourceSetCore(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             _currentCommands.SetGraphicsResourceSet(slot, rs, dynamicOffsetCount, ref dynamicOffsets);
         }
 
-        protected override void SetComputeResourceSetCore(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             _currentCommands.SetComputeResourceSet(slot, rs, dynamicOffsetCount, ref dynamicOffsets);
         }
 
-        public override void SetScissorRect(uint index, uint x, uint y, uint width, uint height)
+        public override void SetScissorRect(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             _currentCommands.SetScissorRect(index, x, y, width, height);
         }
 
-        private protected override void SetVertexBufferCore(uint index, DeviceBuffer buffer, uint offset)
+        private protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             _currentCommands.SetVertexBuffer(index, buffer, offset);
         }
 
-        public override void SetViewport(uint index, ref Viewport viewport)
+        public override void SetViewport(uint32 index, ref Viewport viewport)
         {
             _currentCommands.SetViewport(index, ref viewport);
         }
@@ -152,32 +152,32 @@ namespace Sedulous.GAL.OpenGL
             _currentCommands.Reset();
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             _currentCommands.UpdateBuffer(buffer, bufferOffsetInBytes, source, sizeInBytes);
         }
 
         protected override void CopyBufferCore(
             DeviceBuffer source,
-            uint sourceOffset,
+            uint32 sourceOffset,
             DeviceBuffer destination,
-            uint destinationOffset,
-            uint sizeInBytes)
+            uint32 destinationOffset,
+            uint32 sizeInBytes)
         {
             _currentCommands.CopyBuffer(source, sourceOffset, destination, destinationOffset, sizeInBytes);
         }
 
         protected override void CopyTextureCore(
             Texture source,
-            uint srcX, uint srcY, uint srcZ,
-            uint srcMipLevel,
-            uint srcBaseArrayLayer,
+            uint32 srcX, uint32 srcY, uint32 srcZ,
+            uint32 srcMipLevel,
+            uint32 srcBaseArrayLayer,
             Texture destination,
-            uint dstX, uint dstY, uint dstZ,
-            uint dstMipLevel,
-            uint dstBaseArrayLayer,
-            uint width, uint height, uint depth,
-            uint layerCount)
+            uint32 dstX, uint32 dstY, uint32 dstZ,
+            uint32 dstMipLevel,
+            uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 layerCount)
         {
             _currentCommands.CopyTexture(
                 source,

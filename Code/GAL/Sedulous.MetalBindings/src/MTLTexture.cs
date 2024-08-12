@@ -36,7 +36,7 @@ namespace Sedulous.MetalBindings
             NSRange sliceRange)
         {
             IntPtr ret = IntPtr_objc_msgSend(NativePtr, sel_newTextureView,
-                (uint)pixelFormat, (uint)textureType, levelRange, sliceRange);
+                (uint32)pixelFormat, (uint32)textureType, levelRange, sliceRange);
             return new MTLTexture(ret);
         }
 

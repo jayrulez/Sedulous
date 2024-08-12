@@ -2,7 +2,7 @@
 {
     internal struct MappedResourceInfo
     {
-        public int RefCount;
+        public int32 RefCount;
         public MapMode Mode;
         public MappedResource MappedResource;
     }

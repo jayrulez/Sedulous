@@ -23,31 +23,31 @@ namespace Veldrid
         /// <summary>
         /// The total size, in bytes, of the mapped data region.
         /// </summary>
-        public readonly uint SizeInBytes;
+        public readonly uint32 SizeInBytes;
         /// <summary>
         /// For mapped <see cref="Texture"/> resources, this is the subresource which is mapped.
         /// For <see cref="DeviceBuffer"/> resources, this field has no meaning.
         /// </summary>
-        public readonly uint Subresource;
+        public readonly uint32 Subresource;
         /// <summary>
         /// For mapped <see cref="Texture"/> resources, this is the number of bytes between each row of texels.
         /// For <see cref="DeviceBuffer"/> resources, this field has no meaning.
         /// </summary>
-        public readonly uint RowPitch;
+        public readonly uint32 RowPitch;
         /// <summary>
         /// For mapped <see cref="Texture"/> resources, this is the number of bytes between each depth slice of a 3D Texture.
         /// For <see cref="DeviceBuffer"/> resources or 2D Textures, this field has no meaning.
         /// </summary>
-        public readonly uint DepthPitch;
+        public readonly uint32 DepthPitch;
 
         internal MappedResource(
             MappableResource resource,
             MapMode mode,
             IntPtr data,
-            uint sizeInBytes,
-            uint subresource,
-            uint rowPitch,
-            uint depthPitch)
+            uint32 sizeInBytes,
+            uint32 subresource,
+            uint32 rowPitch,
+            uint32 depthPitch)
         {
             Resource = resource;
             Mode = mode;
@@ -58,7 +58,7 @@ namespace Veldrid
             DepthPitch = depthPitch;
         }
 
-        internal MappedResource(MappableResource resource, MapMode mode, IntPtr data, uint sizeInBytes)
+        internal MappedResource(MappableResource resource, MapMode mode, IntPtr data, uint32 sizeInBytes)
         {
             Resource = resource;
             Mode = mode;
@@ -78,7 +78,7 @@ namespace Veldrid
     /// <typeparam name="T">The blittable value type which mapped data is viewed as.</typeparam>
     public struct MappedResourceView<T> where T : struct
     {
-        private static readonly int s_sizeofT = Unsafe.SizeOf<T>();
+        private static readonly int32 s_sizeofT = Unsafe.SizeOf<T>();
 
         /// <summary>
         /// The <see cref="MappedResource"/> that this instance views.
@@ -87,12 +87,12 @@ namespace Veldrid
         /// <summary>
         /// The total size in bytes of the mapped resource.
         /// </summary>
-        public readonly uint SizeInBytes;
+        public readonly uint32 SizeInBytes;
         /// <summary>
         /// The total number of structures that is contained in the resource. This is effectively the total number of bytes
         /// divided by the size of the structure type.
         /// </summary>
-        public readonly int Count;
+        public readonly int32 Count;
 
         /// <summary>
         /// Constructs a new MappedResourceView which wraps the given <see cref="MappedResource"/>.
@@ -102,7 +102,7 @@ namespace Veldrid
         {
             MappedResource = rawResource;
             SizeInBytes = rawResource.SizeInBytes;
-            Count = (int)(SizeInBytes / s_sizeofT);
+            Count = (int32)(SizeInBytes / s_sizeofT);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="index">The index of the value.</param>
         /// <returns>A reference to the value at the given index.</returns>
-        public ref T this[int index]
+        public ref T this[int32 index]
         {
             get
             {
@@ -120,7 +120,7 @@ namespace Veldrid
                         $"Given index ({index}) must be non-negative and less than Count ({Count}).");
                 }
 
-                byte* ptr = (byte*)MappedResource.Data + (index * s_sizeofT);
+                uint8* ptr = (uint8*)MappedResource.Data + (index * s_sizeofT);
                 return ref Unsafe.AsRef<T>(ptr);
             }
         }
@@ -130,7 +130,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="index">The index of the value.</param>
         /// <returns>A reference to the value at the given index.</returns>
-        public ref T this[uint index]
+        public ref T this[uint32 index]
         {
             get
             {
@@ -140,7 +140,7 @@ namespace Veldrid
                         $"Given index ({index}) must be less than Count ({Count}).");
                 }
 
-                byte* ptr = (byte*)MappedResource.Data + (index * s_sizeofT);
+                uint8* ptr = (uint8*)MappedResource.Data + (index * s_sizeofT);
                 return ref Unsafe.AsRef<T>(ptr);
             }
         }
@@ -151,11 +151,11 @@ namespace Veldrid
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[int x, int y]
+        public ref T this[int32 x, int32 y]
         {
             get
             {
-                byte* ptr = (byte*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
+                uint8* ptr = (uint8*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
                 return ref Unsafe.AsRef<T>(ptr);
             }
         }
@@ -166,11 +166,11 @@ namespace Veldrid
         /// <param name="x">The X coordinate.</param>
         /// <param name="y">The Y coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[uint x, uint y]
+        public ref T this[uint32 x, uint32 y]
         {
             get
             {
-                byte* ptr = (byte*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
+                uint8* ptr = (uint8*)MappedResource.Data + (y * MappedResource.RowPitch) + (x * s_sizeofT);
                 return ref Unsafe.AsRef<T>(ptr);
             }
         }
@@ -182,11 +182,11 @@ namespace Veldrid
         /// <param name="y">The Y coordinate.</param>
         /// <param name="z">The Z coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[int x, int y, int z]
+        public ref T this[int32 x, int32 y, int32 z]
         {
             get
             {
-                byte* ptr = (byte*)MappedResource.Data
+                uint8* ptr = (uint8*)MappedResource.Data
                     + (z * MappedResource.DepthPitch)
                     + (y * MappedResource.RowPitch)
                     + (x * s_sizeofT);
@@ -201,11 +201,11 @@ namespace Veldrid
         /// <param name="y">The Y coordinate.</param>
         /// <param name="z">The Z coordinate.</param>
         /// <returns>A reference to the value at the given coordinates.</returns>
-        public ref T this[uint x, uint y, uint z]
+        public ref T this[uint32 x, uint32 y, uint32 z]
         {
             get
             {
-                byte* ptr = (byte*)MappedResource.Data
+                uint8* ptr = (uint8*)MappedResource.Data
                     + (z * MappedResource.DepthPitch)
                     + (y * MappedResource.RowPitch)
                     + (x * s_sizeofT);

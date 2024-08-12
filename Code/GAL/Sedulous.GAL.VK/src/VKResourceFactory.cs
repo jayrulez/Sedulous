@@ -62,7 +62,7 @@ namespace Sedulous.GAL.VK
             return new VKTexture(_gd, ref description);
         }
 
-        protected override Texture CreateTextureCore(ulong nativeTexture, ref TextureDescription description)
+        protected override Texture CreateTextureCore(uint64 nativeTexture, ref TextureDescription description)
         {
             return new VKTexture(
                 _gd,

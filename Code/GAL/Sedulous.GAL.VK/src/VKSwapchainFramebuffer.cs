@@ -13,7 +13,7 @@ namespace Sedulous.GAL.VK
         private readonly VKSwapchain _swapchain;
         private readonly VkSurfaceKHR _surface;
         private readonly PixelFormat? _depthFormat;
-        private uint _currentImageIndex;
+        private uint32 _currentImageIndex;
 
         private VKFramebuffer[] _scFramebuffers;
         private VkImage[] _scImages = {};
@@ -22,33 +22,33 @@ namespace Sedulous.GAL.VK
         private FramebufferAttachment[][] _scColorTextures;
 
         private FramebufferAttachment? _depthAttachment;
-        private uint _desiredWidth;
-        private uint _desiredHeight;
+        private uint32 _desiredWidth;
+        private uint32 _desiredHeight;
         private bool _destroyed;
         private string _name;
         private OutputDescription _outputDescription;
 
-        public override Vulkan.VkFramebuffer CurrentFramebuffer => _scFramebuffers[(int)_currentImageIndex].CurrentFramebuffer;
+        public override Vulkan.VkFramebuffer CurrentFramebuffer => _scFramebuffers[(int32)_currentImageIndex].CurrentFramebuffer;
 
         public override VkRenderPass RenderPassNoClear_Init => _scFramebuffers[0].RenderPassNoClear_Init;
         public override VkRenderPass RenderPassNoClear_Load => _scFramebuffers[0].RenderPassNoClear_Load;
         public override VkRenderPass RenderPassClear => _scFramebuffers[0].RenderPassClear;
 
-        public override IReadOnlyList<FramebufferAttachment> ColorTargets => _scColorTextures[(int)_currentImageIndex];
+        public override IReadOnlyList<FramebufferAttachment> ColorTargets => _scColorTextures[(int32)_currentImageIndex];
 
         public override FramebufferAttachment? DepthTarget => _depthAttachment;
 
-        public override uint RenderableWidth => _scExtent.width;
-        public override uint RenderableHeight => _scExtent.height;
+        public override uint32 RenderableWidth => _scExtent.width;
+        public override uint32 RenderableHeight => _scExtent.height;
 
-        public override uint Width => _desiredWidth;
-        public override uint Height => _desiredHeight;
+        public override uint32 Width => _desiredWidth;
+        public override uint32 Height => _desiredHeight;
 
-        public uint ImageIndex => _currentImageIndex;
+        public uint32 ImageIndex => _currentImageIndex;
 
         public override OutputDescription OutputDescription => _outputDescription;
 
-        public override uint AttachmentCount { get; }
+        public override uint32 AttachmentCount { get; }
 
         public VKSwapchain Swapchain => _swapchain;
 
@@ -58,8 +58,8 @@ namespace Sedulous.GAL.VK
             VKGraphicsDevice gd,
             VKSwapchain swapchain,
             VkSurfaceKHR surface,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             PixelFormat? depthFormat)
             : base()
         {
@@ -71,15 +71,15 @@ namespace Sedulous.GAL.VK
             AttachmentCount = depthFormat.HasValue ? 2u : 1u; // 1 Color + 1 Depth
         }
 
-        internal void SetImageIndex(uint index)
+        internal void SetImageIndex(uint32 index)
         {
             _currentImageIndex = index;
         }
 
         internal void SetNewSwapchain(
             VkSwapchainKHR deviceSwapchain,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             VkSurfaceFormatKHR surfaceFormat,
             VkExtent2D swapchainExtent)
         {
@@ -87,12 +87,12 @@ namespace Sedulous.GAL.VK
             _desiredHeight = height;
 
             // Get the images
-            uint scImageCount = 0;
+            uint32 scImageCount = 0;
             VkResult result = vkGetSwapchainImagesKHR(_gd.Device, deviceSwapchain, ref scImageCount, null);
             CheckResult(result);
             if (_scImages.Length < scImageCount)
             {
-                _scImages = new VkImage[(int)scImageCount];
+                _scImages = new VkImage[(int32)scImageCount];
             }
             result = vkGetSwapchainImagesKHR(_gd.Device, deviceSwapchain, ref scImageCount, out _scImages[0]);
             CheckResult(result);
@@ -110,7 +110,7 @@ namespace Sedulous.GAL.VK
         {
             if (_scFramebuffers != null)
             {
-                for (int i = 0; i < _scFramebuffers.Length; i++)
+                for (int32 i = 0; i < _scFramebuffers.Length; i++)
                 {
                     _scFramebuffers[i]?.Dispose();
                     _scFramebuffers[i] = null;
@@ -139,7 +139,7 @@ namespace Sedulous.GAL.VK
         {
             if (_scFramebuffers != null)
             {
-                for (int i = 0; i < _scFramebuffers.Length; i++)
+                for (int32 i = 0; i < _scFramebuffers.Length; i++)
                 {
                     _scFramebuffers[i]?.Dispose();
                     _scFramebuffers[i] = null;
@@ -147,9 +147,9 @@ namespace Sedulous.GAL.VK
                 Array.Clear(_scFramebuffers, 0, _scFramebuffers.Length);
             }
 
-            Util.EnsureArrayMinimumSize(ref _scFramebuffers, (uint)_scImages.Length);
-            Util.EnsureArrayMinimumSize(ref _scColorTextures, (uint)_scImages.Length);
-            for (uint i = 0; i < _scImages.Length; i++)
+            Util.EnsureArrayMinimumSize(ref _scFramebuffers, (uint32)_scImages.Length);
+            Util.EnsureArrayMinimumSize(ref _scColorTextures, (uint32)_scImages.Length);
+            for (uint32 i = 0; i < _scImages.Length; i++)
             {
                 VKTexture colorTex = new VKTexture(
                     _gd,
@@ -170,7 +170,7 @@ namespace Sedulous.GAL.VK
 
         public override void TransitionToIntermediateLayout(VkCommandBuffer cb)
         {
-            for (int i = 0; i < ColorTargets.Count; i++)
+            for (int32 i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
@@ -180,7 +180,7 @@ namespace Sedulous.GAL.VK
 
         public override void TransitionToFinalLayout(VkCommandBuffer cb)
         {
-            for (int i = 0; i < ColorTargets.Count; i++)
+            for (int32 i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);

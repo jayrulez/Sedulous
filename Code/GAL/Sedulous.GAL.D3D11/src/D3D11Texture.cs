@@ -9,11 +9,11 @@ namespace Sedulous.GAL.D3D11
         private readonly ID3D11Device _device;
         private string _name;
 
-        public override uint Width { get; }
-        public override uint Height { get; }
-        public override uint Depth { get; }
-        public override uint MipLevels { get; }
-        public override uint ArrayLayers { get; }
+        public override uint32 Width { get; }
+        public override uint32 Height { get; }
+        public override uint32 Depth { get; }
+        public override uint32 MipLevels { get; }
+        public override uint32 ArrayLayers { get; }
         public override PixelFormat Format { get; }
         public override TextureUsage Usage { get; }
         public override TextureType Type { get; }
@@ -75,15 +75,15 @@ namespace Sedulous.GAL.D3D11
                 optionFlags |= ResourceOptionFlags.GenerateMips;
             }
 
-            int arraySize = (int)description.ArrayLayers;
+            int32 arraySize = (int32)description.ArrayLayers;
             if ((description.Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {
                 optionFlags |= ResourceOptionFlags.TextureCube;
                 arraySize *= 6;
             }
 
-            int roundedWidth = (int)description.Width;
-            int roundedHeight = (int)description.Height;
+            int32 roundedWidth = (int32)description.Width;
+            int32 roundedHeight = (int32)description.Height;
             if (FormatHelpers.IsCompressedFormat(description.Format))
             {
                 roundedWidth = ((roundedWidth + 3) / 4) * 4;
@@ -95,7 +95,7 @@ namespace Sedulous.GAL.D3D11
                 Texture1DDescription desc1D = new Texture1DDescription()
                 {
                     Width = roundedWidth,
-                    MipLevels = (int)description.MipLevels,
+                    MipLevels = (int32)description.MipLevels,
                     ArraySize = arraySize,
                     Format = TypelessDxgiFormat,
                     BindFlags = bindFlags,
@@ -112,13 +112,13 @@ namespace Sedulous.GAL.D3D11
                 {
                     Width = roundedWidth,
                     Height = roundedHeight,
-                    MipLevels = (int)description.MipLevels,
+                    MipLevels = (int32)description.MipLevels,
                     ArraySize = arraySize,
                     Format = TypelessDxgiFormat,
                     BindFlags = bindFlags,
                     CPUAccessFlags = cpuFlags,
                     Usage = resourceUsage,
-                    SampleDescription = new Vortice.DXGI.SampleDescription((int)FormatHelpers.GetSampleCountUInt32(SampleCount), 0),
+                    SampleDescription = new Vortice.DXGI.SampleDescription((int32)FormatHelpers.GetSampleCountUInt32(SampleCount), 0),
                     MiscFlags = optionFlags,
                 };
 
@@ -131,8 +131,8 @@ namespace Sedulous.GAL.D3D11
                 {
                     Width = roundedWidth,
                     Height = roundedHeight,
-                    Depth = (int)description.Depth,
-                    MipLevels = (int)description.MipLevels,
+                    Depth = (int32)description.Depth,
+                    MipLevels = (int32)description.MipLevels,
                     Format = TypelessDxgiFormat,
                     BindFlags = bindFlags,
                     CPUAccessFlags = cpuFlags,
@@ -148,13 +148,13 @@ namespace Sedulous.GAL.D3D11
         {
             _device = existingTexture.Device;
             DeviceTexture = existingTexture;
-            Width = (uint)existingTexture.Description.Width;
-            Height = (uint)existingTexture.Description.Height;
+            Width = (uint32)existingTexture.Description.Width;
+            Height = (uint32)existingTexture.Description.Height;
             Depth = 1;
-            MipLevels = (uint)existingTexture.Description.MipLevels;
-            ArrayLayers = (uint)existingTexture.Description.ArraySize;
+            MipLevels = (uint32)existingTexture.Description.MipLevels;
+            ArrayLayers = (uint32)existingTexture.Description.ArraySize;
             Format = format;
-            SampleCount = FormatHelpers.GetSampleCount((uint)existingTexture.Description.SampleDescription.Count);
+            SampleCount = FormatHelpers.GetSampleCount((uint32)existingTexture.Description.SampleDescription.Count);
             Type = type;
             Usage = D3D11Formats.GetVdUsage(
                 existingTexture.Description.BindFlags,

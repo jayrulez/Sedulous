@@ -12,15 +12,15 @@ namespace Sedulous.GAL.MTL
         private readonly MTLGraphicsDevice _gd;
         private MTLCommandBuffer _cb;
         private MTLFramebufferBase _mtlFramebuffer;
-        private uint _viewportCount;
+        private uint32 _viewportCount;
         private bool _currentFramebufferEverActive;
         private MTLRenderCommandEncoder _rce;
         private MTLBlitCommandEncoder _bce;
         private MTLComputeCommandEncoder _cce;
         private RgbaFloat?[] _clearColors = Array.Empty<RgbaFloat?>();
-        private (float depth, byte stencil)? _clearDepth;
+        private (float depth, uint8 stencil)? _clearDepth;
         private MTLBuffer _indexBuffer;
-        private uint _ibOffset;
+        private uint32 _ibOffset;
         private MTLIndexType _indexType;
         private new MTLPipeline _graphicsPipeline;
         private bool _graphicsPipelineChanged;
@@ -30,16 +30,16 @@ namespace Sedulous.GAL.MTL
         private bool _viewportsChanged;
         private MTLScissorRect[] _scissorRects = Array.Empty<MTLScissorRect>();
         private bool _scissorRectsChanged;
-        private uint _graphicsResourceSetCount;
+        private uint32 _graphicsResourceSetCount;
         private BoundResourceSetInfo[] _graphicsResourceSets;
         private bool[] _graphicsResourceSetsActive;
-        private uint _computeResourceSetCount;
+        private uint32 _computeResourceSetCount;
         private BoundResourceSetInfo[] _computeResourceSets;
         private bool[] _computeResourceSetsActive;
-        private uint _vertexBufferCount;
-        private uint _nonVertexBufferCount;
+        private uint32 _vertexBufferCount;
+        private uint32 _nonVertexBufferCount;
         private MTLBuffer[] _vertexBuffers;
-        private uint[] _vbOffsets;
+        private uint32[] _vbOffsets;
         private bool[] _vertexBuffersActive;
         private bool _disposed;
 
@@ -79,19 +79,19 @@ namespace Sedulous.GAL.MTL
             ClearCachedState();
         }
 
-        private protected override void ClearColorTargetCore(uint index, RgbaFloat clearColor)
+        private protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
         {
             EnsureNoRenderPass();
             _clearColors[index] = clearColor;
         }
 
-        private protected override void ClearDepthStencilCore(float depth, byte stencil)
+        private protected override void ClearDepthStencilCore(float depth, uint8 stencil)
         {
             EnsureNoRenderPass();
             _clearDepth = (depth, stencil);
         }
 
-        public override void Dispatch(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public override void Dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             PreComputeCommand();
             _cce.dispatchThreadGroups(
@@ -99,7 +99,7 @@ namespace Sedulous.GAL.MTL
                 _computePipeline.ThreadsPerThreadgroup);
         }
 
-        private protected override void DrawCore(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        private protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             if (PreDrawCommand())
             {
@@ -124,12 +124,12 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private protected override void DrawIndexedCore(uint indexCount, uint instanceCount, uint indexStart, int vertexOffset, uint instanceStart)
+        private protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             if (PreDrawCommand())
             {
-                uint indexSize = _indexType == MTLIndexType.UInt16 ? 2u : 4u;
-                uint indexBufferOffset = (indexSize * indexStart) + _ibOffset;
+                uint32 indexSize = _indexType == MTLIndexType.UInt16 ? 2u : 4u;
+                uint32 indexBufferOffset = (indexSize * indexStart) + _ibOffset;
 
                 if (vertexOffset == 0 && instanceStart == 0)
                 {
@@ -186,7 +186,7 @@ namespace Sedulous.GAL.MTL
                     }
                 }
 
-                for (uint i = 0; i < _graphicsResourceSetCount; i++)
+                for (uint32 i = 0; i < _graphicsResourceSetCount; i++)
                 {
                     if (!_graphicsResourceSetsActive[i])
                     {
@@ -195,7 +195,7 @@ namespace Sedulous.GAL.MTL
                     }
                 }
 
-                for (uint i = 0; i < _vertexBufferCount; i++)
+                for (uint32 i = 0; i < _vertexBufferCount; i++)
                 {
                     if (!_vertexBuffersActive[i])
                     {
@@ -252,7 +252,7 @@ namespace Sedulous.GAL.MTL
                 _cce.setComputePipelineState(_computePipeline.ComputePipelineState);
             }
 
-            for (uint i = 0; i < _computeResourceSetCount; i++)
+            for (uint32 i = 0; i < _computeResourceSetCount; i++)
             {
                 if (!_computeResourceSetsActive[i])
                 {
@@ -279,7 +279,7 @@ namespace Sedulous.GAL.MTL
             if (pipeline.IsComputePipeline)
             {
                 _computePipeline = Util.AssertSubtype<Pipeline, MTLPipeline>(pipeline);
-                _computeResourceSetCount = (uint)_computePipeline.ResourceLayouts.Length;
+                _computeResourceSetCount = (uint32)_computePipeline.ResourceLayouts.Length;
                 Util.EnsureArrayMinimumSize(ref _computeResourceSets, _computeResourceSetCount);
                 Util.EnsureArrayMinimumSize(ref _computeResourceSetsActive, _computeResourceSetCount);
                 Util.ClearArray(_computeResourceSetsActive);
@@ -288,7 +288,7 @@ namespace Sedulous.GAL.MTL
             else
             {
                 _graphicsPipeline = Util.AssertSubtype<Pipeline, MTLPipeline>(pipeline);
-                _graphicsResourceSetCount = (uint)_graphicsPipeline.ResourceLayouts.Length;
+                _graphicsResourceSetCount = (uint32)_graphicsPipeline.ResourceLayouts.Length;
                 Util.EnsureArrayMinimumSize(ref _graphicsResourceSets, _graphicsResourceSetCount);
                 Util.EnsureArrayMinimumSize(ref _graphicsResourceSetsActive, _graphicsResourceSetCount);
                 Util.ClearArray(_graphicsResourceSetsActive);
@@ -305,13 +305,13 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        public override void SetScissorRect(uint index, uint x, uint y, uint width, uint height)
+        public override void SetScissorRect(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             _scissorRectsChanged = true;
             _scissorRects[index] = new MTLScissorRect(x, y, width, height);
         }
 
-        public override void SetViewport(uint index, ref Viewport viewport)
+        public override void SetViewport(uint32 index, ref Viewport viewport)
         {
             _viewportsChanged = true;
             _viewports[index] = new MTLViewport(
@@ -323,7 +323,7 @@ namespace Sedulous.GAL.MTL
                 viewport.MaxDepth);
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             bool useComputeCopy = (bufferOffsetInBytes % 4 != 0)
                 || (sizeInBytes % 4 != 0 && bufferOffsetInBytes != 0 && sizeInBytes != buffer.SizeInBytes);
@@ -341,7 +341,7 @@ namespace Sedulous.GAL.MTL
             else
             {
                 Debug.Assert(bufferOffsetInBytes % 4 == 0);
-                uint sizeRoundFactor = (4 - (sizeInBytes % 4)) % 4;
+                uint32 sizeRoundFactor = (4 - (sizeInBytes % 4)) % 4;
                 EnsureBlitEncoder();
                 _bce.copy(
                     copySrc.DeviceBuffer, UIntPtr.Zero,
@@ -354,10 +354,10 @@ namespace Sedulous.GAL.MTL
 
         protected override void CopyBufferCore(
             DeviceBuffer source,
-            uint sourceOffset,
+            uint32 sourceOffset,
             DeviceBuffer destination,
-            uint destinationOffset,
-            uint sizeInBytes)
+            uint32 destinationOffset,
+            uint32 sizeInBytes)
         {
             MTLBuffer mtlSrc = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(source);
             MTLBuffer mtlDst = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(destination);
@@ -389,9 +389,9 @@ namespace Sedulous.GAL.MTL
         }
 
         protected override void CopyTextureCore(
-            Texture source, uint srcX, uint srcY, uint srcZ, uint srcMipLevel, uint srcBaseArrayLayer,
-            Texture destination, uint dstX, uint dstY, uint dstZ, uint dstMipLevel, uint dstBaseArrayLayer,
-            uint width, uint height, uint depth, uint layerCount)
+            Texture source, uint32 srcX, uint32 srcY, uint32 srcZ, uint32 srcMipLevel, uint32 srcBaseArrayLayer,
+            Texture destination, uint32 dstX, uint32 dstY, uint32 dstZ, uint32 dstMipLevel, uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth, uint32 layerCount)
         {
             EnsureBlitEncoder();
             MTLTexture srcMTLTexture = Util.AssertSubtype<Texture, MTLTexture>(source);
@@ -405,35 +405,35 @@ namespace Sedulous.GAL.MTL
                 MetalBindings.MTLBuffer srcBuffer = srcMTLTexture.StagingBuffer;
                 MetalBindings.MTLTexture dstTexture = dstMTLTexture.DeviceTexture;
 
-                Util.GetMipDimensions(srcMTLTexture, srcMipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-                for (uint layer = 0; layer < layerCount; layer++)
+                Util.GetMipDimensions(srcMTLTexture, srcMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                for (uint32 layer = 0; layer < layerCount; layer++)
                 {
-                    uint blockSize = FormatHelpers.IsCompressedFormat(srcMTLTexture.Format) ? 4u : 1u;
-                    uint compressedSrcX = srcX / blockSize;
-                    uint compressedSrcY = srcY / blockSize;
-                    uint blockSizeInBytes = blockSize == 1
+                    uint32 blockSize = FormatHelpers.IsCompressedFormat(srcMTLTexture.Format) ? 4u : 1u;
+                    uint32 compressedSrcX = srcX / blockSize;
+                    uint32 compressedSrcY = srcY / blockSize;
+                    uint32 blockSizeInBytes = blockSize == 1
                         ? FormatSizeHelpers.GetSizeInBytes(srcMTLTexture.Format)
                         : FormatHelpers.GetBlockSizeInBytes(srcMTLTexture.Format);
 
-                    ulong srcSubresourceBase = Util.ComputeSubresourceOffset(
+                    uint64 srcSubresourceBase = Util.ComputeSubresourceOffset(
                         srcMTLTexture,
                         srcMipLevel,
                         layer + srcBaseArrayLayer);
                     srcMTLTexture.GetSubresourceLayout(
                         srcMipLevel,
                         srcBaseArrayLayer + layer,
-                        out uint srcRowPitch,
-                        out uint srcDepthPitch);
-                    ulong sourceOffset = srcSubresourceBase
+                        out uint32 srcRowPitch,
+                        out uint32 srcDepthPitch);
+                    uint64 sourceOffset = srcSubresourceBase
                         + srcDepthPitch * srcZ
                         + srcRowPitch * compressedSrcY
                         + blockSizeInBytes * compressedSrcX;
 
-                    uint copyWidth = width > mipWidth && width <= blockSize
+                    uint32 copyWidth = width > mipWidth && width <= blockSize
                         ? mipWidth
                         : width;
 
-                    uint copyHeight = height > mipHeight && height <= blockSize
+                    uint32 copyHeight = height > mipHeight && height <= blockSize
                         ? mipHeight
                         : height;
 
@@ -456,42 +456,42 @@ namespace Sedulous.GAL.MTL
             }
             else if (srcIsStaging && dstIsStaging)
             {
-                for (uint layer = 0; layer < layerCount; layer++)
+                for (uint32 layer = 0; layer < layerCount; layer++)
                 {
                     // Staging -> Staging
-                    ulong srcSubresourceBase = Util.ComputeSubresourceOffset(
+                    uint64 srcSubresourceBase = Util.ComputeSubresourceOffset(
                         srcMTLTexture,
                         srcMipLevel,
                         layer + srcBaseArrayLayer);
                     srcMTLTexture.GetSubresourceLayout(
                         srcMipLevel,
                         srcBaseArrayLayer + layer,
-                        out uint srcRowPitch,
-                        out uint srcDepthPitch);
+                        out uint32 srcRowPitch,
+                        out uint32 srcDepthPitch);
 
-                    ulong dstSubresourceBase = Util.ComputeSubresourceOffset(
+                    uint64 dstSubresourceBase = Util.ComputeSubresourceOffset(
                         dstMTLTexture,
                         dstMipLevel,
                         layer + dstBaseArrayLayer);
                     dstMTLTexture.GetSubresourceLayout(
                         dstMipLevel,
                         dstBaseArrayLayer + layer,
-                        out uint dstRowPitch,
-                        out uint dstDepthPitch);
+                        out uint32 dstRowPitch,
+                        out uint32 dstDepthPitch);
 
-                    uint blockSize = FormatHelpers.IsCompressedFormat(dstMTLTexture.Format) ? 4u : 1u;
+                    uint32 blockSize = FormatHelpers.IsCompressedFormat(dstMTLTexture.Format) ? 4u : 1u;
                     if (blockSize == 1)
                     {
-                        uint pixelSize = FormatSizeHelpers.GetSizeInBytes(dstMTLTexture.Format);
-                        uint copySize = width * pixelSize;
-                        for (uint zz = 0; zz < depth; zz++)
-                            for (uint yy = 0; yy < height; yy++)
+                        uint32 pixelSize = FormatSizeHelpers.GetSizeInBytes(dstMTLTexture.Format);
+                        uint32 copySize = width * pixelSize;
+                        for (uint32 zz = 0; zz < depth; zz++)
+                            for (uint32 yy = 0; yy < height; yy++)
                             {
-                                ulong srcRowOffset = srcSubresourceBase
+                                uint64 srcRowOffset = srcSubresourceBase
                                     + srcDepthPitch * (zz + srcZ)
                                     + srcRowPitch * (yy + srcY)
                                     + pixelSize * srcX;
-                                ulong dstRowOffset = dstSubresourceBase
+                                uint64 dstRowOffset = dstSubresourceBase
                                     + dstDepthPitch * (zz + dstZ)
                                     + dstRowPitch * (yy + dstY)
                                     + pixelSize * dstX;
@@ -505,25 +505,25 @@ namespace Sedulous.GAL.MTL
                     }
                     else // blockSize != 1
                     {
-                        uint paddedWidth = Math.Max(blockSize, width);
-                        uint paddedHeight = Math.Max(blockSize, height);
-                        uint numRows = FormatHelpers.GetNumRows(paddedHeight, srcMTLTexture.Format);
-                        uint rowPitch = FormatHelpers.GetRowPitch(paddedWidth, srcMTLTexture.Format);
+                        uint32 paddedWidth = Math.Max(blockSize, width);
+                        uint32 paddedHeight = Math.Max(blockSize, height);
+                        uint32 numRows = FormatHelpers.GetNumRows(paddedHeight, srcMTLTexture.Format);
+                        uint32 rowPitch = FormatHelpers.GetRowPitch(paddedWidth, srcMTLTexture.Format);
 
-                        uint compressedSrcX = srcX / 4;
-                        uint compressedSrcY = srcY / 4;
-                        uint compressedDstX = dstX / 4;
-                        uint compressedDstY = dstY / 4;
-                        uint blockSizeInBytes = FormatHelpers.GetBlockSizeInBytes(srcMTLTexture.Format);
+                        uint32 compressedSrcX = srcX / 4;
+                        uint32 compressedSrcY = srcY / 4;
+                        uint32 compressedDstX = dstX / 4;
+                        uint32 compressedDstY = dstY / 4;
+                        uint32 blockSizeInBytes = FormatHelpers.GetBlockSizeInBytes(srcMTLTexture.Format);
 
-                        for (uint zz = 0; zz < depth; zz++)
-                            for (uint row = 0; row < numRows; row++)
+                        for (uint32 zz = 0; zz < depth; zz++)
+                            for (uint32 row = 0; row < numRows; row++)
                             {
-                                ulong srcRowOffset = srcSubresourceBase
+                                uint64 srcRowOffset = srcSubresourceBase
                                     + srcDepthPitch * (zz + srcZ)
                                     + srcRowPitch * (row + compressedSrcY)
                                     + blockSizeInBytes * compressedSrcX;
-                                ulong dstRowOffset = dstSubresourceBase
+                                uint64 dstRowOffset = dstSubresourceBase
                                     + dstDepthPitch * (zz + dstZ)
                                     + dstRowPitch * (row + compressedDstY)
                                     + blockSizeInBytes * compressedDstX;
@@ -542,27 +542,27 @@ namespace Sedulous.GAL.MTL
                 // Normal -> Staging
                 MTLOrigin srcOrigin = new MTLOrigin(srcX, srcY, srcZ);
                 MTLSize srcSize = new MTLSize(width, height, depth);
-                for (uint layer = 0; layer < layerCount; layer++)
+                for (uint32 layer = 0; layer < layerCount; layer++)
                 {
                     dstMTLTexture.GetSubresourceLayout(
                         dstMipLevel,
                         dstBaseArrayLayer + layer,
-                        out uint dstBytesPerRow,
-                        out uint dstBytesPerImage);
+                        out uint32 dstBytesPerRow,
+                        out uint32 dstBytesPerImage);
 
-                    Util.GetMipDimensions(srcMTLTexture, dstMipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-                    uint blockSize = FormatHelpers.IsCompressedFormat(srcMTLTexture.Format) ? 4u : 1u;
-                    uint bufferRowLength = Math.Max(mipWidth, blockSize);
-                    uint bufferImageHeight = Math.Max(mipHeight, blockSize);
-                    uint compressedDstX = dstX / blockSize;
-                    uint compressedDstY = dstY / blockSize;
-                    uint blockSizeInBytes = blockSize == 1
+                    Util.GetMipDimensions(srcMTLTexture, dstMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                    uint32 blockSize = FormatHelpers.IsCompressedFormat(srcMTLTexture.Format) ? 4u : 1u;
+                    uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
+                    uint32 bufferImageHeight = Math.Max(mipHeight, blockSize);
+                    uint32 compressedDstX = dstX / blockSize;
+                    uint32 compressedDstY = dstY / blockSize;
+                    uint32 blockSizeInBytes = blockSize == 1
                         ? FormatSizeHelpers.GetSizeInBytes(srcMTLTexture.Format)
                         : FormatHelpers.GetBlockSizeInBytes(srcMTLTexture.Format);
-                    uint rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, srcMTLTexture.Format);
-                    uint depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, srcMTLTexture.Format);
+                    uint32 rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, srcMTLTexture.Format);
+                    uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, srcMTLTexture.Format);
 
-                    ulong dstOffset = Util.ComputeSubresourceOffset(dstMTLTexture, dstMipLevel, dstBaseArrayLayer + layer)
+                    uint64 dstOffset = Util.ComputeSubresourceOffset(dstMTLTexture, dstMipLevel, dstBaseArrayLayer + layer)
                         + (dstZ * depthPitch)
                         + (compressedDstY * rowPitch)
                         + (compressedDstX * blockSizeInBytes);
@@ -582,7 +582,7 @@ namespace Sedulous.GAL.MTL
             else
             {
                 // Normal -> Normal
-                for (uint layer = 0; layer < layerCount; layer++)
+                for (uint32 layer = 0; layer < layerCount; layer++)
                 {
                     _bce.copyFromTexture(
                         srcMTLTexture.DeviceTexture,
@@ -606,7 +606,7 @@ namespace Sedulous.GAL.MTL
             _bce.generateMipmapsForTexture(mtlTex.DeviceTexture);
         }
 
-        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint offset)
+        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint32 offset)
         {
             MTLBuffer mtlBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(indirectBuffer);
             PreComputeCommand();
@@ -616,14 +616,14 @@ namespace Sedulous.GAL.MTL
                 _computePipeline.ThreadsPerThreadgroup);
         }
 
-        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             if (PreDrawCommand())
             {
                 MTLBuffer mtlBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(indirectBuffer);
-                for (uint i = 0; i < drawCount; i++)
+                for (uint32 i = 0; i < drawCount; i++)
                 {
-                    uint currentOffset = i * stride + offset;
+                    uint32 currentOffset = i * stride + offset;
                     _rce.drawIndexedPrimitives(
                         _graphicsPipeline.PrimitiveType,
                         _indexType,
@@ -635,14 +635,14 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             if (PreDrawCommand())
             {
                 MTLBuffer mtlBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(indirectBuffer);
-                for (uint i = 0; i < drawCount; i++)
+                for (uint32 i = 0; i < drawCount; i++)
                 {
-                    uint currentOffset = i * stride + offset;
+                    uint32 currentOffset = i * stride + offset;
                     _rce.drawPrimitives(_graphicsPipeline.PrimitiveType, mtlBuffer.DeviceBuffer, (UIntPtr)currentOffset);
                 }
             }
@@ -673,7 +673,7 @@ namespace Sedulous.GAL.MTL
             ObjectiveCRuntime.release(rpDesc.NativePtr);
         }
 
-        protected override void SetComputeResourceSetCore(uint slot, ResourceSet set, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet set, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             if (!_computeResourceSets[slot].Equals(set, dynamicOffsetCount, ref dynamicOffsets))
             {
@@ -696,17 +696,17 @@ namespace Sedulous.GAL.MTL
 
             EnsureNoRenderPass();
             _mtlFramebuffer = Util.AssertSubtype<Framebuffer, MTLFramebufferBase>(fb);
-            _viewportCount = Math.Max(1u, (uint)fb.ColorTargets.Count);
+            _viewportCount = Math.Max(1u, (uint32)fb.ColorTargets.Count);
             Util.EnsureArrayMinimumSize(ref _viewports, _viewportCount);
             Util.ClearArray(_viewports);
             Util.EnsureArrayMinimumSize(ref _scissorRects, _viewportCount);
             Util.ClearArray(_scissorRects);
-            Util.EnsureArrayMinimumSize(ref _clearColors, (uint)fb.ColorTargets.Count);
+            Util.EnsureArrayMinimumSize(ref _clearColors, (uint32)fb.ColorTargets.Count);
             Util.ClearArray(_clearColors);
             _currentFramebufferEverActive = false;
         }
 
-        protected override void SetGraphicsResourceSetCore(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             if (!_graphicsResourceSets[slot].Equals(rs, dynamicOffsetCount, ref dynamicOffsets))
             {
@@ -716,18 +716,18 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private void ActivateGraphicsResourceSet(uint slot, BoundResourceSetInfo brsi)
+        private void ActivateGraphicsResourceSet(uint32 slot, BoundResourceSetInfo brsi)
         {
             Debug.Assert(RenderEncoderActive);
             MTLResourceSet mtlRS = Util.AssertSubtype<ResourceSet, MTLResourceSet>(brsi.Set);
             MTLResourceLayout layout = mtlRS.Layout;
-            uint dynamicOffsetIndex = 0;
+            uint32 dynamicOffsetIndex = 0;
 
-            for (int i = 0; i < mtlRS.Resources.Length; i++)
+            for (int32 i = 0; i < mtlRS.Resources.Length; i++)
             {
                 MTLResourceLayout.ResourceBindingInfo bindingInfo = layout.GetBindingInfo(i);
                 BindableResource resource = mtlRS.Resources[i];
-                uint bufferOffset = 0;
+                uint32 bufferOffset = 0;
                 if (bindingInfo.DynamicBuffer)
                 {
                     bufferOffset = brsi.Offsets.Get(dynamicOffsetIndex);
@@ -773,18 +773,18 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private void ActivateComputeResourceSet(uint slot, BoundResourceSetInfo brsi)
+        private void ActivateComputeResourceSet(uint32 slot, BoundResourceSetInfo brsi)
         {
             Debug.Assert(ComputeEncoderActive);
             MTLResourceSet mtlRS = Util.AssertSubtype<ResourceSet, MTLResourceSet>(brsi.Set);
             MTLResourceLayout layout = mtlRS.Layout;
-            uint dynamicOffsetIndex = 0;
+            uint32 dynamicOffsetIndex = 0;
 
-            for (int i = 0; i < mtlRS.Resources.Length; i++)
+            for (int32 i = 0; i < mtlRS.Resources.Length; i++)
             {
                 MTLResourceLayout.ResourceBindingInfo bindingInfo = layout.GetBindingInfo(i);
                 BindableResource resource = mtlRS.Resources[i];
-                uint bufferOffset = 0;
+                uint32 bufferOffset = 0;
                 if (bindingInfo.DynamicBuffer)
                 {
                     bufferOffset = brsi.Offsets.Get(dynamicOffsetIndex);
@@ -831,10 +831,10 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private void BindBuffer(DeviceBufferRange range, uint set, uint slot, ShaderStages stages)
+        private void BindBuffer(DeviceBufferRange range, uint32 set, uint32 slot, ShaderStages stages)
         {
             MTLBuffer mtlBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(range.Buffer);
-            uint baseBuffer = GetBufferBase(set, stages != ShaderStages.Compute);
+            uint32 baseBuffer = GetBufferBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
                 _cce.setBuffer(mtlBuffer.DeviceBuffer, (UIntPtr)range.Offset, (UIntPtr)(slot + baseBuffer));
@@ -855,9 +855,9 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private void BindTexture(MTLTextureView mtlTexView, uint set, uint slot, ShaderStages stages)
+        private void BindTexture(MTLTextureView mtlTexView, uint32 set, uint32 slot, ShaderStages stages)
         {
-            uint baseTexture = GetTextureBase(set, stages != ShaderStages.Compute);
+            uint32 baseTexture = GetTextureBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
                 _cce.setTexture(mtlTexView.TargetDeviceTexture, (UIntPtr)(slot + baseTexture));
@@ -872,9 +872,9 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private void BindSampler(MTLSampler mtlSampler, uint set, uint slot, ShaderStages stages)
+        private void BindSampler(MTLSampler mtlSampler, uint32 set, uint32 slot, ShaderStages stages)
         {
-            uint baseSampler = GetSamplerBase(set, stages != ShaderStages.Compute);
+            uint32 baseSampler = GetSamplerBase(set, stages != ShaderStages.Compute);
             if (stages == ShaderStages.Compute)
             {
                 _cce.setSamplerState(mtlSampler.DeviceSampler, (UIntPtr)(slot + baseSampler));
@@ -889,11 +889,11 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private uint GetBufferBase(uint set, bool graphics)
+        private uint32 GetBufferBase(uint32 set, bool graphics)
         {
             MTLResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
-            uint ret = 0;
-            for (int i = 0; i < set; i++)
+            uint32 ret = 0;
+            for (int32 i = 0; i < set; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].BufferCount;
@@ -902,11 +902,11 @@ namespace Sedulous.GAL.MTL
             return ret;
         }
 
-        private uint GetTextureBase(uint set, bool graphics)
+        private uint32 GetTextureBase(uint32 set, bool graphics)
         {
             MTLResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
-            uint ret = 0;
-            for (int i = 0; i < set; i++)
+            uint32 ret = 0;
+            for (int32 i = 0; i < set; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].TextureCount;
@@ -915,11 +915,11 @@ namespace Sedulous.GAL.MTL
             return ret;
         }
 
-        private uint GetSamplerBase(uint set, bool graphics)
+        private uint32 GetSamplerBase(uint32 set, bool graphics)
         {
             MTLResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
-            uint ret = 0;
-            for (int i = 0; i < set; i++)
+            uint32 ret = 0;
+            for (int32 i = 0; i < set; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].SamplerCount;
@@ -948,7 +948,7 @@ namespace Sedulous.GAL.MTL
             }
 
             MTLRenderPassDescriptor rpDesc = _mtlFramebuffer.CreateRenderPassDescriptor();
-            for (uint i = 0; i < _clearColors.Length; i++)
+            for (uint32 i = 0; i < _clearColors.Length; i++)
             {
                 if (_clearColors[i] != null)
                 {
@@ -1072,14 +1072,14 @@ namespace Sedulous.GAL.MTL
             Debug.Assert(!ComputeEncoderActive);
         }
 
-        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint offset)
+        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             _indexBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(buffer);
             _ibOffset = offset;
             _indexType = MTLFormats.VdToMTLIndexFormat(format);
         }
 
-        private protected override void SetVertexBufferCore(uint index, DeviceBuffer buffer, uint offset)
+        private protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             Util.EnsureArrayMinimumSize(ref _vertexBuffers, index + 1);
             Util.EnsureArrayMinimumSize(ref _vbOffsets, index + 1);

@@ -8,53 +8,53 @@ namespace Sedulous.GAL.OpenGL
 {
     internal sealed class StagingMemoryPool : IDisposable
     {
-        private const uint MinimumCapacity = 128;
+        private const uint32 MinimumCapacity = 128;
 
         private readonly List<StagingBlock> _storage;
-        private readonly SortedList<uint, uint> _availableBlocks;
+        private readonly SortedList<uint32, uint32> _availableBlocks;
         private object _lock = new object();
         private bool _disposed;
 
         public StagingMemoryPool()
         {
             _storage = new List<StagingBlock>();
-            _availableBlocks = new SortedList<uint, uint>(new CapacityComparer());
+            _availableBlocks = new SortedList<uint32, uint32>(new CapacityComparer());
         }
 
-        public StagingBlock Stage(IntPtr source, uint sizeInBytes)
+        public StagingBlock Stage(IntPtr source, uint32 sizeInBytes)
         {
             Rent(sizeInBytes, out StagingBlock block);
             Unsafe.CopyBlock(block.Data, source.ToPointer(), sizeInBytes);
             return block;
         }
 
-        public StagingBlock Stage(byte[] bytes)
+        public StagingBlock Stage(uint8[] bytes)
         {
-            Rent((uint)bytes.Length, out StagingBlock block);
+            Rent((uint32)bytes.Length, out StagingBlock block);
             Marshal.Copy(bytes, 0, (IntPtr)block.Data, bytes.Length);
             return block;
         }
 
-        public StagingBlock GetStagingBlock(uint sizeInBytes)
+        public StagingBlock GetStagingBlock(uint32 sizeInBytes)
         {
             Rent(sizeInBytes, out StagingBlock block);
             return block;
         }
 
-        public StagingBlock RetrieveById(uint id)
+        public StagingBlock RetrieveById(uint32 id)
         {
-            return _storage[(int)id];
+            return _storage[(int32)id];
         }
 
-        private void Rent(uint size, out StagingBlock block)
+        private void Rent(uint32 size, out StagingBlock block)
         {
             lock (_lock)
             {
-                SortedList<uint, uint> available = _availableBlocks;
-                IList<uint> indices = available.Values;
-                for (int i = 0; i < available.Count; i++)
+                SortedList<uint32, uint32> available = _availableBlocks;
+                IList<uint32> indices = available.Values;
+                for (int32 i = 0; i < available.Count; i++)
                 {
-                    int index = (int)indices[i];
+                    int32 index = (int32)indices[i];
                     StagingBlock current = _storage[index];
                     if (current.Capacity >= size)
                     {
@@ -70,11 +70,11 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        private void Allocate(uint sizeInBytes, out StagingBlock stagingBlock)
+        private void Allocate(uint32 sizeInBytes, out StagingBlock stagingBlock)
         {
-            uint capacity = Math.Max(MinimumCapacity, sizeInBytes);
-            IntPtr ptr = Marshal.AllocHGlobal((int)capacity);
-            uint id = (uint)_storage.Count;
+            uint32 capacity = Math.Max(MinimumCapacity, sizeInBytes);
+            IntPtr ptr = Marshal.AllocHGlobal((int32)capacity);
+            uint32 id = (uint32)_storage.Count;
             stagingBlock = new StagingBlock(id, (void*)ptr, capacity, sizeInBytes);
             _storage.Add(stagingBlock);
         }
@@ -105,9 +105,9 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        private class CapacityComparer : IComparer<uint>
+        private class CapacityComparer : IComparer<uint32>
         {
-            public int Compare(uint x, uint y)
+            public int32 Compare(uint32 x, uint32 y)
             {
                 return x >= y ? 1 : -1;
             }
@@ -116,12 +116,12 @@ namespace Sedulous.GAL.OpenGL
 
     internal struct StagingBlock
     {
-        public readonly uint Id;
+        public readonly uint32 Id;
         public readonly void* Data;
-        public readonly uint Capacity;
-        public uint SizeInBytes;
+        public readonly uint32 Capacity;
+        public uint32 SizeInBytes;
 
-        public StagingBlock(uint id, void* data, uint capacity, uint size)
+        public StagingBlock(uint32 id, void* data, uint32 capacity, uint32 size)
         {
             Id = id;
             Data = data;

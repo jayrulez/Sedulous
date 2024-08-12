@@ -15,7 +15,7 @@ namespace Sedulous.GAL.VK
         public VkDescriptorSetLayout DescriptorSetLayout => _dsl;
         public VkDescriptorType[] DescriptorTypes => _descriptorTypes;
         public DescriptorResourceCounts DescriptorResourceCounts { get; }
-        public new int DynamicBufferCount { get; }
+        public new int32 DynamicBufferCount { get; }
 
         public override bool IsDisposed => _disposed;
 
@@ -28,15 +28,15 @@ namespace Sedulous.GAL.VK
             _descriptorTypes = new VkDescriptorType[elements.Length];
             VkDescriptorSetLayoutBinding* bindings = stackalloc VkDescriptorSetLayoutBinding[elements.Length];
 
-            uint uniformBufferCount = 0;
-            uint uniformBufferDynamicCount = 0;
-            uint sampledImageCount = 0;
-            uint samplerCount = 0;
-            uint storageBufferCount = 0;
-            uint storageBufferDynamicCount = 0;
-            uint storageImageCount = 0;
+            uint32 uniformBufferCount = 0;
+            uint32 uniformBufferDynamicCount = 0;
+            uint32 sampledImageCount = 0;
+            uint32 samplerCount = 0;
+            uint32 storageBufferCount = 0;
+            uint32 storageBufferDynamicCount = 0;
+            uint32 storageImageCount = 0;
 
-            for (uint i = 0; i < elements.Length; i++)
+            for (uint32 i = 0; i < elements.Length; i++)
             {
                 bindings[i].binding = i;
                 bindings[i].descriptorCount = 1;
@@ -85,7 +85,7 @@ namespace Sedulous.GAL.VK
                 storageBufferDynamicCount,
                 storageImageCount);
 
-            dslCI.bindingCount = (uint)elements.Length;
+            dslCI.bindingCount = (uint32)elements.Length;
             dslCI.pBindings = bindings;
 
             VkResult result = vkCreateDescriptorSetLayout(_gd.Device, ref dslCI, null, out _dsl);

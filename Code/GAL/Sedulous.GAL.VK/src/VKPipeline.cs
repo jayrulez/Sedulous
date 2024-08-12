@@ -20,8 +20,8 @@ namespace Sedulous.GAL.VK
 
         public VkPipelineLayout PipelineLayout => _pipelineLayout;
 
-        public uint ResourceSetCount { get; }
-        public int DynamicOffsetsCount { get; }
+        public uint32 ResourceSetCount { get; }
+        public int32 DynamicOffsetsCount { get; }
         public bool ScissorTestEnabled { get; }
 
         public override bool IsComputePipeline { get; }
@@ -41,10 +41,10 @@ namespace Sedulous.GAL.VK
 
             // Blend State
             VkPipelineColorBlendStateCreateInfo blendStateCI = VkPipelineColorBlendStateCreateInfo.New();
-            int attachmentsCount = description.BlendState.AttachmentStates.Length;
+            int32 attachmentsCount = description.BlendState.AttachmentStates.Length;
             VkPipelineColorBlendAttachmentState* attachmentsPtr
                 = stackalloc VkPipelineColorBlendAttachmentState[attachmentsCount];
-            for (int i = 0; i < attachmentsCount; i++)
+            for (int32 i = 0; i < attachmentsCount; i++)
             {
                 BlendAttachmentDescription vdDesc = description.BlendState.AttachmentStates[i];
                 VkPipelineColorBlendAttachmentState attachmentState = new VkPipelineColorBlendAttachmentState();
@@ -59,7 +59,7 @@ namespace Sedulous.GAL.VK
                 attachmentsPtr[i] = attachmentState;
             }
 
-            blendStateCI.attachmentCount = (uint)attachmentsCount;
+            blendStateCI.attachmentCount = (uint32)attachmentsCount;
             blendStateCI.pAttachments = attachmentsPtr;
             RgbaFloat blendFactor = description.BlendState.BlendFactor;
             blendStateCI.blendConstants_0 = blendFactor.R;
@@ -136,37 +136,37 @@ namespace Sedulous.GAL.VK
             VkPipelineVertexInputStateCreateInfo vertexInputCI = VkPipelineVertexInputStateCreateInfo.New();
 
             VertexLayoutDescription[] inputDescriptions = description.ShaderSet.VertexLayouts;
-            uint bindingCount = (uint)inputDescriptions.Length;
-            uint attributeCount = 0;
-            for (int i = 0; i < inputDescriptions.Length; i++)
+            uint32 bindingCount = (uint32)inputDescriptions.Length;
+            uint32 attributeCount = 0;
+            for (int32 i = 0; i < inputDescriptions.Length; i++)
             {
-                attributeCount += (uint)inputDescriptions[i].Elements.Length;
+                attributeCount += (uint32)inputDescriptions[i].Elements.Length;
             }
-            VkVertexInputBindingDescription* bindingDescs = stackalloc VkVertexInputBindingDescription[(int)bindingCount];
-            VkVertexInputAttributeDescription* attributeDescs = stackalloc VkVertexInputAttributeDescription[(int)attributeCount];
+            VkVertexInputBindingDescription* bindingDescs = stackalloc VkVertexInputBindingDescription[(int32)bindingCount];
+            VkVertexInputAttributeDescription* attributeDescs = stackalloc VkVertexInputAttributeDescription[(int32)attributeCount];
 
-            int targetIndex = 0;
-            int targetLocation = 0;
-            for (int binding = 0; binding < inputDescriptions.Length; binding++)
+            int32 targetIndex = 0;
+            int32 targetLocation = 0;
+            for (int32 binding = 0; binding < inputDescriptions.Length; binding++)
             {
                 VertexLayoutDescription inputDesc = inputDescriptions[binding];
                 bindingDescs[binding] = new VkVertexInputBindingDescription()
                 {
-                    binding = (uint)binding,
+                    binding = (uint32)binding,
                     inputRate = (inputDesc.InstanceStepRate != 0) ? VkVertexInputRate.Instance : VkVertexInputRate.Vertex,
                     stride = inputDesc.Stride
                 };
 
-                uint currentOffset = 0;
-                for (int location = 0; location < inputDesc.Elements.Length; location++)
+                uint32 currentOffset = 0;
+                for (int32 location = 0; location < inputDesc.Elements.Length; location++)
                 {
                     VertexElementDescription inputElement = inputDesc.Elements[location];
 
                     attributeDescs[targetIndex] = new VkVertexInputAttributeDescription()
                     {
                         format = VKFormats.VdToVkVertexElementFormat(inputElement.Format),
-                        binding = (uint)binding,
-                        location = (uint)(targetLocation + location),
+                        binding = (uint32)binding,
+                        location = (uint32)(targetLocation + location),
                         offset = inputElement.Offset != 0 ? inputElement.Offset : currentOffset
                     };
 
@@ -190,20 +190,20 @@ namespace Sedulous.GAL.VK
             SpecializationConstant[] specDescs = description.ShaderSet.Specializations;
             if (specDescs != null)
             {
-                uint specDataSize = 0;
+                uint32 specDataSize = 0;
                 for (SpecializationConstant spec in specDescs)
                 {
                     specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
-                byte* fullSpecData = stackalloc byte[(int)specDataSize];
-                int specializationCount = specDescs.Length;
+                uint8* fullSpecData = stackalloc uint8[(int32)specDataSize];
+                int32 specializationCount = specDescs.Length;
                 VkSpecializationMapEntry* mapEntries = stackalloc VkSpecializationMapEntry[specializationCount];
-                uint specOffset = 0;
-                for (int i = 0; i < specializationCount; i++)
+                uint32 specOffset = 0;
+                for (int32 i = 0; i < specializationCount; i++)
                 {
-                    ulong data = specDescs[i].Data;
-                    byte* srcData = (byte*)&data;
-                    uint dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
+                    uint64 data = specDescs[i].Data;
+                    uint8* srcData = (uint8*)&data;
+                    uint32 dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
                     Unsafe.CopyBlock(fullSpecData + specOffset, srcData, dataSize);
                     mapEntries[i].constantID = specDescs[i].ID;
                     mapEntries[i].offset = specOffset;
@@ -212,7 +212,7 @@ namespace Sedulous.GAL.VK
                 }
                 specializationInfo.dataSize = (UIntPtr)specDataSize;
                 specializationInfo.pData = fullSpecData;
-                specializationInfo.mapEntryCount = (uint)specializationCount;
+                specializationInfo.mapEntryCount = (uint32)specializationCount;
                 specializationInfo.pMapEntries = mapEntries;
             }
 
@@ -243,9 +243,9 @@ namespace Sedulous.GAL.VK
             // Pipeline Layout
             ResourceLayout[] resourceLayouts = description.ResourceLayouts;
             VkPipelineLayoutCreateInfo pipelineLayoutCI = VkPipelineLayoutCreateInfo.New();
-            pipelineLayoutCI.setLayoutCount = (uint)resourceLayouts.Length;
+            pipelineLayoutCI.setLayoutCount = (uint32)resourceLayouts.Length;
             VkDescriptorSetLayout* dsls = stackalloc VkDescriptorSetLayout[resourceLayouts.Length];
-            for (int i = 0; i < resourceLayouts.Length; i++)
+            for (int32 i = 0; i < resourceLayouts.Length; i++)
             {
                 dsls[i] = Util.AssertSubtype<ResourceLayout, VKResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
             }
@@ -264,7 +264,7 @@ namespace Sedulous.GAL.VK
 
             StackList<VkAttachmentDescription> colorAttachmentDescs = new StackList<VkAttachmentDescription>();
             StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
-            for (uint i = 0; i < outputDesc.ColorAttachments.Length; i++)
+            for (uint32 i = 0; i < outputDesc.ColorAttachments.Length; i++)
             {
                 colorAttachmentDescs[i].format = VKFormats.VdToVkPixelFormat(outputDesc.ColorAttachments[i].Format);
                 colorAttachmentDescs[i].samples = vkSampleCount;
@@ -295,15 +295,15 @@ namespace Sedulous.GAL.VK
                 depthAttachmentDesc.initialLayout = VkImageLayout.Undefined;
                 depthAttachmentDesc.finalLayout = VkImageLayout.DepthStencilAttachmentOptimal;
 
-                depthAttachmentRef.attachment = (uint)outputDesc.ColorAttachments.Length;
+                depthAttachmentRef.attachment = (uint32)outputDesc.ColorAttachments.Length;
                 depthAttachmentRef.layout = VkImageLayout.DepthStencilAttachmentOptimal;
             }
 
             VkSubpassDescription subpass = new VkSubpassDescription();
             subpass.pipelineBindPoint = VkPipelineBindPoint.Graphics;
-            subpass.colorAttachmentCount = (uint)outputDesc.ColorAttachments.Length;
+            subpass.colorAttachmentCount = (uint32)outputDesc.ColorAttachments.Length;
             subpass.pColorAttachments = (VkAttachmentReference*)colorAttachmentRefs.Data;
-            for (int i = 0; i < colorAttachmentDescs.Count; i++)
+            for (int32 i = 0; i < colorAttachmentDescs.Count; i++)
             {
                 attachments.Add(colorAttachmentDescs[i]);
             }
@@ -335,7 +335,7 @@ namespace Sedulous.GAL.VK
             VkResult result = vkCreateGraphicsPipelines(_gd.Device, VkPipelineCache.Null, 1, ref pipelineCI, null, out _devicePipeline);
             CheckResult(result);
 
-            ResourceSetCount = (uint)description.ResourceLayouts.Length;
+            ResourceSetCount = (uint32)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
             for (VKResourceLayout layout in description.ResourceLayouts)
             {
@@ -355,9 +355,9 @@ namespace Sedulous.GAL.VK
             // Pipeline Layout
             ResourceLayout[] resourceLayouts = description.ResourceLayouts;
             VkPipelineLayoutCreateInfo pipelineLayoutCI = VkPipelineLayoutCreateInfo.New();
-            pipelineLayoutCI.setLayoutCount = (uint)resourceLayouts.Length;
+            pipelineLayoutCI.setLayoutCount = (uint32)resourceLayouts.Length;
             VkDescriptorSetLayout* dsls = stackalloc VkDescriptorSetLayout[resourceLayouts.Length];
-            for (int i = 0; i < resourceLayouts.Length; i++)
+            for (int32 i = 0; i < resourceLayouts.Length; i++)
             {
                 dsls[i] = Util.AssertSubtype<ResourceLayout, VKResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
             }
@@ -372,20 +372,20 @@ namespace Sedulous.GAL.VK
             SpecializationConstant[] specDescs = description.Specializations;
             if (specDescs != null)
             {
-                uint specDataSize = 0;
+                uint32 specDataSize = 0;
                 for (SpecializationConstant spec in specDescs)
                 {
                     specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
-                byte* fullSpecData = stackalloc byte[(int)specDataSize];
-                int specializationCount = specDescs.Length;
+                uint8* fullSpecData = stackalloc uint8[(int32)specDataSize];
+                int32 specializationCount = specDescs.Length;
                 VkSpecializationMapEntry* mapEntries = stackalloc VkSpecializationMapEntry[specializationCount];
-                uint specOffset = 0;
-                for (int i = 0; i < specializationCount; i++)
+                uint32 specOffset = 0;
+                for (int32 i = 0; i < specializationCount; i++)
                 {
-                    ulong data = specDescs[i].Data;
-                    byte* srcData = (byte*)&data;
-                    uint dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
+                    uint64 data = specDescs[i].Data;
+                    uint8* srcData = (uint8*)&data;
+                    uint32 dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
                     Unsafe.CopyBlock(fullSpecData + specOffset, srcData, dataSize);
                     mapEntries[i].constantID = specDescs[i].ID;
                     mapEntries[i].offset = specOffset;
@@ -394,7 +394,7 @@ namespace Sedulous.GAL.VK
                 }
                 specializationInfo.dataSize = (UIntPtr)specDataSize;
                 specializationInfo.pData = fullSpecData;
-                specializationInfo.mapEntryCount = (uint)specializationCount;
+                specializationInfo.mapEntryCount = (uint32)specializationCount;
                 specializationInfo.pMapEntries = mapEntries;
             }
 
@@ -416,7 +416,7 @@ namespace Sedulous.GAL.VK
                 out _devicePipeline);
             CheckResult(result);
 
-            ResourceSetCount = (uint)description.ResourceLayouts.Length;
+            ResourceSetCount = (uint32)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
             for (VKResourceLayout layout in description.ResourceLayouts)
             {

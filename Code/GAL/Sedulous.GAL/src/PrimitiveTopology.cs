@@ -3,7 +3,7 @@
     /// <summary>
     /// Determines how a sequence of vertices is interepreted by the rasterizer.
     /// </summary>
-    public enum PrimitiveTopology : byte
+    public enum PrimitiveTopology : uint8
     {
         /// <summary>
         /// A list of isolated, 3-element triangles.

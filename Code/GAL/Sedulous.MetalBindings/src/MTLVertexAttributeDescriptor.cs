@@ -12,7 +12,7 @@ namespace Sedulous.MetalBindings
         public MTLVertexFormat format
         {
             get => (MTLVertexFormat)uint_objc_msgSend(NativePtr, sel_format);
-            set => objc_msgSend(NativePtr, sel_setFormat, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setFormat, (uint32)value);
         }
 
         public UIntPtr offset

@@ -11,7 +11,7 @@ namespace Sedulous.GAL.D3D11
         private string _name;
 
         public ID3D11DeviceChild DeviceShader { get; }
-        public byte[] Bytecode { get; internal set; }
+        public uint8[] Bytecode { get; internal set; }
 
         public D3D11Shader(ID3D11Device device, ShaderDescription description)
             : base(description.Stage, description.EntryPoint)
@@ -54,7 +54,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private byte[] CompileCode(ShaderDescription description)
+        private uint8[] CompileCode(ShaderDescription description)
         {
             string profile;
             switch (description.Stage)

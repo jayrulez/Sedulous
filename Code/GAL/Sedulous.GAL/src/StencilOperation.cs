@@ -3,7 +3,7 @@
     /// <summary>
     /// Identifies an action taken on samples that pass or fail the stencil test.
     /// </summary>
-    public enum StencilOperation : byte
+    public enum StencilOperation : uint8
     {
         /// <summary>
         /// Keep the existing value.

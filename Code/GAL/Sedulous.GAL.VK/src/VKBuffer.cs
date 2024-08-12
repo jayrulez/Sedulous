@@ -16,7 +16,7 @@ namespace Sedulous.GAL.VK
         private string _name;
         public override bool IsDisposed => _destroyed;
 
-        public override uint SizeInBytes { get; }
+        public override uint32 SizeInBytes { get; }
         public override BufferUsage Usage { get; }
 
         public Vulkan.VkBuffer DeviceBuffer => _deviceBuffer;
@@ -24,7 +24,7 @@ namespace Sedulous.GAL.VK
 
         public VkMemoryRequirements BufferMemoryRequirements => _bufferMemoryRequirements;
 
-        public VKBuffer(VKGraphicsDevice gd, uint sizeInBytes, BufferUsage usage, string callerMember = null)
+        public VKBuffer(VKGraphicsDevice gd, uint32 sizeInBytes, BufferUsage usage, string callerMember = null)
         {
             _gd = gd;
             SizeInBytes = sizeInBytes;

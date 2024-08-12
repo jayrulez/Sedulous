@@ -13,7 +13,7 @@ namespace Sedulous.GAL.D3D11
         public ID3D11BlendState BlendState { get; }
         public Color4 BlendFactor { get; }
         public ID3D11DepthStencilState DepthStencilState { get; }
-        public uint StencilReference { get; }
+        public uint32 StencilReference { get; }
         public ID3D11RasterizerState RasterizerState { get; }
         public Vortice.Direct3D.PrimitiveTopology PrimitiveTopology { get; }
         public ID3D11InputLayout InputLayout { get; }
@@ -24,16 +24,16 @@ namespace Sedulous.GAL.D3D11
         public ID3D11PixelShader PixelShader { get; }
         public ID3D11ComputeShader ComputeShader { get; }
         public new D3D11ResourceLayout[] ResourceLayouts { get; }
-        public int[] VertexStrides { get; }
+        public int32[] VertexStrides { get; }
 
         public override bool IsComputePipeline { get; }
 
         public D3D11Pipeline(D3D11ResourceCache cache, ref GraphicsPipelineDescription description)
             : base(ref description)
         {
-            byte[] vsBytecode = null;
+            uint8[] vsBytecode = null;
             Shader[] stages = description.ShaderSet.Shaders;
-            for (int i = 0; i < description.ShaderSet.Shaders.Length; i++)
+            for (int32 i = 0; i < description.ShaderSet.Shaders.Length; i++)
             {
                 if (stages[i].Stage == ShaderStages.Vertex)
                 {
@@ -84,7 +84,7 @@ namespace Sedulous.GAL.D3D11
 
             ResourceLayout[] genericLayouts = description.ResourceLayouts;
             ResourceLayouts = new D3D11ResourceLayout[genericLayouts.Length];
-            for (int i = 0; i < ResourceLayouts.Length; i++)
+            for (int32 i = 0; i < ResourceLayouts.Length; i++)
             {
                 ResourceLayouts[i] = Util.AssertSubtype<ResourceLayout, D3D11ResourceLayout>(genericLayouts[i]);
             }
@@ -93,16 +93,16 @@ namespace Sedulous.GAL.D3D11
             if (vsBytecode != null && description.ShaderSet.VertexLayouts.Length > 0)
             {
                 InputLayout = inputLayout;
-                int numVertexBuffers = description.ShaderSet.VertexLayouts.Length;
-                VertexStrides = new int[numVertexBuffers];
-                for (int i = 0; i < numVertexBuffers; i++)
+                int32 numVertexBuffers = description.ShaderSet.VertexLayouts.Length;
+                VertexStrides = new int32[numVertexBuffers];
+                for (int32 i = 0; i < numVertexBuffers; i++)
                 {
-                    VertexStrides[i] = (int)description.ShaderSet.VertexLayouts[i].Stride;
+                    VertexStrides[i] = (int32)description.ShaderSet.VertexLayouts[i].Stride;
                 }
             }
             else
             {
-                VertexStrides = Array.Empty<int>();
+                VertexStrides = Array.Empty<int32>();
             }
         }
 
@@ -113,7 +113,7 @@ namespace Sedulous.GAL.D3D11
             ComputeShader = (ID3D11ComputeShader)((D3D11Shader)description.ComputeShader).DeviceShader;
             ResourceLayout[] genericLayouts = description.ResourceLayouts;
             ResourceLayouts = new D3D11ResourceLayout[genericLayouts.Length];
-            for (int i = 0; i < ResourceLayouts.Length; i++)
+            for (int32 i = 0; i < ResourceLayouts.Length; i++)
             {
                 ResourceLayouts[i] = Util.AssertSubtype<ResourceLayout, D3D11ResourceLayout>(genericLayouts[i]);
             }

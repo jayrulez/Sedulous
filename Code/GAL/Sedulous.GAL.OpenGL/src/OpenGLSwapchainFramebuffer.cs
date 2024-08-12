@@ -8,8 +8,8 @@ namespace Sedulous.GAL.OpenGL
         private readonly PixelFormat? _depthFormat;
         private bool _disposed;
 
-        public override uint Width => _colorTexture.Width;
-        public override uint Height => _colorTexture.Height;
+        public override uint32 Width => _colorTexture.Width;
+        public override uint32 Height => _colorTexture.Height;
 
         public override OutputDescription OutputDescription { get; }
         public override string Name { get; set; }
@@ -27,7 +27,7 @@ namespace Sedulous.GAL.OpenGL
         public bool DisableSrgbConversion { get; }
 
         internal OpenGLSwapchainFramebuffer(
-            uint width, uint height,
+            uint32 width, uint32 height,
             PixelFormat colorFormat,
             PixelFormat? depthFormat,
             bool disableSrgbConversion)
@@ -65,7 +65,7 @@ namespace Sedulous.GAL.OpenGL
             DisableSrgbConversion = disableSrgbConversion;
         }
 
-        public void Resize(uint width, uint height)
+        public void Resize(uint32 width, uint32 height)
         {
             _colorTexture.Resize(width, height);
             _depthTexture?.Resize(width, height);

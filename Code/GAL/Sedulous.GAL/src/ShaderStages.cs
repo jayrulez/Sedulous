@@ -6,7 +6,7 @@ namespace Veldrid
     /// A bitmask representing a set of shader stages.
     /// </summary>
     // [Flags]
-    public enum ShaderStages : byte
+    public enum ShaderStages : uint8
     {
         /// <summary>
         /// No stages.

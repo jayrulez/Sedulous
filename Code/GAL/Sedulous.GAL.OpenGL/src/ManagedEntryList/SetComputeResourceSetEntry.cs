@@ -2,10 +2,10 @@
 {
     internal class SetComputeResourceSetEntry : OpenGLCommandEntry
     {
-        public uint Slot;
+        public uint32 Slot;
         public ResourceSet ResourceSet;
 
-        public SetComputeResourceSetEntry(uint slot, ResourceSet rs)
+        public SetComputeResourceSetEntry(uint32 slot, ResourceSet rs)
         {
             Slot = slot;
             ResourceSet = rs;
@@ -13,7 +13,7 @@
 
         public SetComputeResourceSetEntry() { }
 
-        public SetComputeResourceSetEntry Init(uint slot, ResourceSet rs)
+        public SetComputeResourceSetEntry Init(uint32 slot, ResourceSet rs)
         {
             Slot = slot;
             ResourceSet = rs;

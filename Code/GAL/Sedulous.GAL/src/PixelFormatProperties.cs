@@ -10,25 +10,25 @@
         /// <summary>
         /// The maximum supported width.
         /// </summary>
-        public readonly uint MaxWidth;
+        public readonly uint32 MaxWidth;
         /// <summary>
         /// The maximum supported height.
         /// </summary>
-        public readonly uint MaxHeight;
+        public readonly uint32 MaxHeight;
         /// <summary>
         /// The maximum supported depth.
         /// </summary>
-        public readonly uint MaxDepth;
+        public readonly uint32 MaxDepth;
         /// <summary>
         /// The maximum supported number of mipmap levels.
         /// </summary>
-        public readonly uint MaxMipLevels;
+        public readonly uint32 MaxMipLevels;
         /// <summary>
         /// The maximum supported number of array layers.
         /// </summary>
-        public readonly uint MaxArrayLayers;
+        public readonly uint32 MaxArrayLayers;
 
-        private readonly uint _sampleCounts;
+        private readonly uint32 _sampleCounts;
 
         /// <summary>
         /// Gets a value indicating whether or not the given <see cref="TextureSampleCount"/> is supported.
@@ -37,17 +37,17 @@
         /// <returns>True if the sample count is supported; false otherwise.</returns>
         public bool IsSampleCountSupported(TextureSampleCount count)
         {
-            int bit = (int)count;
+            int32 bit = (int32)count;
             return (_sampleCounts & (1 << bit)) != 0;
         }
 
         internal PixelFormatProperties(
-            uint maxWidth,
-            uint maxHeight,
-            uint maxDepth,
-            uint maxMipLevels,
-            uint maxArrayLayers,
-            uint sampleCounts)
+            uint32 maxWidth,
+            uint32 maxHeight,
+            uint32 maxDepth,
+            uint32 maxMipLevels,
+            uint32 maxArrayLayers,
+            uint32 sampleCounts)
         {
             MaxWidth = maxWidth;
             MaxHeight = maxHeight;

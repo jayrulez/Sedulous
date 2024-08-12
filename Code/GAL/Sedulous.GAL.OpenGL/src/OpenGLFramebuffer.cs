@@ -7,7 +7,7 @@ namespace Sedulous.GAL.OpenGL
     internal class OpenGLFramebuffer : Framebuffer, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
-        private uint _framebuffer;
+        private uint32 _framebuffer;
 
         private string _name;
         private bool _nameChanged;
@@ -16,7 +16,7 @@ namespace Sedulous.GAL.OpenGL
 
         public override string Name { get => _name; set { _name = value; _nameChanged = true; } }
 
-        public uint Framebuffer => _framebuffer;
+        public uint32 Framebuffer => _framebuffer;
 
         public bool Created { get; private set; }
 
@@ -52,11 +52,11 @@ namespace Sedulous.GAL.OpenGL
             glBindFramebuffer(FramebufferTarget.Framebuffer, _framebuffer);
             CheckLastError();
 
-            uint colorCount = (uint)ColorTargets.Count;
+            uint32 colorCount = (uint32)ColorTargets.Count;
 
             if (colorCount > 0)
             {
-                for (int i = 0; i < colorCount; i++)
+                for (int32 i = 0; i < colorCount; i++)
                 {
                     FramebufferAttachment colorAttachment = ColorTargets[i];
                     OpenGLTexture glTex = Util.AssertSubtype<Texture, OpenGLTexture>(colorAttachment.Target);
@@ -74,7 +74,7 @@ namespace Sedulous.GAL.OpenGL
                             GLFramebufferAttachment.ColorAttachment0 + i,
                             textureTarget,
                             glTex.Texture,
-                            (int)colorAttachment.MipLevel);
+                            (int32)colorAttachment.MipLevel);
                         CheckLastError();
                     }
                     else
@@ -82,15 +82,15 @@ namespace Sedulous.GAL.OpenGL
                         glFramebufferTextureLayer(
                             FramebufferTarget.Framebuffer,
                             GLFramebufferAttachment.ColorAttachment0 + i,
-                            (uint)glTex.Texture,
-                            (int)colorAttachment.MipLevel,
-                            (int)colorAttachment.ArrayLayer);
+                            (uint32)glTex.Texture,
+                            (int32)colorAttachment.MipLevel,
+                            (int32)colorAttachment.ArrayLayer);
                         CheckLastError();
                     }
                 }
 
-                DrawBuffersEnum* bufs = stackalloc DrawBuffersEnum[(int)colorCount];
-                for (int i = 0; i < colorCount; i++)
+                DrawBuffersEnum* bufs = stackalloc DrawBuffersEnum[(int32)colorCount];
+                for (int32 i = 0; i < colorCount; i++)
                 {
                     bufs[i] = DrawBuffersEnum.ColorAttachment0 + i;
                 }
@@ -98,7 +98,7 @@ namespace Sedulous.GAL.OpenGL
                 CheckLastError();
             }
 
-            uint depthTextureID = 0;
+            uint32 depthTextureID = 0;
             TextureTarget depthTarget = TextureTarget.Texture2D;
             if (DepthTarget != null)
             {
@@ -126,7 +126,7 @@ namespace Sedulous.GAL.OpenGL
                         framebufferAttachment,
                         depthTarget,
                         depthTextureID,
-                        (int)DepthTarget.Value.MipLevel);
+                        (int32)DepthTarget.Value.MipLevel);
                     CheckLastError();
                 }
                 else
@@ -135,8 +135,8 @@ namespace Sedulous.GAL.OpenGL
                         FramebufferTarget.Framebuffer,
                         framebufferAttachment,
                         glDepthTex.Texture,
-                        (int)DepthTarget.Value.MipLevel,
-                        (int)DepthTarget.Value.ArrayLayer);
+                        (int32)DepthTarget.Value.MipLevel,
+                        (int32)DepthTarget.Value.ArrayLayer);
                     CheckLastError();
                 }
 
@@ -166,7 +166,7 @@ namespace Sedulous.GAL.OpenGL
             if (!_disposed)
             {
                 _disposed = true;
-                uint framebuffer = _framebuffer;
+                uint32 framebuffer = _framebuffer;
                 glDeleteFramebuffers(1, ref framebuffer);
                 CheckLastError();
             }

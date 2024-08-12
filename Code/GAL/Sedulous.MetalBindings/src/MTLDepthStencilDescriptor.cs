@@ -11,7 +11,7 @@ namespace Sedulous.MetalBindings
         public MTLCompareFunction depthCompareFunction
         {
             get => (MTLCompareFunction)uint_objc_msgSend(NativePtr, sel_depthCompareFunction);
-            set => objc_msgSend(NativePtr, sel_setDepthCompareFunction, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setDepthCompareFunction, (uint32)value);
         }
 
         public Bool8 depthWriteEnabled

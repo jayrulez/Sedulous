@@ -4,9 +4,9 @@ namespace Sedulous.MetalBindings
 {
     public static class MTLUtil
     {
-        public static string GetUtf8String(byte* stringStart)
+        public static string GetUtf8String(uint8* stringStart)
         {
-            int characters = 0;
+            int32 characters = 0;
             while (stringStart[characters] != 0)
             {
                 characters++;

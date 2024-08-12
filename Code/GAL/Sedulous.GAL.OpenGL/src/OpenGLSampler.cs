@@ -18,8 +18,8 @@ namespace Sedulous.GAL.OpenGL
 
         public override bool IsDisposed => _disposeRequested;
 
-        public uint NoMipmapSampler => _noMipmapState.Sampler;
-        public uint MipmapSampler => _mipmapState.Sampler;
+        public uint32 NoMipmapSampler => _noMipmapState.Sampler;
+        public uint32 MipmapSampler => _mipmapState.Sampler;
 
         public OpenGLSampler(OpenGLGraphicsDevice gd, ref SamplerDescription description)
         {
@@ -74,20 +74,20 @@ namespace Sedulous.GAL.OpenGL
 
         private class InternalSamplerState
         {
-            private uint _sampler;
+            private uint32 _sampler;
 
-            public uint Sampler => _sampler;
+            public uint32 Sampler => _sampler;
 
             public void CreateGLResources(SamplerDescription description, bool mipmapped, GraphicsBackend backend)
             {
                 glGenSamplers(1, out _sampler);
                 CheckLastError();
 
-                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapS, (int)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeU));
+                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapS, (int32)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeU));
                 CheckLastError();
-                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapT, (int)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeV));
+                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapT, (int32)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeV));
                 CheckLastError();
-                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapR, (int)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeW));
+                glSamplerParameteri(_sampler, SamplerParameterName.TextureWrapR, (int32)OpenGLFormats.VdToGLTextureWrapMode(description.AddressModeW));
                 CheckLastError();
 
                 if (description.AddressModeU == SamplerAddressMode.Border
@@ -113,25 +113,25 @@ namespace Sedulous.GAL.OpenGL
                 {
                     glSamplerParameterf(_sampler, SamplerParameterName.TextureMaxAnisotropyExt, description.MaximumAnisotropy);
                     CheckLastError();
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMinFilter, mipmapped ? (int)TextureMinFilter.LinearMipmapLinear : (int)TextureMinFilter.Linear);
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMinFilter, mipmapped ? (int32)TextureMinFilter.LinearMipmapLinear : (int32)TextureMinFilter.Linear);
                     CheckLastError();
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMagFilter, (int32)TextureMagFilter.Linear);
                     CheckLastError();
                 }
                 else
                 {
                     OpenGLFormats.VdToGLTextureMinMagFilter(description.Filter, mipmapped, out TextureMinFilter min, out TextureMagFilter mag);
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMinFilter, (int)min);
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMinFilter, (int32)min);
                     CheckLastError();
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMagFilter, (int)mag);
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureMagFilter, (int32)mag);
                     CheckLastError();
                 }
 
                 if (description.ComparisonKind != null)
                 {
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureCompareMode, (int)TextureCompareMode.CompareRefToTexture);
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureCompareMode, (int32)TextureCompareMode.CompareRefToTexture);
                     CheckLastError();
-                    glSamplerParameteri(_sampler, SamplerParameterName.TextureCompareFunc, (int)OpenGLFormats.VdToGLDepthFunction(description.ComparisonKind.Value));
+                    glSamplerParameteri(_sampler, SamplerParameterName.TextureCompareFunc, (int32)OpenGLFormats.VdToGLDepthFunction(description.ComparisonKind.Value));
                     CheckLastError();
                 }
             }

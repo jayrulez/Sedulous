@@ -3,7 +3,7 @@
     /// <summary>
     /// Controls how the source and destination factors are combined in a blend operation.
     /// </summary>
-    public enum BlendFunction : byte
+    public enum BlendFunction : uint8
     {
         /// <summary>
         /// Source and destination are added.

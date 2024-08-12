@@ -4,3 +4,6 @@ WorkspaceFolders = {Dependencies = ["Bulkan", "OpenGL", "SDL2Native", "Win32", "
 
 [Workspace]
 StartupProject = "RHI"
+
+[Configs.Debug.Win64]
+ConfigSelections = {"Sedulous.GAL.D3D11" = {Enabled = false}, "Sedulous.GAL.OpenGL" = {Enabled = false}, "Sedulous.GAL.VK" = {Enabled = false}, "Sedulous.GAL.MTL" = {Enabled = false}}

@@ -2,10 +2,10 @@
 {
     internal class SetGraphicsResourceSetEntry : OpenGLCommandEntry
     {
-        public uint Slot;
+        public uint32 Slot;
         public ResourceSet ResourceSet;
 
-        public SetGraphicsResourceSetEntry(uint slot, ResourceSet rs)
+        public SetGraphicsResourceSetEntry(uint32 slot, ResourceSet rs)
         {
             Slot = slot;
             ResourceSet = rs;
@@ -13,7 +13,7 @@
 
         public SetGraphicsResourceSetEntry() { }
 
-        public SetGraphicsResourceSetEntry Init(uint slot, ResourceSet rs)
+        public SetGraphicsResourceSetEntry Init(uint32 slot, ResourceSet rs)
         {
             Slot = slot;
             ResourceSet = rs;

@@ -9,7 +9,7 @@ namespace Sedulous.GAL.OpenGL
     internal class OpenGLBuffer : DeviceBuffer, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
-        private uint _buffer;
+        private uint32 _buffer;
         private bool _dynamic;
         private bool _disposeRequested;
 
@@ -18,16 +18,16 @@ namespace Sedulous.GAL.OpenGL
 
         public override string Name { get => _name; set { _name = value; _nameChanged = true; } }
 
-        public override uint SizeInBytes { get; }
+        public override uint32 SizeInBytes { get; }
         public override BufferUsage Usage { get; }
 
-        public uint Buffer => _buffer;
+        public uint32 Buffer => _buffer;
 
         public bool Created { get; private set; }
 
         public override bool IsDisposed => _disposeRequested;
 
-        public OpenGLBuffer(OpenGLGraphicsDevice gd, uint sizeInBytes, BufferUsage usage)
+        public OpenGLBuffer(OpenGLGraphicsDevice gd, uint32 sizeInBytes, BufferUsage usage)
         {
             _gd = gd;
             SizeInBytes = sizeInBytes;
@@ -57,7 +57,7 @@ namespace Sedulous.GAL.OpenGL
 
             if (_gd.Extensions.ARB_DirectStateAccess)
             {
-                uint buffer;
+                uint32 buffer;
                 glCreateBuffers(1, &buffer);
                 CheckLastError();
                 _buffer = buffer;
@@ -99,7 +99,7 @@ namespace Sedulous.GAL.OpenGL
 
         public void DestroyGLResources()
         {
-            uint buffer = _buffer;
+            uint32 buffer = _buffer;
             glDeleteBuffers(1, ref buffer);
             CheckLastError();
         }

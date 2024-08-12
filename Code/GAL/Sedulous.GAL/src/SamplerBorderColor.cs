@@ -3,7 +3,7 @@
     /// <summary>
     /// A constant color that is sampled when <see cref="SamplerAddressMode.Border"/> is used.
     /// </summary>
-    public enum SamplerBorderColor : byte
+    public enum SamplerBorderColor : uint8
     {
         /// <summary>
         /// Transparent Black (0, 0, 0, 0)

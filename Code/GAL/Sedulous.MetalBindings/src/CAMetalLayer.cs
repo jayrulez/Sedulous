@@ -34,7 +34,7 @@ namespace Sedulous.MetalBindings
         public MTLPixelFormat pixelFormat
         {
             get => (MTLPixelFormat)uint_objc_msgSend(NativePtr, sel_pixelFormat);
-            set => objc_msgSend(NativePtr, sel_setPixelFormat, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setPixelFormat, (uint32)value);
         }
 
         public Bool8 framebufferOnly

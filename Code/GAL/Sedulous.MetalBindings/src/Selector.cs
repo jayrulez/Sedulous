@@ -14,8 +14,8 @@ namespace Sedulous.MetalBindings
 
         public Selector(string name)
         {
-            int byteCount = Encoding.UTF8.GetMaxByteCount(name.Length);
-            byte* utf8BytesPtr = stackalloc byte[byteCount];
+            int32 byteCount = Encoding.UTF8.GetMaxByteCount(name.Length);
+            uint8* utf8BytesPtr = stackalloc uint8[byteCount];
             fixed (char* namePtr = name)
             {
                 Encoding.UTF8.GetBytes(namePtr, name.Length, utf8BytesPtr, byteCount);
@@ -28,7 +28,7 @@ namespace Sedulous.MetalBindings
         {
             get
             {
-                byte* name = ObjectiveCRuntime.sel_getName(NativePtr);
+                uint8* name = ObjectiveCRuntime.sel_getName(NativePtr);
                 return MTLUtil.GetUtf8String(name);
             }
         }

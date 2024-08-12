@@ -6,10 +6,10 @@
         private string _name;
         private bool _disposed;
 
-        public int UniformBufferCount { get; }
-        public int StorageBufferCount { get; }
-        public int TextureCount { get; }
-        public int SamplerCount { get; }
+        public int32 UniformBufferCount { get; }
+        public int32 StorageBufferCount { get; }
+        public int32 TextureCount { get; }
+        public int32 SamplerCount { get; }
 
         public D3D11ResourceLayout(ref ResourceLayoutDescription description)
             : base(ref description)
@@ -17,14 +17,14 @@
             ResourceLayoutElementDescription[] elements = description.Elements;
             _bindingInfosByVdIndex = new ResourceBindingInfo[elements.Length];
 
-            int cbIndex = 0;
-            int texIndex = 0;
-            int samplerIndex = 0;
-            int unorderedAccessIndex = 0;
+            int32 cbIndex = 0;
+            int32 texIndex = 0;
+            int32 samplerIndex = 0;
+            int32 unorderedAccessIndex = 0;
 
-            for (int i = 0; i < _bindingInfosByVdIndex.Length; i++)
+            for (int32 i = 0; i < _bindingInfosByVdIndex.Length; i++)
             {
-                int slot;
+                int32 slot;
                 switch (elements[i].Kind)
                 {
                     case ResourceKind.UniformBuffer:
@@ -61,7 +61,7 @@
             SamplerCount = samplerIndex;
         }
 
-        public ResourceBindingInfo GetDeviceSlotIndex(int resourceLayoutIndex)
+        public ResourceBindingInfo GetDeviceSlotIndex(int32 resourceLayoutIndex)
         {
             if (resourceLayoutIndex >= _bindingInfosByVdIndex.Length)
             {
@@ -71,7 +71,7 @@
             return _bindingInfosByVdIndex[resourceLayoutIndex];
         }
 
-        public bool IsDynamicBuffer(int index) => _bindingInfosByVdIndex[index].DynamicBuffer;
+        public bool IsDynamicBuffer(int32 index) => _bindingInfosByVdIndex[index].DynamicBuffer;
 
         public override string Name
         {
@@ -88,12 +88,12 @@
 
         internal struct ResourceBindingInfo
         {
-            public int Slot;
+            public int32 Slot;
             public ShaderStages Stages;
             public ResourceKind Kind;
             public bool DynamicBuffer;
 
-            public ResourceBindingInfo(int slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
+            public ResourceBindingInfo(int32 slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
             {
                 Slot = slot;
                 Stages = stages;

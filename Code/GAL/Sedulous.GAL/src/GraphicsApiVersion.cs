@@ -5,14 +5,14 @@ namespace Veldrid
     {
         public static GraphicsApiVersion Unknown => default;
 
-        public int Major { get; }
-        public int Minor { get; }
-        public int Subminor { get; }
-        public int Patch { get; }
+        public int32 Major { get; }
+        public int32 Minor { get; }
+        public int32 Subminor { get; }
+        public int32 Patch { get; }
 
         public bool IsKnown => Major != 0 && Minor != 0 && Subminor != 0 && Patch != 0;
 
-        public GraphicsApiVersion(int major, int minor, int subminor, int patch)
+        public GraphicsApiVersion(int32 major, int32 minor, int32 subminor, int32 patch)
         {
             Major = major;
             Minor = minor;
@@ -43,17 +43,17 @@ namespace Veldrid
         {
             string[] versionParts = versionString.Split(' ')[0].Split('.');
 
-            if (!int.TryParse(versionParts[0], out int major) ||
-               !int.TryParse(versionParts[1], out int minor))
+            if (!int32.TryParse(versionParts[0], out int32 major) ||
+               !int32.TryParse(versionParts[1], out int32 minor))
             {
                 version = default;
                 return false;
             }
 
-            int releaseNumber = 0;
+            int32 releaseNumber = 0;
             if (versionParts.Length == 3)
             {
-                if (!int.TryParse(versionParts[2], out releaseNumber))
+                if (!int32.TryParse(versionParts[2], out releaseNumber))
                 {
                     version = default;
                     return false;

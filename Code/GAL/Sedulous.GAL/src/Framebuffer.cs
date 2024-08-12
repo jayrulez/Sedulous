@@ -29,12 +29,12 @@ namespace Veldrid
         /// <summary>
         /// Gets the width of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual uint Width { get; }
+        public virtual uint32 Width { get; }
 
         /// <summary>
         /// Gets the height of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual uint Height { get; }
+        public virtual uint32 Height { get; }
 
         internal Framebuffer() { }
 
@@ -51,7 +51,7 @@ namespace Veldrid
                     depthAttachment.MipLevel);
             }
             FramebufferAttachment[] colorTargets = new FramebufferAttachment[colorTargetDescs.Count];
-            for (int i = 0; i < colorTargets.Length; i++)
+            for (int32 i = 0; i < colorTargets.Length; i++)
             {
                 colorTargets[i] = new FramebufferAttachment(
                     colorTargetDescs[i].Target,
@@ -62,7 +62,7 @@ namespace Veldrid
             ColorTargets = colorTargets;
 
             Texture dimTex;
-            uint mipLevel;
+            uint32 mipLevel;
             if (ColorTargets.Count > 0)
             {
                 dimTex = ColorTargets[0].Target;
@@ -75,7 +75,7 @@ namespace Veldrid
                 mipLevel = DepthTarget.Value.MipLevel;
             }
 
-            Util.GetMipDimensions(dimTex, mipLevel, out uint mipWidth, out uint mipHeight, out _);
+            Util.GetMipDimensions(dimTex, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out _);
             Width = mipWidth;
             Height = mipHeight;
 

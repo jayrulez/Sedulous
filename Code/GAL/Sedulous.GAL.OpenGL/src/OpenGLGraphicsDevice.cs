@@ -24,7 +24,7 @@ namespace Sedulous.GAL.OpenGL
         private GraphicsApiVersion _apiVersion;
         private GraphicsBackend _backendType;
         private GraphicsDeviceFeatures _features;
-        private uint _vao;
+        private uint32 _vao;
         private readonly ConcurrentQueue<OpenGLDeferredResource> _resourcesToDispose
             = new ConcurrentQueue<OpenGLDeferredResource>();
         private IntPtr _glContext;
@@ -42,18 +42,18 @@ namespace Sedulous.GAL.OpenGL
         private BackendInfoOpenGL _openglInfo;
 
         private TextureSampleCount _maxColorTextureSamples;
-        private uint _maxTextureSize;
-        private uint _maxTexDepth;
-        private uint _maxTexArrayLayers;
-        private uint _minUboOffsetAlignment;
-        private uint _minSsboOffsetAlignment;
+        private uint32 _maxTextureSize;
+        private uint32 _maxTexDepth;
+        private uint32 _maxTexArrayLayers;
+        private uint32 _minUboOffsetAlignment;
+        private uint32 _minSsboOffsetAlignment;
 
         private readonly StagingMemoryPool _stagingMemoryPool = new StagingMemoryPool();
         private BlockingCollection<ExecutionThreadWorkItem> _workItems;
         private ExecutionThread _executionThread;
         private readonly object _commandListDisposalLock = new object();
-        private readonly Dictionary<OpenGLCommandList, int> _submittedCommandListCounts
-            = new Dictionary<OpenGLCommandList, int>();
+        private readonly Dictionary<OpenGLCommandList, int32> _submittedCommandListCounts
+            = new Dictionary<OpenGLCommandList, int32>();
         private readonly HashSet<OpenGLCommandList> _commandListsToDispose = new HashSet<OpenGLCommandList>();
 
         private readonly object _mappedResourceLock = new object();
@@ -112,8 +112,8 @@ namespace Sedulous.GAL.OpenGL
         public OpenGLGraphicsDevice(
             GraphicsDeviceOptions options,
             OpenGLPlatformInfo platformInfo,
-            uint width,
-            uint height)
+            uint32 width,
+            uint32 height)
         {
             Init(options, platformInfo, width, height, true);
         }
@@ -121,8 +121,8 @@ namespace Sedulous.GAL.OpenGL
         private void Init(
             GraphicsDeviceOptions options,
             OpenGLPlatformInfo platformInfo,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             bool loadFunctions)
         {
             _syncToVBlank = options.SyncToVerticalBlank;
@@ -141,7 +141,7 @@ namespace Sedulous.GAL.OpenGL
 
             LoadAllFunctions(_glContext, platformInfo.GetProcAddress, _backendType == GraphicsBackend.OpenGLES);
 
-            int majorVersion, minorVersion;
+            int32 majorVersion, minorVersion;
             glGetIntegerv(GetPName.MajorVersion, &majorVersion);
             CheckLastError();
             glGetIntegerv(GetPName.MinorVersion, &minorVersion);
@@ -155,14 +155,14 @@ namespace Sedulous.GAL.OpenGL
                 _apiVersion = new GraphicsApiVersion(majorVersion, minorVersion, 0, 0);
             }
 
-            int extensionCount;
+            int32 extensionCount;
             glGetIntegerv(GetPName.NumExtensions, &extensionCount);
             CheckLastError();
 
             HashSet<string> extensions = new HashSet<string>();
-            for (uint i = 0; i < extensionCount; i++)
+            for (uint32 i = 0; i < extensionCount; i++)
             {
-                byte* extensionNamePtr = glGetStringi(StringNameIndexed.Extensions, i);
+                uint8* extensionNamePtr = glGetStringi(StringNameIndexed.Extensions, i);
                 CheckLastError();
                 if (extensionNamePtr != null)
                 {
@@ -195,17 +195,17 @@ namespace Sedulous.GAL.OpenGL
                 bufferRangeBinding: _extensions.ARB_uniform_buffer_object,
                 shaderFloat64: _extensions.ARB_GpuShaderFp64);
 
-            int uboAlignment;
+            int32 uboAlignment;
             glGetIntegerv(GetPName.UniformBufferOffsetAlignment, &uboAlignment);
             CheckLastError();
-            _minUboOffsetAlignment = (uint)uboAlignment;
+            _minUboOffsetAlignment = (uint32)uboAlignment;
 
             if (_features.StructuredBuffer)
             {
-                int ssboAlignment;
+                int32 ssboAlignment;
                 glGetIntegerv(GetPName.ShaderStorageBufferOffsetAlignment, &ssboAlignment);
                 CheckLastError();
-                _minSsboOffsetAlignment = (uint)ssboAlignment;
+                _minSsboOffsetAlignment = (uint32)ssboAlignment;
             }
 
             _resourceFactory = new OpenGLResourceFactory(this);
@@ -250,7 +250,7 @@ namespace Sedulous.GAL.OpenGL
             _textureSamplerManager = new OpenGLTextureSamplerManager(_extensions);
             _commandExecutor = new OpenGLCommandExecutor(this, platformInfo);
 
-            int maxColorTextureSamples;
+            int32 maxColorTextureSamples;
             if (_backendType == GraphicsBackend.OpenGL)
             {
                 glGetIntegerv(GetPName.MaxColorTextureSamples, &maxColorTextureSamples);
@@ -286,16 +286,16 @@ namespace Sedulous.GAL.OpenGL
                 _maxColorTextureSamples = TextureSampleCount.Count1;
             }
 
-            int maxTexSize;
+            int32 maxTexSize;
 
             glGetIntegerv(GetPName.MaxTextureSize, &maxTexSize);
             CheckLastError();
 
-            int maxTexDepth;
+            int32 maxTexDepth;
             glGetIntegerv(GetPName.Max3DTextureSize, &maxTexDepth);
             CheckLastError();
 
-            int maxTexArrayLayers;
+            int32 maxTexArrayLayers;
             glGetIntegerv(GetPName.MaxArrayTextureLayers, &maxTexArrayLayers);
             CheckLastError();
 
@@ -306,9 +306,9 @@ namespace Sedulous.GAL.OpenGL
                 _isDepthRangeZeroToOne = true;
             }
 
-            _maxTextureSize = (uint)maxTexSize;
-            _maxTexDepth = (uint)maxTexDepth;
-            _maxTexArrayLayers = (uint)maxTexArrayLayers;
+            _maxTextureSize = (uint32)maxTexSize;
+            _maxTexDepth = (uint32)maxTexDepth;
+            _maxTexArrayLayers = (uint32)maxTexArrayLayers;
 
             _mainSwapchain = new OpenGLSwapchain(
                 this,
@@ -330,7 +330,7 @@ namespace Sedulous.GAL.OpenGL
                 return false;
             }
 
-            glGenTextures(1, out uint copySrc);
+            glGenTextures(1, out uint32 copySrc);
             CheckLastError();
 
             float* data = stackalloc float[4];
@@ -345,7 +345,7 @@ namespace Sedulous.GAL.OpenGL
             CheckLastError();
             glTexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba32f, 1, 1, 0, GLPixelFormat.Rgba, GLPixelType.Float, data);
             CheckLastError();
-            glGenFramebuffers(1, out uint copySrcFb);
+            glGenFramebuffers(1, out uint32 copySrcFb);
             CheckLastError();
 
             glBindFramebuffer(FramebufferTarget.ReadFramebuffer, copySrcFb);
@@ -444,12 +444,12 @@ namespace Sedulous.GAL.OpenGL
 
             LoadAllFunctions(eaglContext.NativePtr, getProcAddress, true);
 
-            glGenFramebuffers(1, out uint fb);
+            glGenFramebuffers(1, out uint32 fb);
             CheckLastError();
             glBindFramebuffer(FramebufferTarget.Framebuffer, fb);
             CheckLastError();
 
-            glGenRenderbuffers(1, out uint colorRB);
+            glGenRenderbuffers(1, out uint32 colorRB);
             CheckLastError();
 
             glBindRenderbuffer(RenderbufferTarget.Renderbuffer, colorRB);
@@ -464,13 +464,13 @@ namespace Sedulous.GAL.OpenGL
             glGetRenderbufferParameteriv(
                 RenderbufferTarget.Renderbuffer,
                 RenderbufferPname.RenderbufferWidth,
-                out int fbWidth);
+                out int32 fbWidth);
             CheckLastError();
 
             glGetRenderbufferParameteriv(
                 RenderbufferTarget.Renderbuffer,
                 RenderbufferPname.RenderbufferHeight,
-                out int fbHeight);
+                out int32 fbHeight);
             CheckLastError();
 
             glFramebufferRenderbuffer(
@@ -480,7 +480,7 @@ namespace Sedulous.GAL.OpenGL
                 colorRB);
             CheckLastError();
 
-            uint depthRB = 0;
+            uint32 depthRB = 0;
             bool hasDepth = options.SwapchainDepthFormat != null;
             if (hasDepth)
             {
@@ -492,9 +492,9 @@ namespace Sedulous.GAL.OpenGL
 
                 glRenderbufferStorage(
                     RenderbufferTarget.Renderbuffer,
-                    (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
-                    (uint)fbWidth,
-                    (uint)fbHeight);
+                    (uint32)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
+                    (uint32)fbWidth,
+                    (uint32)fbHeight);
                 CheckLastError();
 
                 glFramebufferRenderbuffer(
@@ -542,7 +542,7 @@ namespace Sedulous.GAL.OpenGL
                 CheckLastError();
             };
 
-            Action<uint, uint> resizeSwapchain = (w, h) =>
+            Action<uint32, uint32> resizeSwapchain = (w, h) =>
             {
                 eaglLayer.frame = uiView.frame;
 
@@ -562,13 +562,13 @@ namespace Sedulous.GAL.OpenGL
                     glGetRenderbufferParameteriv(
                         RenderbufferTarget.Renderbuffer,
                         RenderbufferPname.RenderbufferWidth,
-                        out int newWidth);
+                        out int32 newWidth);
                     CheckLastError();
 
                     glGetRenderbufferParameteriv(
                         RenderbufferTarget.Renderbuffer,
                         RenderbufferPname.RenderbufferHeight,
-                        out int newHeight);
+                        out int32 newHeight);
                     CheckLastError();
 
                     if (hasDepth)
@@ -579,9 +579,9 @@ namespace Sedulous.GAL.OpenGL
 
                         glRenderbufferStorage(
                             RenderbufferTarget.Renderbuffer,
-                            (uint)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
-                            (uint)newWidth,
-                            (uint)newHeight);
+                            (uint32)OpenGLFormats.VdToGLSizedInternalFormat(options.SwapchainDepthFormat.Value, true),
+                            (uint32)newWidth,
+                            (uint32)newHeight);
                         CheckLastError();
                     }
                 });
@@ -607,7 +607,7 @@ namespace Sedulous.GAL.OpenGL
                 setSwapchainFramebuffer,
                 resizeSwapchain);
 
-            Init(options, platformInfo, (uint)fbWidth, (uint)fbHeight, false);
+            Init(options, platformInfo, (uint32)fbWidth, (uint32)fbHeight, false);
         }
 
         private void InitializeANativeWindow(
@@ -621,13 +621,13 @@ namespace Sedulous.GAL.OpenGL
                 throw new VeldridException($"Failed to get the default Android EGLDisplay: {eglGetError()}");
             }
 
-            int major, minor;
+            int32 major, minor;
             if (eglInitialize(display, &major, &minor) == 0)
             {
                 throw new VeldridException($"Failed to initialize EGL: {eglGetError()}");
             }
 
-            int[] attribs =
+            int32[] attribs =
             {
                 EGL_RED_SIZE, 8,
                 EGL_GREEN_SIZE, 8,
@@ -644,9 +644,9 @@ namespace Sedulous.GAL.OpenGL
 
             IntPtr* configs = stackalloc IntPtr[50];
 
-            fixed (int* attribsPtr = attribs)
+            fixed (int32* attribsPtr = attribs)
             {
-                int num_config;
+                int32 num_config;
                 if (eglChooseConfig(display, attribsPtr, configs, 50, &num_config) == 0)
                 {
                     throw new VeldridException($"Failed to select a valid EGLConfig: {eglGetError()}");
@@ -655,7 +655,7 @@ namespace Sedulous.GAL.OpenGL
 
             IntPtr bestConfig = configs[0];
 
-            int format;
+            int32 format;
             if (eglGetConfigAttrib(display, bestConfig, EGL_NATIVE_VISUAL_ID, &format) == 0)
             {
                 throw new VeldridException($"Failed to get the EGLConfig's format: {eglGetError()}");
@@ -670,7 +670,7 @@ namespace Sedulous.GAL.OpenGL
                     $"Failed to create an EGL surface from the Android native window: {eglGetError()}");
             }
 
-            int* contextAttribs = stackalloc int[3];
+            int32* contextAttribs = stackalloc int32[3];
             contextAttribs[0] = EGL_CONTEXT_CLIENT_VERSION;
             contextAttribs[1] = 2;
             contextAttribs[2] = EGL_NONE;
@@ -738,7 +738,7 @@ namespace Sedulous.GAL.OpenGL
             Init(options, platformInfo, swapchainDescription.Width, swapchainDescription.Height, true);
         }
 
-        private static int GetDepthBits(PixelFormat value)
+        private static int32 GetDepthBits(PixelFormat value)
         {
             switch (value)
             {
@@ -768,9 +768,9 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        private int IncrementCount(OpenGLCommandList glCommandList)
+        private int32 IncrementCount(OpenGLCommandList glCommandList)
         {
-            if (_submittedCommandListCounts.TryGetValue(glCommandList, out int count))
+            if (_submittedCommandListCounts.TryGetValue(glCommandList, out int32 count))
             {
                 count += 1;
             }
@@ -783,9 +783,9 @@ namespace Sedulous.GAL.OpenGL
             return count;
         }
 
-        private int DecrementCount(OpenGLCommandList glCommandList)
+        private int32 DecrementCount(OpenGLCommandList glCommandList)
         {
-            if (_submittedCommandListCounts.TryGetValue(glCommandList, out int count))
+            if (_submittedCommandListCounts.TryGetValue(glCommandList, out int32 count))
             {
                 count -= 1;
             }
@@ -805,9 +805,9 @@ namespace Sedulous.GAL.OpenGL
             return count;
         }
 
-        private int GetCount(OpenGLCommandList glCommandList)
+        private int32 GetCount(OpenGLCommandList glCommandList)
         {
-            return _submittedCommandListCounts.TryGetValue(glCommandList, out int count) ? count : 0;
+            return _submittedCommandListCounts.TryGetValue(glCommandList, out int32 count) ? count : 0;
         }
 
         private protected override void SwapBuffersCore(Swapchain swapchain)
@@ -840,24 +840,24 @@ namespace Sedulous.GAL.OpenGL
                 return false;
             }
 
-            uint sampleCounts = 0;
-            int max = (int)_maxColorTextureSamples + 1;
-            for (int i = 0; i < max; i++)
+            uint32 sampleCounts = 0;
+            int32 max = (int32)_maxColorTextureSamples + 1;
+            for (int32 i = 0; i < max; i++)
             {
-                sampleCounts |= (uint)(1 << i);
+                sampleCounts |= (uint32)(1 << i);
             }
 
             properties = new PixelFormatProperties(
                 _maxTextureSize,
                 type == TextureType.Texture1D ? 1 : _maxTextureSize,
                 type != TextureType.Texture3D ? 1 : _maxTexDepth,
-                uint.MaxValue,
+                uint32.MaxValue,
                 type == TextureType.Texture3D ? 1 : _maxTexArrayLayers,
                 sampleCounts);
             return true;
         }
 
-        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint subresource)
+        protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource)
         {
             MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
             lock (_mappedResourceLock)
@@ -878,12 +878,12 @@ namespace Sedulous.GAL.OpenGL
             return _executionThread.Map(resource, mode, subresource);
         }
 
-        protected override void UnmapCore(MappableResource resource, uint subresource)
+        protected override void UnmapCore(MappableResource resource, uint32 subresource)
         {
             _executionThread.Unmap(resource, subresource);
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             lock (_mappedResourceLock)
             {
@@ -899,15 +899,15 @@ namespace Sedulous.GAL.OpenGL
         private protected override void UpdateTextureCore(
             Texture texture,
             IntPtr source,
-            uint sizeInBytes,
-            uint x,
-            uint y,
-            uint z,
-            uint width,
-            uint height,
-            uint depth,
-            uint mipLevel,
-            uint arrayLayer)
+            uint32 sizeInBytes,
+            uint32 x,
+            uint32 y,
+            uint32 z,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            uint32 mipLevel,
+            uint32 arrayLayer)
         {
             StagingBlock textureData = _stagingMemoryPool.Stage(source, sizeInBytes);
             StagingBlock argBlock = _stagingMemoryPool.GetStagingBlock(UpdateTextureArgsSize);
@@ -925,40 +925,40 @@ namespace Sedulous.GAL.OpenGL
             _executionThread.UpdateTexture(texture, argBlock.Id, textureData.Id);
         }
 
-        private static readonly uint UpdateTextureArgsSize = (uint)Unsafe.SizeOf<UpdateTextureArgs>();
+        private static readonly uint32 UpdateTextureArgsSize = (uint32)Unsafe.SizeOf<UpdateTextureArgs>();
 
         private struct UpdateTextureArgs
         {
             public IntPtr Data;
-            public uint X;
-            public uint Y;
-            public uint Z;
-            public uint Width;
-            public uint Height;
-            public uint Depth;
-            public uint MipLevel;
-            public uint ArrayLayer;
+            public uint32 X;
+            public uint32 Y;
+            public uint32 Z;
+            public uint32 Width;
+            public uint32 Height;
+            public uint32 Depth;
+            public uint32 MipLevel;
+            public uint32 ArrayLayer;
         }
 
-        public override bool WaitForFence(Fence fence, ulong nanosecondTimeout)
+        public override bool WaitForFence(Fence fence, uint64 nanosecondTimeout)
         {
             return Util.AssertSubtype<Fence, OpenGLFence>(fence).Wait(nanosecondTimeout);
         }
 
-        public override bool WaitForFences(Fence[] fences, bool waitAll, ulong nanosecondTimeout)
+        public override bool WaitForFences(Fence[] fences, bool waitAll, uint64 nanosecondTimeout)
         {
-            int msTimeout;
-            if (nanosecondTimeout == ulong.MaxValue)
+            int32 msTimeout;
+            if (nanosecondTimeout == uint64.MaxValue)
             {
                 msTimeout = -1;
             }
             else
             {
-                msTimeout = (int)Math.Min(nanosecondTimeout / 1_000_000, int.MaxValue);
+                msTimeout = (int32)Math.Min(nanosecondTimeout / 1_000_000, int32.MaxValue);
             }
 
             ManualResetEvent[] events = GetResetEventArray(fences.Length);
-            for (int i = 0; i < fences.Length; i++)
+            for (int32 i = 0; i < fences.Length; i++)
             {
                 events[i] = Util.AssertSubtype<Fence, OpenGLFence>(fences[i]).ResetEvent;
             }
@@ -969,7 +969,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                int index = WaitHandle.WaitAny(events, msTimeout);
+                int32 index = WaitHandle.WaitAny(events, msTimeout);
                 result = index != WaitHandle.WaitTimeout;
             }
 
@@ -978,11 +978,11 @@ namespace Sedulous.GAL.OpenGL
             return result;
         }
 
-        private ManualResetEvent[] GetResetEventArray(int length)
+        private ManualResetEvent[] GetResetEventArray(int32 length)
         {
             lock (_resetEventsLock)
             {
-                for (int i = _resetEvents.Count - 1; i > 0; i--)
+                for (int32 i = _resetEvents.Count - 1; i > 0; i--)
                 {
                     ManualResetEvent[] array = _resetEvents[i];
                     if (array.Length == length)
@@ -1035,7 +1035,7 @@ namespace Sedulous.GAL.OpenGL
 
             lock (_commandListDisposalLock)
             {
-                int count = DecrementCount(commandList);
+                int32 count = DecrementCount(commandList);
                 if (count == 0)
                 {
                     if (_commandListsToDispose.Remove(commandList))
@@ -1079,7 +1079,7 @@ namespace Sedulous.GAL.OpenGL
                     && type != DebugType.DebugTypePushGroup
                     && type != DebugType.DebugTypePopGroup)
                 {
-                    string messageString = Marshal.PtrToStringAnsi((IntPtr)message, (int)length);
+                    string messageString = Marshal.PtrToStringAnsi((IntPtr)message, (int32)length);
                     Debug.WriteLine($"GL DEBUG MESSAGE: {source}, {type}, {id}. {severity}: {messageString}");
                 }
             };
@@ -1113,9 +1113,9 @@ namespace Sedulous.GAL.OpenGL
             _executionThread.InitializeResource(deferredResource);
         }
 
-        internal override uint GetUniformBufferMinOffsetAlignmentCore() => _minUboOffsetAlignment;
+        internal override uint32 GetUniformBufferMinOffsetAlignmentCore() => _minUboOffsetAlignment;
 
-        internal override uint GetStructuredBufferMinOffsetAlignmentCore() => _minSsboOffsetAlignment;
+        internal override uint32 GetStructuredBufferMinOffsetAlignmentCore() => _minSsboOffsetAlignment;
 
         private class ExecutionThread
         {
@@ -1197,7 +1197,7 @@ namespace Sedulous.GAL.OpenGL
                         case WorkItemType.UpdateBuffer:
                         {
                             DeviceBuffer updateBuffer = (DeviceBuffer)workItem.Object0;
-                            uint offsetInBytes = workItem.UInt0;
+                            uint32 offsetInBytes = workItem.UInt0;
                             StagingBlock stagingBlock = _gd.StagingMemoryPool.RetrieveById(workItem.UInt1);
 
                             _gd._commandExecutor.UpdateBuffer(
@@ -1231,8 +1231,8 @@ namespace Sedulous.GAL.OpenGL
                         case WorkItemType.TerminateAction:
                         {
                             // Check if the OpenGL context has already been destroyed by the OS. If so, just exit out.
-                            uint error = glGetError();
-                            if (error == (uint)ErrorCode.InvalidOperation)
+                            uint32 error = glGetError();
+                            if (error == (uint32)ErrorCode.InvalidOperation)
                             {
                                 return;
                             }
@@ -1303,7 +1303,7 @@ namespace Sedulous.GAL.OpenGL
                 ManualResetEventSlim mre,
                 MapParams* result)
             {
-                uint subresource = result->Subresource;
+                uint32 subresource = result->Subresource;
                 MapMode mode = result->MapMode;
 
                 MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
@@ -1351,22 +1351,22 @@ namespace Sedulous.GAL.OpenGL
                             OpenGLTexture texture = Util.AssertSubtype<MappableResource, OpenGLTexture>(resource);
                             texture.EnsureResourcesCreated();
 
-                            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint mipLevel, out uint arrayLayer);
-                            Util.GetMipDimensions(texture, mipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
+                            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint32 mipLevel, out uint32 arrayLayer);
+                            Util.GetMipDimensions(texture, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
 
-                            uint depthSliceSize = FormatHelpers.GetDepthPitch(
+                            uint32 depthSliceSize = FormatHelpers.GetDepthPitch(
                                 FormatHelpers.GetRowPitch(mipWidth, texture.Format),
                                 mipHeight,
                                 texture.Format);
-                            uint subresourceSize = depthSliceSize * mipDepth;
-                            int compressedSize = 0;
+                            uint32 subresourceSize = depthSliceSize * mipDepth;
+                            int32 compressedSize = 0;
 
                             bool isCompressed = FormatHelpers.IsCompressedFormat(texture.Format);
                             if (isCompressed)
                             {
                                 glGetTexLevelParameteriv(
                                     texture.TextureTarget,
-                                    (int)mipLevel,
+                                    (int32)mipLevel,
                                     GetTextureParameter.TextureCompressedImageSize,
                                     &compressedSize);
                                 CheckLastError();
@@ -1374,7 +1374,7 @@ namespace Sedulous.GAL.OpenGL
 
                             StagingBlock block = _gd._stagingMemoryPool.GetStagingBlock(subresourceSize);
 
-                            uint packAlignment = 4;
+                            uint32 packAlignment = 4;
                             if (!isCompressed)
                             {
                                 packAlignment = FormatSizeHelpers.GetSizeInBytes(texture.Format);
@@ -1382,7 +1382,7 @@ namespace Sedulous.GAL.OpenGL
 
                             if (packAlignment < 4)
                             {
-                                glPixelStorei(PixelStoreParameter.PackAlignment, (int)packAlignment);
+                                glPixelStorei(PixelStoreParameter.PackAlignment, (int32)packAlignment);
                                 CheckLastError();
                             }
 
@@ -1393,10 +1393,10 @@ namespace Sedulous.GAL.OpenGL
                                     // Read data into buffer.
                                     if (_gd.Extensions.ARB_DirectStateAccess && texture.ArrayLayers == 1)
                                     {
-                                        int zoffset = texture.ArrayLayers > 1 ? (int)arrayLayer : 0;
+                                        int32 zoffset = texture.ArrayLayers > 1 ? (int32)arrayLayer : 0;
                                         glGetTextureSubImage(
                                             texture.Texture,
-                                            (int)mipLevel,
+                                            (int32)mipLevel,
                                             0, 0, zoffset,
                                             mipWidth, mipHeight, mipDepth,
                                             texture.GLPixelFormat,
@@ -1407,11 +1407,11 @@ namespace Sedulous.GAL.OpenGL
                                     }
                                     else
                                     {
-                                        for (uint layer = 0; layer < mipDepth; layer++)
+                                        for (uint32 layer = 0; layer < mipDepth; layer++)
                                         {
-                                            uint curLayer = arrayLayer + layer;
-                                            uint curOffset = depthSliceSize * layer;
-                                            glGenFramebuffers(1, out uint readFB);
+                                            uint32 curLayer = arrayLayer + layer;
+                                            uint32 curOffset = depthSliceSize * layer;
+                                            glGenFramebuffers(1, out uint32 readFB);
                                             CheckLastError();
                                             glBindFramebuffer(FramebufferTarget.ReadFramebuffer, readFB);
                                             CheckLastError();
@@ -1422,8 +1422,8 @@ namespace Sedulous.GAL.OpenGL
                                                     FramebufferTarget.ReadFramebuffer,
                                                     GLFramebufferAttachment.ColorAttachment0,
                                                     texture.Texture,
-                                                    (int)mipLevel,
-                                                    (int)curLayer);
+                                                    (int32)mipLevel,
+                                                    (int32)curLayer);
                                                 CheckLastError();
                                             }
                                             else if (texture.Type == TextureType.Texture1D)
@@ -1433,7 +1433,7 @@ namespace Sedulous.GAL.OpenGL
                                                     GLFramebufferAttachment.ColorAttachment0,
                                                     TextureTarget.Texture1D,
                                                     texture.Texture,
-                                                    (int)mipLevel);
+                                                    (int32)mipLevel);
                                                 CheckLastError();
                                             }
                                             else
@@ -1443,7 +1443,7 @@ namespace Sedulous.GAL.OpenGL
                                                     GLFramebufferAttachment.ColorAttachment0,
                                                     TextureTarget.Texture2D,
                                                     texture.Texture,
-                                                    (int)mipLevel);
+                                                    (int32)mipLevel);
                                                 CheckLastError();
                                             }
 
@@ -1452,7 +1452,7 @@ namespace Sedulous.GAL.OpenGL
                                                 mipWidth, mipHeight,
                                                 texture.GLPixelFormat,
                                                 texture.GLPixelType,
-                                                (byte*)block.Data + curOffset);
+                                                (uint8*)block.Data + curOffset);
                                             CheckLastError();
                                             glDeleteFramebuffers(1, ref readFB);
                                             CheckLastError();
@@ -1468,14 +1468,14 @@ namespace Sedulous.GAL.OpenGL
                                         // We only want a single subresource (array slice), so we need to copy
                                         // a subsection of the downloaded data into our staging block.
 
-                                        uint fullDataSize = (uint)compressedSize;
+                                        uint32 fullDataSize = (uint32)compressedSize;
                                         StagingBlock fullBlock = _gd._stagingMemoryPool.GetStagingBlock(fullDataSize);
 
                                         if (_gd.Extensions.ARB_DirectStateAccess)
                                         {
                                             glGetCompressedTextureImage(
                                                 texture.Texture,
-                                                (int)mipLevel,
+                                                (int32)mipLevel,
                                                 fullBlock.SizeInBytes,
                                                 fullBlock.Data);
                                             CheckLastError();
@@ -1485,10 +1485,10 @@ namespace Sedulous.GAL.OpenGL
                                             _gd.TextureSamplerManager.SetTextureTransient(texture.TextureTarget, texture.Texture);
                                             CheckLastError();
 
-                                            glGetCompressedTexImage(texture.TextureTarget, (int)mipLevel, fullBlock.Data);
+                                            glGetCompressedTexImage(texture.TextureTarget, (int32)mipLevel, fullBlock.Data);
                                             CheckLastError();
                                         }
-                                        byte* sliceStart = (byte*)fullBlock.Data + (arrayLayer * subresourceSize);
+                                        uint8* sliceStart = (uint8*)fullBlock.Data + (arrayLayer * subresourceSize);
                                         Buffer.MemoryCopy(sliceStart, block.Data, subresourceSize, subresourceSize);
                                         _gd._stagingMemoryPool.Free(fullBlock);
                                     }
@@ -1498,7 +1498,7 @@ namespace Sedulous.GAL.OpenGL
                                         {
                                             glGetCompressedTextureImage(
                                                 texture.Texture,
-                                                (int)mipLevel,
+                                                (int32)mipLevel,
                                                 block.SizeInBytes,
                                                 block.Data);
                                             CheckLastError();
@@ -1508,7 +1508,7 @@ namespace Sedulous.GAL.OpenGL
                                             _gd.TextureSamplerManager.SetTextureTransient(texture.TextureTarget, texture.Texture);
                                             CheckLastError();
 
-                                            glGetCompressedTexImage(texture.TextureTarget, (int)mipLevel, block.Data);
+                                            glGetCompressedTexImage(texture.TextureTarget, (int32)mipLevel, block.Data);
                                             CheckLastError();
                                         }
                                     }
@@ -1521,8 +1521,8 @@ namespace Sedulous.GAL.OpenGL
                                 CheckLastError();
                             }
 
-                            uint rowPitch = FormatHelpers.GetRowPitch(mipWidth, texture.Format);
-                            uint depthPitch = FormatHelpers.GetDepthPitch(rowPitch, mipHeight, texture.Format);
+                            uint32 rowPitch = FormatHelpers.GetRowPitch(mipWidth, texture.Format);
+                            uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, mipHeight, texture.Format);
                             MappedResourceInfoWithStaging info = new MappedResourceInfoWithStaging();
                             info.MappedResource = new MappedResource(
                                 resource,
@@ -1555,7 +1555,7 @@ namespace Sedulous.GAL.OpenGL
                 }
             }
 
-            private void ExecuteUnmapResource(MappableResource resource, uint subresource, ManualResetEventSlim mre)
+            private void ExecuteUnmapResource(MappableResource resource, uint32 subresource, ManualResetEventSlim mre)
             {
                 MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
                 lock (_gd._mappedResourceLock)
@@ -1585,8 +1585,8 @@ namespace Sedulous.GAL.OpenGL
 
                             if (info.Mode == MapMode.Write || info.Mode == MapMode.ReadWrite)
                             {
-                                Util.GetMipLevelAndArrayLayer(texture, subresource, out uint mipLevel, out uint arrayLayer);
-                                Util.GetMipDimensions(texture, mipLevel, out uint width, out uint height, out uint depth);
+                                Util.GetMipLevelAndArrayLayer(texture, subresource, out uint32 mipLevel, out uint32 arrayLayer);
+                                Util.GetMipDimensions(texture, mipLevel, out uint32 width, out uint32 height, out uint32 depth);
 
                                 IntPtr data = (IntPtr)info.StagingBlock.Data;
 
@@ -1627,7 +1627,7 @@ namespace Sedulous.GAL.OpenGL
                 }
             }
 
-            public MappedResource Map(MappableResource resource, MapMode mode, uint subresource)
+            public MappedResource Map(MappableResource resource, MapMode mode, uint32 subresource)
             {
                 CheckExceptions();
 
@@ -1649,7 +1649,7 @@ namespace Sedulous.GAL.OpenGL
                 return new MappedResource(resource, mode, mrp.Data, mrp.DataSize, mrp.Subresource, mrp.RowPitch, mrp.DepthPitch);
             }
 
-            internal void Unmap(MappableResource resource, uint subresource)
+            internal void Unmap(MappableResource resource, uint32 subresource)
             {
                 CheckExceptions();
 
@@ -1670,14 +1670,14 @@ namespace Sedulous.GAL.OpenGL
                 _workItems.Add(new ExecutionThreadWorkItem(entryList));
             }
 
-            internal void UpdateBuffer(DeviceBuffer buffer, uint offsetInBytes, StagingBlock stagingBlock)
+            internal void UpdateBuffer(DeviceBuffer buffer, uint32 offsetInBytes, StagingBlock stagingBlock)
             {
                 CheckExceptions();
 
                 _workItems.Add(new ExecutionThreadWorkItem(buffer, offsetInBytes, stagingBlock));
             }
 
-            internal void UpdateTexture(Texture texture, uint argBlockId, uint dataBlockId)
+            internal void UpdateTexture(Texture texture, uint32 argBlockId, uint32 dataBlockId)
             {
                 CheckExceptions();
 
@@ -1742,7 +1742,7 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        public enum WorkItemType : byte
+        public enum WorkItemType : uint8
         {
             Map,
             Unmap,
@@ -1762,9 +1762,9 @@ namespace Sedulous.GAL.OpenGL
             public readonly WorkItemType Type;
             public readonly object Object0;
             public readonly object Object1;
-            public readonly uint UInt0;
-            public readonly uint UInt1;
-            public readonly uint UInt2;
+            public readonly uint32 UInt0;
+            public readonly uint32 UInt1;
+            public readonly uint32 UInt2;
 
             public ExecutionThreadWorkItem(
                 MappableResource resource,
@@ -1790,7 +1790,7 @@ namespace Sedulous.GAL.OpenGL
                 UInt2 = 0;
             }
 
-            public ExecutionThreadWorkItem(DeviceBuffer updateBuffer, uint offsetInBytes, StagingBlock stagedSource)
+            public ExecutionThreadWorkItem(DeviceBuffer updateBuffer, uint32 offsetInBytes, StagingBlock stagedSource)
             {
                 Type = WorkItemType.UpdateBuffer;
                 Object0 = updateBuffer;
@@ -1812,7 +1812,7 @@ namespace Sedulous.GAL.OpenGL
                 UInt2 = 0;
             }
 
-            public ExecutionThreadWorkItem(Texture texture, uint argBlockId, uint dataBlockId)
+            public ExecutionThreadWorkItem(Texture texture, uint32 argBlockId, uint32 dataBlockId)
             {
                 Type = WorkItemType.UpdateTexture;
                 Object0 = texture;
@@ -1871,18 +1871,18 @@ namespace Sedulous.GAL.OpenGL
         private struct MapParams
         {
             public MapMode MapMode;
-            public uint Subresource;
+            public uint32 Subresource;
             public bool Map;
             public bool Succeeded;
             public IntPtr Data;
-            public uint DataSize;
-            public uint RowPitch;
-            public uint DepthPitch;
+            public uint32 DataSize;
+            public uint32 RowPitch;
+            public uint32 DepthPitch;
         }
 
         internal struct MappedResourceInfoWithStaging
         {
-            public int RefCount;
+            public int32 RefCount;
             public MapMode Mode;
             public MappedResource MappedResource;
             public StagingBlock StagingBlock;

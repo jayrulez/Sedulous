@@ -30,19 +30,19 @@ namespace Veldrid
         /// <summary>
         /// The maximum anisotropy of the filter, when <see cref="SamplerFilter.Anisotropic"/> is used, or otherwise ignored.
         /// </summary>
-        public uint MaximumAnisotropy;
+        public uint32 MaximumAnisotropy;
         /// <summary>
         /// The minimum level of detail.
         /// </summary>
-        public uint MinimumLod;
+        public uint32 MinimumLod;
         /// <summary>
         /// The maximum level of detail.
         /// </summary>
-        public uint MaximumLod;
+        public uint32 MaximumLod;
         /// <summary>
         /// The level of detail bias.
         /// </summary>
-        public int LodBias;
+        public int32 LodBias;
         /// <summary>
         /// The constant color that is sampled when <see cref="SamplerAddressMode.Border"/> is used, or otherwise ignored.
         /// </summary>
@@ -70,10 +70,10 @@ namespace Veldrid
             SamplerAddressMode addressModeW,
             SamplerFilter filter,
             ComparisonKind? comparisonKind,
-            uint maximumAnisotropy,
-            uint minimumLod,
-            uint maximumLod,
-            int lodBias,
+            uint32 maximumAnisotropy,
+            uint32 minimumLod,
+            uint32 maximumLod,
+            int32 lodBias,
             SamplerBorderColor borderColor)
         {
             AddressModeU = addressModeU;
@@ -97,7 +97,7 @@ namespace Veldrid
         ///     Filter = SamplerFilter.MinPoint_MagPoint_MipPoint
         ///     LodBias = 0
         ///     MinimumLod = 0
-        ///     MaximumLod = uint.MaxValue
+        ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 0
         /// </summary>
         public static readonly SamplerDescription Point = new SamplerDescription
@@ -108,7 +108,7 @@ namespace Veldrid
             Filter = SamplerFilter.MinPoint_MagPoint_MipPoint,
             LodBias = 0,
             MinimumLod = 0,
-            MaximumLod = uint.MaxValue,
+            MaximumLod = uint32.MaxValue,
             MaximumAnisotropy = 0,
         };
 
@@ -121,7 +121,7 @@ namespace Veldrid
         ///     Filter = SamplerFilter.MinLinear_MagLinear_MipLinear
         ///     LodBias = 0
         ///     MinimumLod = 0
-        ///     MaximumLod = uint.MaxValue
+        ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 0
         /// </summary>
         public static readonly SamplerDescription Linear = new SamplerDescription
@@ -132,7 +132,7 @@ namespace Veldrid
             Filter = SamplerFilter.MinLinear_MagLinear_MipLinear,
             LodBias = 0,
             MinimumLod = 0,
-            MaximumLod = uint.MaxValue,
+            MaximumLod = uint32.MaxValue,
             MaximumAnisotropy = 0,
         };
 
@@ -145,7 +145,7 @@ namespace Veldrid
         ///     Filter = SamplerFilter.Anisotropic
         ///     LodBias = 0
         ///     MinimumLod = 0
-        ///     MaximumLod = uint.MaxValue
+        ///     MaximumLod = uint32.MaxValue
         ///     MaximumAnisotropy = 4
         /// </summary>
         public static readonly SamplerDescription Aniso4x = new SamplerDescription
@@ -156,7 +156,7 @@ namespace Veldrid
             Filter = SamplerFilter.Anisotropic,
             LodBias = 0,
             MinimumLod = 0,
-            MaximumLod = uint.MaxValue,
+            MaximumLod = uint32.MaxValue,
             MaximumAnisotropy = 4,
         };
 
@@ -183,19 +183,19 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
-                (int)AddressModeU,
-                (int)AddressModeV,
-                (int)AddressModeW,
-                (int)Filter,
+                (int32)AddressModeU,
+                (int32)AddressModeV,
+                (int32)AddressModeW,
+                (int32)Filter,
                 ComparisonKind.GetHashCode(),
                 MaximumAnisotropy.GetHashCode(),
                 MinimumLod.GetHashCode(),
                 MaximumLod.GetHashCode(),
                 LodBias.GetHashCode(),
-                (int)BorderColor);
+                (int32)BorderColor);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Sedulous.GAL.MTL
 
         public MTLFeatureSet MaxFeatureSet { get; }
 
-        public int Count => _supportedFeatureSets.Count;
+        public int32 Count => _supportedFeatureSets.Count;
 
         public MTLFeatureSupport(MTLDevice device)
         {

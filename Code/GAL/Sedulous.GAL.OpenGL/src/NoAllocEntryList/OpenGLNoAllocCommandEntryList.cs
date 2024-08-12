@@ -11,85 +11,85 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
         private readonly StagingMemoryPool _memoryPool;
         private readonly List<EntryStorageBlock> _blocks = new List<EntryStorageBlock>();
         private EntryStorageBlock _currentBlock;
-        private uint _totalEntries;
+        private uint32 _totalEntries;
         private readonly List<object> _resourceList = new List<object>();
         private readonly List<StagingBlock> _stagingBlocks = new List<StagingBlock>();
 
         // Entry IDs
-        private const byte BeginEntryID = 1;
-        private static readonly uint BeginEntrySize = Util.USizeOf<NoAllocBeginEntry>();
+        private const uint8 BeginEntryID = 1;
+        private static readonly uint32 BeginEntrySize = Util.USizeOf<NoAllocBeginEntry>();
 
-        private const byte ClearColorTargetID = 2;
-        private static readonly uint ClearColorTargetEntrySize = Util.USizeOf<NoAllocClearColorTargetEntry>();
+        private const uint8 ClearColorTargetID = 2;
+        private static readonly uint32 ClearColorTargetEntrySize = Util.USizeOf<NoAllocClearColorTargetEntry>();
 
-        private const byte ClearDepthTargetID = 3;
-        private static readonly uint ClearDepthTargetEntrySize = Util.USizeOf<NoAllocClearDepthTargetEntry>();
+        private const uint8 ClearDepthTargetID = 3;
+        private static readonly uint32 ClearDepthTargetEntrySize = Util.USizeOf<NoAllocClearDepthTargetEntry>();
 
-        private const byte DrawIndexedEntryID = 4;
-        private static readonly uint DrawIndexedEntrySize = Util.USizeOf<NoAllocDrawIndexedEntry>();
+        private const uint8 DrawIndexedEntryID = 4;
+        private static readonly uint32 DrawIndexedEntrySize = Util.USizeOf<NoAllocDrawIndexedEntry>();
 
-        private const byte EndEntryID = 5;
-        private static readonly uint EndEntrySize = Util.USizeOf<NoAllocEndEntry>();
+        private const uint8 EndEntryID = 5;
+        private static readonly uint32 EndEntrySize = Util.USizeOf<NoAllocEndEntry>();
 
-        private const byte SetFramebufferEntryID = 6;
-        private static readonly uint SetFramebufferEntrySize = Util.USizeOf<NoAllocSetFramebufferEntry>();
+        private const uint8 SetFramebufferEntryID = 6;
+        private static readonly uint32 SetFramebufferEntrySize = Util.USizeOf<NoAllocSetFramebufferEntry>();
 
-        private const byte SetIndexBufferEntryID = 7;
-        private static readonly uint SetIndexBufferEntrySize = Util.USizeOf<NoAllocSetIndexBufferEntry>();
+        private const uint8 SetIndexBufferEntryID = 7;
+        private static readonly uint32 SetIndexBufferEntrySize = Util.USizeOf<NoAllocSetIndexBufferEntry>();
 
-        private const byte SetPipelineEntryID = 8;
-        private static readonly uint SetPipelineEntrySize = Util.USizeOf<NoAllocSetPipelineEntry>();
+        private const uint8 SetPipelineEntryID = 8;
+        private static readonly uint32 SetPipelineEntrySize = Util.USizeOf<NoAllocSetPipelineEntry>();
 
-        private const byte SetResourceSetEntryID = 9;
-        private static readonly uint SetResourceSetEntrySize = Util.USizeOf<NoAllocSetResourceSetEntry>();
+        private const uint8 SetResourceSetEntryID = 9;
+        private static readonly uint32 SetResourceSetEntrySize = Util.USizeOf<NoAllocSetResourceSetEntry>();
 
-        private const byte SetScissorRectEntryID = 10;
-        private static readonly uint SetScissorRectEntrySize = Util.USizeOf<NoAllocSetScissorRectEntry>();
+        private const uint8 SetScissorRectEntryID = 10;
+        private static readonly uint32 SetScissorRectEntrySize = Util.USizeOf<NoAllocSetScissorRectEntry>();
 
-        private const byte SetVertexBufferEntryID = 11;
-        private static readonly uint SetVertexBufferEntrySize = Util.USizeOf<NoAllocSetVertexBufferEntry>();
+        private const uint8 SetVertexBufferEntryID = 11;
+        private static readonly uint32 SetVertexBufferEntrySize = Util.USizeOf<NoAllocSetVertexBufferEntry>();
 
-        private const byte SetViewportEntryID = 12;
-        private static readonly uint SetViewportEntrySize = Util.USizeOf<NoAllocSetViewportEntry>();
+        private const uint8 SetViewportEntryID = 12;
+        private static readonly uint32 SetViewportEntrySize = Util.USizeOf<NoAllocSetViewportEntry>();
 
-        private const byte UpdateBufferEntryID = 13;
-        private static readonly uint UpdateBufferEntrySize = Util.USizeOf<NoAllocUpdateBufferEntry>();
+        private const uint8 UpdateBufferEntryID = 13;
+        private static readonly uint32 UpdateBufferEntrySize = Util.USizeOf<NoAllocUpdateBufferEntry>();
 
-        private const byte CopyBufferEntryID = 14;
-        private static readonly uint CopyBufferEntrySize = Util.USizeOf<NoAllocCopyBufferEntry>();
+        private const uint8 CopyBufferEntryID = 14;
+        private static readonly uint32 CopyBufferEntrySize = Util.USizeOf<NoAllocCopyBufferEntry>();
 
-        private const byte CopyTextureEntryID = 15;
-        private static readonly uint CopyTextureEntrySize = Util.USizeOf<NoAllocCopyTextureEntry>();
+        private const uint8 CopyTextureEntryID = 15;
+        private static readonly uint32 CopyTextureEntrySize = Util.USizeOf<NoAllocCopyTextureEntry>();
 
-        private const byte ResolveTextureEntryID = 16;
-        private static readonly uint ResolveTextureEntrySize = Util.USizeOf<NoAllocResolveTextureEntry>();
+        private const uint8 ResolveTextureEntryID = 16;
+        private static readonly uint32 ResolveTextureEntrySize = Util.USizeOf<NoAllocResolveTextureEntry>();
 
-        private const byte DrawEntryID = 17;
-        private static readonly uint DrawEntrySize = Util.USizeOf<NoAllocDrawEntry>();
+        private const uint8 DrawEntryID = 17;
+        private static readonly uint32 DrawEntrySize = Util.USizeOf<NoAllocDrawEntry>();
 
-        private const byte DispatchEntryID = 18;
-        private static readonly uint DispatchEntrySize = Util.USizeOf<NoAllocDispatchEntry>();
+        private const uint8 DispatchEntryID = 18;
+        private static readonly uint32 DispatchEntrySize = Util.USizeOf<NoAllocDispatchEntry>();
 
-        private const byte DrawIndirectEntryID = 20;
-        private static readonly uint DrawIndirectEntrySize = Util.USizeOf<NoAllocDrawIndirectEntry>();
+        private const uint8 DrawIndirectEntryID = 20;
+        private static readonly uint32 DrawIndirectEntrySize = Util.USizeOf<NoAllocDrawIndirectEntry>();
 
-        private const byte DrawIndexedIndirectEntryID = 21;
-        private static readonly uint DrawIndexedIndirectEntrySize = Util.USizeOf<NoAllocDrawIndexedIndirectEntry>();
+        private const uint8 DrawIndexedIndirectEntryID = 21;
+        private static readonly uint32 DrawIndexedIndirectEntrySize = Util.USizeOf<NoAllocDrawIndexedIndirectEntry>();
 
-        private const byte DispatchIndirectEntryID = 22;
-        private static readonly uint DispatchIndirectEntrySize = Util.USizeOf<NoAllocDispatchIndirectEntry>();
+        private const uint8 DispatchIndirectEntryID = 22;
+        private static readonly uint32 DispatchIndirectEntrySize = Util.USizeOf<NoAllocDispatchIndirectEntry>();
 
-        private const byte GenerateMipmapsEntryID = 23;
-        private static readonly uint GenerateMipmapsEntrySize = Util.USizeOf<NoAllocGenerateMipmapsEntry>();
+        private const uint8 GenerateMipmapsEntryID = 23;
+        private static readonly uint32 GenerateMipmapsEntrySize = Util.USizeOf<NoAllocGenerateMipmapsEntry>();
 
-        private const byte PushDebugGroupEntryID = 24;
-        private static readonly uint PushDebugGroupEntrySize = Util.USizeOf<NoAllocPushDebugGroupEntry>();
+        private const uint8 PushDebugGroupEntryID = 24;
+        private static readonly uint32 PushDebugGroupEntrySize = Util.USizeOf<NoAllocPushDebugGroupEntry>();
 
-        private const byte PopDebugGroupEntryID = 25;
-        private static readonly uint PopDebugGroupEntrySize = Util.USizeOf<NoAllocPopDebugGroupEntry>();
+        private const uint8 PopDebugGroupEntryID = 25;
+        private static readonly uint32 PopDebugGroupEntrySize = Util.USizeOf<NoAllocPopDebugGroupEntry>();
 
-        private const byte InsertDebugMarkerEntryID = 26;
-        private static readonly uint InsertDebugMarkerEntrySize = Util.USizeOf<NoAllocInsertDebugMarkerEntry>();
+        private const uint8 InsertDebugMarkerEntryID = 26;
+        private static readonly uint32 InsertDebugMarkerEntrySize = Util.USizeOf<NoAllocInsertDebugMarkerEntry>();
 
         public OpenGLCommandList Parent { get; }
 
@@ -137,14 +137,14 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             _stagingBlocks.Clear();
         }
 
-        public void* GetStorageChunk(uint size, out byte* terminatorWritePtr)
+        public void* GetStorageChunk(uint32 size, out uint8* terminatorWritePtr)
         {
             terminatorWritePtr = null;
             if (!_currentBlock.Alloc(size, out void* ptr))
             {
-                int currentBlockIndex = _blocks.IndexOf(_currentBlock);
+                int32 currentBlockIndex = _blocks.IndexOf(_currentBlock);
                 bool anyWorked = false;
-                for (int i = currentBlockIndex + 1; i < _blocks.Count; i++)
+                for (int32 i = currentBlockIndex + 1; i < _blocks.Count; i++)
                 {
                     EntryStorageBlock nextBlock = _blocks[i];
                     if (nextBlock.Alloc(size, out ptr))
@@ -165,25 +165,25 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             }
             if (_currentBlock.RemainingSize > size)
             {
-                terminatorWritePtr = (byte*)ptr + size;
+                terminatorWritePtr = (uint8*)ptr + size;
             }
 
             return ptr;
         }
 
-        public void AddEntry<T>(byte id, ref T entry) where T : struct
+        public void AddEntry<T>(uint8 id, ref T entry) where T : struct
         {
-            uint size = Util.USizeOf<T>();
+            uint32 size = Util.USizeOf<T>();
             AddEntry(id, size, ref entry);
         }
 
-        public void AddEntry<T>(byte id, uint sizeOfT, ref T entry) where T : struct
+        public void AddEntry<T>(uint8 id, uint32 sizeOfT, ref T entry) where T : struct
         {
             Debug.Assert(sizeOfT == Unsafe.SizeOf<T>());
-            uint storageSize = sizeOfT + 1; // Include ID
-            void* storagePtr = GetStorageChunk(storageSize, out byte* terminatorWritePtr);
+            uint32 storageSize = sizeOfT + 1; // Include ID
+            void* storagePtr = GetStorageChunk(storageSize, out uint8* terminatorWritePtr);
             Unsafe.Write(storagePtr, id);
-            Unsafe.Write((byte*)storagePtr + 1, entry);
+            Unsafe.Write((uint8*)storagePtr + 1, entry);
             if (terminatorWritePtr != null)
             {
                 *terminatorWritePtr = 0;
@@ -193,10 +193,10 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 
         public void ExecuteAll(OpenGLCommandExecutor executor)
         {
-            int currentBlockIndex = 0;
+            int32 currentBlockIndex = 0;
             EntryStorageBlock block = _blocks[currentBlockIndex];
-            uint currentOffset = 0;
-            for (uint i = 0; i < _totalEntries; i++)
+            uint32 currentOffset = 0;
+            for (uint32 i = 0; i < _totalEntries; i++)
             {
                 if (currentOffset == block.TotalSize)
                 {
@@ -205,18 +205,18 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                     currentOffset = 0;
                 }
 
-                uint id = Unsafe.Read<byte>(block.BasePtr + currentOffset);
+                uint32 id = Unsafe.Read<uint8>(block.BasePtr + currentOffset);
                 if (id == 0)
                 {
                     currentBlockIndex += 1;
                     block = _blocks[currentBlockIndex];
                     currentOffset = 0;
-                    id = Unsafe.Read<byte>(block.BasePtr + currentOffset);
+                    id = Unsafe.Read<uint8>(block.BasePtr + currentOffset);
                 }
 
                 Debug.Assert(id != 0);
                 currentOffset += 1;
-                byte* entryBasePtr = block.BasePtr + currentOffset;
+                uint8* entryBasePtr = block.BasePtr + currentOffset;
                 switch (id)
                 {
                     case BeginEntryID:
@@ -289,8 +289,8 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                     case SetResourceSetEntryID:
                         NoAllocSetResourceSetEntry srse = Unsafe.ReadUnaligned<NoAllocSetResourceSetEntry>(entryBasePtr);
                         ResourceSet rs = srse.ResourceSet.Get(_resourceList);
-                        uint* dynamicOffsetsPtr = srse.DynamicOffsetCount > NoAllocSetResourceSetEntry.MaxInlineDynamicOffsets
-                            ? (uint*)srse.DynamicOffsets_Block.Data
+                        uint32* dynamicOffsetsPtr = srse.DynamicOffsetCount > NoAllocSetResourceSetEntry.MaxInlineDynamicOffsets
+                            ? (uint32*)srse.DynamicOffsets_Block.Data
                             : srse.DynamicOffsets_Inline;
                         if (srse.IsGraphics)
                         {
@@ -298,7 +298,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                                 srse.Slot,
                                 rs,
                                 srse.DynamicOffsetCount,
-                                ref Unsafe.AsRef<uint>(dynamicOffsetsPtr));
+                                ref Unsafe.AsRef<uint32>(dynamicOffsetsPtr));
                         }
                         else
                         {
@@ -306,7 +306,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                                 srse.Slot,
                                 rs,
                                 srse.DynamicOffsetCount,
-                                ref Unsafe.AsRef<uint>(dynamicOffsetsPtr));
+                                ref Unsafe.AsRef<uint32>(dynamicOffsetsPtr));
                         }
                         currentOffset += SetResourceSetEntrySize;
                         break;
@@ -327,7 +327,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                         break;
                     case UpdateBufferEntryID:
                         NoAllocUpdateBufferEntry ube = Unsafe.ReadUnaligned<NoAllocUpdateBufferEntry>(entryBasePtr);
-                        byte* dataPtr = (byte*)ube.StagingBlock.Data;
+                        uint8* dataPtr = (uint8*)ube.StagingBlock.Data;
                         executor.UpdateBuffer(
                             ube.Buffer.Get(_resourceList),
                             ube.BufferOffsetInBytes,
@@ -395,49 +395,49 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(BeginEntryID, ref entry);
         }
 
-        public void ClearColorTarget(uint index, RgbaFloat clearColor)
+        public void ClearColorTarget(uint32 index, RgbaFloat clearColor)
         {
             NoAllocClearColorTargetEntry entry = new NoAllocClearColorTargetEntry(index, clearColor);
             AddEntry(ClearColorTargetID, ref entry);
         }
 
-        public void ClearDepthTarget(float depth, byte stencil)
+        public void ClearDepthTarget(float depth, uint8 stencil)
         {
             NoAllocClearDepthTargetEntry entry = new NoAllocClearDepthTargetEntry(depth, stencil);
             AddEntry(ClearDepthTargetID, ref entry);
         }
 
-        public void Draw(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        public void Draw(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             NoAllocDrawEntry entry = new NoAllocDrawEntry(vertexCount, instanceCount, vertexStart, instanceStart);
             AddEntry(DrawEntryID, ref entry);
         }
 
-        public void DrawIndexed(uint indexCount, uint instanceCount, uint indexStart, int vertexOffset, uint instanceStart)
+        public void DrawIndexed(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             NoAllocDrawIndexedEntry entry = new NoAllocDrawIndexedEntry(indexCount, instanceCount, indexStart, vertexOffset, instanceStart);
             AddEntry(DrawIndexedEntryID, ref entry);
         }
 
-        public void DrawIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndirect(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             NoAllocDrawIndirectEntry entry = new NoAllocDrawIndirectEntry(Track(indirectBuffer), offset, drawCount, stride);
             AddEntry(DrawIndirectEntryID, ref entry);
         }
 
-        public void DrawIndexedIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndexedIndirect(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             NoAllocDrawIndexedIndirectEntry entry = new NoAllocDrawIndexedIndirectEntry(Track(indirectBuffer), offset, drawCount, stride);
             AddEntry(DrawIndexedIndirectEntryID, ref entry);
         }
 
-        public void Dispatch(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public void Dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             NoAllocDispatchEntry entry = new NoAllocDispatchEntry(groupCountX, groupCountY, groupCountZ);
             AddEntry(DispatchEntryID, ref entry);
         }
 
-        public void DispatchIndirect(DeviceBuffer indirectBuffer, uint offset)
+        public void DispatchIndirect(DeviceBuffer indirectBuffer, uint32 offset)
         {
             NoAllocDispatchIndirectEntry entry = new NoAllocDispatchIndirectEntry(Track(indirectBuffer), offset);
             AddEntry(DispatchIndirectEntryID, ref entry);
@@ -455,7 +455,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(SetFramebufferEntryID, ref entry);
         }
 
-        public void SetIndexBuffer(DeviceBuffer buffer, IndexFormat format, uint offset)
+        public void SetIndexBuffer(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             NoAllocSetIndexBufferEntry entry = new NoAllocSetIndexBufferEntry(Track(buffer), format, offset);
             AddEntry(SetIndexBufferEntryID, ref entry);
@@ -467,22 +467,22 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(SetPipelineEntryID, ref entry);
         }
 
-        public void SetGraphicsResourceSet(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        public void SetGraphicsResourceSet(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             SetResourceSet(slot, rs, dynamicOffsetCount, ref dynamicOffsets, isGraphics: true);
         }
 
-        private void SetResourceSet(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets, bool isGraphics)
+        private void SetResourceSet(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets, bool isGraphics)
         {
             NoAllocSetResourceSetEntry entry;
 
             if (dynamicOffsetCount > NoAllocSetResourceSetEntry.MaxInlineDynamicOffsets)
             {
-                StagingBlock block = _memoryPool.GetStagingBlock(dynamicOffsetCount * sizeof(uint));
+                StagingBlock block = _memoryPool.GetStagingBlock(dynamicOffsetCount * sizeof(uint32));
                 _stagingBlocks.Add(block);
-                for (uint i = 0; i < dynamicOffsetCount; i++)
+                for (uint32 i = 0; i < dynamicOffsetCount; i++)
                 {
-                    *((uint*)block.Data + i) = Unsafe.Add(ref dynamicOffsets, (int)i);
+                    *((uint32*)block.Data + i) = Unsafe.Add(ref dynamicOffsets, (int32)i);
                 }
 
                 entry = new NoAllocSetResourceSetEntry(slot, Track(rs), isGraphics, block);
@@ -495,24 +495,24 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(SetResourceSetEntryID, ref entry);
         }
 
-        public void SetComputeResourceSet(uint slot, ResourceSet rs, uint dynamicOffsetCount, ref uint dynamicOffsets)
+        public void SetComputeResourceSet(uint32 slot, ResourceSet rs, uint32 dynamicOffsetCount, ref uint32 dynamicOffsets)
         {
             SetResourceSet(slot, rs, dynamicOffsetCount, ref dynamicOffsets, isGraphics: false);
         }
 
-        public void SetScissorRect(uint index, uint x, uint y, uint width, uint height)
+        public void SetScissorRect(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             NoAllocSetScissorRectEntry entry = new NoAllocSetScissorRectEntry(index, x, y, width, height);
             AddEntry(SetScissorRectEntryID, ref entry);
         }
 
-        public void SetVertexBuffer(uint index, DeviceBuffer buffer, uint offset)
+        public void SetVertexBuffer(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             NoAllocSetVertexBufferEntry entry = new NoAllocSetVertexBufferEntry(index, Track(buffer), offset);
             AddEntry(SetVertexBufferEntryID, ref entry);
         }
 
-        public void SetViewport(uint index, ref Viewport viewport)
+        public void SetViewport(uint32 index, ref Viewport viewport)
         {
             NoAllocSetViewportEntry entry = new NoAllocSetViewportEntry(index, ref viewport);
             AddEntry(SetViewportEntryID, ref entry);
@@ -524,7 +524,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(ResolveTextureEntryID, ref entry);
         }
 
-        public void UpdateBuffer(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        public void UpdateBuffer(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             StagingBlock stagingBlock = _memoryPool.Stage(source, sizeInBytes);
             _stagingBlocks.Add(stagingBlock);
@@ -532,7 +532,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             AddEntry(UpdateBufferEntryID, ref entry);
         }
 
-        public void CopyBuffer(DeviceBuffer source, uint sourceOffset, DeviceBuffer destination, uint destinationOffset, uint sizeInBytes)
+        public void CopyBuffer(DeviceBuffer source, uint32 sourceOffset, DeviceBuffer destination, uint32 destinationOffset, uint32 sizeInBytes)
         {
             NoAllocCopyBufferEntry entry = new NoAllocCopyBufferEntry(
                 Track(source),
@@ -545,15 +545,15 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 
         public void CopyTexture(
             Texture source,
-            uint srcX, uint srcY, uint srcZ,
-            uint srcMipLevel,
-            uint srcBaseArrayLayer,
+            uint32 srcX, uint32 srcY, uint32 srcZ,
+            uint32 srcMipLevel,
+            uint32 srcBaseArrayLayer,
             Texture destination,
-            uint dstX, uint dstY, uint dstZ,
-            uint dstMipLevel,
-            uint dstBaseArrayLayer,
-            uint width, uint height, uint depth,
-            uint layerCount)
+            uint32 dstX, uint32 dstY, uint32 dstZ,
+            uint32 dstMipLevel,
+            uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 layerCount)
         {
             NoAllocCopyTextureEntry entry = new NoAllocCopyTextureEntry(
                 Track(source),
@@ -600,17 +600,17 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 
         private struct EntryStorageBlock : IEquatable<EntryStorageBlock>
         {
-            private const int DefaultStorageBlockSize = 40000;
-            private readonly byte[] _bytes;
+            private const int32 DefaultStorageBlockSize = 40000;
+            private readonly uint8[] _bytes;
             private readonly GCHandle _gcHandle;
-            public readonly byte* BasePtr;
+            public readonly uint8* BasePtr;
 
-            private uint _unusedStart;
-            public uint RemainingSize => (uint)_bytes.Length - _unusedStart;
+            private uint32 _unusedStart;
+            public uint32 RemainingSize => (uint32)_bytes.Length - _unusedStart;
 
-            public uint TotalSize => (uint)_bytes.Length;
+            public uint32 TotalSize => (uint32)_bytes.Length;
 
-            public bool Alloc(uint size, out void* ptr)
+            public bool Alloc(uint32 size, out void* ptr)
             {
                 if (RemainingSize < size)
                 {
@@ -625,11 +625,11 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
                 }
             }
 
-            private EntryStorageBlock(int storageBlockSize)
+            private EntryStorageBlock(int32 storageBlockSize)
             {
-                _bytes = new byte[storageBlockSize];
+                _bytes = new uint8[storageBlockSize];
                 _gcHandle = GCHandle.Alloc(_bytes, GCHandleType.Pinned);
-                BasePtr = (byte*)_gcHandle.AddrOfPinnedObject().ToPointer();
+                BasePtr = (uint8*)_gcHandle.AddrOfPinnedObject().ToPointer();
                 _unusedStart = 0;
             }
 
@@ -662,7 +662,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
     /// <typeparam name="T">The type of object to track.</typeparam>
     internal struct Tracked<T> where T : class
     {
-        private readonly int _index;
+        private readonly int32 _index;
 
         public T Get(List<object> list) => (T)list[_index];
 

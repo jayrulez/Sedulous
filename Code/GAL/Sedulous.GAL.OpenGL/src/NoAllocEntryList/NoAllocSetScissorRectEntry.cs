@@ -2,13 +2,13 @@
 {
     internal struct NoAllocSetScissorRectEntry
     {
-        public readonly uint Index;
-        public readonly uint X;
-        public readonly uint Y;
-        public readonly uint Width;
-        public readonly uint Height;
+        public readonly uint32 Index;
+        public readonly uint32 X;
+        public readonly uint32 Y;
+        public readonly uint32 Width;
+        public readonly uint32 Height;
 
-        public NoAllocSetScissorRectEntry(uint index, uint x, uint y, uint width, uint height)
+        public NoAllocSetScissorRectEntry(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             Index = index;
             X = x;

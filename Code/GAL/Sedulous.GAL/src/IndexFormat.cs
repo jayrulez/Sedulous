@@ -3,7 +3,7 @@
     /// <summary>
     /// The format of index data used in a <see cref="DeviceBuffer"/>.
     /// </summary>
-    public enum IndexFormat : byte
+    public enum IndexFormat : uint8
     {
         /// <summary>
         /// Each index is a 16-bit unsigned integer (System.UInt16).

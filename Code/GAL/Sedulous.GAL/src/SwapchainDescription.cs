@@ -15,11 +15,11 @@ namespace Veldrid
         /// <summary>
         /// The initial width of the Swapchain surface.
         /// </summary>
-        public uint Width;
+        public uint32 Width;
         /// <summary>
         /// The initial height of the Swapchain surface.
         /// </summary>
-        public uint Height;
+        public uint32 Height;
         /// <summary>
         /// The optional format of the depth target of the Swapchain's Framebuffer.
         /// If non-null, this must be a valid depth Texture format.
@@ -49,8 +49,8 @@ namespace Veldrid
         /// system's vertical refresh rate.</param>
         public SwapchainDescription(
             SwapchainSource source,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             PixelFormat? depthFormat,
             bool syncToVerticalBlank)
         {
@@ -77,8 +77,8 @@ namespace Veldrid
         /// <param name="colorSrgb">Indicates whether the color target of the Swapchain will use an sRGB PixelFormat.</param>
         public SwapchainDescription(
             SwapchainSource source,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             PixelFormat? depthFormat,
             bool syncToVerticalBlank,
             bool colorSrgb)
@@ -110,7 +110,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(
                 Source.GetHashCode(),

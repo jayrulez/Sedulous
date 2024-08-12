@@ -3,10 +3,10 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.OpenGLBindings
 {
-    // uint = uint
-    // GLuint = uint
+    // uint32 = uint32
+    // GLuint = uint32
     // GLuint64 = uint64
-    // GLenum = uint
+    // GLenum = uint32
     // Glclampf = 32-bit float, [0, 1]
     public static class OpenGLNative
     {
@@ -15,19 +15,19 @@ namespace Sedulous.OpenGLBindings
         private const CallingConvention CallConv = CallingConvention.Winapi;
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenVertexArrays_t(uint n, out uint arrays);
+        private delegate void glGenVertexArrays_t(uint32 n, out uint32 arrays);
         private static glGenVertexArrays_t p_glGenVertexArrays;
-        public static void glGenVertexArrays(uint n, out uint arrays) => p_glGenVertexArrays(n, out arrays);
+        public static void glGenVertexArrays(uint32 n, out uint32 arrays) => p_glGenVertexArrays(n, out arrays);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glGetError_t();
+        private delegate uint32 glGetError_t();
         private static glGetError_t p_glGetError;
-        public static uint glGetError() => p_glGetError();
+        public static uint32 glGetError() => p_glGetError();
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindVertexArray_t(uint array);
+        private delegate void glBindVertexArray_t(uint32 array);
         private static glBindVertexArray_t p_glBindVertexArray;
-        public static void glBindVertexArray(uint array) => p_glBindVertexArray(array);
+        public static void glBindVertexArray(uint32 array) => p_glBindVertexArray(array);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glClearColor_t(float red, float green, float blue, float alpha);
@@ -41,9 +41,9 @@ namespace Sedulous.OpenGLBindings
         public static void glDrawBuffer(DrawBufferMode mode) => p_glDrawBuffer(mode);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDrawBuffers_t(uint n, DrawBuffersEnum* bufs);
+        private delegate void glDrawBuffers_t(uint32 n, DrawBuffersEnum* bufs);
         private static glDrawBuffers_t p_glDrawBuffers;
-        public static void glDrawBuffers(uint n, DrawBuffersEnum* bufs) => p_glDrawBuffers(n, bufs);
+        public static void glDrawBuffers(uint32 n, DrawBuffersEnum* bufs) => p_glDrawBuffers(n, bufs);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glClear_t(ClearBufferMask mask);
@@ -64,119 +64,119 @@ namespace Sedulous.OpenGLBindings
         public static void glClearDepth_Compat(float depth) => p_glClearDepthf_Compat(depth);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDrawElements_t(PrimitiveType mode, uint count, DrawElementsType type, void* indices);
+        private delegate void glDrawElements_t(PrimitiveType mode, uint32 count, DrawElementsType type, void* indices);
         private static glDrawElements_t p_glDrawElements;
-        public static void glDrawElements(PrimitiveType mode, uint count, DrawElementsType type, void* indices)
+        public static void glDrawElements(PrimitiveType mode, uint32 count, DrawElementsType type, void* indices)
             => p_glDrawElements(mode, count, type, indices);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawElementsBaseVertex_t(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            int basevertex);
+            int32 basevertex);
         private static glDrawElementsBaseVertex_t p_glDrawElementsBaseVertex;
         public static void glDrawElementsBaseVertex(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            int basevertex) => p_glDrawElementsBaseVertex(mode, count, type, indices, basevertex);
+            int32 basevertex) => p_glDrawElementsBaseVertex(mode, count, type, indices, basevertex);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawElementsInstanced_t(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount);
+            uint32 primcount);
         private static glDrawElementsInstanced_t p_glDrawElementsInstanced;
         public static void glDrawElementsInstanced(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount) => p_glDrawElementsInstanced(mode, count, type, indices, primcount);
+            uint32 primcount) => p_glDrawElementsInstanced(mode, count, type, indices, primcount);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawElementsInstancedBaseVertex_t(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount,
-            int basevertex);
+            uint32 primcount,
+            int32 basevertex);
         private static glDrawElementsInstancedBaseVertex_t p_glDrawElementsInstancedBaseVertex;
         public static void glDrawElementsInstancedBaseVertex(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount,
-            int basevertex) => p_glDrawElementsInstancedBaseVertex(mode, count, type, indices, primcount, basevertex);
+            uint32 primcount,
+            int32 basevertex) => p_glDrawElementsInstancedBaseVertex(mode, count, type, indices, primcount, basevertex);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawElementsInstancedBaseVertexBaseInstance_t(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount,
-            int basevertex,
-            uint baseinstance);
+            uint32 primcount,
+            int32 basevertex,
+            uint32 baseinstance);
         private static glDrawElementsInstancedBaseVertexBaseInstance_t p_glDrawElementsInstancedBaseVertexBaseInstance;
         public static void glDrawElementsInstancedBaseVertexBaseInstance(
             PrimitiveType mode,
-            uint count,
+            uint32 count,
             DrawElementsType type,
             void* indices,
-            uint primcount,
-            int basevertex,
-            uint baseinstance)
+            uint32 primcount,
+            int32 basevertex,
+            uint32 baseinstance)
             => p_glDrawElementsInstancedBaseVertexBaseInstance(
                 mode, count, type, indices, primcount, basevertex, baseinstance);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDrawArrays_t(PrimitiveType mode, int first, uint count);
+        private delegate void glDrawArrays_t(PrimitiveType mode, int32 first, uint32 count);
         private static glDrawArrays_t p_glDrawArrays;
-        public static void glDrawArrays(PrimitiveType mode, int first, uint count) => p_glDrawArrays(mode, first, count);
+        public static void glDrawArrays(PrimitiveType mode, int32 first, uint32 count) => p_glDrawArrays(mode, first, count);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDrawArraysInstanced_t(PrimitiveType mode, int first, uint count, uint primcount);
+        private delegate void glDrawArraysInstanced_t(PrimitiveType mode, int32 first, uint32 count, uint32 primcount);
         private static glDrawArraysInstanced_t p_glDrawArraysInstanced;
-        public static void glDrawArraysInstanced(PrimitiveType mode, int first, uint count, uint primcount)
+        public static void glDrawArraysInstanced(PrimitiveType mode, int32 first, uint32 count, uint32 primcount)
             => p_glDrawArraysInstanced(mode, first, count, primcount);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawArraysInstancedBaseInstance_t(
             PrimitiveType mode,
-            int first,
-            uint count,
-            uint primcount,
-            uint baseinstance);
+            int32 first,
+            uint32 count,
+            uint32 primcount,
+            uint32 baseinstance);
         private static glDrawArraysInstancedBaseInstance_t p_glDrawArraysInstancedBaseInstance;
         public static void glDrawArraysInstancedBaseInstance(
             PrimitiveType mode,
-            int first,
-            uint count,
-            uint primcount,
-            uint baseinstance) => p_glDrawArraysInstancedBaseInstance(mode, first, count, primcount, baseinstance);
+            int32 first,
+            uint32 count,
+            uint32 primcount,
+            uint32 baseinstance) => p_glDrawArraysInstancedBaseInstance(mode, first, count, primcount, baseinstance);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenBuffers_t(uint n, out uint buffers);
+        private delegate void glGenBuffers_t(uint32 n, out uint32 buffers);
         private static glGenBuffers_t p_glGenBuffers;
-        public static void glGenBuffers(uint n, out uint buffers) => p_glGenBuffers(n, out buffers);
+        public static void glGenBuffers(uint32 n, out uint32 buffers) => p_glGenBuffers(n, out buffers);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteBuffers_t(uint n, ref uint buffers);
+        private delegate void glDeleteBuffers_t(uint32 n, ref uint32 buffers);
         private static glDeleteBuffers_t p_glDeleteBuffers;
-        public static void glDeleteBuffers(uint n, ref uint buffers) => p_glDeleteBuffers(n, ref buffers);
+        public static void glDeleteBuffers(uint32 n, ref uint32 buffers) => p_glDeleteBuffers(n, ref buffers);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenFramebuffers_t(uint n, out uint ids);
+        private delegate void glGenFramebuffers_t(uint32 n, out uint32 ids);
         private static glGenFramebuffers_t p_glGenFramebuffers;
-        public static void glGenFramebuffers(uint n, out uint ids) => p_glGenFramebuffers(n, out ids);
+        public static void glGenFramebuffers(uint32 n, out uint32 ids) => p_glGenFramebuffers(n, out ids);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glActiveTexture_t(TextureUnit texture);
@@ -188,56 +188,56 @@ namespace Sedulous.OpenGLBindings
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             TextureTarget textarget,
-            uint texture,
-            int level);
+            uint32 texture,
+            int32 level);
         private static glFramebufferTexture1D_t p_glFramebufferTexture1D;
         public static void glFramebufferTexture1D(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             TextureTarget textarget,
-            uint texture,
-            int level) => p_glFramebufferTexture1D(target, attachment, textarget, texture, level);
+            uint32 texture,
+            int32 level) => p_glFramebufferTexture1D(target, attachment, textarget, texture, level);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glFramebufferTexture2D_t(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             TextureTarget textarget,
-            uint texture,
-            int level);
+            uint32 texture,
+            int32 level);
         private static glFramebufferTexture2D_t p_glFramebufferTexture2D;
         public static void glFramebufferTexture2D(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             TextureTarget textarget,
-            uint texture,
-            int level) => p_glFramebufferTexture2D(target, attachment, textarget, texture, level);
+            uint32 texture,
+            int32 level) => p_glFramebufferTexture2D(target, attachment, textarget, texture, level);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindTexture_t(TextureTarget target, uint texture);
+        private delegate void glBindTexture_t(TextureTarget target, uint32 texture);
         private static glBindTexture_t p_glBindTexture;
-        public static void glBindTexture(TextureTarget target, uint texture) => p_glBindTexture(target, texture);
+        public static void glBindTexture(TextureTarget target, uint32 texture) => p_glBindTexture(target, texture);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindFramebuffer_t(FramebufferTarget target, uint framebuffer);
+        private delegate void glBindFramebuffer_t(FramebufferTarget target, uint32 framebuffer);
         private static glBindFramebuffer_t p_glBindFramebuffer;
-        public static void glBindFramebuffer(FramebufferTarget target, uint framebuffer)
+        public static void glBindFramebuffer(FramebufferTarget target, uint32 framebuffer)
             => p_glBindFramebuffer(target, framebuffer);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteFramebuffers_t(uint n, ref uint framebuffers);
+        private delegate void glDeleteFramebuffers_t(uint32 n, ref uint32 framebuffers);
         private static glDeleteFramebuffers_t p_glDeleteFramebuffers;
-        public static void glDeleteFramebuffers(uint n, ref uint framebuffers) => p_glDeleteFramebuffers(n, ref framebuffers);
+        public static void glDeleteFramebuffers(uint32 n, ref uint32 framebuffers) => p_glDeleteFramebuffers(n, ref framebuffers);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenTextures_t(uint n, out uint textures);
+        private delegate void glGenTextures_t(uint32 n, out uint32 textures);
         private static glGenTextures_t p_glGenTextures;
-        public static void glGenTextures(uint n, out uint textures) => p_glGenTextures(n, out textures);
+        public static void glGenTextures(uint32 n, out uint32 textures) => p_glGenTextures(n, out textures);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteTextures_t(uint n, ref uint textures);
+        private delegate void glDeleteTextures_t(uint32 n, ref uint32 textures);
         private static glDeleteTextures_t p_glDeleteTextures;
-        public static void glDeleteTextures(uint n, ref uint textures) => p_glDeleteTextures(n, ref textures);
+        public static void glDeleteTextures(uint32 n, ref uint32 textures) => p_glDeleteTextures(n, ref textures);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate FramebufferErrorCode glCheckFramebufferStatus_t(FramebufferTarget target);
@@ -246,25 +246,25 @@ namespace Sedulous.OpenGLBindings
             => p_glCheckFramebufferStatus(target);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindBuffer_t(BufferTarget target, uint buffer);
+        private delegate void glBindBuffer_t(BufferTarget target, uint32 buffer);
         private static glBindBuffer_t p_glBindBuffer;
-        public static void glBindBuffer(BufferTarget target, uint buffer) => p_glBindBuffer(target, buffer);
+        public static void glBindBuffer(BufferTarget target, uint32 buffer) => p_glBindBuffer(target, buffer);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glViewportIndexedf_t(uint index, float x, float y, float w, float h);
+        private delegate void glViewportIndexedf_t(uint32 index, float x, float y, float w, float h);
         private static glViewportIndexedf_t p_glViewportIndexedf;
-        public static void glViewportIndexed(uint index, float x, float y, float w, float h)
+        public static void glViewportIndexed(uint32 index, float x, float y, float w, float h)
             => p_glViewportIndexedf(index, x, y, w, h);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glViewport_t(int x, int y, uint width, uint height);
+        private delegate void glViewport_t(int32 x, int32 y, uint32 width, uint32 height);
         private static glViewport_t p_glViewport;
-        public static void glViewport(int x, int y, uint width, uint height) => p_glViewport(x, y, width, height);
+        public static void glViewport(int32 x, int32 y, uint32 width, uint32 height) => p_glViewport(x, y, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDepthRangeIndexed_t(uint index, double nearVal, double farVal);
+        private delegate void glDepthRangeIndexed_t(uint32 index, double nearVal, double farVal);
         private static glDepthRangeIndexed_t p_glDepthRangeIndexed;
-        public static void glDepthRangeIndexed(uint index, double nearVal, double farVal)
+        public static void glDepthRangeIndexed(uint32 index, double nearVal, double farVal)
             => p_glDepthRangeIndexed(index, nearVal, farVal);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -279,42 +279,42 @@ namespace Sedulous.OpenGLBindings
             => p_glBufferSubData(target, offset, size, data);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glNamedBufferSubData_t(uint buffer, IntPtr offset, uint size, void* data);
+        private delegate void glNamedBufferSubData_t(uint32 buffer, IntPtr offset, uint32 size, void* data);
         private static glNamedBufferSubData_t p_glNamedBufferSubData;
-        public static void glNamedBufferSubData(uint buffer, IntPtr offset, uint size, void* data)
+        public static void glNamedBufferSubData(uint32 buffer, IntPtr offset, uint32 size, void* data)
             => p_glNamedBufferSubData(buffer, offset, size, data);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glScissorIndexed_t(uint index, int left, int bottom, uint width, uint height);
+        private delegate void glScissorIndexed_t(uint32 index, int32 left, int32 bottom, uint32 width, uint32 height);
         private static glScissorIndexed_t p_glScissorIndexed;
-        public static void glScissorIndexed(uint index, int left, int bottom, uint width, uint height)
+        public static void glScissorIndexed(uint32 index, int32 left, int32 bottom, uint32 width, uint32 height)
             => p_glScissorIndexed(index, left, bottom, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glScissor_t(int x, int y, uint width, uint height);
+        private delegate void glScissor_t(int32 x, int32 y, uint32 width, uint32 height);
         private static glScissor_t p_glScissor;
-        public static void glScissor(int x, int y, uint width, uint height) => p_glScissor(x, y, width, height);
+        public static void glScissor(int32 x, int32 y, uint32 width, uint32 height) => p_glScissor(x, y, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glPixelStorei_t(PixelStoreParameter pname, int param);
+        private delegate void glPixelStorei_t(PixelStoreParameter pname, int32 param);
         private static glPixelStorei_t p_glPixelStorei;
-        public static void glPixelStorei(PixelStoreParameter pname, int param) => p_glPixelStorei(pname, param);
+        public static void glPixelStorei(PixelStoreParameter pname, int32 param) => p_glPixelStorei(pname, param);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexSubImage1D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            uint width,
+            int32 level,
+            int32 xoffset,
+            uint32 width,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels);
         private static glTexSubImage1D_t p_glTexSubImage1D;
         public static void glTexSubImage1D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            uint width,
+            int32 level,
+            int32 xoffset,
+            uint32 width,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels) => p_glTexSubImage1D(target, level, xoffset, width, format, type, pixels);
@@ -322,22 +322,22 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexSubImage2D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            uint width,
-            uint height,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            uint32 width,
+            uint32 height,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels);
         private static glTexSubImage2D_t p_glTexSubImage2D;
         public static void glTexSubImage2D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            uint width,
-            uint height,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            uint32 width,
+            uint32 height,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels) => p_glTexSubImage2D(target, level, xoffset, yoffset, width, height, format, type, pixels);
@@ -345,96 +345,96 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexSubImage3D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            uint width,
-            uint height,
-            uint depth,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels);
         private static glTexSubImage3D_t p_glTexSubImage3D;
         public static void glTexSubImage3D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            uint width,
-            uint height,
-            uint depth,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels)
             => p_glTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glShaderSource_t(uint shader, uint count, byte** @string, int* length);
+        private delegate void glShaderSource_t(uint32 shader, uint32 count, uint8** @string, int32* length);
         private static glShaderSource_t p_glShaderSource;
-        public static void glShaderSource(uint shader, uint count, byte** @string, int* length)
+        public static void glShaderSource(uint32 shader, uint32 count, uint8** @string, int32* length)
             => p_glShaderSource(shader, count, @string, length);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glCreateShader_t(ShaderType shaderType);
+        private delegate uint32 glCreateShader_t(ShaderType shaderType);
         private static glCreateShader_t p_glCreateShader;
-        public static uint glCreateShader(ShaderType shaderType) => p_glCreateShader(shaderType);
+        public static uint32 glCreateShader(ShaderType shaderType) => p_glCreateShader(shaderType);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glCompileShader_t(uint shader);
+        private delegate void glCompileShader_t(uint32 shader);
         private static glCompileShader_t p_glCompileShader;
-        public static void glCompileShader(uint shader) => p_glCompileShader(shader);
+        public static void glCompileShader(uint32 shader) => p_glCompileShader(shader);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetShaderiv_t(uint shader, ShaderParameter pname, int* @params);
+        private delegate void glGetShaderiv_t(uint32 shader, ShaderParameter pname, int32* @params);
         private static glGetShaderiv_t p_glGetShaderiv;
-        public static void glGetShaderiv(uint shader, ShaderParameter pname, int* @params)
+        public static void glGetShaderiv(uint32 shader, ShaderParameter pname, int32* @params)
             => p_glGetShaderiv(shader, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetShaderInfoLog_t(uint shader, uint maxLength, uint* length, byte* infoLog);
+        private delegate void glGetShaderInfoLog_t(uint32 shader, uint32 maxLength, uint32* length, uint8* infoLog);
         private static glGetShaderInfoLog_t p_glGetShaderInfoLog;
-        public static void glGetShaderInfoLog(uint shader, uint maxLength, uint* length, byte* infoLog)
+        public static void glGetShaderInfoLog(uint32 shader, uint32 maxLength, uint32* length, uint8* infoLog)
             => p_glGetShaderInfoLog(shader, maxLength, length, infoLog);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteShader_t(uint shader);
+        private delegate void glDeleteShader_t(uint32 shader);
         private static glDeleteShader_t p_glDeleteShader;
-        public static void glDeleteShader(uint shader) => p_glDeleteShader(shader);
+        public static void glDeleteShader(uint32 shader) => p_glDeleteShader(shader);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenSamplers_t(uint n, out uint samplers);
+        private delegate void glGenSamplers_t(uint32 n, out uint32 samplers);
         private static glGenSamplers_t p_glGenSamplers;
-        public static void glGenSamplers(uint n, out uint samplers) => p_glGenSamplers(n, out samplers);
+        public static void glGenSamplers(uint32 n, out uint32 samplers) => p_glGenSamplers(n, out samplers);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glSamplerParameterf_t(uint sampler, SamplerParameterName pname, float param);
+        private delegate void glSamplerParameterf_t(uint32 sampler, SamplerParameterName pname, float param);
         private static glSamplerParameterf_t p_glSamplerParameterf;
-        public static void glSamplerParameterf(uint sampler, SamplerParameterName pname, float param)
+        public static void glSamplerParameterf(uint32 sampler, SamplerParameterName pname, float param)
             => p_glSamplerParameterf(sampler, pname, param);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glSamplerParameteri_t(uint sampler, SamplerParameterName pname, int param);
+        private delegate void glSamplerParameteri_t(uint32 sampler, SamplerParameterName pname, int32 param);
         private static glSamplerParameteri_t p_glSamplerParameteri;
-        public static void glSamplerParameteri(uint sampler, SamplerParameterName pname, int param)
+        public static void glSamplerParameteri(uint32 sampler, SamplerParameterName pname, int32 param)
             => p_glSamplerParameteri(sampler, pname, param);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glSamplerParameterfv_t(uint sampler, SamplerParameterName pname, float* @params);
+        private delegate void glSamplerParameterfv_t(uint32 sampler, SamplerParameterName pname, float* @params);
         private static glSamplerParameterfv_t p_glSamplerParameterfv;
-        public static void glSamplerParameterfv(uint sampler, SamplerParameterName pname, float* @params)
+        public static void glSamplerParameterfv(uint32 sampler, SamplerParameterName pname, float* @params)
             => p_glSamplerParameterfv(sampler, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindSampler_t(uint unit, uint sampler);
+        private delegate void glBindSampler_t(uint32 unit, uint32 sampler);
         private static glBindSampler_t p_glBindSampler;
-        public static void glBindSampler(uint unit, uint sampler) => p_glBindSampler(unit, sampler);
+        public static void glBindSampler(uint32 unit, uint32 sampler) => p_glBindSampler(unit, sampler);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteSamplers_t(uint n, ref uint samplers);
+        private delegate void glDeleteSamplers_t(uint32 n, ref uint32 samplers);
         private static glDeleteSamplers_t p_glDeleteSamplers;
-        public static void glDeleteSamplers(uint n, ref uint samplers) => p_glDeleteSamplers(n, ref samplers);
+        public static void glDeleteSamplers(uint32 n, ref uint32 samplers) => p_glDeleteSamplers(n, ref samplers);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glColorMask_t(
@@ -451,14 +451,14 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glColorMaski_t(
-            uint buf,
+            uint32 buf,
             GLboolean red,
             GLboolean green,
             GLboolean blue,
             GLboolean alpha);
         private static glColorMaski_t p_glColorMaski;
         public static void glColorMaski(
-            uint buf,
+            uint32 buf,
             GLboolean red,
             GLboolean green,
             GLboolean blue,
@@ -466,14 +466,14 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glBlendFuncSeparatei_t(
-            uint buf,
+            uint32 buf,
             BlendingFactorSrc srcRGB,
             BlendingFactorDest dstRGB,
             BlendingFactorSrc srcAlpha,
             BlendingFactorDest dstAlpha);
         private static glBlendFuncSeparatei_t p_glBlendFuncSeparatei;
         public static void glBlendFuncSeparatei(
-            uint buf,
+            uint32 buf,
             BlendingFactorSrc srcRGB,
             BlendingFactorDest dstRGB,
             BlendingFactorSrc srcAlpha,
@@ -498,9 +498,9 @@ namespace Sedulous.OpenGLBindings
         public static void glEnable(EnableCap cap) => p_glEnable(cap);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glEnablei_t(EnableCap cap, uint index);
+        private delegate void glEnablei_t(EnableCap cap, uint32 index);
         private static glEnablei_t p_glEnablei;
-        public static void glEnablei(EnableCap cap, uint index) => p_glEnablei(cap, index);
+        public static void glEnablei(EnableCap cap, uint32 index) => p_glEnablei(cap, index);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDisable_t(EnableCap cap);
@@ -508,14 +508,14 @@ namespace Sedulous.OpenGLBindings
         public static void glDisable(EnableCap cap) => p_glDisable(cap);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDisablei_t(EnableCap cap, uint index);
+        private delegate void glDisablei_t(EnableCap cap, uint32 index);
         private static glDisablei_t p_glDisablei;
-        public static void glDisablei(EnableCap cap, uint index) => p_glDisablei(cap, index);
+        public static void glDisablei(EnableCap cap, uint32 index) => p_glDisablei(cap, index);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBlendEquationSeparatei_t(uint buf, BlendEquationMode modeRGB, BlendEquationMode modeAlpha);
+        private delegate void glBlendEquationSeparatei_t(uint32 buf, BlendEquationMode modeRGB, BlendEquationMode modeAlpha);
         private static glBlendEquationSeparatei_t p_glBlendEquationSeparatei;
-        public static void glBlendEquationSeparatei(uint buf, BlendEquationMode modeRGB, BlendEquationMode modeAlpha)
+        public static void glBlendEquationSeparatei(uint32 buf, BlendEquationMode modeRGB, BlendEquationMode modeAlpha)
             => p_glBlendEquationSeparatei(buf, modeRGB, modeAlpha);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -551,87 +551,87 @@ namespace Sedulous.OpenGLBindings
         public static void glPolygonMode(MaterialFace face, PolygonMode mode) => p_glPolygonMode(face, mode);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glCreateProgram_t();
+        private delegate uint32 glCreateProgram_t();
         private static glCreateProgram_t p_glCreateProgram;
-        public static uint glCreateProgram() => p_glCreateProgram();
+        public static uint32 glCreateProgram() => p_glCreateProgram();
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glAttachShader_t(uint program, uint shader);
+        private delegate void glAttachShader_t(uint32 program, uint32 shader);
         private static glAttachShader_t p_glAttachShader;
-        public static void glAttachShader(uint program, uint shader) => p_glAttachShader(program, shader);
+        public static void glAttachShader(uint32 program, uint32 shader) => p_glAttachShader(program, shader);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindAttribLocation_t(uint program, uint index, byte* name);
+        private delegate void glBindAttribLocation_t(uint32 program, uint32 index, uint8* name);
         private static glBindAttribLocation_t p_glBindAttribLocation;
-        public static void glBindAttribLocation(uint program, uint index, byte* name)
+        public static void glBindAttribLocation(uint32 program, uint32 index, uint8* name)
             => p_glBindAttribLocation(program, index, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glLinkProgram_t(uint program);
+        private delegate void glLinkProgram_t(uint32 program);
         private static glLinkProgram_t p_glLinkProgram;
-        public static void glLinkProgram(uint program) => p_glLinkProgram(program);
+        public static void glLinkProgram(uint32 program) => p_glLinkProgram(program);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetProgramiv_t(uint program, GetProgramParameterName pname, int* @params);
+        private delegate void glGetProgramiv_t(uint32 program, GetProgramParameterName pname, int32* @params);
         private static glGetProgramiv_t p_glGetProgramiv;
-        public static void glGetProgramiv(uint program, GetProgramParameterName pname, int* @params)
+        public static void glGetProgramiv(uint32 program, GetProgramParameterName pname, int32* @params)
             => p_glGetProgramiv(program, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetProgramInfoLog_t(uint program, uint maxLength, uint* length, byte* infoLog);
+        private delegate void glGetProgramInfoLog_t(uint32 program, uint32 maxLength, uint32* length, uint8* infoLog);
         private static glGetProgramInfoLog_t p_glGetProgramInfoLog;
-        public static void glGetProgramInfoLog(uint program, uint maxLength, uint* length, byte* infoLog)
+        public static void glGetProgramInfoLog(uint32 program, uint32 maxLength, uint32* length, uint8* infoLog)
             => p_glGetProgramInfoLog(program, maxLength, length, infoLog);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glUniformBlockBinding_t(uint program, uint uniformBlockIndex, uint uniformBlockBinding);
+        private delegate void glUniformBlockBinding_t(uint32 program, uint32 uniformBlockIndex, uint32 uniformBlockBinding);
         private static glUniformBlockBinding_t p_glUniformBlockBinding;
-        public static void glUniformBlockBinding(uint program, uint uniformBlockIndex, uint uniformBlockBinding)
+        public static void glUniformBlockBinding(uint32 program, uint32 uniformBlockIndex, uint32 uniformBlockBinding)
             => p_glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDeleteProgram_t(uint program);
+        private delegate void glDeleteProgram_t(uint32 program);
         private static glDeleteProgram_t p_glDeleteProgram;
-        public static void glDeleteProgram(uint program) => p_glDeleteProgram(program);
+        public static void glDeleteProgram(uint32 program) => p_glDeleteProgram(program);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glUniform1i_t(int location, int v0);
+        private delegate void glUniform1i_t(int32 location, int32 v0);
         private static glUniform1i_t p_glUniform1i;
-        public static void glUniform1i(int location, int v0) => p_glUniform1i(location, v0);
+        public static void glUniform1i(int32 location, int32 v0) => p_glUniform1i(location, v0);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glGetUniformBlockIndex_t(uint program, byte* uniformBlockName);
+        private delegate uint32 glGetUniformBlockIndex_t(uint32 program, uint8* uniformBlockName);
         private static glGetUniformBlockIndex_t p_glGetUniformBlockIndex;
-        public static uint glGetUniformBlockIndex(uint program, byte* uniformBlockName)
+        public static uint32 glGetUniformBlockIndex(uint32 program, uint8* uniformBlockName)
             => p_glGetUniformBlockIndex(program, uniformBlockName);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate int glGetUniformLocation_t(uint program, byte* name);
+        private delegate int32 glGetUniformLocation_t(uint32 program, uint8* name);
         private static glGetUniformLocation_t p_glGetUniformLocation;
-        public static int glGetUniformLocation(uint program, byte* name) => p_glGetUniformLocation(program, name);
+        public static int32 glGetUniformLocation(uint32 program, uint8* name) => p_glGetUniformLocation(program, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate int glGetAttribLocation_t(uint program, byte* name);
+        private delegate int32 glGetAttribLocation_t(uint32 program, uint8* name);
         private static glGetAttribLocation_t p_glGetAttribLocation;
-        public static int glGetAttribLocation(uint program, byte* name) => p_glGetAttribLocation(program, name);
+        public static int32 glGetAttribLocation(uint32 program, uint8* name) => p_glGetAttribLocation(program, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glUseProgram_t(uint program);
+        private delegate void glUseProgram_t(uint32 program);
         private static glUseProgram_t p_glUseProgram;
-        public static void glUseProgram(uint program) => p_glUseProgram(program);
+        public static void glUseProgram(uint32 program) => p_glUseProgram(program);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glBindBufferRange_t(
             BufferRangeTarget target,
-            uint index,
-            uint buffer,
+            uint32 index,
+            uint32 buffer,
             IntPtr offset,
             UIntPtr size);
         private static glBindBufferRange_t p_glBindBufferRange;
         public static void glBindBufferRange(
             BufferRangeTarget target,
-            uint index,
-            uint buffer,
+            uint32 index,
+            uint32 buffer,
             IntPtr offset,
             UIntPtr size) => p_glBindBufferRange(target, index, buffer, offset, size);
 
@@ -639,10 +639,10 @@ namespace Sedulous.OpenGLBindings
         public delegate void DebugProc(
             DebugSource source,
             DebugType type,
-            uint id,
+            uint32 id,
             DebugSeverity severity,
-            uint length,
-            byte* message,
+            uint32 length,
+            uint8* message,
             void* userParam);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -658,28 +658,28 @@ namespace Sedulous.OpenGLBindings
             => p_glBufferData(target, size, data, usage);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glNamedBufferData_t(uint buffer, uint size, void* data, BufferUsageHint usage);
+        private delegate void glNamedBufferData_t(uint32 buffer, uint32 size, void* data, BufferUsageHint usage);
         private static glNamedBufferData_t p_glNamedBufferData;
-        public static void glNamedBufferData(uint buffer, uint size, void* data, BufferUsageHint usage)
+        public static void glNamedBufferData(uint32 buffer, uint32 size, void* data, BufferUsageHint usage)
             => p_glNamedBufferData(buffer, size, data, usage);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexImage1D_t(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            int border,
+            uint32 width,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data);
         private static glTexImage1D_t p_glTexImage1D;
         public static void glTexImage1D(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            int border,
+            uint32 width,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data) => p_glTexImage1D(target, level, internalFormat, width, border, format, type, data);
@@ -687,22 +687,22 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexImage2D_t(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            uint height,
-            int border,
+            uint32 width,
+            uint32 height,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data);
         private static glTexImage2D_t p_glTexImage2D;
         public static void glTexImage2D(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            uint height,
-            int border,
+            uint32 width,
+            uint32 height,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data) => p_glTexImage2D(target, level, internalFormat, width, height, border, format, type, data);
@@ -710,74 +710,74 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexImage3D_t(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            uint height,
-            uint depth,
-            int border,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data);
         private static glTexImage3D_t p_glTexImage3D;
         public static void glTexImage3D(
             TextureTarget target,
-            int level,
+            int32 level,
             PixelInternalFormat internalFormat,
-            uint width,
-            uint height,
-            uint depth,
-            int border,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
+            int32 border,
             GLPixelFormat format,
             GLPixelType type,
             void* data) => p_glTexImage3D(target, level, internalFormat, width, height, depth, border, format, type, data);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glEnableVertexAttribArray_t(uint index);
+        private delegate void glEnableVertexAttribArray_t(uint32 index);
         private static glEnableVertexAttribArray_t p_glEnableVertexAttribArray;
-        public static void glEnableVertexAttribArray(uint index) => p_glEnableVertexAttribArray(index);
+        public static void glEnableVertexAttribArray(uint32 index) => p_glEnableVertexAttribArray(index);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDisableVertexAttribArray_t(uint index);
+        private delegate void glDisableVertexAttribArray_t(uint32 index);
         private static glDisableVertexAttribArray_t p_glDisableVertexAttribArray;
-        public static void glDisableVertexAttribArray(uint index) => p_glDisableVertexAttribArray(index);
+        public static void glDisableVertexAttribArray(uint32 index) => p_glDisableVertexAttribArray(index);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glVertexAttribPointer_t(
-            uint index,
-            int size,
+            uint32 index,
+            int32 size,
             VertexAttribPointerType type,
             GLboolean normalized,
-            uint stride,
+            uint32 stride,
             void* pointer);
         private static glVertexAttribPointer_t p_glVertexAttribPointer;
         public static void glVertexAttribPointer(
-            uint index,
-            int size,
+            uint32 index,
+            int32 size,
             VertexAttribPointerType type,
             GLboolean normalized,
-            uint stride,
+            uint32 stride,
             void* pointer) => p_glVertexAttribPointer(index, size, type, normalized, stride, pointer);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glVertexAttribIPointer_t(
-            uint index,
-            int size,
+            uint32 index,
+            int32 size,
             VertexAttribPointerType type,
-            uint stride,
+            uint32 stride,
             void* pointer);
         private static glVertexAttribIPointer_t p_glVertexAttribIPointer;
         public static void glVertexAttribIPointer(
-            uint index,
-            int size,
+            uint32 index,
+            int32 size,
             VertexAttribPointerType type,
-            uint stride,
+            uint32 stride,
             void* pointer) => p_glVertexAttribIPointer(index, size, type, stride, pointer);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glVertexAttribDivisor_t(uint index, uint divisor);
+        private delegate void glVertexAttribDivisor_t(uint32 index, uint32 divisor);
         private static glVertexAttribDivisor_t p_glVertexAttribDivisor;
-        public static void glVertexAttribDivisor(uint index, uint divisor) => p_glVertexAttribDivisor(index, divisor);
+        public static void glVertexAttribDivisor(uint32 index, uint32 divisor) => p_glVertexAttribDivisor(index, divisor);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glFrontFace_t(FrontFaceDirection mode);
@@ -785,35 +785,35 @@ namespace Sedulous.OpenGLBindings
         public static void glFrontFace(FrontFaceDirection mode) => p_glFrontFace(mode);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetIntegerv_t(GetPName pname, int* data);
+        private delegate void glGetIntegerv_t(GetPName pname, int32* data);
         private static glGetIntegerv_t p_glGetIntegerv;
-        public static void glGetIntegerv(GetPName pname, int* data) => p_glGetIntegerv(pname, data);
+        public static void glGetIntegerv(GetPName pname, int32* data) => p_glGetIntegerv(pname, data);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindTextureUnit_t(uint unit, uint texture);
+        private delegate void glBindTextureUnit_t(uint32 unit, uint32 texture);
         private static glBindTextureUnit_t p_glBindTextureUnit;
-        public static void glBindTextureUnit(uint unit, uint texture) => p_glBindTextureUnit(unit, texture);
+        public static void glBindTextureUnit(uint32 unit, uint32 texture) => p_glBindTextureUnit(unit, texture);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glTexParameteri_t(TextureTarget target, TextureParameterName pname, int param);
+        private delegate void glTexParameteri_t(TextureTarget target, TextureParameterName pname, int32 param);
         private static glTexParameteri_t p_glTexParameteri;
-        public static void glTexParameteri(TextureTarget target, TextureParameterName pname, int param)
+        public static void glTexParameteri(TextureTarget target, TextureParameterName pname, int32 param)
             => p_glTexParameteri(target, pname, param);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate byte* glGetString_t(StringName name);
+        private delegate uint8* glGetString_t(StringName name);
         private static glGetString_t p_glGetString;
-        public static byte* glGetString(StringName name) => p_glGetString(name);
+        public static uint8* glGetString(StringName name) => p_glGetString(name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate byte* glGetStringi_t(StringNameIndexed name, uint index);
+        private delegate uint8* glGetStringi_t(StringNameIndexed name, uint32 index);
         private static glGetStringi_t p_glGetStringi;
-        public static byte* glGetStringi(StringNameIndexed name, uint index) => p_glGetStringi(name, index);
+        public static uint8* glGetStringi(StringNameIndexed name, uint32 index) => p_glGetStringi(name, index);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glObjectLabel_t(ObjectLabelIdentifier identifier, uint name, uint length, byte* label);
+        private delegate void glObjectLabel_t(ObjectLabelIdentifier identifier, uint32 name, uint32 length, uint8* label);
         private static glObjectLabel_t p_glObjectLabel;
-        public static void glObjectLabel(ObjectLabelIdentifier identifier, uint name, uint length, byte* label)
+        public static void glObjectLabel(ObjectLabelIdentifier identifier, uint32 name, uint32 length, uint8* label)
             => p_glObjectLabel(identifier, name, length, label);
 
         /// <summary>
@@ -825,18 +825,18 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexImage2DMultisample_t(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             PixelInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations);
         private static glTexImage2DMultisample_t p_glTexImage2DMultisample;
         public static void glTexImage2DMultiSample(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             PixelInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations) => p_glTexImage2DMultisample(
                 target,
                 samples,
@@ -848,20 +848,20 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexImage3DMultisample_t(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             PixelInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations);
         private static glTexImage3DMultisample_t p_glTexImage3DMultisample;
         public static void glTexImage3DMultisample(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             PixelInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations) => p_glTexImage3DMultisample(
                 target,
                 samples,
@@ -873,26 +873,26 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glBlitFramebuffer_t(
-            int srcX0,
-            int srcY0,
-            int srcX1,
-            int srcY1,
-            int dstX0,
-            int dstY0,
-            int dstX1,
-            int dstY1,
+            int32 srcX0,
+            int32 srcY0,
+            int32 srcX1,
+            int32 srcY1,
+            int32 dstX0,
+            int32 dstY0,
+            int32 dstX1,
+            int32 dstY1,
             ClearBufferMask mask,
             BlitFramebufferFilter filter);
         private static glBlitFramebuffer_t p_glBlitFramebuffer;
         public static void glBlitFramebuffer(
-            int srcX0,
-            int srcY0,
-            int srcX1,
-            int srcY1,
-            int dstX0,
-            int dstY0,
-            int dstX1,
-            int dstY1,
+            int32 srcX0,
+            int32 srcY0,
+            int32 srcX1,
+            int32 srcY1,
+            int32 dstX0,
+            int32 dstY0,
+            int32 dstX1,
+            int32 dstY1,
             ClearBufferMask mask,
             BlitFramebufferFilter filter)
             => p_glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
@@ -901,45 +901,45 @@ namespace Sedulous.OpenGLBindings
         private delegate void glFramebufferTextureLayer_t(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
-            uint texture,
-            int level,
-            int layer);
+            uint32 texture,
+            int32 level,
+            int32 layer);
         private static glFramebufferTextureLayer_t p_glFramebufferTextureLayer;
         public static void glFramebufferTextureLayer(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
-            uint texture,
-            int level,
-            int layer) => p_glFramebufferTextureLayer(target, attachment, texture, level, layer);
+            uint32 texture,
+            int32 level,
+            int32 layer) => p_glFramebufferTextureLayer(target, attachment, texture, level, layer);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glDispatchCompute_t(uint num_groups_x, uint num_groups_y, uint num_groups_z);
+        private delegate void glDispatchCompute_t(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z);
         private static glDispatchCompute_t p_glDispatchCompute;
-        public static void glDispatchCompute(uint num_groups_x, uint num_groups_y, uint num_groups_z)
+        public static void glDispatchCompute(uint32 num_groups_x, uint32 num_groups_y, uint32 num_groups_z)
             => p_glDispatchCompute(num_groups_x, num_groups_y, num_groups_z);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glGetProgramInterfaceiv_t(uint program, ProgramInterface programInterface, ProgramInterfaceParameterName pname, int* @params);
+        private delegate uint32 glGetProgramInterfaceiv_t(uint32 program, ProgramInterface programInterface, ProgramInterfaceParameterName pname, int32* @params);
         private static glGetProgramInterfaceiv_t p_glGetProgramInterfaceiv;
-        public static uint glGetProgramInterfaceiv(uint program, ProgramInterface programInterface, ProgramInterfaceParameterName pname, int* @params)
+        public static uint32 glGetProgramInterfaceiv(uint32 program, ProgramInterface programInterface, ProgramInterfaceParameterName pname, int32* @params)
             => p_glGetProgramInterfaceiv(program, programInterface, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glGetProgramResourceIndex_t(uint program, ProgramInterface programInterface, byte* name);
+        private delegate uint32 glGetProgramResourceIndex_t(uint32 program, ProgramInterface programInterface, uint8* name);
         private static glGetProgramResourceIndex_t p_glGetProgramResourceIndex;
-        public static uint glGetProgramResourceIndex(uint program, ProgramInterface programInterface, byte* name)
+        public static uint32 glGetProgramResourceIndex(uint32 program, ProgramInterface programInterface, uint8* name)
             => p_glGetProgramResourceIndex(program, programInterface, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate uint glGetProgramResourceName_t(uint program, ProgramInterface programInterface, uint index, uint bufSize, uint* length, byte* name);
+        private delegate uint32 glGetProgramResourceName_t(uint32 program, ProgramInterface programInterface, uint32 index, uint32 bufSize, uint32* length, uint8* name);
         private static glGetProgramResourceName_t p_glGetProgramResourceName;
-        public static uint glGetProgramResourceName(uint program, ProgramInterface programInterface, uint index, uint bufSize, uint* length, byte* name)
+        public static uint32 glGetProgramResourceName(uint32 program, ProgramInterface programInterface, uint32 index, uint32 bufSize, uint32* length, uint8* name)
             => p_glGetProgramResourceName(program, programInterface, index, bufSize, length, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glShaderStorageBlockBinding_t(uint program, uint storageBlockIndex, uint storageBlockBinding);
+        private delegate void glShaderStorageBlockBinding_t(uint32 program, uint32 storageBlockIndex, uint32 storageBlockBinding);
         private static glShaderStorageBlockBinding_t p_glShaderStorageBlockBinding;
-        public static void glShaderStorageBlockBinding(uint program, uint storageBlockIndex, uint storageBlockBinding)
+        public static void glShaderStorageBlockBinding(uint32 program, uint32 storageBlockIndex, uint32 storageBlockBinding)
             => p_glShaderStorageBlockBinding(program, storageBlockIndex, storageBlockBinding);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -953,15 +953,15 @@ namespace Sedulous.OpenGLBindings
             PrimitiveType mode,
             DrawElementsType type,
             IntPtr indirect,
-            uint drawcount,
-            uint stride);
+            uint32 drawcount,
+            uint32 stride);
         private static glMultiDrawElementsIndirect_t p_glMultiDrawElementsIndirect;
         public static void glMultiDrawElementsIndirect(
             PrimitiveType mode,
             DrawElementsType type,
             IntPtr indirect,
-            uint drawcount,
-            uint stride) => p_glMultiDrawElementsIndirect(mode, type, indirect, drawcount, stride);
+            uint32 drawcount,
+            uint32 stride) => p_glMultiDrawElementsIndirect(mode, type, indirect, drawcount, stride);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glDrawArraysIndirect_t(PrimitiveType mode, IntPtr indirect);
@@ -970,9 +970,9 @@ namespace Sedulous.OpenGLBindings
             => p_glDrawArraysIndirect(mode, indirect);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glMultiDrawArraysIndirect_t(PrimitiveType mode, IntPtr indirect, uint drawcount, uint stride);
+        private delegate void glMultiDrawArraysIndirect_t(PrimitiveType mode, IntPtr indirect, uint32 drawcount, uint32 stride);
         private static glMultiDrawArraysIndirect_t p_glMultiDrawArraysIndirect;
-        public static void glMultiDrawArraysIndirect(PrimitiveType mode, IntPtr indirect, uint drawcount, uint stride)
+        public static void glMultiDrawArraysIndirect(PrimitiveType mode, IntPtr indirect, uint32 drawcount, uint32 stride)
             => p_glMultiDrawArraysIndirect(mode, indirect, drawcount, stride);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -982,20 +982,20 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glBindImageTexture_t(
-            uint unit​,
-            uint texture​,
-            int level​,
+            uint32 unit​,
+            uint32 texture​,
+            int32 level​,
             GLboolean layered​,
-            int layer​,
+            int32 layer​,
             TextureAccess access​,
             SizedInternalFormat format​);
         private static glBindImageTexture_t p_glBindImageTexture;
         public static void glBindImageTexture(
-            uint unit​,
-            uint texture​,
-            int level​,
+            uint32 unit​,
+            uint32 texture​,
+            int32 level​,
             GLboolean layered​,
-            int layer​,
+            int32 layer​,
             TextureAccess access​,
             SizedInternalFormat format​) => p_glBindImageTexture(unit, texture, level, layered, layer, access, format);
 
@@ -1007,183 +1007,183 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexStorage1D_t(
             TextureTarget target,
-            uint levels,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width);
+            uint32 width);
         private static glTexStorage1D_t p_glTexStorage1D;
-        public static void glTexStorage1D(TextureTarget target, uint levels, SizedInternalFormat internalformat, uint width)
+        public static void glTexStorage1D(TextureTarget target, uint32 levels, SizedInternalFormat internalformat, uint32 width)
             => p_glTexStorage1D(target, levels, internalformat, width);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexStorage2D_t(
             TextureTarget target,
-            uint levels,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height);
+            uint32 width,
+            uint32 height);
         private static glTexStorage2D_t p_glTexStorage2D;
         public static void glTexStorage2D(
             TextureTarget target,
-            uint levels,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height) => p_glTexStorage2D(target, levels, internalformat, width, height);
+            uint32 width,
+            uint32 height) => p_glTexStorage2D(target, levels, internalformat, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexStorage3D_t(
             TextureTarget target,
-            uint levels,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth);
+            uint32 width,
+            uint32 height,
+            uint32 depth);
         private static glTexStorage3D_t p_glTexStorage3D;
         public static void glTexStorage3D(
             TextureTarget target,
-            uint levels,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth) => p_glTexStorage3D(target, levels, internalformat, width, height, depth);
+            uint32 width,
+            uint32 height,
+            uint32 depth) => p_glTexStorage3D(target, levels, internalformat, width, height, depth);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureStorage1D_t(
-            uint texture,
-            uint levels,
+            uint32 texture,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width);
+            uint32 width);
         private static glTextureStorage1D_t p_glTextureStorage1D;
-        public static void glTextureStorage1D(uint texture, uint levels, SizedInternalFormat internalformat, uint width)
+        public static void glTextureStorage1D(uint32 texture, uint32 levels, SizedInternalFormat internalformat, uint32 width)
             => p_glTextureStorage1D(texture, levels, internalformat, width);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureStorage2D_t(
-            uint texture,
-            uint levels,
+            uint32 texture,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height);
+            uint32 width,
+            uint32 height);
         private static glTextureStorage2D_t p_glTextureStorage2D;
         public static void glTextureStorage2D(
-            uint texture,
-            uint levels,
+            uint32 texture,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height) => p_glTextureStorage2D(texture, levels, internalformat, width, height);
+            uint32 width,
+            uint32 height) => p_glTextureStorage2D(texture, levels, internalformat, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureStorage3D_t(
-            uint texture,
-            uint levels,
+            uint32 texture,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth);
+            uint32 width,
+            uint32 height,
+            uint32 depth);
         private static glTextureStorage3D_t p_glTextureStorage3D;
         public static void glTextureStorage3D(
-            uint texture,
-            uint levels,
+            uint32 texture,
+            uint32 levels,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth) => p_glTextureStorage3D(texture, levels, internalformat, width, height, depth);
+            uint32 width,
+            uint32 height,
+            uint32 depth) => p_glTextureStorage3D(texture, levels, internalformat, width, height, depth);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureStorage2DMultisample_t(
-            uint texture,
-            uint samples,
+            uint32 texture,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations);
         private static glTextureStorage2DMultisample_t p_glTextureStorage2DMultisample;
         public static void glTextureStorage2DMultisample(
-            uint texture,
-            uint samples,
+            uint32 texture,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations)
             => p_glTextureStorage2DMultisample(texture, samples, internalformat, width, height, fixedsamplelocations);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureStorage3DMultisample_t(
-            uint texture,
-            uint samples,
+            uint32 texture,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations);
         private static glTextureStorage3DMultisample_t p_glTextureStorage3DMultisample;
         public static void glTextureStorage3DMultisample(
-            uint texture,
-            uint samples,
+            uint32 texture,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations)
             => p_glTextureStorage3DMultisample(texture, samples, internalformat, width, height, depth, fixedsamplelocations);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexStorage2DMultisample_t(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations);
         private static glTexStorage2DMultisample_t p_glTexStorage2DMultisample;
         public static void glTexStorage2DMultisample(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             GLboolean fixedsamplelocations)
             => p_glTexStorage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTexStorage3DMultisample_t(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations);
         private static glTexStorage3DMultisample_t p_glTexStorage3DMultisample;
         public static void glTexStorage3DMultisample(
             TextureTarget target,
-            uint samples,
+            uint32 samples,
             SizedInternalFormat internalformat,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLboolean fixedsamplelocations)
             => p_glTexStorage3DMultisample(target, samples, internalformat, width, height, depth, fixedsamplelocations);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glTextureView_t(
-            uint texture,
+            uint32 texture,
             TextureTarget target,
-            uint origtexture,
+            uint32 origtexture,
             PixelInternalFormat internalformat,
-            uint minlevel,
-            uint numlevels,
-            uint minlayer,
-            uint numlayers);
+            uint32 minlevel,
+            uint32 numlevels,
+            uint32 minlayer,
+            uint32 numlayers);
         private static glTextureView_t p_glTextureView;
         public static void glTextureView(
-            uint texture,
+            uint32 texture,
             TextureTarget target,
-            uint origtexture,
+            uint32 origtexture,
             PixelInternalFormat internalformat,
-            uint minlevel,
-            uint numlevels,
-            uint minlayer,
-            uint numlayers)
+            uint32 minlevel,
+            uint32 numlevels,
+            uint32 minlayer,
+            uint32 numlayers)
                 => p_glTextureView(texture, target, origtexture, internalformat, minlevel, numlevels, minlayer, numlayers);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -1192,9 +1192,9 @@ namespace Sedulous.OpenGLBindings
         public static void* glMapBuffer(BufferTarget target, BufferAccess access) => p_glMapBuffer(target, access);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void* glMapNamedBuffer_t(uint buffer, BufferAccess access);
+        private delegate void* glMapNamedBuffer_t(uint32 buffer, BufferAccess access);
         private static glMapNamedBuffer_t p_glMapNamedBuffer;
-        public static void* glMapNamedBuffer(uint buffer, BufferAccess access) => p_glMapNamedBuffer(buffer, access);
+        public static void* glMapNamedBuffer(uint32 buffer, BufferAccess access) => p_glMapNamedBuffer(buffer, access);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate GLboolean glUnmapBuffer_t(BufferTarget target);
@@ -1202,9 +1202,9 @@ namespace Sedulous.OpenGLBindings
         public static GLboolean glUnmapBuffer(BufferTarget target) => p_glUnmapBuffer(target);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate GLboolean glUnmapNamedBuffer_t(uint buffer);
+        private delegate GLboolean glUnmapNamedBuffer_t(uint32 buffer);
         private static glUnmapNamedBuffer_t p_glUnmapNamedBuffer;
-        public static GLboolean glUnmapNamedBuffer(uint buffer) => p_glUnmapNamedBuffer(buffer);
+        public static GLboolean glUnmapNamedBuffer(uint32 buffer) => p_glUnmapNamedBuffer(buffer);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCopyBufferSubData_t(
@@ -1224,46 +1224,46 @@ namespace Sedulous.OpenGLBindings
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCopyTexSubImage2D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int x,
-            int y,
-            uint width,
-            uint height);
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height);
         private static glCopyTexSubImage2D_t p_glCopyTexSubImage2D;
         public static void glCopyTexSubImage2D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int x,
-            int y,
-            uint width,
-            uint height) => p_glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height) => p_glCopyTexSubImage2D(target, level, xoffset, yoffset, x, y, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCopyTexSubImage3D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            int x,
-            int y,
-            uint width,
-            uint height);
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height);
         private static glCopyTexSubImage3D_t p_glCopyTexSubImage3D;
         public static void glCopyTexSubImage3D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            int x,
-            int y,
-            uint width,
-            uint height) => p_glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height) => p_glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void* glMapBufferRange_t(BufferTarget target, IntPtr offset, IntPtr length, BufferAccessMask access);
@@ -1272,49 +1272,49 @@ namespace Sedulous.OpenGLBindings
             => p_glMapBufferRange(target, offset, length, access);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void* glMapNamedBufferRange_t(uint buffer, IntPtr offset, uint length, BufferAccessMask access);
+        private delegate void* glMapNamedBufferRange_t(uint32 buffer, IntPtr offset, uint32 length, BufferAccessMask access);
         private static glMapNamedBufferRange_t p_glMapNamedBufferRange;
-        public static void* glMapNamedBufferRange(uint buffer, IntPtr offset, uint length, BufferAccessMask access)
+        public static void* glMapNamedBufferRange(uint32 buffer, IntPtr offset, uint32 length, BufferAccessMask access)
             => p_glMapNamedBufferRange(buffer, offset, length, access);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetTexImage_t(
             TextureTarget target,
-            int level,
+            int32 level,
             GLPixelFormat format,
             GLPixelType type,
             void* pixels);
         private static glGetTexImage_t p_glGetTexImage;
-        public static void glGetTexImage(TextureTarget target, int level, GLPixelFormat format, GLPixelType type, void* pixels)
+        public static void glGetTexImage(TextureTarget target, int32 level, GLPixelFormat format, GLPixelType type, void* pixels)
             => p_glGetTexImage(target, level, format, type, pixels);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetTextureSubImage_t(
-            uint texture,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 texture,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLPixelFormat format,
             GLPixelType type,
-            uint bufSize,
+            uint32 bufSize,
             void* pixels);
         private static glGetTextureSubImage_t p_glGetTextureSubImage;
         public static void glGetTextureSubImage(
-            uint texture,
-            int level,
-            int xoffset,
-            int yoffset,
-            int zoffset,
-            uint width,
-            uint height,
-            uint depth,
+            uint32 texture,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            int32 zoffset,
+            uint32 width,
+            uint32 height,
+            uint32 depth,
             GLPixelFormat format,
             GLPixelType type,
-            uint bufSize,
+            uint32 bufSize,
             void* pixels)
             => p_glGetTextureSubImage(
                 texture,
@@ -1332,97 +1332,97 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCopyNamedBufferSubData_t(
-            uint readBuffer,
-            uint writeBuffer,
+            uint32 readBuffer,
+            uint32 writeBuffer,
             IntPtr readOffset,
             IntPtr writeOffset,
-            uint size);
+            uint32 size);
         private static glCopyNamedBufferSubData_t p_glCopyNamedBufferSubData;
         public static void glCopyNamedBufferSubData(
-            uint readBuffer,
-            uint writeBuffer,
+            uint32 readBuffer,
+            uint32 writeBuffer,
             IntPtr readOffset,
             IntPtr writeOffset,
-            uint size) => p_glCopyNamedBufferSubData(readBuffer, writeBuffer, readOffset, writeOffset, size);
+            uint32 size) => p_glCopyNamedBufferSubData(readBuffer, writeBuffer, readOffset, writeOffset, size);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glCreateBuffers_t(uint n, uint* buffers);
+        private delegate void glCreateBuffers_t(uint32 n, uint32* buffers);
         private static glCreateBuffers_t p_glCreateBuffers;
-        public static void glCreateBuffers(uint n, uint* buffers) => p_glCreateBuffers(n, buffers);
+        public static void glCreateBuffers(uint32 n, uint32* buffers) => p_glCreateBuffers(n, buffers);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glCreateTextures_t(TextureTarget target, uint n, uint* textures);
+        private delegate void glCreateTextures_t(TextureTarget target, uint32 n, uint32* textures);
         private static glCreateTextures_t p_glCreateTextures;
-        public static void glCreateTextures(TextureTarget target, uint n, uint* textures)
+        public static void glCreateTextures(TextureTarget target, uint32 n, uint32* textures)
             => p_glCreateTextures(target, n, textures);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCompressedTexSubImage1D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            uint width,
+            int32 level,
+            int32 xoffset,
+            uint32 width,
             PixelInternalFormat internalformat,
-            uint imageSize,
+            uint32 imageSize,
             void* data);
         private static glCompressedTexSubImage1D_t p_glCompressedTexSubImage1D;
         public static void glCompressedTexSubImage1D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            uint width,
+            int32 level,
+            int32 xoffset,
+            uint32 width,
             PixelInternalFormat internalformat,
-            uint imageSize,
+            uint32 imageSize,
             void* data) => p_glCompressedTexSubImage1D(target, level, xoffset, width, internalformat, imageSize, data);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCompressedTexSubImage2D_t(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            uint width,
-            uint height,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            uint32 width,
+            uint32 height,
             PixelInternalFormat format,
-            uint imageSize,
+            uint32 imageSize,
             void* data);
         private static glCompressedTexSubImage2D_t p_glCompressedTexSubImage2D;
         public static void glCompressedTexSubImage2D(
             TextureTarget target,
-            int level,
-            int xoffset,
-            int yoffset,
-            uint width,
-            uint height,
+            int32 level,
+            int32 xoffset,
+            int32 yoffset,
+            uint32 width,
+            uint32 height,
             PixelInternalFormat format,
-            uint imageSize,
+            uint32 imageSize,
             void* data) => p_glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCompressedTexSubImage3D_t(
             TextureTarget target,
-             int level,
-             int xoffset,
-             int yoffset,
-             int zoffset,
-             uint width,
-             uint height,
-             uint depth,
+             int32 level,
+             int32 xoffset,
+             int32 yoffset,
+             int32 zoffset,
+             uint32 width,
+             uint32 height,
+             uint32 depth,
              PixelInternalFormat format,
-             uint imageSize,
+             uint32 imageSize,
              void* data);
         private static glCompressedTexSubImage3D_t p_glCompressedTexSubImage3D;
         public static void glCompressedTexSubImage3D(
             TextureTarget target,
-             int level,
-             int xoffset,
-             int yoffset,
-             int zoffset,
-             uint width,
-             uint height,
-             uint depth,
+             int32 level,
+             int32 xoffset,
+             int32 yoffset,
+             int32 zoffset,
+             uint32 width,
+             uint32 height,
+             uint32 depth,
              PixelInternalFormat format,
-             uint imageSize,
+             uint32 imageSize,
              void* data)
             => p_glCompressedTexSubImage3D(
                 target,
@@ -1439,38 +1439,38 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glCopyImageSubData_t(
-            uint srcName,
+            uint32 srcName,
             TextureTarget srcTarget,
-            int srcLevel,
-            int srcX,
-            int srcY,
-            int srcZ,
-            uint dstName,
+            int32 srcLevel,
+            int32 srcX,
+            int32 srcY,
+            int32 srcZ,
+            uint32 dstName,
             TextureTarget dstTarget,
-            int dstLevel,
-            int dstX,
-            int dstY,
-            int dstZ,
-            uint srcWidth,
-            uint srcHeight,
-            uint srcDepth);
+            int32 dstLevel,
+            int32 dstX,
+            int32 dstY,
+            int32 dstZ,
+            uint32 srcWidth,
+            uint32 srcHeight,
+            uint32 srcDepth);
         private static glCopyImageSubData_t p_glCopyImageSubData;
         public static void glCopyImageSubData(
-            uint srcName,
+            uint32 srcName,
             TextureTarget srcTarget,
-            int srcLevel,
-            int srcX,
-            int srcY,
-            int srcZ,
-            uint dstName,
+            int32 srcLevel,
+            int32 srcX,
+            int32 srcY,
+            int32 srcZ,
+            uint32 dstName,
             TextureTarget dstTarget,
-            int dstLevel,
-            int dstX,
-            int dstY,
-            int dstZ,
-            uint srcWidth,
-            uint srcHeight,
-            uint srcDepth) => p_glCopyImageSubData(
+            int32 dstLevel,
+            int32 dstX,
+            int32 dstY,
+            int32 dstZ,
+            uint32 srcWidth,
+            uint32 srcHeight,
+            uint32 srcDepth) => p_glCopyImageSubData(
                 srcName, srcTarget,
                 srcLevel, srcX, srcY, srcZ,
                 dstName, dstTarget,
@@ -1478,9 +1478,9 @@ namespace Sedulous.OpenGLBindings
                 srcWidth, srcHeight, srcDepth);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glStencilFuncSeparate_t(CullFaceMode face, StencilFunction func, int @ref, uint mask);
+        private delegate void glStencilFuncSeparate_t(CullFaceMode face, StencilFunction func, int32 @ref, uint32 mask);
         private static glStencilFuncSeparate_t p_glStencilFuncSeparate;
-        public static void glStencilFuncSeparate(CullFaceMode face, StencilFunction func, int @ref, uint mask)
+        public static void glStencilFuncSeparate(CullFaceMode face, StencilFunction func, int32 @ref, uint32 mask)
             => p_glStencilFuncSeparate(face, func, @ref, mask);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -1497,135 +1497,135 @@ namespace Sedulous.OpenGLBindings
             StencilOp dppass) => p_glStencilOpSeparate(face, sfail, dpfail, dppass);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glStencilMask_t(uint mask);
+        private delegate void glStencilMask_t(uint32 mask);
         private static glStencilMask_t p_glStencilMask;
-        public static void glStencilMask(uint mask) => p_glStencilMask(mask);
+        public static void glStencilMask(uint32 mask) => p_glStencilMask(mask);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glClearStencil_t(int s);
+        private delegate void glClearStencil_t(int32 s);
         private static glClearStencil_t p_glClearStencil;
-        public static void glClearStencil(int s) => p_glClearStencil(s);
+        public static void glClearStencil(int32 s) => p_glClearStencil(s);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetActiveUniformBlockiv_t(
-            uint program,
-            uint uniformBlockIndex,
+            uint32 program,
+            uint32 uniformBlockIndex,
             ActiveUniformBlockParameter pname,
-            int* @params);
+            int32* @params);
         private static glGetActiveUniformBlockiv_t p_glGetActiveUniformBlockiv;
         public static void glGetActiveUniformBlockiv(
-            uint program,
-            uint uniformBlockIndex,
+            uint32 program,
+            uint32 uniformBlockIndex,
             ActiveUniformBlockParameter pname,
-            int* @params) => p_glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, @params);
+            int32* @params) => p_glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetActiveUniformBlockName_t(
-            uint program,
-            uint uniformBlockIndex,
-            uint bufSize,
-            uint* length,
-            byte* uniformBlockName);
+            uint32 program,
+            uint32 uniformBlockIndex,
+            uint32 bufSize,
+            uint32* length,
+            uint8* uniformBlockName);
         private static glGetActiveUniformBlockName_t p_glGetActiveUniformBlockName;
         public static void glGetActiveUniformBlockName(
-            uint program,
-            uint uniformBlockIndex,
-            uint bufSize,
-            uint* length,
-            byte* uniformBlockName) => p_glGetActiveUniformBlockName(program, uniformBlockIndex, bufSize, length, uniformBlockName);
+            uint32 program,
+            uint32 uniformBlockIndex,
+            uint32 bufSize,
+            uint32* length,
+            uint8* uniformBlockName) => p_glGetActiveUniformBlockName(program, uniformBlockIndex, bufSize, length, uniformBlockName);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetActiveUniform_t(
-            uint program,
-            uint index,
-            uint bufSize,
-            uint* length,
-            int* size,
-            uint* type,
-            byte* name);
+            uint32 program,
+            uint32 index,
+            uint32 bufSize,
+            uint32* length,
+            int32* size,
+            uint32* type,
+            uint8* name);
         private static glGetActiveUniform_t p_glGetActiveUniform;
         public static void glGetActiveUniform(
-            uint program,
-            uint index,
-            uint bufSize,
-            uint* length,
-            int* size,
-            uint* type,
-            byte* name) => p_glGetActiveUniform(program, index, bufSize, length, size, type, name);
+            uint32 program,
+            uint32 index,
+            uint32 bufSize,
+            uint32* length,
+            int32* size,
+            uint32* type,
+            uint8* name) => p_glGetActiveUniform(program, index, bufSize, length, size, type, name);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetCompressedTexImage_t(TextureTarget target, int level, void* pixels);
+        private delegate void glGetCompressedTexImage_t(TextureTarget target, int32 level, void* pixels);
         private static glGetCompressedTexImage_t p_glGetCompressedTexImage;
-        public static void glGetCompressedTexImage(TextureTarget target, int level, void* pixels)
+        public static void glGetCompressedTexImage(TextureTarget target, int32 level, void* pixels)
             => p_glGetCompressedTexImage(target, level, pixels);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGetCompressedTextureImage_t(uint texture, int level, uint bufSize, void* pixels);
+        private delegate void glGetCompressedTextureImage_t(uint32 texture, int32 level, uint32 bufSize, void* pixels);
         private static glGetCompressedTextureImage_t p_glGetCompressedTextureImage;
-        public static void glGetCompressedTextureImage(uint texture, int level, uint bufSize, void* pixels)
+        public static void glGetCompressedTextureImage(uint32 texture, int32 level, uint32 bufSize, void* pixels)
             => p_glGetCompressedTextureImage(texture, level, bufSize, pixels);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetTexLevelParameteriv_t(
             TextureTarget target,
-            int level,
+            int32 level,
             GetTextureParameter pname,
-            int* @params);
+            int32* @params);
         private static glGetTexLevelParameteriv_t p_glGetTexLevelParameteriv;
         public static void glGetTexLevelParameteriv(
             TextureTarget target,
-            int level,
+            int32 level,
             GetTextureParameter pname,
-            int* @params) => p_glGetTexLevelParameteriv(target, level, pname, @params);
+            int32* @params) => p_glGetTexLevelParameteriv(target, level, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glFramebufferRenderbuffer_t(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             RenderbufferTarget renderbuffertarget,
-            uint renderbuffer);
+            uint32 renderbuffer);
         private static glFramebufferRenderbuffer_t p_glFramebufferRenderbuffer;
         public static void glFramebufferRenderbuffer(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             RenderbufferTarget renderbuffertarget,
-            uint renderbuffer)
+            uint32 renderbuffer)
             => p_glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glRenderbufferStorage_t(
             RenderbufferTarget target,
-            uint internalformat,
-            uint width,
-            uint height);
+            uint32 internalformat,
+            uint32 width,
+            uint32 height);
         private static glRenderbufferStorage_t p_glRenderbufferStorage;
         public static void glRenderbufferStorage(
             RenderbufferTarget target,
-            uint internalFormat,
-            uint width,
-            uint height) => p_glRenderbufferStorage(target, internalFormat, width, height);
+            uint32 internalFormat,
+            uint32 width,
+            uint32 height) => p_glRenderbufferStorage(target, internalFormat, width, height);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glGetRenderbufferParameteriv_t(
             RenderbufferTarget target,
             RenderbufferPname pname,
-            out int parameters);
+            out int32 parameters);
         private static glGetRenderbufferParameteriv_t p_glGetRenderbufferParameteriv;
         public static void glGetRenderbufferParameteriv(
             RenderbufferTarget target,
             RenderbufferPname pname,
-            out int parameters) => p_glGetRenderbufferParameteriv(target, pname, out parameters);
+            out int32 parameters) => p_glGetRenderbufferParameteriv(target, pname, out parameters);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenRenderbuffers_t(uint count, out uint names);
+        private delegate void glGenRenderbuffers_t(uint32 count, out uint32 names);
         private static glGenRenderbuffers_t p_glGenRenderbuffers;
-        public static void glGenRenderbuffers(uint count, out uint names)
+        public static void glGenRenderbuffers(uint32 count, out uint32 names)
             => p_glGenRenderbuffers(count, out names);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glBindRenderbuffer_t(RenderbufferTarget bindPoint, uint name);
+        private delegate void glBindRenderbuffer_t(RenderbufferTarget bindPoint, uint32 name);
         private static glBindRenderbuffer_t p_glBindRenderbuffer;
-        public static void glBindRenderbuffer(RenderbufferTarget bindPoint, uint name)
+        public static void glBindRenderbuffer(RenderbufferTarget bindPoint, uint32 name)
             => p_glBindRenderbuffer(bindPoint, name);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -1634,9 +1634,9 @@ namespace Sedulous.OpenGLBindings
         public static void glGenerateMipmap(TextureTarget target) => p_glGenerateMipmap(target);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glGenerateTextureMipmap_t(uint texture);
+        private delegate void glGenerateTextureMipmap_t(uint32 texture);
         private static glGenerateTextureMipmap_t p_glGenerateTextureMipmap;
-        public static void glGenerateTextureMipmap(uint texture) => p_glGenerateTextureMipmap(texture);
+        public static void glGenerateTextureMipmap(uint32 texture) => p_glGenerateTextureMipmap(texture);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glClipControl_t(ClipControlOrigin origin, ClipControlDepthRange depth);
@@ -1649,13 +1649,13 @@ namespace Sedulous.OpenGLBindings
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             FramebufferParameterName pname,
-            int* @params);
+            int32* @params);
         private static glGetFramebufferAttachmentParameteriv_t p_glGetFramebufferAttachmentParameteriv;
         public static void glGetFramebufferAttachmentParameteriv(
             FramebufferTarget target,
             GLFramebufferAttachment attachment,
             FramebufferParameterName pname,
-            int* @params) => p_glGetFramebufferAttachmentParameteriv(target, attachment, pname, @params);
+            int32* @params) => p_glGetFramebufferAttachmentParameteriv(target, attachment, pname, @params);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glFlush_t();
@@ -1668,9 +1668,9 @@ namespace Sedulous.OpenGLBindings
         public static void glFinish() => p_glFinish();
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glPushDebugGroup_t(DebugSource source, uint id, uint length, byte* message);
+        private delegate void glPushDebugGroup_t(DebugSource source, uint32 id, uint32 length, uint8* message);
         private static glPushDebugGroup_t p_glPushDebugGroup;
-        public static void glPushDebugGroup(DebugSource source, uint id, uint length, byte* message)
+        public static void glPushDebugGroup(DebugSource source, uint32 id, uint32 length, uint8* message)
             => p_glPushDebugGroup(source, id, length, message);
 
         [UnmanagedFunctionPointer(CallConv)]
@@ -1682,28 +1682,28 @@ namespace Sedulous.OpenGLBindings
         private delegate void glDebugMessageInsert_t(
             DebugSource source,
             DebugType type,
-            uint id,
+            uint32 id,
             DebugSeverity severity,
-            uint length,
-            byte* message);
+            uint32 length,
+            uint8* message);
         private static glDebugMessageInsert_t p_glDebugMessageInsert;
         public static void glDebugMessageInsert(
             DebugSource source,
             DebugType type,
-            uint id,
+            uint32 id,
             DebugSeverity severity,
-            uint length,
-            byte* message) => p_glDebugMessageInsert(source, type, id, severity, length, message);
+            uint32 length,
+            uint8* message) => p_glDebugMessageInsert(source, type, id, severity, length, message);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glInsertEventMarker_t(uint length, byte* marker);
+        private delegate void glInsertEventMarker_t(uint32 length, uint8* marker);
         private static glInsertEventMarker_t p_glInsertEventMarker;
-        public static void glInsertEventMarker(uint length, byte* marker) => p_glInsertEventMarker(length, marker);
+        public static void glInsertEventMarker(uint32 length, uint8* marker) => p_glInsertEventMarker(length, marker);
 
         [UnmanagedFunctionPointer(CallConv)]
-        private delegate void glPushGroupMarkerEXT_t(uint length, byte* marker);
+        private delegate void glPushGroupMarkerEXT_t(uint32 length, uint8* marker);
         private static glPushGroupMarkerEXT_t p_glPushGroupMarker;
-        public static void glPushGroupMarker(uint length, byte* marker) => p_glPushGroupMarker(length, marker);
+        public static void glPushGroupMarker(uint32 length, uint8* marker) => p_glPushGroupMarker(length, marker);
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glPopGroupMarkerEXT_t();
@@ -1712,19 +1712,19 @@ namespace Sedulous.OpenGLBindings
 
         [UnmanagedFunctionPointer(CallConv)]
         private delegate void glReadPixels_t(
-            int x,
-            int y,
-            uint width,
-            uint height,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height,
             GLPixelFormat format,
             GLPixelType type,
             void* data);
         private static glReadPixels_t p_glReadPixels;
         public static void glReadPixels(
-            int x,
-            int y,
-            uint width,
-            uint height,
+            int32 x,
+            int32 y,
+            uint32 width,
+            uint32 height,
             GLPixelFormat format,
             GLPixelType type,
             void* data) => p_glReadPixels(x, y, width, height, format, type, data);

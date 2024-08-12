@@ -65,7 +65,7 @@ namespace Sedulous.GAL.D3D11
             return new D3D11Texture(_device, ref description);
         }
 
-        protected override Texture CreateTextureCore(ulong nativeTexture, ref TextureDescription description)
+        protected override Texture CreateTextureCore(uint64 nativeTexture, ref TextureDescription description)
         {
             ID3D11Texture2D existingTexture = new ID3D11Texture2D((IntPtr)nativeTexture);
             return new D3D11Texture(existingTexture, description.Type, description.Format);

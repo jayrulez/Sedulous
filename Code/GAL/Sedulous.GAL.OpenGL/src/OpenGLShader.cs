@@ -19,9 +19,9 @@ namespace Sedulous.GAL.OpenGL
         public override string Name { get => _name; set { _name = value; _nameChanged = true; } }
         public override bool IsDisposed => _disposeRequested;
 
-        private uint _shader;
+        private uint32 _shader;
 
-        public uint Shader => _shader;
+        public uint32 Shader => _shader;
 
         public OpenGLShader(OpenGLGraphicsDevice gd, ShaderStages stage, StagingBlock stagingBlock, string entryPoint)
             : base(stage, entryPoint)
@@ -67,9 +67,9 @@ namespace Sedulous.GAL.OpenGL
             _shader = glCreateShader(_shaderType);
             CheckLastError();
 
-            byte* textPtr = (byte*)_stagingBlock.Data;
-            int length = (int)_stagingBlock.SizeInBytes;
-            byte** textsPtr = &textPtr;
+            uint8* textPtr = (uint8*)_stagingBlock.Data;
+            int32 length = (int32)_stagingBlock.SizeInBytes;
+            uint8** textsPtr = &textPtr;
 
             glShaderSource(_shader, 1, textsPtr, &length);
             CheckLastError();
@@ -77,23 +77,23 @@ namespace Sedulous.GAL.OpenGL
             glCompileShader(_shader);
             CheckLastError();
 
-            int compileStatus;
+            int32 compileStatus;
             glGetShaderiv(_shader, ShaderParameter.CompileStatus, &compileStatus);
             CheckLastError();
 
             if (compileStatus != 1)
             {
-                int infoLogLength;
+                int32 infoLogLength;
                 glGetShaderiv(_shader, ShaderParameter.InfoLogLength, &infoLogLength);
                 CheckLastError();
 
-                byte* infoLog = stackalloc byte[infoLogLength];
-                uint returnedInfoLength;
-                glGetShaderInfoLog(_shader, (uint)infoLogLength, &returnedInfoLength, infoLog);
+                uint8* infoLog = stackalloc uint8[infoLogLength];
+                uint32 returnedInfoLength;
+                glGetShaderInfoLog(_shader, (uint32)infoLogLength, &returnedInfoLength, infoLog);
                 CheckLastError();
 
                 string message = infoLog != null
-                    ? Encoding.UTF8.GetString(infoLog, (int)returnedInfoLength)
+                    ? Encoding.UTF8.GetString(infoLog, (int32)returnedInfoLength)
                     : "<null>";
 
                 throw new VeldridException($"Unable to compile shader code for shader [{_name}] of type {_shaderType}: {message}");

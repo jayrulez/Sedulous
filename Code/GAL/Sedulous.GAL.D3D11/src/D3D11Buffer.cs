@@ -15,11 +15,11 @@ namespace Sedulous.GAL.D3D11
             = new Dictionary<OffsetSizePair, ID3D11ShaderResourceView>();
         private readonly Dictionary<OffsetSizePair, ID3D11UnorderedAccessView> _uavs
             = new Dictionary<OffsetSizePair, ID3D11UnorderedAccessView>();
-        private readonly uint _structureByteStride;
+        private readonly uint32 _structureByteStride;
         private readonly bool _rawBuffer;
         private string _name;
 
-        public override uint SizeInBytes { get; }
+        public override uint32 SizeInBytes { get; }
 
         public override BufferUsage Usage { get; }
 
@@ -27,7 +27,7 @@ namespace Sedulous.GAL.D3D11
 
         public ID3D11Buffer Buffer => _buffer;
 
-        public D3D11Buffer(ID3D11Device device, uint sizeInBytes, BufferUsage usage, uint structureByteStride, bool rawBuffer)
+        public D3D11Buffer(ID3D11Device device, uint32 sizeInBytes, BufferUsage usage, uint32 structureByteStride, bool rawBuffer)
         {
             _device = device;
             SizeInBytes = sizeInBytes;
@@ -36,7 +36,7 @@ namespace Sedulous.GAL.D3D11
             _rawBuffer = rawBuffer;
 
             Vortice.Direct3D11.BufferDescription bd = new Vortice.Direct3D11.BufferDescription(
-                (int)sizeInBytes,
+                (int32)sizeInBytes,
                 D3D11Formats.VdToD3D11BindFlags(usage),
                 ResourceUsage.Default);
             if ((usage & BufferUsage.StructuredBufferReadOnly) == BufferUsage.StructuredBufferReadOnly
@@ -49,7 +49,7 @@ namespace Sedulous.GAL.D3D11
                 else
                 {
                     bd.MiscFlags = ResourceOptionFlags.BufferStructured;
-                    bd.StructureByteStride = (int)structureByteStride;
+                    bd.StructureByteStride = (int32)structureByteStride;
                 }
             }
             if ((usage & BufferUsage.IndirectBuffer) == BufferUsage.IndirectBuffer)
@@ -102,7 +102,7 @@ namespace Sedulous.GAL.D3D11
             _buffer.Dispose();
         }
 
-        internal ID3D11ShaderResourceView GetShaderResourceView(uint offset, uint size)
+        internal ID3D11ShaderResourceView GetShaderResourceView(uint32 offset, uint32 size)
         {
             lock (_accessViewLock)
             {
@@ -117,7 +117,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        internal ID3D11UnorderedAccessView GetUnorderedAccessView(uint offset, uint size)
+        internal ID3D11UnorderedAccessView GetUnorderedAccessView(uint32 offset, uint32 size)
         {
             lock (_accessViewLock)
             {
@@ -132,14 +132,14 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private ID3D11ShaderResourceView CreateShaderResourceView(uint offset, uint size)
+        private ID3D11ShaderResourceView CreateShaderResourceView(uint32 offset, uint32 size)
         {
             if (_rawBuffer)
             {
                 ShaderResourceViewDescription srvDesc = new ShaderResourceViewDescription(_buffer,
                     Format.R32_Typeless,
-                    (int)offset / 4,
-                    (int)size / 4,
+                    (int32)offset / 4,
+                    (int32)size / 4,
                     BufferExtendedShaderResourceViewFlags.Raw);
 
                 return _device.CreateShaderResourceView(_buffer, srvDesc);
@@ -150,20 +150,20 @@ namespace Sedulous.GAL.D3D11
                 {
                     ViewDimension = ShaderResourceViewDimension.Buffer
                 };
-                srvDesc.Buffer.NumElements = (int)(size / _structureByteStride);
-                srvDesc.Buffer.ElementOffset = (int)(offset / _structureByteStride);
+                srvDesc.Buffer.NumElements = (int32)(size / _structureByteStride);
+                srvDesc.Buffer.ElementOffset = (int32)(offset / _structureByteStride);
                 return _device.CreateShaderResourceView(_buffer, srvDesc);
             }
         }
 
-        private ID3D11UnorderedAccessView CreateUnorderedAccessView(uint offset, uint size)
+        private ID3D11UnorderedAccessView CreateUnorderedAccessView(uint32 offset, uint32 size)
         {
             if (_rawBuffer)
             {
                 UnorderedAccessViewDescription uavDesc = new UnorderedAccessViewDescription(_buffer,
                     Format.R32_Typeless,
-                    (int)offset / 4,
-                    (int)size / 4,
+                    (int32)offset / 4,
+                    (int32)size / 4,
                     BufferUnorderedAccessViewFlags.Raw);
 
                 return _device.CreateUnorderedAccessView(_buffer, uavDesc);
@@ -172,8 +172,8 @@ namespace Sedulous.GAL.D3D11
             {
                 UnorderedAccessViewDescription uavDesc = new UnorderedAccessViewDescription(_buffer,
                     Format.Unknown,
-                    (int)(offset / _structureByteStride),
-                    (int)(size / _structureByteStride)
+                    (int32)(offset / _structureByteStride),
+                    (int32)(size / _structureByteStride)
                     );
 
                 return _device.CreateUnorderedAccessView(_buffer, uavDesc);
@@ -182,17 +182,17 @@ namespace Sedulous.GAL.D3D11
 
         private struct OffsetSizePair : IEquatable<OffsetSizePair>
         {
-            public readonly uint Offset;
-            public readonly uint Size;
+            public readonly uint32 Offset;
+            public readonly uint32 Size;
 
-            public OffsetSizePair(uint offset, uint size)
+            public OffsetSizePair(uint32 offset, uint32 size)
             {
                 Offset = offset;
                 Size = size;
             }
 
             public bool Equals(OffsetSizePair other) => Offset.Equals(other.Offset) && Size.Equals(other.Size);
-            public override int GetHashCode() => HashHelper.Combine(Offset.GetHashCode(), Size.GetHashCode());
+            public override int32 GetHashCode() => HashHelper.Combine(Offset.GetHashCode(), Size.GetHashCode());
         }
     }
 }

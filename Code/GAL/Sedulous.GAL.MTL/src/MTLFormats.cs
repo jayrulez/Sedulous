@@ -264,7 +264,7 @@ namespace Sedulous.GAL.MTL
 
         internal static MTLTextureType VdToMTLTextureType(
             TextureType type,
-            uint arrayLayers,
+            uint32 arrayLayers,
             bool multiSampled,
             bool cube)
         {
@@ -534,7 +534,7 @@ namespace Sedulous.GAL.MTL
                 case VertexElementFormat.Short4:
                     return MTLVertexFormat.short4;
                 case VertexElementFormat.UInt1:
-                    return MTLVertexFormat.@uint;
+                    return MTLVertexFormat.@uint32;
                 case VertexElementFormat.UInt2:
                     return MTLVertexFormat.uint2;
                 case VertexElementFormat.UInt3:
@@ -542,7 +542,7 @@ namespace Sedulous.GAL.MTL
                 case VertexElementFormat.UInt4:
                     return MTLVertexFormat.uint4;
                 case VertexElementFormat.Int1:
-                    return MTLVertexFormat.@int;
+                    return MTLVertexFormat.@int32;
                 case VertexElementFormat.Int2:
                     return MTLVertexFormat.int2;
                 case VertexElementFormat.Int3:
@@ -599,7 +599,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        internal static uint GetMaxTexture1DWidth(MTLFeatureSet fs)
+        internal static uint32 GetMaxTexture1DWidth(MTLFeatureSet fs)
         {
             switch (fs)
             {
@@ -630,7 +630,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        internal static uint GetMaxTexture2DDimensions(MTLFeatureSet fs)
+        internal static uint32 GetMaxTexture2DDimensions(MTLFeatureSet fs)
         {
             switch (fs)
             {
@@ -661,7 +661,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        internal static uint GetMaxTextureCubeDimensions(MTLFeatureSet fs)
+        internal static uint32 GetMaxTextureCubeDimensions(MTLFeatureSet fs)
         {
             switch (fs)
             {
@@ -692,7 +692,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        internal static uint GetMaxTextureVolume(MTLFeatureSet fs)
+        internal static uint32 GetMaxTextureVolume(MTLFeatureSet fs)
         {
             return 2048;
         }

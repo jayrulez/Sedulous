@@ -9,10 +9,10 @@ namespace Sedulous.GAL.OpenGL
     internal class OpenGLTexture : Texture, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
-        private uint _texture;
-        private uint[] _framebuffers;
-        private uint[] _pbos;
-        private uint[] _pboSizes;
+        private uint32 _texture;
+        private uint32[] _framebuffers;
+        private uint32[] _pbos;
+        private uint32[] _pboSizes;
         private bool _disposeRequested;
         private bool _disposed;
 
@@ -21,7 +21,7 @@ namespace Sedulous.GAL.OpenGL
         
         public override string Name { get => _name; set { _name = value; _nameChanged = true; } }
 
-        public uint Texture => _texture;
+        public uint32 Texture => _texture;
 
         public OpenGLTexture(OpenGLGraphicsDevice gd, ref TextureDescription description)
         {
@@ -37,9 +37,9 @@ namespace Sedulous.GAL.OpenGL
             Type = description.Type;
             SampleCount = description.SampleCount;
 
-            _framebuffers = new uint[MipLevels * ArrayLayers];
-            _pbos = new uint[MipLevels * ArrayLayers];
-            _pboSizes = new uint[MipLevels * ArrayLayers];
+            _framebuffers = new uint32[MipLevels * ArrayLayers];
+            _pbos = new uint32[MipLevels * ArrayLayers];
+            _pboSizes = new uint32[MipLevels * ArrayLayers];
 
             GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
@@ -86,7 +86,7 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        public OpenGLTexture(OpenGLGraphicsDevice gd, uint nativeTexture, ref TextureDescription description)
+        public OpenGLTexture(OpenGLGraphicsDevice gd, uint32 nativeTexture, ref TextureDescription description)
         {
             _gd = gd;
             _texture = nativeTexture;
@@ -100,9 +100,9 @@ namespace Sedulous.GAL.OpenGL
             Type = description.Type;
             SampleCount = description.SampleCount;
 
-            _framebuffers = new uint[MipLevels * ArrayLayers];
-            _pbos = new uint[MipLevels * ArrayLayers];
-            _pboSizes = new uint[MipLevels * ArrayLayers];
+            _framebuffers = new uint32[MipLevels * ArrayLayers];
+            _pbos = new uint32[MipLevels * ArrayLayers];
+            _pboSizes = new uint32[MipLevels * ArrayLayers];
 
             GLPixelFormat = OpenGLFormats.VdToGLPixelFormat(Format);
             GLPixelType = OpenGLFormats.VdToGLPixelType(Format);
@@ -151,17 +151,17 @@ namespace Sedulous.GAL.OpenGL
             Created = true;
         }
 
-        public override uint Width { get; }
+        public override uint32 Width { get; }
 
-        public override uint Height { get; }
+        public override uint32 Height { get; }
 
-        public override uint Depth { get; }
+        public override uint32 Depth { get; }
 
         public override PixelFormat Format { get; }
 
-        public override uint MipLevels { get; }
+        public override uint32 MipLevels { get; }
 
-        public override uint ArrayLayers { get; }
+        public override uint32 ArrayLayers { get; }
 
         public override TextureUsage Usage { get; }
 
@@ -199,7 +199,7 @@ namespace Sedulous.GAL.OpenGL
             bool dsa = _gd.Extensions.ARB_DirectStateAccess;
             if (dsa)
             {
-                uint texture;
+                uint32 texture;
                 glCreateTextures(TextureTarget, 1, &texture);
                 CheckLastError();
                 _texture = texture;
@@ -237,8 +237,8 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
                         // Set size, load empty data into texture
                         glTexImage1D(
@@ -258,7 +258,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else if (TextureTarget == TextureTarget.Texture2D || TextureTarget == TextureTarget.Texture1DArray)
             {
-                uint heightOrArrayLayers = TextureTarget == TextureTarget.Texture2D ? Height : ArrayLayers;
+                uint32 heightOrArrayLayers = TextureTarget == TextureTarget.Texture2D ? Height : ArrayLayers;
                 if (dsa)
                 {
                     glTextureStorage2D(
@@ -281,9 +281,9 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    uint levelHeight = heightOrArrayLayers;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    uint32 levelHeight = heightOrArrayLayers;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
                         // Set size, load empty data into texture
                         glTexImage2D(
@@ -332,9 +332,9 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    uint levelHeight = Height;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    uint32 levelHeight = Height;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
                         glTexImage3D(
                             TextureTarget.Texture2DArray,
@@ -458,11 +458,11 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    uint levelHeight = Height;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    uint32 levelHeight = Height;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
-                        for (int face = 0; face < 6; face++)
+                        for (int32 face = 0; face < 6; face++)
                         {
                             // Set size, load empty data into texture
                             glTexImage2D(
@@ -509,11 +509,11 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    uint levelHeight = Height;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    uint32 levelHeight = Height;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
-                        for (int face = 0; face < 6; face++)
+                        for (int32 face = 0; face < 6; face++)
                         {
                             // Set size, load empty data into texture
                             glTexImage3D(
@@ -561,12 +561,12 @@ namespace Sedulous.GAL.OpenGL
                 }
                 else
                 {
-                    uint levelWidth = Width;
-                    uint levelHeight = Height;
-                    uint levelDepth = Depth;
-                    for (int currentLevel = 0; currentLevel < MipLevels; currentLevel++)
+                    uint32 levelWidth = Width;
+                    uint32 levelHeight = Height;
+                    uint32 levelDepth = Depth;
+                    for (int32 currentLevel = 0; currentLevel < MipLevels; currentLevel++)
                     {
-                        for (int face = 0; face < 6; face++)
+                        for (int32 face = 0; face < 6; face++)
                         {
                             // Set size, load empty data into texture
                             glTexImage3D(
@@ -597,12 +597,12 @@ namespace Sedulous.GAL.OpenGL
             Created = true;
         }
 
-        public uint GetFramebuffer(uint mipLevel, uint arrayLayer)
+        public uint32 GetFramebuffer(uint32 mipLevel, uint32 arrayLayer)
         {
             Debug.Assert(!FormatHelpers.IsCompressedFormat(Format));
             Debug.Assert(Created);
 
-            uint subresource = CalculateSubresource(mipLevel, arrayLayer);
+            uint32 subresource = CalculateSubresource(mipLevel, arrayLayer);
             if (_framebuffers[subresource] == 0)
             {
                 FramebufferTarget framebufferTarget = SampleCount == TextureSampleCount.Count1
@@ -624,7 +624,7 @@ namespace Sedulous.GAL.OpenGL
                         GLFramebufferAttachment.ColorAttachment0,
                         TextureTarget,
                         Texture,
-                        (int)mipLevel);
+                        (int32)mipLevel);
                     CheckLastError();
                 }
                 else if (TextureTarget == TextureTarget.Texture2DArray
@@ -635,8 +635,8 @@ namespace Sedulous.GAL.OpenGL
                         framebufferTarget,
                         GLFramebufferAttachment.ColorAttachment0,
                         Texture,
-                        (int)mipLevel,
-                        (int)arrayLayer);
+                        (int32)mipLevel,
+                        (int32)arrayLayer);
                     CheckLastError();
                 }
 
@@ -650,7 +650,7 @@ namespace Sedulous.GAL.OpenGL
             return _framebuffers[subresource];
         }
 
-        public uint GetPixelBuffer(uint subresource)
+        public uint32 GetPixelBuffer(uint32 subresource)
         {
             Debug.Assert(Created);
             if (_pbos[subresource] == 0)
@@ -661,7 +661,7 @@ namespace Sedulous.GAL.OpenGL
                 glBindBuffer(BufferTarget.CopyWriteBuffer, _pbos[subresource]);
                 CheckLastError();
 
-                uint dataSize = Width * Height * FormatSizeHelpers.GetSizeInBytes(Format);
+                uint32 dataSize = Width * Height * FormatSizeHelpers.GetSizeInBytes(Format);
                 glBufferData(
                     BufferTarget.CopyWriteBuffer,
                     (UIntPtr)dataSize,
@@ -674,7 +674,7 @@ namespace Sedulous.GAL.OpenGL
             return _pbos[subresource];
         }
 
-        public uint GetPixelBufferSize(uint subresource)
+        public uint32 GetPixelBufferSize(uint32 subresource)
         {
             Debug.Assert(Created);
             Debug.Assert(_pbos[subresource] != 0);
@@ -699,7 +699,7 @@ namespace Sedulous.GAL.OpenGL
                 glDeleteTextures(1, ref _texture);
                 CheckLastError();
 
-                for (int i = 0; i < _framebuffers.Length; i++)
+                for (int32 i = 0; i < _framebuffers.Length; i++)
                 {
                     if (_framebuffers[i] != 0)
                     {
@@ -707,7 +707,7 @@ namespace Sedulous.GAL.OpenGL
                     }
                 }
 
-                for (int i = 0; i < _pbos.Length; i++)
+                for (int32 i = 0; i < _pbos.Length; i++)
                 {
                     if (_pbos[i] != 0)
                     {

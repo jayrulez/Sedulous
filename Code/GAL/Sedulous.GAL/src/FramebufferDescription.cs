@@ -37,7 +37,7 @@ namespace Veldrid
                 DepthTarget = null;
             }
             ColorTargets = new FramebufferAttachmentDescription[colorTargets.Length];
-            for (int i = 0; i < colorTargets.Length; i++)
+            for (int32 i = 0; i < colorTargets.Length; i++)
             {
                 ColorTargets[i] = new FramebufferAttachmentDescription(colorTargets[i], 0);
             }
@@ -71,7 +71,7 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
             return HashHelper.Combine(DepthTarget.GetHashCode(), HashHelper.Array(ColorTargets));
         }

@@ -2,8 +2,8 @@ namespace Sedulous.GAL.MTL
 {
     internal struct MTLUnalignedBufferCopyInfo
     {
-        public uint SourceOffset;
-        public uint DestinationOffset;
-        public uint CopySize;
+        public uint32 SourceOffset;
+        public uint32 DestinationOffset;
+        public uint32 CopySize;
     }
 }

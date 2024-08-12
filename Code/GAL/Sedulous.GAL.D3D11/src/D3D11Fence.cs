@@ -30,10 +30,10 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        internal bool Wait(ulong nanosecondTimeout)
+        internal bool Wait(uint64 nanosecondTimeout)
         {
-            ulong timeout = Math.Min(int.MaxValue, nanosecondTimeout / 1_000_000);
-            return _mre.WaitOne((int)timeout);
+            uint64 timeout = Math.Min(int32.MaxValue, nanosecondTimeout / 1_000_000);
+            return _mre.WaitOne((int32)timeout);
         }
     }
 }

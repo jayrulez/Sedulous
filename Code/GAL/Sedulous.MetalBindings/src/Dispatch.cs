@@ -8,7 +8,7 @@ namespace Sedulous.MetalBindings
         private const string LibdispatchLocation = @"/usr/lib/system/libdispatch.dylib";
 
         [DllImport(LibdispatchLocation)]
-        public static extern DispatchQueue dispatch_get_global_queue(QualityOfServiceLevel identifier, ulong flags);
+        public static extern DispatchQueue dispatch_get_global_queue(QualityOfServiceLevel identifier, uint64 flags);
 
         [DllImport(LibdispatchLocation)]
         public static extern DispatchData dispatch_data_create(
@@ -21,7 +21,7 @@ namespace Sedulous.MetalBindings
         public static extern void dispatch_release(IntPtr nativePtr);
     }
 
-    public enum QualityOfServiceLevel : long
+    public enum QualityOfServiceLevel : int64
     {
         QOS_CLASS_USER_INTERACTIVE = 0x21,
         QOS_CLASS_USER_INITIATED = 0x19,

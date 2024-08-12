@@ -3,7 +3,7 @@
     /// <summary>
     /// Describes the number of samples to use in a <see cref="Texture"/>.
     /// </summary>
-    public enum TextureSampleCount : byte
+    public enum TextureSampleCount : uint8
     {
         /// <summary>
         /// 1 sample (no multi-sampling).

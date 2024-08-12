@@ -3,33 +3,33 @@
     internal struct NoAllocCopyTextureEntry
     {
         public readonly Tracked<Texture> Source;
-        public readonly uint SrcX;
-        public readonly uint SrcY;
-        public readonly uint SrcZ;
-        public readonly uint SrcMipLevel;
-        public readonly uint SrcBaseArrayLayer;
+        public readonly uint32 SrcX;
+        public readonly uint32 SrcY;
+        public readonly uint32 SrcZ;
+        public readonly uint32 SrcMipLevel;
+        public readonly uint32 SrcBaseArrayLayer;
         public readonly Tracked<Texture> Destination;
-        public readonly uint DstX;
-        public readonly uint DstY;
-        public readonly uint DstZ;
-        public readonly uint DstMipLevel;
-        public readonly uint DstBaseArrayLayer;
-        public readonly uint Width;
-        public readonly uint Height;
-        public readonly uint Depth;
-        public readonly uint LayerCount;
+        public readonly uint32 DstX;
+        public readonly uint32 DstY;
+        public readonly uint32 DstZ;
+        public readonly uint32 DstMipLevel;
+        public readonly uint32 DstBaseArrayLayer;
+        public readonly uint32 Width;
+        public readonly uint32 Height;
+        public readonly uint32 Depth;
+        public readonly uint32 LayerCount;
 
         public NoAllocCopyTextureEntry(
             Tracked<Texture> source,
-            uint srcX, uint srcY, uint srcZ,
-            uint srcMipLevel,
-            uint srcBaseArrayLayer,
+            uint32 srcX, uint32 srcY, uint32 srcZ,
+            uint32 srcMipLevel,
+            uint32 srcBaseArrayLayer,
             Tracked<Texture> destination,
-            uint dstX, uint dstY, uint dstZ,
-            uint dstMipLevel,
-            uint dstBaseArrayLayer,
-            uint width, uint height, uint depth,
-            uint layerCount)
+            uint32 dstX, uint32 dstY, uint32 dstZ,
+            uint32 dstMipLevel,
+            uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 layerCount)
         {
             Source = source;
             SrcX = srcX;

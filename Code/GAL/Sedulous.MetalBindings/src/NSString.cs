@@ -23,7 +23,7 @@ namespace Sedulous.MetalBindings
 
         public string GetValue()
         {
-            byte* utf8Ptr = bytePtr_objc_msgSend(NativePtr, sel_utf8String);
+            uint8* utf8Ptr = bytePtr_objc_msgSend(NativePtr, sel_utf8String);
             return MTLUtil.GetUtf8String(utf8Ptr);
         }
 

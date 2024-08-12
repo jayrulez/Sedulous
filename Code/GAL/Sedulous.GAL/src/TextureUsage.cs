@@ -6,7 +6,7 @@ namespace Veldrid
     /// A bitmask indicating how a <see cref="Texture"/> is permitted to be used.
     /// </summary>
     // [Flags]
-    public enum TextureUsage : byte
+    public enum TextureUsage : uint8
     {
         /// <summary>
         /// The Texture can be used as the target of a read-only <see cref="TextureView"/>, and can be accessed from a shader.
@@ -30,7 +30,7 @@ namespace Veldrid
         Cubemap = 1 << 4,
         /// <summary>
         /// The Texture is used as a read-write staging resource for uploading Texture data.
-        /// With this flag, a Texture can be mapped using the <see cref="GraphicsDevice.Map(MappableResource, MapMode, uint)"/>
+        /// With this flag, a Texture can be mapped using the <see cref="GraphicsDevice.Map(MappableResource, MapMode, uint32)"/>
         /// method.
         /// </summary>
         Staging = 1 << 5,

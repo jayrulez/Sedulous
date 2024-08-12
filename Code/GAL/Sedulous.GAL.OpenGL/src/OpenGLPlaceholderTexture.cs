@@ -2,13 +2,13 @@
 {
     internal class OpenGLPlaceholderTexture : Texture
     {
-        private uint _height;
-        private uint _width;
+        private uint32 _height;
+        private uint32 _width;
         private bool _disposed;
 
         public OpenGLPlaceholderTexture(
-            uint width,
-            uint height,
+            uint32 width,
+            uint32 height,
             PixelFormat format,
             TextureUsage usage,
             TextureSampleCount sampleCount)
@@ -20,7 +20,7 @@
             SampleCount = sampleCount;
         }
 
-        public void Resize(uint width, uint height)
+        public void Resize(uint32 width, uint32 height)
         {
             _width = width;
             _height = height;
@@ -28,15 +28,15 @@
 
         public override PixelFormat Format { get; }
 
-        public override uint Width => _width;
+        public override uint32 Width => _width;
 
-        public override uint Height => _height;
+        public override uint32 Height => _height;
 
-        public override uint Depth => 1;
+        public override uint32 Depth => 1;
 
-        public override uint MipLevels => 1;
+        public override uint32 MipLevels => 1;
 
-        public override uint ArrayLayers => 1;
+        public override uint32 ArrayLayers => 1;
 
         public override TextureUsage Usage { get; }
 

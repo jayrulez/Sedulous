@@ -12,18 +12,18 @@
         /// <summary>
         /// The target array layer.
         /// </summary>
-        public uint ArrayLayer { get; }
+        public uint32 ArrayLayer { get; }
         /// <summary>
         /// The target mip level.
         /// </summary>
-        public uint MipLevel { get; }
+        public uint32 MipLevel { get; }
 
         /// <summary>
         /// Constructs a new FramebufferAttachment.
         /// </summary>
         /// <param name="target">The target <see cref="Texture"/> which will be rendered to.</param>
         /// <param name="arrayLayer">The target array layer.</param>
-        public FramebufferAttachment(Texture target, uint arrayLayer)
+        public FramebufferAttachment(Texture target, uint32 arrayLayer)
         {
             Target = target;
             ArrayLayer = arrayLayer;
@@ -36,7 +36,7 @@
         /// <param name="target">The target <see cref="Texture"/> which will be rendered to.</param>
         /// <param name="arrayLayer">The target array layer.</param>
         /// <param name="mipLevel">The target mip level.</param>
-        public FramebufferAttachment(Texture target, uint arrayLayer, uint mipLevel)
+        public FramebufferAttachment(Texture target, uint32 arrayLayer, uint32 mipLevel)
         {
             Target = target;
             ArrayLayer = arrayLayer;

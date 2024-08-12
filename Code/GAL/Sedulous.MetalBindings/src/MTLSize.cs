@@ -10,7 +10,7 @@ namespace Sedulous.MetalBindings
         public UIntPtr Height;
         public UIntPtr Depth;
 
-        public MTLSize(uint width, uint height, uint depth)
+        public MTLSize(uint32 width, uint32 height, uint32 depth)
         {
             Width = (UIntPtr)width;
             Height = (UIntPtr)height;

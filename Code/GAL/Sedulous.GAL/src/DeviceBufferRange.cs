@@ -16,11 +16,11 @@ namespace Veldrid
         /// <summary>
         /// The offset, in bytes, from the beginning of the buffer that this range starts at.
         /// </summary>
-        public uint Offset;
+        public uint32 Offset;
         /// <summary>
         /// The total number of bytes that this range encompasses.
         /// </summary>
-        public uint SizeInBytes;
+        public uint32 SizeInBytes;
 
         /// <summary>
         /// Constructs a new <see cref="DeviceBufferRange"/>.
@@ -28,7 +28,7 @@ namespace Veldrid
         /// <param name="buffer">The underlying <see cref="DeviceBuffer"/> that this range will refer to.</param>
         /// <param name="offset">The offset, in bytes, from the beginning of the buffer that this range will start at.</param>
         /// <param name="sizeInBytes">The total number of bytes that this range will encompass.</param>
-        public DeviceBufferRange(DeviceBuffer buffer, uint offset, uint sizeInBytes)
+        public DeviceBufferRange(DeviceBuffer buffer, uint32 offset, uint32 sizeInBytes)
         {
             Buffer = buffer;
             Offset = offset;
@@ -49,9 +49,9 @@ namespace Veldrid
         /// Returns the hash code for this instance.
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
-        public override int GetHashCode()
+        public override int32 GetHashCode()
         {
-            int bufferHash = Buffer?.GetHashCode() ?? 0;
+            int32 bufferHash = Buffer?.GetHashCode() ?? 0;
             return HashHelper.Combine(bufferHash, Offset.GetHashCode(), SizeInBytes.GetHashCode());
         }
     }

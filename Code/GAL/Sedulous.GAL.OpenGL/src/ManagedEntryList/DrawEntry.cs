@@ -2,14 +2,14 @@
 {
     internal class DrawEntry : OpenGLCommandEntry
     {
-        public uint VertexCount;
-        public uint InstanceCount;
-        public uint VertexStart;
-        public uint InstanceStart;
+        public uint32 VertexCount;
+        public uint32 InstanceCount;
+        public uint32 VertexStart;
+        public uint32 InstanceStart;
 
         public DrawEntry() { }
 
-        public DrawEntry(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        public DrawEntry(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             VertexCount = vertexCount;
             InstanceCount = instanceCount;
@@ -17,7 +17,7 @@
             InstanceStart = instanceStart;
         }
 
-        public DrawEntry Init(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        public DrawEntry Init(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             VertexCount = vertexCount;
             InstanceCount = instanceCount;

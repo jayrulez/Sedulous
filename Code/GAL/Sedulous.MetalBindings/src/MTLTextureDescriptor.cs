@@ -12,13 +12,13 @@ namespace Sedulous.MetalBindings
         public MTLTextureType textureType
         {
             get => (MTLTextureType)uint_objc_msgSend(NativePtr, sel_textureType);
-            set => objc_msgSend(NativePtr, sel_setTextureType, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setTextureType, (uint32)value);
         }
 
         public MTLPixelFormat pixelFormat
         {
             get => (MTLPixelFormat)uint_objc_msgSend(NativePtr, Selectors.pixelFormat);
-            set => objc_msgSend(NativePtr, Selectors.setPixelFormat, (uint)value);
+            set => objc_msgSend(NativePtr, Selectors.setPixelFormat, (uint32)value);
         }
 
         public UIntPtr width
@@ -60,25 +60,25 @@ namespace Sedulous.MetalBindings
         public MTLResourceOptions resourceOptions
         {
             get => (MTLResourceOptions)uint_objc_msgSend(NativePtr, sel_resourceOptions);
-            set => objc_msgSend(NativePtr, sel_setResourceOptions, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setResourceOptions, (uint32)value);
         }
 
         public MTLCPUCacheMode cpuCacheMode
         {
             get => (MTLCPUCacheMode)uint_objc_msgSend(NativePtr, sel_cpuCacheMode);
-            set => objc_msgSend(NativePtr, sel_setCpuCacheMode, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setCpuCacheMode, (uint32)value);
         }
 
         public MTLStorageMode storageMode
         {
             get => (MTLStorageMode)uint_objc_msgSend(NativePtr, sel_storageMode);
-            set => objc_msgSend(NativePtr, sel_setStorageMode, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setStorageMode, (uint32)value);
         }
 
         public MTLTextureUsage textureUsage
         {
             get => (MTLTextureUsage)uint_objc_msgSend(NativePtr, sel_textureUsage);
-            set => objc_msgSend(NativePtr, sel_setTextureUsage, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setTextureUsage, (uint32)value);
         }
 
         private static readonly Selector sel_textureType = "textureType";

@@ -2,10 +2,10 @@
 {
     internal class SetVertexBufferEntry : OpenGLCommandEntry
     {
-        public uint Index;
+        public uint32 Index;
         public DeviceBuffer Buffer;
 
-        public SetVertexBufferEntry(uint index, DeviceBuffer buffer)
+        public SetVertexBufferEntry(uint32 index, DeviceBuffer buffer)
         {
             Index = index;
             Buffer = buffer;
@@ -13,7 +13,7 @@
 
         public SetVertexBufferEntry() { }
 
-        public SetVertexBufferEntry Init(uint index, DeviceBuffer buffer)
+        public SetVertexBufferEntry Init(uint32 index, DeviceBuffer buffer)
         {
             Index = index;
             Buffer = buffer;

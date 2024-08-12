@@ -12,37 +12,37 @@ namespace Sedulous.MetalBindings
         public MTLSamplerAddressMode rAddressMode
         {
             get => (MTLSamplerAddressMode)uint_objc_msgSend(NativePtr, sel_rAddressMode);
-            set => objc_msgSend(NativePtr, sel_setRAddressMode, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setRAddressMode, (uint32)value);
         }
 
         public MTLSamplerAddressMode sAddressMode
         {
             get => (MTLSamplerAddressMode)uint_objc_msgSend(NativePtr, sel_sAddressMode);
-            set => objc_msgSend(NativePtr, sel_setSAddressMode, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setSAddressMode, (uint32)value);
         }
 
         public MTLSamplerAddressMode tAddressMode
         {
             get => (MTLSamplerAddressMode)uint_objc_msgSend(NativePtr, sel_tAddressMode);
-            set => objc_msgSend(NativePtr, sel_setTAddressMode, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setTAddressMode, (uint32)value);
         }
 
         public MTLSamplerMinMagFilter minFilter
         {
             get => (MTLSamplerMinMagFilter)uint_objc_msgSend(NativePtr, sel_minFilter);
-            set => objc_msgSend(NativePtr, sel_setMinFilter, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setMinFilter, (uint32)value);
         }
 
         public MTLSamplerMinMagFilter magFilter
         {
             get => (MTLSamplerMinMagFilter)uint_objc_msgSend(NativePtr, sel_magFilter);
-            set => objc_msgSend(NativePtr, sel_setMagFilter, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setMagFilter, (uint32)value);
         }
 
         public MTLSamplerMipFilter mipFilter
         {
             get => (MTLSamplerMipFilter)uint_objc_msgSend(NativePtr, sel_mipFilter);
-            set => objc_msgSend(NativePtr, sel_setMipFilter, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setMipFilter, (uint32)value);
         }
 
         public float lodMinClamp
@@ -72,13 +72,13 @@ namespace Sedulous.MetalBindings
         public MTLCompareFunction compareFunction
         {
             get => (MTLCompareFunction)uint_objc_msgSend(NativePtr, sel_compareFunction);
-            set => objc_msgSend(NativePtr, sel_setCompareFunction, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setCompareFunction, (uint32)value);
         }
 
         public MTLSamplerBorderColor borderColor
         {
             get => (MTLSamplerBorderColor)uint_objc_msgSend(NativePtr, sel_borderColor);
-            set => objc_msgSend(NativePtr, sel_setBorderColor, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setBorderColor, (uint32)value);
         }
 
         private static readonly Selector sel_rAddressMode = "rAddressMode";

@@ -113,7 +113,7 @@ namespace Sedulous.GAL.VK
 
             lock (_commandBufferListLock)
             {
-                for (int i = 0; i < _submittedCommandBuffers.Count; i++)
+                for (int32 i = 0; i < _submittedCommandBuffers.Count; i++)
                 {
                     VkCommandBuffer submittedCB = _submittedCommandBuffers[i];
                     if (submittedCB == completedCB)
@@ -171,7 +171,7 @@ namespace Sedulous.GAL.VK
             ClearSets(_currentComputeResourceSets);
         }
 
-        private protected override void ClearColorTargetCore(uint index, RgbaFloat clearColor)
+        private protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
         {
             VkClearValue clearValue = new VkClearValue
             {
@@ -187,7 +187,7 @@ namespace Sedulous.GAL.VK
                     clearValue = clearValue
                 };
 
-                Texture colorTex = _currentFramebuffer.ColorTargets[(int)index].Target;
+                Texture colorTex = _currentFramebuffer.ColorTargets[(int32)index].Target;
                 VkClearRect clearRect = new VkClearRect
                 {
                     baseArrayLayer = 0,
@@ -205,7 +205,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void ClearDepthStencilCore(float depth, byte stencil)
+        private protected override void ClearDepthStencilCore(float depth, uint8 stencil)
         {
             VkClearValue clearValue = new VkClearValue { depthStencil = new VkClearDepthStencilValue(depth, stencil) };
 
@@ -220,8 +220,8 @@ namespace Sedulous.GAL.VK
                     clearValue = clearValue
                 };
 
-                uint renderableWidth = _currentFramebuffer.RenderableWidth;
-                uint renderableHeight = _currentFramebuffer.RenderableHeight;
+                uint32 renderableWidth = _currentFramebuffer.RenderableWidth;
+                uint32 renderableHeight = _currentFramebuffer.RenderableHeight;
                 if (renderableWidth > 0 && renderableHeight > 0)
                 {
                     VkClearRect clearRect = new VkClearRect
@@ -241,19 +241,19 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void DrawCore(uint vertexCount, uint instanceCount, uint vertexStart, uint instanceStart)
+        private protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             PreDrawCommand();
             vkCmdDraw(_cb, vertexCount, instanceCount, vertexStart, instanceStart);
         }
 
-        private protected override void DrawIndexedCore(uint indexCount, uint instanceCount, uint indexStart, int vertexOffset, uint instanceStart)
+        private protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             PreDrawCommand();
             vkCmdDrawIndexed(_cb, indexCount, instanceCount, indexStart, vertexOffset, instanceStart);
         }
 
-        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             PreDrawCommand();
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(indirectBuffer);
@@ -261,7 +261,7 @@ namespace Sedulous.GAL.VK
             vkCmdDrawIndirect(_cb, vkBuffer.DeviceBuffer, offset, drawCount, stride);
         }
 
-        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        protected override void DrawIndexedIndirectCore(DeviceBuffer indirectBuffer, uint32 offset, uint32 drawCount, uint32 stride)
         {
             PreDrawCommand();
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(indirectBuffer);
@@ -287,19 +287,19 @@ namespace Sedulous.GAL.VK
         private void FlushNewResourceSets(
             BoundResourceSetInfo[] resourceSets,
             bool[] resourceSetsChanged,
-            uint resourceSetCount,
+            uint32 resourceSetCount,
             VkPipelineBindPoint bindPoint,
             VkPipelineLayout pipelineLayout)
         {
             VKPipeline pipeline = bindPoint == VkPipelineBindPoint.Graphics ? _currentGraphicsPipeline : _currentComputePipeline;
 
-            VkDescriptorSet* descriptorSets = stackalloc VkDescriptorSet[(int)resourceSetCount];
-            uint* dynamicOffsets = stackalloc uint[pipeline.DynamicOffsetsCount];
-            uint currentBatchCount = 0;
-            uint currentBatchFirstSet = 0;
-            uint currentBatchDynamicOffsetCount = 0;
+            VkDescriptorSet* descriptorSets = stackalloc VkDescriptorSet[(int32)resourceSetCount];
+            uint32* dynamicOffsets = stackalloc uint32[pipeline.DynamicOffsetsCount];
+            uint32 currentBatchCount = 0;
+            uint32 currentBatchFirstSet = 0;
+            uint32 currentBatchDynamicOffsetCount = 0;
 
-            for (uint currentSlot = 0; currentSlot < resourceSetCount; currentSlot++)
+            for (uint32 currentSlot = 0; currentSlot < resourceSetCount; currentSlot++)
             {
                 bool batchEnded = !resourceSetsChanged[currentSlot] || currentSlot == resourceSetCount - 1;
 
@@ -311,7 +311,7 @@ namespace Sedulous.GAL.VK
                     currentBatchCount += 1;
 
                     ref SmallFixedOrDynamicArray curSetOffsets = ref resourceSets[currentSlot].Offsets;
-                    for (uint i = 0; i < curSetOffsets.Count; i++)
+                    for (uint32 i = 0; i < curSetOffsets.Count; i++)
                     {
                         dynamicOffsets[currentBatchDynamicOffsetCount] = curSetOffsets.Get(i);
                         currentBatchDynamicOffsetCount += 1;
@@ -319,7 +319,7 @@ namespace Sedulous.GAL.VK
 
                     // Increment ref count on first use of a set.
                     _currentStagingInfo.Resources.Add(vkSet.RefCount);
-                    for (int i = 0; i < vkSet.RefCounts.Count; i++)
+                    for (int32 i = 0; i < vkSet.RefCounts.Count; i++)
                     {
                         _currentStagingInfo.Resources.Add(vkSet.RefCounts[i]);
                     }
@@ -349,14 +349,14 @@ namespace Sedulous.GAL.VK
 
         private void TransitionImages(List<VKTexture> sampledTextures, VkImageLayout layout)
         {
-            for (int i = 0; i < sampledTextures.Count; i++)
+            for (int32 i = 0; i < sampledTextures.Count; i++)
             {
                 VKTexture tex = sampledTextures[i];
                 tex.TransitionImageLayout(_cb, 0, tex.MipLevels, 0, tex.ActualArrayLayers, layout);
             }
         }
 
-        public override void Dispatch(uint groupCountX, uint groupCountY, uint groupCountZ)
+        public override void Dispatch(uint32 groupCountX, uint32 groupCountY, uint32 groupCountZ)
         {
             PreDispatchCommand();
 
@@ -367,14 +367,14 @@ namespace Sedulous.GAL.VK
         {
             EnsureNoRenderPass();
 
-            for (uint currentSlot = 0; currentSlot < _currentComputePipeline.ResourceSetCount; currentSlot++)
+            for (uint32 currentSlot = 0; currentSlot < _currentComputePipeline.ResourceSetCount; currentSlot++)
             {
                 VKResourceSet vkSet = Util.AssertSubtype<ResourceSet, VKResourceSet>(
                     _currentComputeResourceSets[currentSlot].Set);
 
                 TransitionImages(vkSet.SampledTextures, VkImageLayout.ShaderReadOnlyOptimal);
                 TransitionImages(vkSet.StorageTextures, VkImageLayout.General);
-                for (int texIdx = 0; texIdx < vkSet.StorageTextures.Count; texIdx++)
+                for (int32 texIdx = 0; texIdx < vkSet.StorageTextures.Count; texIdx++)
                 {
                     VKTexture storageTex = vkSet.StorageTextures[texIdx];
                     if ((storageTex.Usage & TextureUsage.Sampled) != 0)
@@ -392,7 +392,7 @@ namespace Sedulous.GAL.VK
                 _currentComputePipeline.PipelineLayout);
         }
 
-        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint offset)
+        protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint32 offset)
         {
             PreDispatchCommand();
 
@@ -486,8 +486,8 @@ namespace Sedulous.GAL.VK
             _currentFramebuffer = vkFB;
             _currentFramebufferEverActive = false;
             _newFramebuffer = true;
-            Util.EnsureArrayMinimumSize(ref _scissorRects, Math.Max(1, (uint)vkFB.ColorTargets.Count));
-            uint clearValueCount = (uint)vkFB.ColorTargets.Count;
+            Util.EnsureArrayMinimumSize(ref _scissorRects, Math.Max(1, (uint32)vkFB.ColorTargets.Count));
+            uint32 clearValueCount = (uint32)vkFB.ColorTargets.Count;
             Util.EnsureArrayMinimumSize(ref _clearValues, clearValueCount + 1); // Leave an extra space for the depth value (tracked separately).
             Util.ClearArray(_validColorClearValues);
             Util.EnsureArrayMinimumSize(ref _validColorClearValues, clearValueCount);
@@ -521,11 +521,11 @@ namespace Sedulous.GAL.VK
             Debug.Assert(_currentFramebuffer != null);
             _currentFramebufferEverActive = true;
 
-            uint attachmentCount = _currentFramebuffer.AttachmentCount;
+            uint32 attachmentCount = _currentFramebuffer.AttachmentCount;
             bool haveAnyAttachments = _currentFramebuffer.ColorTargets.Count > 0 || _currentFramebuffer.DepthTarget != null;
             bool haveAllClearValues = _depthClearValue.HasValue || _currentFramebuffer.DepthTarget == null;
             bool haveAnyClearValues = _depthClearValue.HasValue;
-            for (int i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
+            for (int32 i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
             {
                 if (!_validColorClearValues[i])
                 {
@@ -553,11 +553,11 @@ namespace Sedulous.GAL.VK
                 {
                     if (_depthClearValue.HasValue)
                     {
-                        ClearDepthStencilCore(_depthClearValue.Value.depthStencil.depth, (byte)_depthClearValue.Value.depthStencil.stencil);
+                        ClearDepthStencilCore(_depthClearValue.Value.depthStencil.depth, (uint8)_depthClearValue.Value.depthStencil.stencil);
                         _depthClearValue = null;
                     }
 
-                    for (uint i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
+                    for (uint32 i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
                     {
                         if (_validColorClearValues[i])
                         {
@@ -617,16 +617,16 @@ namespace Sedulous.GAL.VK
                 null);
         }
 
-        private protected override void SetVertexBufferCore(uint index, DeviceBuffer buffer, uint offset)
+        private protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(buffer);
             Vulkan.VkBuffer deviceBuffer = vkBuffer.DeviceBuffer;
-            ulong offset64 = offset;
+            uint64 offset64 = offset;
             vkCmdBindVertexBuffers(_cb, index, 1, ref deviceBuffer, ref offset64);
             _currentStagingInfo.Resources.Add(vkBuffer.RefCount);
         }
 
-        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint offset)
+        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(buffer);
             vkCmdBindIndexBuffer(_cb, vkBuffer.DeviceBuffer, offset, VKFormats.VdToVkIndexFormat(format));
@@ -665,7 +665,7 @@ namespace Sedulous.GAL.VK
             Util.ClearArray(boundSets);
         }
 
-        protected override void SetGraphicsResourceSetCore(uint slot, ResourceSet rs, uint dynamicOffsetsCount, ref uint dynamicOffsets)
+        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
         {
             if (!_currentGraphicsResourceSets[slot].Equals(rs, dynamicOffsetsCount, ref dynamicOffsets))
             {
@@ -676,7 +676,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        protected override void SetComputeResourceSetCore(uint slot, ResourceSet rs, uint dynamicOffsetsCount, ref uint dynamicOffsets)
+        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
         {
             if (!_currentComputeResourceSets[slot].Equals(rs, dynamicOffsetsCount, ref dynamicOffsets))
             {
@@ -687,11 +687,11 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        public override void SetScissorRect(uint index, uint x, uint y, uint width, uint height)
+        public override void SetScissorRect(uint32 index, uint32 x, uint32 y, uint32 width, uint32 height)
         {
             if (index == 0 || _gd.Features.MultipleViewports)
             {
-                VkRect2D scissor = new VkRect2D((int)x, (int)y, (int)width, (int)height);
+                VkRect2D scissor = new VkRect2D((int32)x, (int32)y, (int32)width, (int32)height);
                 if (_scissorRects[index] != scissor)
                 {
                     _scissorRects[index] = scissor;
@@ -700,7 +700,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        public override void SetViewport(uint index, ref Viewport viewport)
+        public override void SetViewport(uint32 index, ref Viewport viewport)
         {
             if (index == 0 || _gd.Features.MultipleViewports)
             {
@@ -725,7 +725,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
         {
             VKBuffer stagingBuffer = GetStagingBuffer(sizeInBytes);
             _gd.UpdateBuffer(stagingBuffer, 0, source, sizeInBytes);
@@ -734,10 +734,10 @@ namespace Sedulous.GAL.VK
 
         protected override void CopyBufferCore(
             DeviceBuffer source,
-            uint sourceOffset,
+            uint32 sourceOffset,
             DeviceBuffer destination,
-            uint destinationOffset,
-            uint sizeInBytes)
+            uint32 destinationOffset,
+            uint32 sizeInBytes)
         {
             EnsureNoRenderPass();
 
@@ -777,15 +777,15 @@ namespace Sedulous.GAL.VK
 
         protected override void CopyTextureCore(
             Texture source,
-            uint srcX, uint srcY, uint srcZ,
-            uint srcMipLevel,
-            uint srcBaseArrayLayer,
+            uint32 srcX, uint32 srcY, uint32 srcZ,
+            uint32 srcMipLevel,
+            uint32 srcBaseArrayLayer,
             Texture destination,
-            uint dstX, uint dstY, uint dstZ,
-            uint dstMipLevel,
-            uint dstBaseArrayLayer,
-            uint width, uint height, uint depth,
-            uint layerCount)
+            uint32 dstX, uint32 dstY, uint32 dstZ,
+            uint32 dstMipLevel,
+            uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 layerCount)
         {
             EnsureNoRenderPass();
             CopyTextureCore_VkCommandBuffer(
@@ -803,15 +803,15 @@ namespace Sedulous.GAL.VK
         internal static void CopyTextureCore_VkCommandBuffer(
             VkCommandBuffer cb,
             Texture source,
-            uint srcX, uint srcY, uint srcZ,
-            uint srcMipLevel,
-            uint srcBaseArrayLayer,
+            uint32 srcX, uint32 srcY, uint32 srcZ,
+            uint32 srcMipLevel,
+            uint32 srcBaseArrayLayer,
             Texture destination,
-            uint dstX, uint dstY, uint dstZ,
-            uint dstMipLevel,
-            uint dstBaseArrayLayer,
-            uint width, uint height, uint depth,
-            uint layerCount)
+            uint32 dstX, uint32 dstY, uint32 dstZ,
+            uint32 dstMipLevel,
+            uint32 dstBaseArrayLayer,
+            uint32 width, uint32 height, uint32 depth,
+            uint32 layerCount)
         {
             VKTexture srcVkTexture = Util.AssertSubtype<Texture, VKTexture>(source);
             VKTexture dstVkTexture = Util.AssertSubtype<Texture, VKTexture>(destination);
@@ -839,8 +839,8 @@ namespace Sedulous.GAL.VK
 
                 VkImageCopy region = new VkImageCopy
                 {
-                    srcOffset = new VkOffset3D { x = (int)srcX, y = (int)srcY, z = (int)srcZ },
-                    dstOffset = new VkOffset3D { x = (int)dstX, y = (int)dstY, z = (int)dstZ },
+                    srcOffset = new VkOffset3D { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
+                    dstOffset = new VkOffset3D { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
                     srcSubresource = srcSubresource,
                     dstSubresource = dstSubresource,
                     extent = new VkExtent3D { width = width, height = height, depth = depth }
@@ -915,20 +915,20 @@ namespace Sedulous.GAL.VK
                     baseArrayLayer = dstBaseArrayLayer
                 };
 
-                Util.GetMipDimensions(srcVkTexture, srcMipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-                uint blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
-                uint bufferRowLength = Math.Max(mipWidth, blockSize);
-                uint bufferImageHeight = Math.Max(mipHeight, blockSize);
-                uint compressedX = srcX / blockSize;
-                uint compressedY = srcY / blockSize;
-                uint blockSizeInBytes = blockSize == 1
+                Util.GetMipDimensions(srcVkTexture, srcMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
+                uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
+                uint32 bufferImageHeight = Math.Max(mipHeight, blockSize);
+                uint32 compressedX = srcX / blockSize;
+                uint32 compressedY = srcY / blockSize;
+                uint32 blockSizeInBytes = blockSize == 1
                     ? FormatSizeHelpers.GetSizeInBytes(srcVkTexture.Format)
                     : FormatHelpers.GetBlockSizeInBytes(srcVkTexture.Format);
-                uint rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, srcVkTexture.Format);
-                uint depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, srcVkTexture.Format);
+                uint32 rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, srcVkTexture.Format);
+                uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, srcVkTexture.Format);
 
-                uint copyWidth = Math.Min(width, mipWidth);
-                uint copyheight = Math.Min(height, mipHeight);
+                uint32 copyWidth = Math.Min(width, mipWidth);
+                uint32 copyheight = Math.Min(height, mipHeight);
 
                 VkBufferImageCopy regions = new VkBufferImageCopy
                 {
@@ -939,7 +939,7 @@ namespace Sedulous.GAL.VK
                     bufferRowLength = bufferRowLength,
                     bufferImageHeight = bufferImageHeight,
                     imageExtent = new VkExtent3D { width = copyWidth, height = copyheight, depth = depth },
-                    imageOffset = new VkOffset3D { x = (int)dstX, y = (int)dstY, z = (int)dstZ },
+                    imageOffset = new VkOffset3D { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
                     imageSubresource = dstSubresource
                 };
 
@@ -973,20 +973,20 @@ namespace Sedulous.GAL.VK
                     ? VkImageAspectFlags.Depth
                     : VkImageAspectFlags.Color;
 
-                Util.GetMipDimensions(dstVkTexture, dstMipLevel, out uint mipWidth, out uint mipHeight, out uint mipDepth);
-                uint blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
-                uint bufferRowLength = Math.Max(mipWidth, blockSize);
-                uint bufferImageHeight = Math.Max(mipHeight, blockSize);
-                uint compressedDstX = dstX / blockSize;
-                uint compressedDstY = dstY / blockSize;
-                uint blockSizeInBytes = blockSize == 1
+                Util.GetMipDimensions(dstVkTexture, dstMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
+                uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
+                uint32 bufferImageHeight = Math.Max(mipHeight, blockSize);
+                uint32 compressedDstX = dstX / blockSize;
+                uint32 compressedDstY = dstY / blockSize;
+                uint32 blockSizeInBytes = blockSize == 1
                     ? FormatSizeHelpers.GetSizeInBytes(dstVkTexture.Format)
                     : FormatHelpers.GetBlockSizeInBytes(dstVkTexture.Format);
-                uint rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, dstVkTexture.Format);
-                uint depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, dstVkTexture.Format);
+                uint32 rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, dstVkTexture.Format);
+                uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, dstVkTexture.Format);
 
-                var layers = stackalloc VkBufferImageCopy[(int)layerCount];
-                for(uint layer = 0; layer < layerCount; layer++)
+                var layers = stackalloc VkBufferImageCopy[(int32)layerCount];
+                for(uint32 layer = 0; layer < layerCount; layer++)
                 {
                     VkSubresourceLayout dstLayout = dstVkTexture.GetSubresourceLayout(
                         dstVkTexture.CalculateSubresource(dstMipLevel, dstBaseArrayLayer + layer));
@@ -1008,7 +1008,7 @@ namespace Sedulous.GAL.VK
                             + (compressedDstY * rowPitch)
                             + (compressedDstX * blockSizeInBytes),
                         imageExtent = new VkExtent3D { width = width, height = height, depth = depth },
-                        imageOffset = new VkOffset3D { x = (int)srcX, y = (int)srcY, z = (int)srcZ },
+                        imageOffset = new VkOffset3D { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
                         imageSubresource = srcSubresource
                     };
 
@@ -1038,13 +1038,13 @@ namespace Sedulous.GAL.VK
                 VkSubresourceLayout dstLayout = dstVkTexture.GetSubresourceLayout(
                     dstVkTexture.CalculateSubresource(dstMipLevel, dstBaseArrayLayer));
 
-                uint zLimit = Math.Max(depth, layerCount);
+                uint32 zLimit = Math.Max(depth, layerCount);
                 if (!FormatHelpers.IsCompressedFormat(source.Format))
                 {
-                    uint pixelSize = FormatSizeHelpers.GetSizeInBytes(srcVkTexture.Format);
-                    for (uint zz = 0; zz < zLimit; zz++)
+                    uint32 pixelSize = FormatSizeHelpers.GetSizeInBytes(srcVkTexture.Format);
+                    for (uint32 zz = 0; zz < zLimit; zz++)
                     {
-                        for (uint yy = 0; yy < height; yy++)
+                        for (uint32 yy = 0; yy < height; yy++)
                         {
                             VkBufferCopy region = new VkBufferCopy
                             {
@@ -1065,17 +1065,17 @@ namespace Sedulous.GAL.VK
                 }
                 else // IsCompressedFormat
                 {
-                    uint denseRowSize = FormatHelpers.GetRowPitch(width, source.Format);
-                    uint numRows = FormatHelpers.GetNumRows(height, source.Format);
-                    uint compressedSrcX = srcX / 4;
-                    uint compressedSrcY = srcY / 4;
-                    uint compressedDstX = dstX / 4;
-                    uint compressedDstY = dstY / 4;
-                    uint blockSizeInBytes = FormatHelpers.GetBlockSizeInBytes(source.Format);
+                    uint32 denseRowSize = FormatHelpers.GetRowPitch(width, source.Format);
+                    uint32 numRows = FormatHelpers.GetNumRows(height, source.Format);
+                    uint32 compressedSrcX = srcX / 4;
+                    uint32 compressedSrcY = srcY / 4;
+                    uint32 compressedDstX = dstX / 4;
+                    uint32 compressedDstY = dstY / 4;
+                    uint32 blockSizeInBytes = FormatHelpers.GetBlockSizeInBytes(source.Format);
 
-                    for (uint zz = 0; zz < zLimit; zz++)
+                    for (uint32 zz = 0; zz < zLimit; zz++)
                     {
-                        for (uint row = 0; row < numRows; row++)
+                        for (uint32 row = 0; row < numRows; row++)
                         {
                             VkBufferCopy region = new VkBufferCopy
                             {
@@ -1104,7 +1104,7 @@ namespace Sedulous.GAL.VK
             VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(texture);
             _currentStagingInfo.Resources.Add(vkTex.RefCount);
 
-            uint layerCount = vkTex.ArrayLayers;
+            uint32 layerCount = vkTex.ArrayLayers;
             if ((vkTex.Usage & TextureUsage.Cubemap) != 0)
             {
                 layerCount *= 6;
@@ -1112,18 +1112,18 @@ namespace Sedulous.GAL.VK
 
             VkImageBlit region;
 
-            uint width = vkTex.Width;
-            uint height = vkTex.Height;
-            uint depth = vkTex.Depth;
-            for (uint level = 1; level < vkTex.MipLevels; level++)
+            uint32 width = vkTex.Width;
+            uint32 height = vkTex.Height;
+            uint32 depth = vkTex.Depth;
+            for (uint32 level = 1; level < vkTex.MipLevels; level++)
             {
                 vkTex.TransitionImageLayoutNonmatching(_cb, level - 1, 1, 0, layerCount, VkImageLayout.TransferSrcOptimal);
                 vkTex.TransitionImageLayoutNonmatching(_cb, level, 1, 0, layerCount, VkImageLayout.TransferDstOptimal);
 
                 VkImage deviceImage = vkTex.OptimalDeviceImage;
-                uint mipWidth = Math.Max(width >> 1, 1);
-                uint mipHeight = Math.Max(height >> 1, 1);
-                uint mipDepth = Math.Max(depth >> 1, 1);
+                uint32 mipWidth = Math.Max(width >> 1, 1);
+                uint32 mipHeight = Math.Max(height >> 1, 1);
+                uint32 mipDepth = Math.Max(depth >> 1, 1);
 
                 region.srcSubresource = new VkImageSubresourceLayers
                 {
@@ -1133,7 +1133,7 @@ namespace Sedulous.GAL.VK
                     mipLevel = level - 1
                 };
                 region.srcOffsets_0 = new VkOffset3D();
-                region.srcOffsets_1 = new VkOffset3D { x = (int)width, y = (int)height, z = (int)depth };
+                region.srcOffsets_1 = new VkOffset3D { x = (int32)width, y = (int32)height, z = (int32)depth };
                 region.dstOffsets_0 = new VkOffset3D();
 
                 region.dstSubresource = new VkImageSubresourceLayers
@@ -1144,7 +1144,7 @@ namespace Sedulous.GAL.VK
                     mipLevel = level
                 };
 
-                region.dstOffsets_1 = new VkOffset3D { x = (int)mipWidth, y = (int)mipHeight, z = (int)mipDepth };
+                region.dstOffsets_1 = new VkOffset3D { x = (int32)mipWidth, y = (int32)mipHeight, z = (int32)mipDepth };
                 vkCmdBlitImage(
                     _cb,
                     deviceImage, VkImageLayout.TransferSrcOptimal,
@@ -1219,7 +1219,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private VKBuffer GetStagingBuffer(uint size)
+        private VKBuffer GetStagingBuffer(uint32 size)
         {
             lock (_stagingLock)
             {
@@ -1251,8 +1251,8 @@ namespace Sedulous.GAL.VK
 
             VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT.New();
 
-            int byteCount = Encoding.UTF8.GetByteCount(name);
-            byte* utf8Ptr = stackalloc byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(name);
+            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
             fixed (char* namePtr = name)
             {
                 Encoding.UTF8.GetBytes(namePtr, name.Length, utf8Ptr, byteCount);
@@ -1279,8 +1279,8 @@ namespace Sedulous.GAL.VK
 
             VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT.New();
 
-            int byteCount = Encoding.UTF8.GetByteCount(name);
-            byte* utf8Ptr = stackalloc byte[byteCount + 1];
+            int32 byteCount = Encoding.UTF8.GetByteCount(name);
+            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
             fixed (char* namePtr = name)
             {
                 Encoding.UTF8.GetBytes(namePtr, name.Length, utf8Ptr, byteCount);
@@ -1329,7 +1329,7 @@ namespace Sedulous.GAL.VK
             lock (_stagingLock)
             {
                 StagingResourceInfo ret;
-                int availableCount = _availableStagingInfos.Count;
+                int32 availableCount = _availableStagingInfos.Count;
                 if (availableCount > 0)
                 {
                     ret = _availableStagingInfos[availableCount - 1];

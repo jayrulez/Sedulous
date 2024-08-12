@@ -15,8 +15,8 @@ namespace Sedulous.GAL.MTL
         public MTLPrimitiveType PrimitiveType { get; }
         public new MTLResourceLayout[] ResourceLayouts { get; }
         public ResourceBindingModel ResourceBindingModel { get; }
-        public uint VertexBufferCount { get; }
-        public uint NonVertexBufferCount { get; }
+        public uint32 VertexBufferCount { get; }
+        public uint32 NonVertexBufferCount { get; }
         public MTLCullMode CullMode { get; }
         public MTLWinding FrontFace { get; }
         public MTLTriangleFillMode FillMode { get; }
@@ -27,7 +27,7 @@ namespace Sedulous.GAL.MTL
         public MTLSize ThreadsPerThreadgroup { get; } = new MTLSize(1, 1, 1);
         public bool HasStencil { get; }
         public override string Name { get; set; }
-        public uint StencilReference { get; }
+        public uint32 StencilReference { get; }
         public RgbaFloat BlendColor { get; }
         public override bool IsDisposed => _disposed;
 
@@ -37,7 +37,7 @@ namespace Sedulous.GAL.MTL
             PrimitiveType = MTLFormats.VdToMTLPrimitiveTopology(description.PrimitiveTopology);
             ResourceLayouts = new MTLResourceLayout[description.ResourceLayouts.Length];
             NonVertexBufferCount = 0;
-            for (int i = 0; i < ResourceLayouts.Length; i++)
+            for (int32 i = 0; i < ResourceLayouts.Length; i++)
             {
                 ResourceLayouts[i] = Util.AssertSubtype<ResourceLayout, MTLResourceLayout>(description.ResourceLayouts[i]);
                 NonVertexBufferCount += ResourceLayouts[i].BufferCount;
@@ -84,24 +84,24 @@ namespace Sedulous.GAL.MTL
             VertexLayoutDescription[] vdVertexLayouts = description.ShaderSet.VertexLayouts;
             MTLVertexDescriptor vertexDescriptor = mtlDesc.vertexDescriptor;
 
-            for (uint i = 0; i < vdVertexLayouts.Length; i++)
+            for (uint32 i = 0; i < vdVertexLayouts.Length; i++)
             {
-                uint layoutIndex = ResourceBindingModel == ResourceBindingModel.Improved
+                uint32 layoutIndex = ResourceBindingModel == ResourceBindingModel.Improved
                     ? NonVertexBufferCount + i
                     : i;
                 MTLVertexBufferLayoutDescriptor mtlLayout = vertexDescriptor.layouts[layoutIndex];
                 mtlLayout.stride = (UIntPtr)vdVertexLayouts[i].Stride;
-                uint stepRate = vdVertexLayouts[i].InstanceStepRate;
+                uint32 stepRate = vdVertexLayouts[i].InstanceStepRate;
                 mtlLayout.stepFunction = stepRate == 0 ? MTLVertexStepFunction.PerVertex : MTLVertexStepFunction.PerInstance;
                 mtlLayout.stepRate = (UIntPtr)Math.Max(1, stepRate);
             }
 
-            uint element = 0;
-            for (uint i = 0; i < vdVertexLayouts.Length; i++)
+            uint32 element = 0;
+            for (uint32 i = 0; i < vdVertexLayouts.Length; i++)
             {
-                uint offset = 0;
+                uint32 offset = 0;
                 VertexLayoutDescription vdDesc = vdVertexLayouts[i];
-                for (uint j = 0; j < vdDesc.Elements.Length; j++)
+                for (uint32 j = 0; j < vdDesc.Elements.Length; j++)
                 {
                     VertexElementDescription elementDesc = vdDesc.Elements[j];
                     MTLVertexAttributeDescriptor mtlAttribute = vertexDescriptor.attributes[element];
@@ -115,7 +115,7 @@ namespace Sedulous.GAL.MTL
                 }
             }
 
-            VertexBufferCount = (uint)vdVertexLayouts.Length;
+            VertexBufferCount = (uint32)vdVertexLayouts.Length;
 
             // Outputs
             OutputDescription outputs = description.Outputs;
@@ -138,7 +138,7 @@ namespace Sedulous.GAL.MTL
                     mtlDesc.stencilAttachmentPixelFormat = mtlDepthFormat;
                 }
             }
-            for (uint i = 0; i < outputs.ColorAttachments.Length; i++)
+            for (uint32 i = 0; i < outputs.ColorAttachments.Length; i++)
             {
                 BlendAttachmentDescription attachmentBlendDesc = blendStateDesc.AttachmentStates[i];
                 MTLRenderPipelineColorAttachmentDescriptor colorDesc = mtlDesc.colorAttachments[i];
@@ -208,7 +208,7 @@ namespace Sedulous.GAL.MTL
         {
             IsComputePipeline = true;
             ResourceLayouts = new MTLResourceLayout[description.ResourceLayouts.Length];
-            for (int i = 0; i < ResourceLayouts.Length; i++)
+            for (int32 i = 0; i < ResourceLayouts.Length; i++)
             {
                 ResourceLayouts[i] = Util.AssertSubtype<ResourceLayout, MTLResourceLayout>(description.ResourceLayouts[i]);
             }
@@ -239,7 +239,7 @@ namespace Sedulous.GAL.MTL
 
             mtlDesc.computeFunction = specializedFunction;
             MTLPipelineBufferDescriptorArray buffers = mtlDesc.buffers;
-            uint bufferIndex = 0;
+            uint32 bufferIndex = 0;
             for (MTLResourceLayout layout in ResourceLayouts)
             {
                 for (ResourceLayoutElementDescription rle in layout.Description.Elements)

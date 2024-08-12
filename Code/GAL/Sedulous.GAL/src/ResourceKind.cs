@@ -3,7 +3,7 @@
     /// <summary>
     /// The kind of a <see cref="BindableResource"/> object.
     /// </summary>
-    public enum ResourceKind : byte
+    public enum ResourceKind : uint8
     {
         /// <summary>
         /// A <see cref="DeviceBuffer"/> accessed as a uniform buffer. A subset of a buffer can be bound using a

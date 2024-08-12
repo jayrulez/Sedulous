@@ -25,7 +25,7 @@ namespace Sedulous.MetalBindings
         public MTLLanguageVersion languageVersion
         {
             get => (MTLLanguageVersion)uint_objc_msgSend(NativePtr, sel_languageVersion);
-            set => objc_msgSend(NativePtr, sel_setLanguageVersion, (uint)value);
+            set => objc_msgSend(NativePtr, sel_setLanguageVersion, (uint32)value);
         }
 
         private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLCompileOptions));
