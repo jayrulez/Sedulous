@@ -46,7 +46,7 @@ namespace System
 		}
 
 		[NoReturn]
-		public static void IndexOutOfRangeError(String message = "Argument null.", String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
+		public static void IndexOutOfRangeError(String message = "Index out of range.", String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
 		{
 			Runtime.RuntimeError(message, filePath, line, 2);
 		}
@@ -58,7 +58,7 @@ namespace System
 		}
 
 		[NoReturn]
-		public static void NotSupportedError(String message = "Division by zero.", String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
+		public static void NotSupportedError(String message = "Not Supported.", String filePath = Compiler.CallerFilePath, int line = Compiler.CallerLineNum)
 		{
 			Runtime.RuntimeError(message, filePath, line, 2);
 		}
