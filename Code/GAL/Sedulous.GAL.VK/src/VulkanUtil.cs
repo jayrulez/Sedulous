@@ -1,23 +1,21 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using System.Collections;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal static class VulkanUtil
+    public static class VulkanUtil
     {
-        private static Lazy<bool> s_isVulkanLoaded = new Lazy<bool>(TryLoadVulkan);
-        private static readonly Lazy<string[]> s_instanceExtensions = new Lazy<string[]>(EnumerateInstanceExtensions);
-
 #if !VALIDATE_USAGE
         [SkipCall]//[Conditional("VALIDATE_USAGE")]
 #endif
         public static void CheckResult(VkResult result)
         {
-            if (result != VkResult.Success)
+            if (result != VkResult.VK_SUCCESS)
             {
-                Runtime.GALError("Unsuccessful VkResult: " + result);
+                Runtime.GALError(scope $"Unsuccessful VkResult: {result}");
             }
         }
 
@@ -25,10 +23,10 @@ namespace Sedulous.GAL.VK
         {
             typeIndex = 0;
 
-            for (int32 i = 0; i < memProperties.memoryTypeCount; i++)
+            for (int i = 0; i < memProperties.memoryTypeCount; i++)
             {
                 if (((typeFilter & (1 << i)) != 0)
-                    && (memProperties.GetMemoryType((uint32)i).propertyFlags & properties) == properties)
+                    && (memProperties.memoryTypes[(uint32)i].propertyFlags & properties) == properties)
                 {
                     typeIndex = (uint32)i;
                     return true;
@@ -38,77 +36,56 @@ namespace Sedulous.GAL.VK
             return false;
         }
 
-        public static string[] EnumerateInstanceLayers()
+        public static void EnumerateInstanceLayers(List<String> instanceLayers)
         {
             uint32 propCount = 0;
-            VkResult result = vkEnumerateInstanceLayerProperties(ref propCount, null);
+            VkResult result = vkEnumerateInstanceLayerProperties(&propCount, null);
             CheckResult(result);
             if (propCount == 0)
             {
-                return Array.Empty<string>();
+                return;
             }
 
-            VkLayerProperties[] props = new VkLayerProperties[propCount];
-            vkEnumerateInstanceLayerProperties(ref propCount, ref props[0]);
+            VkLayerProperties[] props = scope VkLayerProperties[propCount];
+            vkEnumerateInstanceLayerProperties(&propCount, props.Ptr);
 
-            string[] ret = new string[propCount];
-            for (int32 i = 0; i < propCount; i++)
+            instanceLayers.Resize(propCount);
+            for (int i = 0; i < propCount; i++)
             {
-                fixed (uint8* layerNamePtr = props[i].layerName)
-                {
-                    ret[i] = Util.GetString(layerNamePtr);
-                }
+                instanceLayers[i] = new String(&props[i].layerName);
             }
-
-            return ret;
         }
 
-        public static string[] GetInstanceExtensions() => s_instanceExtensions.Value;
+        public static void GetInstanceExtensions(List<String> instanceExtensions)
+			=> EnumerateInstanceExtensions(instanceExtensions);
 
-        private static string[] EnumerateInstanceExtensions()
+        private static void EnumerateInstanceExtensions(List<String> instanceExtensions)
         {
-            if (!IsVulkanLoaded())
+            if (!VulkanNative.Initialized)
             {
-                return Array.Empty<string>();
+                return;
             }
 
             uint32 propCount = 0;
-            VkResult result = vkEnumerateInstanceExtensionProperties((uint8*)null, ref propCount, null);
-            if (result != VkResult.Success)
+            VkResult result = vkEnumerateInstanceExtensionProperties(null, &propCount, null);
+            if (result != VkResult.VK_SUCCESS)
             {
-                return Array.Empty<string>();
+                return;
             }
 
             if (propCount == 0)
             {
-                return Array.Empty<string>();
+                return;
             }
 
-            VkExtensionProperties[] props = new VkExtensionProperties[propCount];
-            vkEnumerateInstanceExtensionProperties((uint8*)null, ref propCount, ref props[0]);
+            VkExtensionProperties[] props = scope VkExtensionProperties[propCount];
+            vkEnumerateInstanceExtensionProperties(null, &propCount, props.Ptr);
 
-            string[] ret = new string[propCount];
-            for (int32 i = 0; i < propCount; i++)
+            instanceExtensions.Resize(propCount);
+            for (int i = 0; i < propCount; i++)
             {
-                fixed (uint8* extensionNamePtr = props[i].extensionName)
-                {
-                    ret[i] = Util.GetString(extensionNamePtr);
-                }
+                instanceExtensions[i] = new .(&props[i].extensionName);
             }
-
-            return ret;
-        }
-
-        public static bool IsVulkanLoaded() => s_isVulkanLoaded.Value;
-        private static bool TryLoadVulkan()
-        {
-            try
-            {
-                uint32 propCount;
-                vkEnumerateInstanceExtensionProperties((uint8*)null, &propCount, null);
-                return true;
-            }
-            catch { return false; }
         }
 
         public static void TransitionImageLayout(
@@ -123,11 +100,13 @@ namespace Sedulous.GAL.VK
             VkImageLayout newLayout)
         {
             Debug.Assert(oldLayout != newLayout);
-            VkImageMemoryBarrier barrier = VkImageMemoryBarrier.New();
+            VkImageMemoryBarrier barrier = VkImageMemoryBarrier() {
+				sType = .VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER
+			};
             barrier.oldLayout = oldLayout;
             barrier.newLayout = newLayout;
-            barrier.srcQueueFamilyIndex = QueueFamilyIgnored;
-            barrier.dstQueueFamilyIndex = QueueFamilyIgnored;
+            barrier.srcQueueFamilyIndex = VulkanNative.VK_QUEUE_FAMILY_IGNORED;
+            barrier.dstQueueFamilyIndex = VulkanNative.VK_QUEUE_FAMILY_IGNORED;
             barrier.image = image;
             barrier.subresourceRange.aspectMask = aspectMask;
             barrier.subresourceRange.baseMipLevel = baseMipLevel;
@@ -135,8 +114,8 @@ namespace Sedulous.GAL.VK
             barrier.subresourceRange.baseArrayLayer = baseArrayLayer;
             barrier.subresourceRange.layerCount = layerCount;
 
-            VkPipelineStageFlags srcStageFlags = VkPipelineStageFlags.None;
-            VkPipelineStageFlags dstStageFlags = VkPipelineStageFlags.None;
+            VkPipelineStageFlags srcStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_NONE;
+            VkPipelineStageFlags dstStageFlags = VkPipelineStageFlags.VK_PIPELINE_STAGE_NONE;
 
             if ((oldLayout == VkImageLayout.Undefined || oldLayout == VkImageLayout.Preinitialized) && newLayout == VkImageLayout.TransferDstOptimal)
             {
@@ -302,7 +281,7 @@ namespace Sedulous.GAL.VK
             }
             else
             {
-                Debug.Fail("Invalid image layout transition.");
+                Debug.WriteLine("Invalid image layout transition.");
             }
 
             vkCmdPipelineBarrier(
@@ -320,7 +299,7 @@ namespace Sedulous.GAL.VK
     {
         public static VkMemoryType GetMemoryType(this VkPhysicalDeviceMemoryProperties memoryProperties, uint32 index)
         {
-            return (&memoryProperties.memoryTypes_0)[index];
+            return memoryProperties.memoryTypes[index];
         }
     }
 }

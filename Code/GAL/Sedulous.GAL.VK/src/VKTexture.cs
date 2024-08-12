@@ -1,17 +1,20 @@
-﻿using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System.Diagnostics;
 using System;
 
 namespace Sedulous.GAL.VK
 {
-    internal class VKTexture : Texture
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
+    public class VKTexture : Texture
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkImage _optimalImage;
         private readonly VkMemoryBlock _memoryBlock;
-        private readonly Vulkan.VkBuffer _stagingBuffer;
+        private readonly VkBuffer _stagingBuffer;
         private PixelFormat _format; // Static for regular images -- may change for shared staging images
         private readonly uint32 _actualImageArrayLayers;
         private bool _destroyed;
@@ -43,20 +46,20 @@ namespace Sedulous.GAL.VK
         public override bool IsDisposed => _destroyed;
 
         public VkImage OptimalDeviceImage => _optimalImage;
-        public Vulkan.VkBuffer StagingBuffer => _stagingBuffer;
-        public VkMemoryBlock Memory => _memoryBlock;
+        public VkBuffer StagingBuffer => _stagingBuffer;
+        internal VkMemoryBlock Memory => _memoryBlock;
 
         public VkFormat VkFormat { get; }
         public VkSampleCountFlags VkSampleCount { get; }
 
         private VkImageLayout[] _imageLayouts;
         private bool _isSwapchainTexture;
-        private string _name;
+        private String _name;
 
-        public ResourceRefCount RefCount { get; }
+        internal ResourceRefCount RefCount { get; }
         public bool IsSwapchainTexture => _isSwapchainTexture;
 
-        internal VKTexture(VKGraphicsDevice gd, ref TextureDescription description)
+        internal this(VKGraphicsDevice gd, ref TextureDescription description)
         {
             _gd = gd;
             _width = description.Width;
@@ -99,17 +102,17 @@ namespace Sedulous.GAL.VK
                 }
 
                 uint32 subresourceCount = MipLevels * _actualImageArrayLayers * Depth;
-                VkResult result = vkCreateImage(gd.Device, ref imageCI, null, out _optimalImage);
+                VkResult result = vkCreateImage(gd.Device, &imageCI, null, &_optimalImage);
                 CheckResult(result);
 
-                VkMemoryRequirements memoryRequirements;
+                VkMemoryRequirements memoryRequirements = .();
                 bool prefersDedicatedAllocation;
                 if (_gd.GetImageMemoryRequirements2 != null)
                 {
-                    VkImageMemoryRequirementsInfo2KHR memReqsInfo2 = VkImageMemoryRequirementsInfo2KHR.New();
+                    VkImageMemoryRequirementsInfo2 memReqsInfo2 = VkImageMemoryRequirementsInfo2() {sType = .VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2};
                     memReqsInfo2.image = _optimalImage;
-                    VkMemoryRequirements2KHR memReqs2 = VkMemoryRequirements2KHR.New();
-                    VkMemoryDedicatedRequirementsKHR dedicatedReqs = VkMemoryDedicatedRequirementsKHR.New();
+                    VkMemoryRequirements2 memReqs2 = VkMemoryRequirements2() {sType = .VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
+                    VkMemoryDedicatedRequirements dedicatedReqs = VkMemoryDedicatedRequirements() {sType = .VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS};
                     memReqs2.pNext = &dedicatedReqs;
                     _gd.GetImageMemoryRequirements2(_gd.Device, &memReqsInfo2, &memReqs2);
                     memoryRequirements = memReqs2.memoryRequirements;
@@ -117,28 +120,28 @@ namespace Sedulous.GAL.VK
                 }
                 else
                 {
-                    vkGetImageMemoryRequirements(gd.Device, _optimalImage, out memoryRequirements);
+                    vkGetImageMemoryRequirements(gd.Device, _optimalImage, &memoryRequirements);
                     prefersDedicatedAllocation = false;
                 }
 
                 VkMemoryBlock memoryToken = gd.MemoryManager.Allocate(
                     gd.PhysicalDeviceMemProperties,
                     memoryRequirements.memoryTypeBits,
-                    VkMemoryPropertyFlags.DeviceLocal,
+                    VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
                     false,
                     memoryRequirements.size,
                     memoryRequirements.alignment,
                     prefersDedicatedAllocation,
                     _optimalImage,
-                    Vulkan.VkBuffer.Null);
+                    .Null);
                 _memoryBlock = memoryToken;
                 result = vkBindImageMemory(gd.Device, _optimalImage, _memoryBlock.DeviceMemory, _memoryBlock.Offset);
                 CheckResult(result);
 
                 _imageLayouts = new VkImageLayout[subresourceCount];
-                for (int32 i = 0; i < _imageLayouts.Length; i++)
+                for (int i = 0; i < _imageLayouts.Count; i++)
                 {
-                    _imageLayouts[i] = VkImageLayout.Preinitialized;
+                    _imageLayouts[i] = VkImageLayout.VK_IMAGE_LAYOUT_PREINITIALIZED;
                 }
             }
             else // isStaging
@@ -150,7 +153,7 @@ namespace Sedulous.GAL.VK
                 uint32 stagingSize = depthPitch * Depth;
                 for (uint32 level = 1; level < MipLevels; level++)
                 {
-                    Util.GetMipDimensions(this, level, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+                    Util.GetMipDimensions(this, level, var mipWidth, var mipHeight, var mipDepth);
 
                     depthPitch = FormatHelpers.GetDepthPitch(
                         FormatHelpers.GetRowPitch(mipWidth, Format),
@@ -161,20 +164,20 @@ namespace Sedulous.GAL.VK
                 }
                 stagingSize *= ArrayLayers;
 
-                VkBufferCreateInfo bufferCI = VkBufferCreateInfo.New();
-                bufferCI.usage = VkBufferUsageFlags.TransferSrc | VkBufferUsageFlags.TransferDst;
+                VkBufferCreateInfo bufferCI = VkBufferCreateInfo() {sType = .VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
+                bufferCI.usage = VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
                 bufferCI.size = stagingSize;
-                VkResult result = vkCreateBuffer(_gd.Device, ref bufferCI, null, out _stagingBuffer);
+                VkResult result = vkCreateBuffer(_gd.Device, &bufferCI, null, &_stagingBuffer);
                 CheckResult(result);
 
-                VkMemoryRequirements bufferMemReqs;
+                VkMemoryRequirements bufferMemReqs = .();
                 bool prefersDedicatedAllocation;
                 if (_gd.GetBufferMemoryRequirements2 != null)
                 {
-                    VkBufferMemoryRequirementsInfo2KHR memReqInfo2 = VkBufferMemoryRequirementsInfo2KHR.New();
+                    VkBufferMemoryRequirementsInfo2 memReqInfo2 = VkBufferMemoryRequirementsInfo2() {sType = .VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2};
                     memReqInfo2.buffer = _stagingBuffer;
-                    VkMemoryRequirements2KHR memReqs2 = VkMemoryRequirements2KHR.New();
-                    VkMemoryDedicatedRequirementsKHR dedicatedReqs = VkMemoryDedicatedRequirementsKHR.New();
+                    VkMemoryRequirements2 memReqs2 = VkMemoryRequirements2() {sType = .VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
+                    VkMemoryDedicatedRequirements dedicatedReqs = VkMemoryDedicatedRequirements() {sType = .VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS};
                     memReqs2.pNext = &dedicatedReqs;
                     _gd.GetBufferMemoryRequirements2(_gd.Device, &memReqInfo2, &memReqs2);
                     bufferMemReqs = memReqs2.memoryRequirements;
@@ -182,7 +185,7 @@ namespace Sedulous.GAL.VK
                 }
                 else
                 {
-                    vkGetBufferMemoryRequirements(gd.Device, _stagingBuffer, out bufferMemReqs);
+                    vkGetBufferMemoryRequirements(gd.Device, _stagingBuffer, &bufferMemReqs);
                     prefersDedicatedAllocation = false;
                 }
 

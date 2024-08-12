@@ -1,4 +1,4 @@
-﻿using Vulkan;
+using Vulkan;
 using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
@@ -26,7 +26,7 @@ namespace Sedulous.GAL.VK
             _gd.ResetFence(this);
         }
 
-        public override bool Signaled => vkGetFenceStatus(_gd.Device, _fence) == VkResult.Success;
+        public override bool Signaled => vkGetFenceStatus(_gd.Device, _fence) == VkResult.VK_SUCCESS;
         public override bool IsDisposed => _destroyed;
 
         public override string Name

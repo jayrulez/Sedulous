@@ -1,4 +1,5 @@
-﻿namespace Sedulous.GAL.VK
+using System;
+namespace Sedulous.GAL.VK
 {
     /// <summary>
     /// A structure describing Vulkan-specific device creation options.
@@ -9,12 +10,12 @@
         /// An array of required Vulkan instance extensions. Entries in this array will be enabled in the GraphicsDevice's
         /// created VkInstance.
         /// </summary>
-        public string[] InstanceExtensions;
+        public Span<String> InstanceExtensions;
         /// <summary>
         /// An array of required Vulkan device extensions. Entries in this array will be enabled in the GraphicsDevice's
         /// created VkDevice.
         /// </summary>
-        public string[] DeviceExtensions;
+        public Span<String> DeviceExtensions;
 
         /// <summary>
         /// Constructs a new VulkanDeviceOptions.
@@ -23,7 +24,7 @@
         /// enabled in the GraphicsDevice's created VkInstance.</param>
         /// <param name="deviceExtensions">An array of required Vulkan device extensions. Entries in this array will be enabled
         /// in the GraphicsDevice's created VkDevice.</param>
-        public VulkanDeviceOptions(string[] instanceExtensions, string[] deviceExtensions)
+        public this(Span<String> instanceExtensions, Span<String> deviceExtensions)
         {
             InstanceExtensions = instanceExtensions;
             DeviceExtensions = deviceExtensions;

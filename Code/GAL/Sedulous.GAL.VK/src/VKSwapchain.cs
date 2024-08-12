@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Vulkan;
 using static Vulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
@@ -115,7 +115,7 @@ namespace Sedulous.GAL.VK
                 CreateSwapchain(_framebuffer.Width, _framebuffer.Height);
                 return false;
             }
-            else if (result != VkResult.Success)
+            else if (result != VkResult.VK_SUCCESS)
             {
                 Runtime.GALError("Could not acquire next image from the Vulkan swapchain.");
             }

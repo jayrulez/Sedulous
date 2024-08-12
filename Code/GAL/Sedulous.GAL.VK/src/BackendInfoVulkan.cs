@@ -1,8 +1,7 @@
-﻿#if !EXCLUDE_VULKAN_BACKEND
+#if !EXCLUDE_VULKAN_BACKEND
 using System;
-using System.Collections.ObjectModel;
 using Sedulous.GAL.VK;
-using Vulkan;
+using Bulkan;
 
 namespace Sedulous.GAL
 {
@@ -18,7 +17,7 @@ namespace Sedulous.GAL
         private readonly ReadOnlyCollection<string> _instanceExtensions;
         private readonly Lazy<ReadOnlyCollection<ExtensionProperties>> _deviceExtensions;
 
-        internal BackendInfoVulkan(VKGraphicsDevice gd)
+        internal this(VKGraphicsDevice gd)
         {
             _gd = gd;
             _instanceLayers = new Lazy<ReadOnlyCollection<string>>(() => new ReadOnlyCollection<string>(VulkanUtil.EnumerateInstanceLayers()));
@@ -29,22 +28,22 @@ namespace Sedulous.GAL
         /// <summary>
         /// Gets the underlying VkInstance used by the GraphicsDevice.
         /// </summary>
-        public IntPtr Instance => _gd.Instance.Handle;
+        public VkInstance Instance => _gd.Instance.Handle;
 
         /// <summary>
         /// Gets the underlying VkDevice used by the GraphicsDevice.
         /// </summary>
-        public IntPtr Device => _gd.Device.Handle;
+        public VkDevice Device => _gd.Device.Handle;
 
         /// <summary>
         /// Gets the underlying VkPhysicalDevice used by the GraphicsDevice.
         /// </summary>
-        public IntPtr PhysicalDevice => _gd.PhysicalDevice.Handle;
+        public VkPhysicalDevice PhysicalDevice => _gd.PhysicalDevice.Handle;
 
         /// <summary>
         /// Gets the VkQueue which is used by the GraphicsDevice to submit graphics work.
         /// </summary>
-        public IntPtr GraphicsQueue => _gd.GraphicsQueue.Handle;
+        public VkQueue GraphicsQueue => _gd.GraphicsQueue.Handle;
 
         /// <summary>
         /// Gets the queue family index of the graphics VkQueue.
@@ -54,18 +53,18 @@ namespace Sedulous.GAL
         /// <summary>
         /// Gets the driver name of the device. May be null.
         /// </summary>
-        public string DriverName => _gd.DriverName;
+        public String DriverName => _gd.DriverName;
 
         /// <summary>
         /// Gets the driver information of the device. May be null.
         /// </summary>
-        public string DriverInfo => _gd.DriverInfo;
+        public String DriverInfo => _gd.DriverInfo;
 
-        public ReadOnlyCollection<string> AvailableInstanceLayers => _instanceLayers.Value;
+        public Span<String> AvailableInstanceLayers => _instanceLayers.Value;
 
-        public ReadOnlyCollection<string> AvailableInstanceExtensions => _instanceExtensions;
+        public Span<String> AvailableInstanceExtensions => _instanceExtensions;
 
-        public ReadOnlyCollection<ExtensionProperties> AvailableDeviceExtensions => _deviceExtensions.Value;
+        public Span<ExtensionProperties> AvailableDeviceExtensions => _deviceExtensions.Value;
 
         /// <summary>
         /// Overrides the current VkImageLayout tracked by the given Texture. This should be used when a VkImage is created by
@@ -128,7 +127,7 @@ namespace Sedulous.GAL
             return new ReadOnlyCollection<ExtensionProperties>(galProps);
         }
 
-        public readonly struct ExtensionProperties
+        public struct ExtensionProperties
         {
             public readonly string Name;
             public readonly uint32 SpecVersion;

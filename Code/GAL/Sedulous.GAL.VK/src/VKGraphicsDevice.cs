@@ -1,17 +1,13 @@
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
-using Vulkan;
+using Bulkan;
 using static Sedulous.GAL.VK.VulkanUtil;
-using static Vulkan.VulkanNative;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal class VKGraphicsDevice : GraphicsDevice
+    public class VKGraphicsDevice : GraphicsDevice
     {
         private const uint32 VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001;
         private static readonly FixedUtf8String s_name = "GAL-VKGraphicsDevice";
@@ -266,7 +262,7 @@ namespace Sedulous.GAL.VK
                 for (int32 i = 0; i < _submittedFences.Count; i++)
                 {
                     FenceSubmissionInfo fsi = _submittedFences[i];
-                    if (vkGetFenceStatus(_device, fsi.Fence) == VkResult.Success)
+                    if (vkGetFenceStatus(_device, fsi.Fence) == VkResult.VK_SUCCESS)
                     {
                         CompleteFenceSubmission(fsi);
                         _submittedFences.RemoveAt(i);
@@ -1373,7 +1369,7 @@ namespace Sedulous.GAL.VK
         {
             Vulkan.VkFence vkFence = Util.AssertSubtype<Fence, VKFence>(fence).DeviceFence;
             VkResult result = vkWaitForFences(_device, 1, ref vkFence, true, nanosecondTimeout);
-            return result == VkResult.Success;
+            return result == VkResult.VK_SUCCESS;
         }
 
         public override bool WaitForFences(Fence[] fences, bool waitAll, uint64 nanosecondTimeout)
@@ -1386,7 +1382,7 @@ namespace Sedulous.GAL.VK
             }
 
             VkResult result = vkWaitForFences(_device, (uint32)fenceCount, fencesPtr, waitAll, nanosecondTimeout);
-            return result == VkResult.Success;
+            return result == VkResult.VK_SUCCESS;
         }
 
         internal static bool IsSupported()
@@ -1412,14 +1408,14 @@ namespace Sedulous.GAL.VK
             instanceCI.pApplicationInfo = &applicationInfo;
 
             VkResult result = vkCreateInstance(ref instanceCI, null, out VkInstance testInstance);
-            if (result != VkResult.Success)
+            if (result != VkResult.VK_SUCCESS)
             {
                 return false;
             }
 
             uint32 physicalDeviceCount = 0;
             result = vkEnumeratePhysicalDevices(testInstance, ref physicalDeviceCount, null);
-            if (result != VkResult.Success || physicalDeviceCount == 0)
+            if (result != VkResult.VK_SUCCESS || physicalDeviceCount == 0)
             {
                 vkDestroyInstance(testInstance, null);
                 return false;

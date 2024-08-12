@@ -34,7 +34,7 @@ namespace Sedulous.GAL
         /// </summary>
         public PixelFormat Format { get; }
 
-        internal this(ref TextureViewDescription description)
+        internal this(in TextureViewDescription description)
         {
             Target = description.Target;
             BaseMipLevel = description.BaseMipLevel;

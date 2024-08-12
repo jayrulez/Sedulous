@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Text;
-using Vulkan;
+using Bulkan;
+using Bulkan;
 
 namespace Sedulous.GAL.VK
 {
-    internal static partial class VKFormats
+    internal static class VKFormats
     {
         internal static VkFormat VdToVkPixelFormat(PixelFormat format, bool toDepthFormat = false)
         {
@@ -147,7 +147,7 @@ namespace Sedulous.GAL.VK
                     return VkFormat.B10g11r11UfloatPack32;
 
                 default:
-                    Runtime.GALError($"Invalid {nameof(PixelFormat)}: {format}");
+                    Runtime.GALError(scope $"Invalid {nameof(PixelFormat)}: {format}");
             }
         }
     }

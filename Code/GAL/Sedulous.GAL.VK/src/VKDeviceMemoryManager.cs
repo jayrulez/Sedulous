@@ -1,12 +1,16 @@
-﻿using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System;
+using Bulkan;
+using System.Threading;
+using System.Collections;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL.VK;
+
     internal class VKDeviceMemoryManager : IDisposable
     {
         private const uint64 MinDedicatedAllocationSizeDynamic = 1024 * 1024 * 64;
@@ -14,15 +18,15 @@ namespace Sedulous.GAL.VK
         private readonly VkDevice _device;
         private readonly VkPhysicalDevice _physicalDevice;
         private readonly uint64 _bufferImageGranularity;
-        private readonly object _lock = new object();
+        private readonly Monitor _lock = new .() ~ delete _;
         private uint64 _totalAllocatedBytes;
-        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryTypeUnmapped = new Dictionary<uint32, ChunkAllocatorSet>();
-        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryType = new Dictionary<uint32, ChunkAllocatorSet>();
+        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryTypeUnmapped = new .();
+        private readonly Dictionary<uint32, ChunkAllocatorSet> _allocatorsByMemoryType = new .();
 
         private readonly vkGetBufferMemoryRequirements2_t _getBufferMemoryRequirements2;
         private readonly vkGetImageMemoryRequirements2_t _getImageMemoryRequirements2;
 
-        public VKDeviceMemoryManager(
+        public this(
             VkDevice device,
             VkPhysicalDevice physicalDevice,
             uint64 bufferImageGranularity,
@@ -53,7 +57,7 @@ namespace Sedulous.GAL.VK
                 alignment,
                 false,
                 VkImage.Null,
-                Vulkan.VkBuffer.Null);
+                .Null);
         }
 
         public VkMemoryBlock Allocate(
@@ -65,23 +69,29 @@ namespace Sedulous.GAL.VK
             uint64 alignment,
             bool dedicated,
             VkImage dedicatedImage,
-            Vulkan.VkBuffer dedicatedBuffer)
+            VkBuffer dedicatedBuffer)
         {
+			var size;
             if (dedicated)
             {
                 if (dedicatedImage != VkImage.Null && _getImageMemoryRequirements2 != null)
                 {
-                    VkImageMemoryRequirementsInfo2KHR requirementsInfo = VkImageMemoryRequirementsInfo2KHR.New();
+                    VkImageMemoryRequirementsInfo2 requirementsInfo = VkImageMemoryRequirementsInfo2()
+						{
+							sType = .VK_STRUCTURE_TYPE_IMAGE_MEMORY_REQUIREMENTS_INFO_2
+						};
                     requirementsInfo.image = dedicatedImage;
-                    VkMemoryRequirements2KHR requirements = VkMemoryRequirements2KHR.New();
+                    VkMemoryRequirements2 requirements = VkMemoryRequirements2() {
+						sType = .VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2
+					};
                     _getImageMemoryRequirements2(_device, &requirementsInfo, &requirements);
                     size = requirements.memoryRequirements.size;
                 }
-                else if(dedicatedBuffer != Vulkan.VkBuffer.Null && _getBufferMemoryRequirements2 != null)
+                else if(dedicatedBuffer != .Null && _getBufferMemoryRequirements2 != null)
                 {
-                    VkBufferMemoryRequirementsInfo2KHR requirementsInfo = VkBufferMemoryRequirementsInfo2KHR.New();
+                    VkBufferMemoryRequirementsInfo2 requirementsInfo = VkBufferMemoryRequirementsInfo2KHR.New();
                     requirementsInfo.buffer = dedicatedBuffer;
-                    VkMemoryRequirements2KHR requirements = VkMemoryRequirements2KHR.New();
+                    VkMemoryRequirements2 requirements = VkMemoryRequirements2KHR.New();
                     _getBufferMemoryRequirements2(_device, &requirementsInfo, &requirements);
                     size = requirements.memoryRequirements.size;
                 }
@@ -93,9 +103,9 @@ namespace Sedulous.GAL.VK
             }
             _totalAllocatedBytes += size;
 
-            lock (_lock)
+            using (_lock.Enter())
             {
-                if (!TryFindMemoryType(memProperties, memoryTypeBits, flags, out var memoryTypeIndex))
+                if (!TryFindMemoryType(memProperties, memoryTypeBits, flags, var memoryTypeIndex))
                 {
                     Runtime.GALError("No suitable memory type.");
                 }
@@ -110,17 +120,18 @@ namespace Sedulous.GAL.VK
                     allocateInfo.allocationSize = size;
                     allocateInfo.memoryTypeIndex = memoryTypeIndex;
 
-                    VkMemoryDedicatedAllocateInfoKHR dedicatedAI;
+                    VkMemoryDedicatedAllocateInfo dedicatedAI = .();
                     if (dedicated)
                     {
-                        dedicatedAI = VkMemoryDedicatedAllocateInfoKHR.New();
+                        dedicatedAI = VkMemoryDedicatedAllocateInfo() { sType = .VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO };
                         dedicatedAI.buffer = dedicatedBuffer;
                         dedicatedAI.image = dedicatedImage;
                         allocateInfo.pNext = &dedicatedAI;
                     }
 
-                    VkResult allocationResult = vkAllocateMemory(_device, ref allocateInfo, null, out VkDeviceMemory memory);
-                    if (allocationResult != VkResult.Success)
+					VkDeviceMemory memory = .Null;
+                    VkResult allocationResult = vkAllocateMemory(_device, &allocateInfo, null, &memory);
+                    if (allocationResult != VkResult.VK_SUCCESS)
                     {
                         Runtime.GALError("Unable to allocate sufficient Vulkan memory.");
                     }
@@ -129,13 +140,13 @@ namespace Sedulous.GAL.VK
                     if (persistentMapped)
                     {
                         VkResult mapResult = vkMapMemory(_device, memory, 0, size, 0, &mappedPtr);
-                        if (mapResult != VkResult.Success)
+                        if (mapResult != VkResult.VK_SUCCESS)
                         {
                             Runtime.GALError("Unable to map newly-allocated Vulkan memory.");
                         }
                     }
 
-                    return new VkMemoryBlock(memory, 0, size, memoryTypeBits, mappedPtr, true);
+                    return VkMemoryBlock(memory, 0, size, memoryTypeBits, mappedPtr, true);
                 }
                 else
                 {
@@ -454,7 +465,7 @@ namespace Sedulous.GAL.VK
         }
     }
 
-    [DebuggerDisplay("[Mem:{DeviceMemory.Handle}] Off:{Offset}, Size:{Size} End:{Offset+Size}")]
+    //[DebuggerDisplay("[Mem:{DeviceMemory.Handle}] Off:{Offset}, Size:{Size} End:{Offset+Size}")]
     internal struct VkMemoryBlock : IEquatable<VkMemoryBlock>
     {
         public readonly uint32 MemoryTypeIndex;

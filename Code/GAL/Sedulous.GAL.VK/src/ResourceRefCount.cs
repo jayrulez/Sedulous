@@ -8,7 +8,7 @@ namespace Sedulous.GAL.VK
         private readonly Action _disposeAction;
         private int32 _refCount;
 
-        public ResourceRefCount(Action disposeAction)
+        public this(Action disposeAction)
         {
             _disposeAction = disposeAction;
             _refCount = 1;

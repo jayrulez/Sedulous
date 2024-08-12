@@ -1,10 +1,10 @@
-﻿namespace Sedulous.GAL.VK
+namespace Sedulous.GAL.VK
 {
     internal struct VkVersion
     {
         private readonly uint32 value;
 
-        public VkVersion(uint32 major, uint32 minor, uint32 patch)
+        public this(uint32 major, uint32 minor, uint32 patch)
         {
             value = major << 22 | minor << 12 | patch;
         }

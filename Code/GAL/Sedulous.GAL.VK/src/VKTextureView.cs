@@ -1,26 +1,30 @@
-﻿using Vulkan;
+using Bulkan;
+using System;
 using static Sedulous.GAL.VK.VulkanUtil;
-using static Vulkan.VulkanNative;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     internal class VKTextureView : TextureView
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkImageView _imageView;
         private bool _destroyed;
-        private string _name;
+        private String _name;
 
         public VkImageView ImageView => _imageView;
 
         public new VKTexture Target => (VKTexture)base.Target;
 
-        public ResourceRefCount RefCount { get; }
+        internal ResourceRefCount RefCount { get; }
 
         public override bool IsDisposed => _destroyed;
 
-        public VKTextureView(VKGraphicsDevice gd, ref TextureViewDescription description)
-            : base(ref description)
+        public this(VKGraphicsDevice gd, in TextureViewDescription description)
+            : base(description)
         {
             _gd = gd;
             VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
@@ -70,11 +74,11 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            vkCreateImageView(_gd.Device, ref imageViewCI, null, out _imageView);
-            RefCount = new ResourceRefCount(DisposeCore);
+            vkCreateImageView(_gd.Device, &imageViewCI, null, &_imageView);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

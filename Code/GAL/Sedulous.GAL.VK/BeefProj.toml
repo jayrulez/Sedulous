@@ -1,7 +1,8 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*"}
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*", Bulkan = "*"}
 
 [Project]
 Name = "Sedulous.GAL.VK"
 TargetType = "BeefLib"
 StartupObject = "Sedulous.GAL.VK.Program"
+ProcessorMacros = ["VALIDATE_USAGE"]
