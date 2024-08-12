@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes an individual output attachment and its format.
     /// </summary>
-    public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescription>
+    public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescription>, IHashable
     {
         /// <summary>
         /// The format of the <see cref="Texture"/> attachment.
@@ -37,7 +37,7 @@ namespace Veldrid
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         public int GetHashCode()
         {
-            return (int32)Format;
+            return (int)Format;
         }
     }
 }

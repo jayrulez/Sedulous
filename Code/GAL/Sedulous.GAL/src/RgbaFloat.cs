@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -7,7 +7,7 @@ namespace Veldrid
     /// <summary>
     /// A color stored in four 32-bit floating-point values, in RGBA component order.
     /// </summary>
-    public struct RgbaFloat : IEquatable<RgbaFloat>
+    public struct RgbaFloat : IEquatable<RgbaFloat>,IHashable
     {
         private readonly Vector4 _channels;
 

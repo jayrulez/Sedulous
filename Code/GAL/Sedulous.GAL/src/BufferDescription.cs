@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
@@ -6,7 +6,7 @@ namespace Veldrid
     /// Describes a <see cref="DeviceBuffer"/>, used in the creation of <see cref="DeviceBuffer"/> objects by a
     /// <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct BufferDescription : IEquatable<BufferDescription>
+    public struct BufferDescription : IEquatable<BufferDescription>, IHashable
     {
         /// <summary>
         /// The desired capacity, in bytes, of the <see cref="DeviceBuffer"/>.

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes an individual resource element in a <see cref="ResourceLayout"/>.
     /// </summary>
-    public struct ResourceLayoutElementDescription : IEquatable<ResourceLayoutElementDescription>
+    public struct ResourceLayoutElementDescription : IEquatable<ResourceLayoutElementDescription>, IHashable
     {
         /// <summary>
         /// The name of the element.

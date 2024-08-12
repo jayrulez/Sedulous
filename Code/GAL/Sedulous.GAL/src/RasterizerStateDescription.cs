@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing the properties of the rasterizer.
     /// </summary>
-    public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>
+    public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>, IHashable
     {
         /// <summary>
         /// Controls which face will be culled.
@@ -109,9 +109,9 @@ namespace Veldrid
         public int GetHashCode()
         {
             return HashHelper.Combine(
-                (int32)CullMode,
-                (int32)FillMode,
-                (int32)FrontFace,
+                (int)CullMode,
+                (int)FillMode,
+                (int)FrontFace,
                 DepthClipEnabled.GetHashCode(),
                 ScissorTestEnabled.GetHashCode());
         }

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="Shader"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct ShaderDescription : IEquatable<ShaderDescription>
+    public struct ShaderDescription : IEquatable<ShaderDescription>, IHashable
     {
         /// <summary>
         /// The shader stage this instance describes.

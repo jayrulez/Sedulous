@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a compute <see cref="Pipeline"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>
+    public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>, IHashable
     {
         /// <summary>
         /// The compute <see cref="Shader"/> to be used in the Pipeline. This must be a Shader with

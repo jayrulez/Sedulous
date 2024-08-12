@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a 3-dimensional region.
     /// </summary>
-    public struct Viewport : IEquatable<Viewport>
+    public struct Viewport : IEquatable<Viewport>, IHashable
     {
         /// <summary>
         /// The minimum X value.

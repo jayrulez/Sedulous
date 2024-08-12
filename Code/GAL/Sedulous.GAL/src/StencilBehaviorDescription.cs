@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes how stencil tests are performed in a <see cref="Pipeline"/>'s depth-stencil state.
     /// </summary>
-    public struct StencilBehaviorDescription : IEquatable<StencilBehaviorDescription>
+    public struct StencilBehaviorDescription : IEquatable<StencilBehaviorDescription>, IHashable
     {
         /// <summary>
         /// The operation performed on samples that fail the stencil test.

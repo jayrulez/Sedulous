@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes the layout of <see cref="BindableResource"/> objects for a <see cref="Pipeline"/>.
     /// </summary>
-    public struct ResourceLayoutDescription : IEquatable<ResourceLayoutDescription>
+    public struct ResourceLayoutDescription : IEquatable<ResourceLayoutDescription>, IHashable
     {
         /// <summary>
         /// An array of <see cref="ResourceLayoutElementDescription"/> objects, describing the properties of each resource

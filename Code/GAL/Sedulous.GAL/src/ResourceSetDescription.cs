@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="ResourceSet"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct ResourceSetDescription : IEquatable<ResourceSetDescription>
+    public struct ResourceSetDescription : IEquatable<ResourceSetDescription>, IHashable
     {
         /// <summary>
         /// The <see cref="ResourceLayout"/> describing the number and kind of resources used.

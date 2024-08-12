@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="Swapchain"/>, for creation via a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct SwapchainDescription : IEquatable<SwapchainDescription>
+    public struct SwapchainDescription : IEquatable<SwapchainDescription>, IHashable
     {
         /// <summary>
         /// The <see cref="SwapchainSource"/> which will be used as the target of rendering operations.

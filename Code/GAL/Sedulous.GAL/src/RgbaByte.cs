@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Veldrid
@@ -6,7 +6,7 @@ namespace Veldrid
     /// <summary>
     /// A color stored in four 8-bit unsigned normalized integer values, in RGBA component order.
     /// </summary>
-    public struct RgbaByte : IEquatable<RgbaByte>
+    public struct RgbaByte : IEquatable<RgbaByte>, IHashable
     {
         /// <summary>
         /// The red component.

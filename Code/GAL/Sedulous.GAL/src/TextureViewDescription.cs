@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="TextureView"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct TextureViewDescription : IEquatable<TextureViewDescription>
+    public struct TextureViewDescription : IEquatable<TextureViewDescription>, IHashable
     {
         /// <summary>
         /// The desired target <see cref="Texture"/>.

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes the layout of vertex data in a single <see cref="DeviceBuffer"/> used as a vertex buffer.
     /// </summary>
-    public struct VertexLayoutDescription : IEquatable<VertexLayoutDescription>
+    public struct VertexLayoutDescription : IEquatable<VertexLayoutDescription>, IHashable
     {
         /// <summary>
         /// The number of bytes in between successive elements in the <see cref="DeviceBuffer"/>.

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="Framebuffer"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct FramebufferDescription : IEquatable<FramebufferDescription>
+    public struct FramebufferDescription : IEquatable<FramebufferDescription>, IHashable
     {
         /// <summary>
         /// The depth texture, which must have been created with <see cref="TextureUsage.DepthStencil"/> usage flags.

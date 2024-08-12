@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
 namespace Veldrid
@@ -6,7 +6,7 @@ namespace Veldrid
     /// <summary>
     /// Describes a set of output attachments and their formats.
     /// </summary>
-    public struct OutputDescription : IEquatable<OutputDescription>
+    public struct OutputDescription : IEquatable<OutputDescription>, IHashable
     {
         /// <summary>
         /// A description of the depth attachment, or null if none exists.
@@ -89,7 +89,7 @@ namespace Veldrid
             return HashHelper.Combine(
                 DepthAttachment.GetHashCode(),
                 HashHelper.Array(ColorAttachments),
-                (int32)SampleCount);
+                (int)SampleCount);
         }
     }
 }

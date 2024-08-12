@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a single element of a vertex.
     /// </summary>
-    public struct VertexElementDescription : IEquatable<VertexElementDescription>
+    public struct VertexElementDescription : IEquatable<VertexElementDescription>, IHashable
     {
         /// <summary>
         /// The name of the element.

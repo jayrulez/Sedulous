@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
@@ -7,7 +7,7 @@ namespace Veldrid
     /// a <see cref="DeviceBuffer"/> when creating a <see cref="ResourceSet"/> to make only a subset of the Buffer available to
     /// shaders.
     /// </summary>
-    public struct DeviceBufferRange : BindableResource, IEquatable<DeviceBufferRange>
+    public struct DeviceBufferRange : BindableResource, IEquatable<DeviceBufferRange>, IHashable
     {
         /// <summary>
         /// The underlying <see cref="DeviceBuffer"/> that this range refers to.

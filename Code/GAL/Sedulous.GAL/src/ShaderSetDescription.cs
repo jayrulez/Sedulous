@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing a full set of shader stages and vertex layouts.
     /// </summary>
-    public struct ShaderSetDescription : IEquatable<ShaderSetDescription>
+    public struct ShaderSetDescription : IEquatable<ShaderSetDescription>, IHashable
     {
         /// <summary>
         /// An array of <see cref="VertexLayoutDescription"/> describing the set of vertex layouts understood by the

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
-    internal struct MappedResourceCacheKey : IEquatable<MappedResourceCacheKey>
+    internal struct MappedResourceCacheKey : IEquatable<MappedResourceCacheKey>, IHashable
     {
         public readonly MappableResource Resource;
         public readonly uint32 Subresource;

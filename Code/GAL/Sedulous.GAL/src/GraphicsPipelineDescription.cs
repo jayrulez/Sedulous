@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a graphics <see cref="Pipeline"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>
+    public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>, IHashable
     {
         /// <summary>
         /// A description of the blend state, which controls how color values are blended into each color target.
@@ -176,7 +176,7 @@ namespace Veldrid
                 BlendState.GetHashCode(),
                 DepthStencilState.GetHashCode(),
                 RasterizerState.GetHashCode(),
-                (int32)PrimitiveTopology,
+                (int)PrimitiveTopology,
                 ShaderSet.GetHashCode(),
                 HashHelper.Array(ResourceLayouts),
                 ResourceBindingModel.GetHashCode(),

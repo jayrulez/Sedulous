@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing how values are blended into each individual color target.
     /// </summary>
-    public struct BlendStateDescription : IEquatable<BlendStateDescription>
+    public struct BlendStateDescription : IEquatable<BlendStateDescription>, IHashable
     {
         /// <summary>
         /// A constant blend color used in <see cref="BlendFactor.BlendFactor"/> and <see cref="BlendFactor.InverseBlendFactor"/>,

@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a single attachment (color or depth) for a <see cref="Framebuffer"/>.
     /// </summary>
-    public struct FramebufferAttachmentDescription : IEquatable<FramebufferAttachmentDescription>
+    public struct FramebufferAttachmentDescription : IEquatable<FramebufferAttachmentDescription>, IHashable
     {
         /// <summary>
         /// The target texture to render into. For color attachments, this resource must have been created with the

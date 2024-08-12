@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Veldrid
@@ -7,7 +7,7 @@ namespace Veldrid
     /// Describes a single shader specialization constant. Used to substitute new values into Shaders when constructing a
     /// <see cref="Pipeline"/>.
     /// </summary>
-    public struct SpecializationConstant : IEquatable<SpecializationConstant>
+    public struct SpecializationConstant : IEquatable<SpecializationConstant>, IHashable
     {
         /// <summary>
         /// The constant variable ID, as defined in the <see cref="Shader"/>.

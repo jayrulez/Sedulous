@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// Describes a <see cref="Sampler"/>, for creation using a <see cref="ResourceFactory"/>.
     /// </summary>
-    public struct SamplerDescription : IEquatable<SamplerDescription>
+    public struct SamplerDescription : IEquatable<SamplerDescription>, IHashable
     {
         /// <summary>
         /// The <see cref="SamplerAddressMode"/> mode to use for the U (or S) coordinate.

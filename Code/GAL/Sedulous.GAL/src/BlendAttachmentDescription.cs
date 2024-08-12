@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing the blend behavior for an individual color attachment.
     /// </summary>
-    public struct BlendAttachmentDescription : IEquatable<BlendAttachmentDescription>
+    public struct BlendAttachmentDescription : IEquatable<BlendAttachmentDescription>, IHashable
     {
         /// <summary>
         /// Controls whether blending is enabled for the color attachment.
@@ -217,12 +217,12 @@ namespace Veldrid
             return HashHelper.Combine(
                 BlendEnabled.GetHashCode(),
                 ColorWriteMask.GetHashCode(),
-                (int32)SourceColorFactor,
-                (int32)DestinationColorFactor,
-                (int32)ColorFunction,
-                (int32)SourceAlphaFactor,
-                (int32)DestinationAlphaFactor,
-                (int32)AlphaFunction);
+                (int)SourceColorFactor,
+                (int)DestinationColorFactor,
+                (int)ColorFunction,
+                (int)SourceAlphaFactor,
+                (int)DestinationAlphaFactor,
+                (int)AlphaFunction);
         }
     }
 }

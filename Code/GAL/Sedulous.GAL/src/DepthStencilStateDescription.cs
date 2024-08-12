@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Veldrid
 {
     /// <summary>
     /// A <see cref="Pipeline"/> component describing the properties of the depth stencil state.
     /// </summary>
-    public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>
+    public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>, IHashable
     {
         /// <summary>
         /// Controls whether depth testing is enabled.
