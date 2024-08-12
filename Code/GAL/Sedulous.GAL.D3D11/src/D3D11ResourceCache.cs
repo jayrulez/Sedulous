@@ -296,7 +296,7 @@ namespace Sedulous.GAL.D3D11
                 return Util.ArrayEqualsEquatable(VertexLayouts, other.VertexLayouts);
             }
 
-            public override int32 GetHashCode()
+            public int GetHashCode()
             {
                 return HashHelper.Array(VertexLayouts);
             }
@@ -319,7 +319,7 @@ namespace Sedulous.GAL.D3D11
                     && Multisampled.Equals(other.Multisampled);
             }
 
-            public override int32 GetHashCode()
+            public int GetHashCode()
             {
                 return HashHelper.Combine(VeldridDescription.GetHashCode(), Multisampled.GetHashCode());
             }

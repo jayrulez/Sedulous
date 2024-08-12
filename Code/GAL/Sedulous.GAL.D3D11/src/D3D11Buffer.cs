@@ -192,7 +192,7 @@ namespace Sedulous.GAL.D3D11
             }
 
             public bool Equals(OffsetSizePair other) => Offset.Equals(other.Offset) && Size.Equals(other.Size);
-            public override int32 GetHashCode() => HashHelper.Combine(Offset.GetHashCode(), Size.GetHashCode());
+            public int GetHashCode() => HashHelper.Combine(Offset.GetHashCode(), Size.GetHashCode());
         }
     }
 }

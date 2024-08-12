@@ -19,7 +19,7 @@ namespace Veldrid
                 && Subresource.Equals(other.Subresource);
         }
 
-        public override int32 GetHashCode()
+        public int GetHashCode()
         {
             return HashHelper.Combine(Resource.GetHashCode(), Subresource.GetHashCode());
         }

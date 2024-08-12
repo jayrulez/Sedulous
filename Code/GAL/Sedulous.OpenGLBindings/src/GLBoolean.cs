@@ -47,7 +47,7 @@ namespace Sedulous.OpenGLBindings
             return obj is GLboolean b && Equals(b);
         }
 
-        public override int32 GetHashCode()
+        public int GetHashCode()
         {
             return Value.GetHashCode();
         }

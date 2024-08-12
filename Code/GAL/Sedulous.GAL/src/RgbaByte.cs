@@ -123,7 +123,7 @@ namespace Veldrid
         /// </summary>
         /// <returns>A 32-bit signed integer that is the hash code for this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int32 GetHashCode()
+        public int GetHashCode()
         {
             return HashHelper.Combine(R.GetHashCode(), G.GetHashCode(), B.GetHashCode(), A.GetHashCode());
         }
