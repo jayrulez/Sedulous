@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.MetalBindings"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.MetalBindings.Program"

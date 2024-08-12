@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.OpenGLBindings"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.OpenGLBindings.Program"

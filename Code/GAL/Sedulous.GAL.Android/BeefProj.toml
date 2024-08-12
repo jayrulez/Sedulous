@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "Sedulous.GAL.Android"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.GAL.Android.Program"
