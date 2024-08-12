@@ -107,7 +107,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             _resourceList.Clear();
             _totalEntries = 0;
             _currentBlock = _blocks[0];
-            foreach (EntryStorageBlock block in _blocks)
+            for (EntryStorageBlock block in _blocks)
             {
                 block.Clear();
             }
@@ -119,7 +119,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
             _resourceList.Clear();
             _totalEntries = 0;
             _currentBlock = _blocks[0];
-            foreach (EntryStorageBlock block in _blocks)
+            for (EntryStorageBlock block in _blocks)
             {
                 block.Clear();
                 block.Free();
@@ -129,7 +129,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
         private void FlushStagingBlocks()
         {
             StagingMemoryPool pool = _memoryPool;
-            foreach (StagingBlock block in _stagingBlocks)
+            for (StagingBlock block in _stagingBlocks)
             {
                 pool.Free(block);
             }

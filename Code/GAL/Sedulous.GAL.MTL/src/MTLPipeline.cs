@@ -50,7 +50,7 @@ namespace Sedulous.GAL.MTL
             ScissorTestEnabled = description.RasterizerState.ScissorTestEnabled;
 
             MTLRenderPipelineDescriptor mtlDesc = MTLRenderPipelineDescriptor.New();
-            foreach (Shader shader in description.ShaderSet.Shaders)
+            for (Shader shader in description.ShaderSet.Shaders)
             {
                 MTLShader mtlShader = Util.AssertSubtype<Shader, MTLShader>(shader);
                 MTLFunction specializedFunction;
@@ -240,9 +240,9 @@ namespace Sedulous.GAL.MTL
             mtlDesc.computeFunction = specializedFunction;
             MTLPipelineBufferDescriptorArray buffers = mtlDesc.buffers;
             uint bufferIndex = 0;
-            foreach (MTLResourceLayout layout in ResourceLayouts)
+            for (MTLResourceLayout layout in ResourceLayouts)
             {
-                foreach (ResourceLayoutElementDescription rle in layout.Description.Elements)
+                for (ResourceLayoutElementDescription rle in layout.Description.Elements)
                 {
                     ResourceKind kind = rle.Kind;
                     if (kind == ResourceKind.UniformBuffer
@@ -271,7 +271,7 @@ namespace Sedulous.GAL.MTL
             MTLFunctionConstantValues ret = MTLFunctionConstantValues.New();
             if (specializations != null)
             {
-                foreach (SpecializationConstant sc in specializations)
+                for (SpecializationConstant sc in specializations)
                 {
                     MTLDataType mtlType = MTLFormats.VdVoMTLShaderConstantType(sc.Type);
                     ret.setConstantValuetypeatIndex(&sc.Data, mtlType, (UIntPtr)sc.ID);
@@ -303,7 +303,7 @@ namespace Sedulous.GAL.MTL
 
                 if (_specializedFunctions != null)
                 {
-                    foreach (MTLFunction function in _specializedFunctions)
+                    for (MTLFunction function in _specializedFunctions)
                     {
                         ObjectiveCRuntime.release(function.NativePtr);
                     }

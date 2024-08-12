@@ -154,7 +154,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
 
         public void ExecuteAll(OpenGLCommandExecutor executor)
         {
-            foreach (OpenGLCommandEntry entry in _commands)
+            for (OpenGLCommandEntry entry in _commands)
             {
                 switch (entry)
                 {

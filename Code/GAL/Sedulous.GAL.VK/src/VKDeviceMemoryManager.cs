@@ -206,7 +206,7 @@ namespace Sedulous.GAL.VK
 
             public bool Allocate(ulong size, ulong alignment, out VkMemoryBlock block)
             {
-                foreach (ChunkAllocator allocator in _allocators)
+                for (ChunkAllocator allocator in _allocators)
                 {
                     if (allocator.Allocate(size, alignment, out block))
                     {
@@ -221,7 +221,7 @@ namespace Sedulous.GAL.VK
 
             public void Free(VkMemoryBlock block)
             {
-                foreach (ChunkAllocator chunk in _allocators)
+                for (ChunkAllocator chunk in _allocators)
                 {
                     if (chunk.Memory == block.DeviceMemory)
                     {
@@ -232,7 +232,7 @@ namespace Sedulous.GAL.VK
 
             public void Dispose()
             {
-                foreach (ChunkAllocator allocator in _allocators)
+                for (ChunkAllocator allocator in _allocators)
                 {
                     allocator.Dispose();
                 }
@@ -399,7 +399,7 @@ namespace Sedulous.GAL.VK
 
             private void CheckAllocatedBlock(VkMemoryBlock block)
             {
-                foreach (VkMemoryBlock oldBlock in _allocatedBlocks)
+                for (VkMemoryBlock oldBlock in _allocatedBlocks)
                 {
                     Debug.Assert(!BlocksOverlap(block, oldBlock), "Allocated blocks have overlapped.");
                 }
@@ -434,12 +434,12 @@ namespace Sedulous.GAL.VK
 
         public void Dispose()
         {
-            foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
+            for (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryType)
             {
                 kvp.Value.Dispose();
             }
 
-            foreach (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
+            for (KeyValuePair<uint, ChunkAllocatorSet> kvp in _allocatorsByMemoryTypeUnmapped)
             {
                 kvp.Value.Dispose();
             }

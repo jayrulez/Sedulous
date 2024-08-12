@@ -1005,7 +1005,7 @@ namespace Sedulous.GAL.OpenGL
                         glSampler.EnsureResourcesCreated();
                         if (pipeline.GetSamplerBindingInfo(slot, element, out OpenGLSamplerBindingSlotInfo samplerBindingInfo))
                         {
-                            foreach (int index in samplerBindingInfo.RelativeIndices)
+                            for (int index in samplerBindingInfo.RelativeIndices)
                             {
                                 _textureSamplerManager.SetSampler((uint)index, glSampler);
                             }

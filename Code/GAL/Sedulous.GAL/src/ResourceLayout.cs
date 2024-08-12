@@ -18,7 +18,7 @@ namespace Veldrid
         {
 #if VALIDATE_USAGE
             Description = description;
-            foreach (ResourceLayoutElementDescription element in description.Elements)
+            for (ResourceLayoutElementDescription element in description.Elements)
             {
                 if ((element.Options & ResourceLayoutElementOptions.DynamicBinding) != 0)
                 {

@@ -314,7 +314,7 @@ namespace Sedulous.GAL.VK
                 vkDestroyRenderPass(_gd.Device, _renderPassNoClear, null);
                 vkDestroyRenderPass(_gd.Device, _renderPassNoClearLoad, null);
                 vkDestroyRenderPass(_gd.Device, _renderPassClear, null);
-                foreach (VkImageView view in _attachmentViews)
+                for (VkImageView view in _attachmentViews)
                 {
                     vkDestroyImageView(_gd.Device, view, null);
                 }

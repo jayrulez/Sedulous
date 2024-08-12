@@ -495,7 +495,7 @@ namespace Sedulous.GAL.D3D11
         {
             lock (_stagingResourcesLock)
             {
-                foreach (D3D11Buffer buffer in _availableStagingBuffers)
+                for (D3D11Buffer buffer in _availableStagingBuffers)
                 {
                     if (buffer.SizeInBytes >= sizeInBytes)
                     {
@@ -653,7 +653,7 @@ namespace Sedulous.GAL.D3D11
         protected override void PlatformDispose()
         {
             // Dispose staging buffers
-            foreach (DeviceBuffer buffer in _availableStagingBuffers)
+            for (DeviceBuffer buffer in _availableStagingBuffers)
             {
                 buffer.Dispose();
             }

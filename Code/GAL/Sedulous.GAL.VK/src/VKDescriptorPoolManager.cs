@@ -38,7 +38,7 @@ namespace Sedulous.GAL.VK
         {
             lock (_lock)
             {
-                foreach (PoolInfo poolInfo in _pools)
+                for (PoolInfo poolInfo in _pools)
                 {
                     if (poolInfo.Pool == token.Pool)
                     {
@@ -52,7 +52,7 @@ namespace Sedulous.GAL.VK
         {
             lock (_lock)
             {
-                foreach (PoolInfo poolInfo in _pools)
+                for (PoolInfo poolInfo in _pools)
                 {
                     if (poolInfo.Allocate(counts))
                     {
@@ -103,7 +103,7 @@ namespace Sedulous.GAL.VK
 
         internal void DestroyAll()
         {
-            foreach (PoolInfo poolInfo in _pools)
+            for (PoolInfo poolInfo in _pools)
             {
                 vkDestroyDescriptorPool(_gd.Device, poolInfo.Pool, null);
             }

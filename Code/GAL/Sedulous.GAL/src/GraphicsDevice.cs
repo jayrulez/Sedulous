@@ -787,7 +787,7 @@ namespace Veldrid
         {
             lock (_deferredDisposalLock)
             {
-                foreach (IDisposable disposable in _disposables)
+                for (IDisposable disposable in _disposables)
                 {
                     disposable.Dispose();
                 }

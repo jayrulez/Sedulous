@@ -530,7 +530,7 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            foreach (var ext in _surfaceExtensions)
+            for (var ext in _surfaceExtensions)
             {
                 instanceExtensions.Add(ext);
             }
@@ -543,7 +543,7 @@ namespace Sedulous.GAL.VK
 
             string[] requestedInstanceExtensions = options.InstanceExtensions ?? Array.Empty<string>();
             List<FixedUtf8String> tempStrings = new List<FixedUtf8String>();
-            foreach (string requiredExt in requestedInstanceExtensions)
+            for (string requiredExt in requestedInstanceExtensions)
             {
                 if (!availableInstanceExtensions.Contains(requiredExt))
                 {
@@ -603,7 +603,7 @@ namespace Sedulous.GAL.VK
                     ?? GetInstanceProcAddr<vkGetPhysicalDeviceProperties2_t>("vkGetPhysicalDeviceProperties2KHR");
             }
 
-            foreach (FixedUtf8String tempStr in tempStrings)
+            for (FixedUtf8String tempStr in tempStrings)
             {
                 tempStr.Dispose();
             }
@@ -720,7 +720,7 @@ namespace Sedulous.GAL.VK
             uint queueCreateInfosCount = (uint)familyIndices.Count;
 
             int i = 0;
-            foreach (uint index in familyIndices)
+            for (uint index in familyIndices)
             {
                 VkDeviceQueueCreateInfo queueCreateInfo = VkDeviceQueueCreateInfo.New();
                 queueCreateInfo.queueFamilyIndex = _graphicsQueueIndex;
@@ -1036,7 +1036,7 @@ namespace Sedulous.GAL.VK
         protected override void PlatformDispose()
         {
             Debug.Assert(_submittedFences.Count == 0);
-            foreach (Vulkan.VkFence fence in _availableSubmissionFences)
+            for (Vulkan.VkFence fence in _availableSubmissionFences)
             {
                 vkDestroyFence(_device, fence, null);
             }
@@ -1056,13 +1056,13 @@ namespace Sedulous.GAL.VK
             vkDestroyCommandPool(_device, _graphicsCommandPool, null);
 
             Debug.Assert(_submittedStagingTextures.Count == 0);
-            foreach (VKTexture tex in _availableStagingTextures)
+            for (VKTexture tex in _availableStagingTextures)
             {
                 tex.Dispose();
             }
 
             Debug.Assert(_submittedStagingBuffers.Count == 0);
-            foreach (VKBuffer buffer in _availableStagingBuffers)
+            for (VKBuffer buffer in _availableStagingBuffers)
             {
                 buffer.Dispose();
             }

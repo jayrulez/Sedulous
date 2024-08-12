@@ -174,7 +174,7 @@ namespace Sedulous.GAL.VK
             }
             else
             {
-                foreach (VkSurfaceFormatKHR format in formats)
+                for (VkSurfaceFormatKHR format in formats)
                 {
                     if (format.colorSpace == VkColorSpaceKHR.SrgbNonlinearKHR && format.format == desiredFormat)
                     {

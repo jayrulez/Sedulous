@@ -96,7 +96,7 @@ namespace Sedulous.GAL.OpenGL
             lock (_lock)
             {
                 _availableBlocks.Clear();
-                foreach (StagingBlock block in _storage)
+                for (StagingBlock block in _storage)
                 {
                     Marshal.FreeHGlobal((IntPtr)block.Data);
                 }

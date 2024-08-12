@@ -149,7 +149,7 @@ namespace Sedulous.GAL.D3D11
         {
             lock (_referencedCLsLock)
             {
-                foreach (D3D11CommandList cl in _referencedCLs)
+                for (D3D11CommandList cl in _referencedCLs)
                 {
                     cl.Reset();
                 }

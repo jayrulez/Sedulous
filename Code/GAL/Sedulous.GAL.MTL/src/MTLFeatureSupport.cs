@@ -17,7 +17,7 @@ namespace Sedulous.GAL.MTL
 
         public MTLFeatureSupport(MTLDevice device)
         {
-            foreach (MTLFeatureSet set in Enum.GetValues(typeof(MTLFeatureSet)))
+            for (MTLFeatureSet set in Enum.GetValues(typeof(MTLFeatureSet)))
             {
                 if (device.supportsFeatureSet(set))
                 {

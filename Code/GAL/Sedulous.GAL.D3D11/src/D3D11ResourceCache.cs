@@ -228,19 +228,19 @@ namespace Sedulous.GAL.D3D11
 
         public void Dispose()
         {
-            foreach (KeyValuePair<BlendStateDescription, ID3D11BlendState> kvp in _blendStates)
+            for (KeyValuePair<BlendStateDescription, ID3D11BlendState> kvp in _blendStates)
             {
                 kvp.Value.Dispose();
             }
-            foreach (KeyValuePair<DepthStencilStateDescription, ID3D11DepthStencilState> kvp in _depthStencilStates)
+            for (KeyValuePair<DepthStencilStateDescription, ID3D11DepthStencilState> kvp in _depthStencilStates)
             {
                 kvp.Value.Dispose();
             }
-            foreach (KeyValuePair<D3D11RasterizerStateCacheKey, ID3D11RasterizerState> kvp in _rasterizerStates)
+            for (KeyValuePair<D3D11RasterizerStateCacheKey, ID3D11RasterizerState> kvp in _rasterizerStates)
             {
                 kvp.Value.Dispose();
             }
-            foreach (KeyValuePair<InputLayoutCacheKey, ID3D11InputLayout> kvp in _inputLayouts)
+            for (KeyValuePair<InputLayoutCacheKey, ID3D11InputLayout> kvp in _inputLayouts)
             {
                 kvp.Value.Dispose();
             }

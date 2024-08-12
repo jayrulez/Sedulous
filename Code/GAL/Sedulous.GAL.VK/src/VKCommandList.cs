@@ -99,7 +99,7 @@ namespace Sedulous.GAL.VK
         public void CommandBufferSubmitted(VkCommandBuffer cb)
         {
             RefCount.Increment();
-            foreach (ResourceRefCount rrc in _currentStagingInfo.Resources)
+            for (ResourceRefCount rrc in _currentStagingInfo.Resources)
             {
                 rrc.Increment();
             }
@@ -658,7 +658,7 @@ namespace Sedulous.GAL.VK
 
         private void ClearSets(BoundResourceSetInfo[] boundSets)
         {
-            foreach (BoundResourceSetInfo boundSetInfo in boundSets)
+            for (BoundResourceSetInfo boundSetInfo in boundSets)
             {
                 boundSetInfo.Offsets.Dispose();
             }
@@ -1224,7 +1224,7 @@ namespace Sedulous.GAL.VK
             lock (_stagingLock)
             {
                 VKBuffer ret = null;
-                foreach (VKBuffer buffer in _availableStagingBuffers)
+                for (VKBuffer buffer in _availableStagingBuffers)
                 {
                     if (buffer.SizeInBytes >= size)
                     {
@@ -1306,7 +1306,7 @@ namespace Sedulous.GAL.VK
 
                 Debug.Assert(_submittedStagingInfos.Count == 0);
 
-                foreach (VKBuffer buffer in _availableStagingBuffers)
+                for (VKBuffer buffer in _availableStagingBuffers)
                 {
                     buffer.Dispose();
                 }
@@ -1348,12 +1348,12 @@ namespace Sedulous.GAL.VK
         {
             lock (_stagingLock)
             {
-                foreach (VKBuffer buffer in info.BuffersUsed)
+                for (VKBuffer buffer in info.BuffersUsed)
                 {
                     _availableStagingBuffers.Add(buffer);
                 }
 
-                foreach (ResourceRefCount rrc in info.Resources)
+                for (ResourceRefCount rrc in info.Resources)
                 {
                     rrc.Decrement();
                 }

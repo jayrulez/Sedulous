@@ -109,7 +109,7 @@ namespace Sedulous.GAL.OpenGL
         {
             _program = glCreateProgram();
             CheckLastError();
-            foreach (Shader stage in GraphicsShaders)
+            for (Shader stage in GraphicsShaders)
             {
                 OpenGLShader glShader = Util.AssertSubtype<Shader, OpenGLShader>(stage);
                 glShader.EnsureResourcesCreated();
@@ -118,7 +118,7 @@ namespace Sedulous.GAL.OpenGL
             }
 
             uint slot = 0;
-            foreach (VertexLayoutDescription layoutDesc in VertexLayouts)
+            for (VertexLayoutDescription layoutDesc in VertexLayouts)
             {
                 for (int i = 0; i < layoutDesc.Elements.Length; i++)
                 {
@@ -132,7 +132,7 @@ namespace Sedulous.GAL.OpenGL
 
 #if DEBUG && GL_VALIDATE_VERTEX_INPUT_ELEMENTS
             slot = 0;
-            foreach (VertexLayoutDescription layoutDesc in VertexLayouts)
+            for (VertexLayoutDescription layoutDesc in VertexLayouts)
             {
                 for (int i = 0; i < layoutDesc.Elements.Length; i++)
                 {

@@ -248,11 +248,11 @@ namespace Sedulous.GAL.OpenGL
             lock (_lock)
             {
                 _currentCommands?.Dispose();
-                foreach (OpenGLCommandEntryList list in _availableLists)
+                for (OpenGLCommandEntryList list in _availableLists)
                 {
                     list.Dispose();
                 }
-                foreach (OpenGLCommandEntryList list in _submittedLists)
+                for (OpenGLCommandEntryList list in _submittedLists)
                 {
                     list.Dispose();
                 }

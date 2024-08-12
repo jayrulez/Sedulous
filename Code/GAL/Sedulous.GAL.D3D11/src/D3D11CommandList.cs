@@ -158,7 +158,7 @@ namespace Sedulous.GAL.D3D11
             _computePipeline = null;
             ClearSets(_computeResourceSets);
 
-            foreach (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundSRVs)
+            for (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundSRVs)
             {
                 List<BoundTextureInfo> list = kvp.Value;
                 list.Clear();
@@ -166,7 +166,7 @@ namespace Sedulous.GAL.D3D11
             }
             _boundSRVs.Clear();
 
-            foreach (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundUAVs)
+            for (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundUAVs)
             {
                 List<BoundTextureInfo> list = kvp.Value;
                 list.Clear();
@@ -177,7 +177,7 @@ namespace Sedulous.GAL.D3D11
 
         private void ClearSets(BoundResourceSetInfo[] boundSets)
         {
-            foreach (BoundResourceSetInfo boundSetInfo in boundSets)
+            for (BoundResourceSetInfo boundSetInfo in boundSets)
             {
                 boundSetInfo.Offsets.Dispose();
             }
@@ -454,7 +454,7 @@ namespace Sedulous.GAL.D3D11
         {
             if (_boundSRVs.TryGetValue(target, out List<BoundTextureInfo> btis))
             {
-                foreach (BoundTextureInfo bti in btis)
+                for (BoundTextureInfo bti in btis)
                 {
                     BindTextureView(null, bti.Slot, bti.Stages, 0);
 
@@ -485,7 +485,7 @@ namespace Sedulous.GAL.D3D11
         {
             if (_boundUAVs.TryGetValue(target, out List<BoundTextureInfo> btis))
             {
-                foreach (BoundTextureInfo bti in btis)
+                for (BoundTextureInfo bti in btis)
                 {
                     BindUnorderedAccessView(null, null, null, bti.Slot, bti.Stages, bti.ResourceSet);
                     if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
@@ -1234,7 +1234,7 @@ namespace Sedulous.GAL.D3D11
 
         private D3D11Buffer GetFreeStagingBuffer(uint sizeInBytes)
         {
-            foreach (D3D11Buffer buffer in _availableStagingBuffers)
+            for (D3D11Buffer buffer in _availableStagingBuffers)
             {
                 if (buffer.SizeInBytes >= sizeInBytes)
                 {
@@ -1331,13 +1331,13 @@ namespace Sedulous.GAL.D3D11
             _commandList.Dispose();
             _commandList = null;
 
-            foreach (D3D11Swapchain sc in _referencedSwapchains)
+            for (D3D11Swapchain sc in _referencedSwapchains)
             {
                 sc.RemoveCommandListReference(this);
             }
             _referencedSwapchains.Clear();
 
-            foreach (D3D11Buffer buffer in _submittedStagingBuffers)
+            for (D3D11Buffer buffer in _submittedStagingBuffers)
             {
                 _availableStagingBuffers.Add(buffer);
             }
@@ -1369,16 +1369,16 @@ namespace Sedulous.GAL.D3D11
                 _context1?.Dispose();
                 _context.Dispose();
 
-                foreach (BoundResourceSetInfo boundGraphicsSet in _graphicsResourceSets)
+                for (BoundResourceSetInfo boundGraphicsSet in _graphicsResourceSets)
                 {
                     boundGraphicsSet.Offsets.Dispose();
                 }
-                foreach (BoundResourceSetInfo boundComputeSet in _computeResourceSets)
+                for (BoundResourceSetInfo boundComputeSet in _computeResourceSets)
                 {
                     boundComputeSet.Offsets.Dispose();
                 }
 
-                foreach (D3D11Buffer buffer in _availableStagingBuffers)
+                for (D3D11Buffer buffer in _availableStagingBuffers)
                 {
                     buffer.Dispose();
                 }

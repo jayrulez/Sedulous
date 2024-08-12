@@ -191,7 +191,7 @@ namespace Sedulous.GAL.VK
             if (specDescs != null)
             {
                 uint specDataSize = 0;
-                foreach (SpecializationConstant spec in specDescs)
+                for (SpecializationConstant spec in specDescs)
                 {
                     specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
@@ -218,7 +218,7 @@ namespace Sedulous.GAL.VK
 
             Shader[] shaders = description.ShaderSet.Shaders;
             StackList<VkPipelineShaderStageCreateInfo> stages = new StackList<VkPipelineShaderStageCreateInfo>();
-            foreach (Shader shader in shaders)
+            for (Shader shader in shaders)
             {
                 VKShader vkShader = Util.AssertSubtype<Shader, VKShader>(shader);
                 VkPipelineShaderStageCreateInfo stageCI = VkPipelineShaderStageCreateInfo.New();
@@ -337,7 +337,7 @@ namespace Sedulous.GAL.VK
 
             ResourceSetCount = (uint)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
-            foreach (VKResourceLayout layout in description.ResourceLayouts)
+            for (VKResourceLayout layout in description.ResourceLayouts)
             {
                 DynamicOffsetsCount += layout.DynamicBufferCount;
             }
@@ -373,7 +373,7 @@ namespace Sedulous.GAL.VK
             if (specDescs != null)
             {
                 uint specDataSize = 0;
-                foreach (SpecializationConstant spec in specDescs)
+                for (SpecializationConstant spec in specDescs)
                 {
                     specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
@@ -418,7 +418,7 @@ namespace Sedulous.GAL.VK
 
             ResourceSetCount = (uint)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
-            foreach (VKResourceLayout layout in description.ResourceLayouts)
+            for (VKResourceLayout layout in description.ResourceLayouts)
             {
                 DynamicOffsetsCount += layout.DynamicBufferCount;
             }

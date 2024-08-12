@@ -133,7 +133,7 @@ namespace Sedulous.GAL.D3D11
             if (!_disposed)
             {
                 DepthStencilView?.Dispose();
-                foreach (ID3D11RenderTargetView rtv in RenderTargetViews)
+                for (ID3D11RenderTargetView rtv in RenderTargetViews)
                 {
                     rtv.Dispose();
                 }

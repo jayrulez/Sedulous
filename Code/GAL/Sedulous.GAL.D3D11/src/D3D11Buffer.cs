@@ -78,11 +78,11 @@ namespace Sedulous.GAL.D3D11
             {
                 _name = value;
                 Buffer.DebugName = value;
-                foreach (KeyValuePair<OffsetSizePair, ID3D11ShaderResourceView> kvp in _srvs)
+                for (KeyValuePair<OffsetSizePair, ID3D11ShaderResourceView> kvp in _srvs)
                 {
                     kvp.Value.DebugName = value + "_SRV";
                 }
-                foreach (KeyValuePair<OffsetSizePair, ID3D11UnorderedAccessView> kvp in _uavs)
+                for (KeyValuePair<OffsetSizePair, ID3D11UnorderedAccessView> kvp in _uavs)
                 {
                     kvp.Value.DebugName = value + "_UAV";
                 }
@@ -91,11 +91,11 @@ namespace Sedulous.GAL.D3D11
 
         public override void Dispose()
         {
-            foreach (KeyValuePair<OffsetSizePair, ID3D11ShaderResourceView> kvp in _srvs)
+            for (KeyValuePair<OffsetSizePair, ID3D11ShaderResourceView> kvp in _srvs)
             {
                 kvp.Value.Dispose();
             }
-            foreach (KeyValuePair<OffsetSizePair, ID3D11UnorderedAccessView> kvp in _uavs)
+            for (KeyValuePair<OffsetSizePair, ID3D11UnorderedAccessView> kvp in _uavs)
             {
                 kvp.Value.Dispose();
             }
