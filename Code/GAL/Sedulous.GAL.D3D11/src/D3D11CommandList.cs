@@ -188,7 +188,7 @@ namespace Sedulous.GAL.D3D11
         {
             if (_commandList != null)
             {
-                throw new VeldridException("Invalid use of End().");
+                Runtime.GALError("Invalid use of End().");
             }
 
             _context.FinishCommandList(false, out _commandList).CheckError();
@@ -426,7 +426,7 @@ namespace Sedulous.GAL.D3D11
                         D3D11Sampler sampler = Util.AssertSubtype<BindableResource, D3D11Sampler>(resource);
                         BindSampler(sampler, samplerBase + rbi.Slot, rbi.Stages);
                         break;
-                    default: throw Illegal.Value<ResourceKind>();
+                    default: Runtime.IllegalValue<ResourceKind>();
                 }
             }
         }
@@ -446,7 +446,7 @@ namespace Sedulous.GAL.D3D11
             }
             else
             {
-                throw new VeldridException($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
+                Runtime.GALError($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
             }
         }
 
@@ -1201,7 +1201,7 @@ namespace Sedulous.GAL.D3D11
                 }
                 else
                 {
-                    Buffer.MemoryCopy(source.ToPointer(), msb.DataPointer.ToPointer(), buffer.SizeInBytes, sizeInBytes);
+                    Internal.MemCpy(msb.DataPointer.ToPointer(), source.ToPointer(), sizeInBytes);
                 }
                 _context.Unmap(d3dBuffer.Buffer, 0);
             }

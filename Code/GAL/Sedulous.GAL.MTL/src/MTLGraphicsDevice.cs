@@ -279,7 +279,7 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                throw Illegal.Value<TextureType>();
+                Runtime.IllegalValue<TextureType>();
             }
 
             properties = new PixelFormatProperties(

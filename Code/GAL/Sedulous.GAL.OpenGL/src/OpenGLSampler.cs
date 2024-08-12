@@ -153,7 +153,7 @@ namespace Sedulous.GAL.OpenGL
                     case SamplerBorderColor.OpaqueWhite:
                         return new RgbaFloat(1, 1, 1, 1);
                     default:
-                        throw Illegal.Value<SamplerBorderColor>();
+                        Runtime.IllegalValue<SamplerBorderColor>();
                 }
             }
         }

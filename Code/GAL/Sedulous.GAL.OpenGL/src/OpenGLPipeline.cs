@@ -139,7 +139,7 @@ namespace Sedulous.GAL.OpenGL
                     int32 location = GetAttribLocation(layoutDesc.Elements[i].Name);
                     if (location == -1)
                     {
-                        throw new VeldridException("There was no attribute variable with the name " + layoutDesc.Elements[i].Name);
+                        Runtime.GALError("There was no attribute variable with the name " + layoutDesc.Elements[i].Name);
                     }
 
                     slot += 1;
@@ -157,7 +157,7 @@ namespace Sedulous.GAL.OpenGL
                 glGetProgramInfoLog(_program, 4096, &bytesWritten, infoLog);
                 CheckLastError();
                 string log = Encoding.UTF8.GetString(infoLog, (int32)bytesWritten);
-                throw new VeldridException($"Error linking GL program: {log}");
+                Runtime.GALError($"Error linking GL program: {log}");
             }
 
             ProcessResourceSetLayouts(ResourceLayouts);
@@ -309,7 +309,7 @@ namespace Sedulous.GAL.OpenGL
                     uniformBufferIndex++;
                 }
 
-                throw new VeldridException($"Unable to bind uniform buffer \"{resourceName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
+                Runtime.GALError($"Unable to bind uniform buffer \"{resourceName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
             }
 #endif
             return blockIndex;
@@ -387,7 +387,7 @@ namespace Sedulous.GAL.OpenGL
                 uniformIndex++;
             }
 
-            throw new VeldridException($"Unable to bind uniform \"{uniformName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
+            Runtime.GALError($"Unable to bind uniform \"{uniformName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
         }
 
         void ReportInvalidResourceName(string resourceName, ProgramInterface resourceType)
@@ -419,7 +419,7 @@ namespace Sedulous.GAL.OpenGL
                 names.Add(name);
             }
 
-            throw new VeldridException($"Unable to bind {resourceType} \"{resourceName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
+            Runtime.GALError($"Unable to bind {resourceType} \"{resourceName}\" by name. Valid names for this pipeline are: {string.Join(", ", names)}");
         }
 #endif
 
@@ -445,7 +445,7 @@ namespace Sedulous.GAL.OpenGL
                 glGetProgramInfoLog(_program, 4096, &bytesWritten, infoLog);
                 CheckLastError();
                 string log = Encoding.UTF8.GetString(infoLog, (int32)bytesWritten);
-                throw new VeldridException($"Error linking GL program: {log}");
+                Runtime.GALError($"Error linking GL program: {log}");
             }
 
             ProcessResourceSetLayouts(ResourceLayouts);

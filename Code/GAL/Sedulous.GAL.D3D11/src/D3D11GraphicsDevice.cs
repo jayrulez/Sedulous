@@ -326,7 +326,7 @@ namespace Sedulous.GAL.D3D11
                 {
                     if (info.Mode != mode)
                     {
-                        throw new VeldridException("The given resource was already mapped with a different MapMode.");
+                        Runtime.GALError("The given resource was already mapped with a different MapMode.");
                     }
 
                     info.RefCount += 1;
@@ -395,7 +395,7 @@ namespace Sedulous.GAL.D3D11
             {
                 if (!_mappedResources.TryGetValue(key, out MappedResourceInfo info))
                 {
-                    throw new VeldridException($"The given resource ({resource}) is not mapped.");
+                    Runtime.GALError($"The given resource ({resource}) is not mapped.");
                 }
 
                 info.RefCount -= 1;
@@ -463,10 +463,9 @@ namespace Sedulous.GAL.D3D11
                 }
                 else
                 {
-                    Buffer.MemoryCopy(
-                        source.ToPointer(),
+                    Internal.MemCpy(
                         (uint8*)mr.Data + bufferOffsetInBytes,
-                        buffer.SizeInBytes,
+                        source.ToPointer(),
                         sizeInBytes);
                 }
                 UnmapCore(buffer, 0);

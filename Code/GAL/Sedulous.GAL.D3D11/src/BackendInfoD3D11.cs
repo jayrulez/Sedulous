@@ -2,7 +2,7 @@
 using System;
 using Sedulous.GAL.D3D11;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Exposes Direct3D 11-specific functionality,
@@ -34,10 +34,10 @@ namespace Veldrid
         public int32 DeviceId => _gd.DeviceId;
 
         /// <summary>
-        /// Gets a pointer to the native texture wrapped by the given Veldrid Texture. Depending on the instance's TextureType,
+        /// Gets a pointer to the native texture wrapped by the given GAL Texture. Depending on the instance's TextureType,
         /// this will be a pointer to an ID3D11Texture1D, an ID3D11Texture2D, or an ID3D11Texture3D.
         /// </summary>
-        /// <returns>A pointer to the Veldrid Texture's underlying ID3D11Texture1D, ID3D11Texture2D, or ID3D11Texture3D. The type
+        /// <returns>A pointer to the GAL Texture's underlying ID3D11Texture1D, ID3D11Texture2D, or ID3D11Texture3D. The type
         /// of this object depends on the parameter's TextureType.</returns>
         public IntPtr GetTexturePointer(Texture texture)
             => Util.AssertSubtype<Texture, D3D11Texture>(texture).DeviceTexture.NativePointer;

@@ -418,7 +418,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                throw new VeldridException(
+                Runtime.GALError(
                     "This function does not support creating an OpenGLES GraphicsDevice with the given SwapchainSource.");
             }
         }
@@ -428,7 +428,7 @@ namespace Sedulous.GAL.OpenGL
             EAGLContext eaglContext = EAGLContext.Create(EAGLRenderingAPI.OpenGLES3);
             if (!EAGLContext.setCurrentContext(eaglContext.NativePtr))
             {
-                throw new VeldridException("Unable to make newly-created EAGLContext current.");
+                Runtime.GALError("Unable to make newly-created EAGLContext current.");
             }
 
             MetalBindings.UIView uiView = new MetalBindings.UIView(uIViewPtr);
@@ -458,7 +458,7 @@ namespace Sedulous.GAL.OpenGL
             bool result = eaglContext.renderBufferStorage((UIntPtr)RenderbufferTarget.Renderbuffer, eaglLayer.NativePtr);
             if (!result)
             {
-                throw new VeldridException($"Failed to associate OpenGLES Renderbuffer with CAEAGLLayer.");
+                Runtime.GALError($"Failed to associate OpenGLES Renderbuffer with CAEAGLLayer.");
             }
 
             glGetRenderbufferParameteriv(
@@ -509,7 +509,7 @@ namespace Sedulous.GAL.OpenGL
             CheckLastError();
             if (status != FramebufferErrorCode.FramebufferComplete)
             {
-                throw new VeldridException($"The OpenGLES main Swapchain Framebuffer was incomplete after initialization.");
+                Runtime.GALError($"The OpenGLES main Swapchain Framebuffer was incomplete after initialization.");
             }
 
             glBindFramebuffer(FramebufferTarget.Framebuffer, fb);
@@ -519,7 +519,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (!EAGLContext.setCurrentContext(ctx))
                 {
-                    throw new VeldridException($"Unable to set the thread's current GL context.");
+                    Runtime.GALError($"Unable to set the thread's current GL context.");
                 }
             };
 
@@ -532,7 +532,7 @@ namespace Sedulous.GAL.OpenGL
                 CheckLastError();
                 if (!presentResult)
                 {
-                    throw new VeldridException($"Failed to present the EAGL RenderBuffer.");
+                    Runtime.GALError($"Failed to present the EAGL RenderBuffer.");
                 }
             };
 
@@ -556,7 +556,7 @@ namespace Sedulous.GAL.OpenGL
                         eaglLayer.NativePtr);
                     if (!rbStorageResult)
                     {
-                        throw new VeldridException($"Failed to associate OpenGLES Renderbuffer with CAEAGLLayer.");
+                        Runtime.GALError($"Failed to associate OpenGLES Renderbuffer with CAEAGLLayer.");
                     }
 
                     glGetRenderbufferParameteriv(
@@ -618,13 +618,13 @@ namespace Sedulous.GAL.OpenGL
             IntPtr display = eglGetDisplay(0);
             if (display == IntPtr.Zero)
             {
-                throw new VeldridException($"Failed to get the default Android EGLDisplay: {eglGetError()}");
+                Runtime.GALError($"Failed to get the default Android EGLDisplay: {eglGetError()}");
             }
 
             int32 major, minor;
             if (eglInitialize(display, &major, &minor) == 0)
             {
-                throw new VeldridException($"Failed to initialize EGL: {eglGetError()}");
+                Runtime.GALError($"Failed to initialize EGL: {eglGetError()}");
             }
 
             int32[] attribs =
@@ -649,7 +649,7 @@ namespace Sedulous.GAL.OpenGL
                 int32 num_config;
                 if (eglChooseConfig(display, attribsPtr, configs, 50, &num_config) == 0)
                 {
-                    throw new VeldridException($"Failed to select a valid EGLConfig: {eglGetError()}");
+                    Runtime.GALError($"Failed to select a valid EGLConfig: {eglGetError()}");
                 }
             }
 
@@ -658,7 +658,7 @@ namespace Sedulous.GAL.OpenGL
             int32 format;
             if (eglGetConfigAttrib(display, bestConfig, EGL_NATIVE_VISUAL_ID, &format) == 0)
             {
-                throw new VeldridException($"Failed to get the EGLConfig's format: {eglGetError()}");
+                Runtime.GALError($"Failed to get the EGLConfig's format: {eglGetError()}");
             }
 
             Android.AndroidRuntime.ANativeWindow_setBuffersGeometry(aNativeWindow, 0, 0, format);
@@ -666,7 +666,7 @@ namespace Sedulous.GAL.OpenGL
             IntPtr eglWindowSurface = eglCreateWindowSurface(display, bestConfig, aNativeWindow, null);
             if (eglWindowSurface == IntPtr.Zero)
             {
-                throw new VeldridException(
+                Runtime.GALError(
                     $"Failed to create an EGL surface from the Android native window: {eglGetError()}");
             }
 
@@ -677,14 +677,14 @@ namespace Sedulous.GAL.OpenGL
             IntPtr context = eglCreateContext(display, bestConfig, IntPtr.Zero, contextAttribs);
             if (context == IntPtr.Zero)
             {
-                throw new VeldridException($"Failed to create an EGLContext: " + eglGetError());
+                Runtime.GALError($"Failed to create an EGLContext: " + eglGetError());
             }
 
             Action<IntPtr> makeCurrent = ctx =>
             {
                 if (eglMakeCurrent(display, eglWindowSurface, eglWindowSurface, ctx) == 0)
                 {
-                    throw new VeldridException($"Failed to make the EGLContext {ctx} current: {eglGetError()}");
+                    Runtime.GALError($"Failed to make the EGLContext {ctx} current: {eglGetError()}");
                 }
             };
 
@@ -694,7 +694,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (eglMakeCurrent(display, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero) == 0)
                 {
-                    throw new VeldridException("Failed to clear the current EGLContext: " + eglGetError());
+                    Runtime.GALError("Failed to clear the current EGLContext: " + eglGetError());
                 }
             };
 
@@ -702,7 +702,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (eglSwapBuffers(display, eglWindowSurface) == 0)
                 {
-                    throw new VeldridException("Failed to swap buffers: " + eglGetError());
+                    Runtime.GALError("Failed to swap buffers: " + eglGetError());
                 }
             };
 
@@ -710,7 +710,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (eglSwapInterval(display, vsync ? 1 : 0) == 0)
                 {
-                    throw new VeldridException($"Failed to set the swap interval: " + eglGetError());
+                    Runtime.GALError($"Failed to set the swap interval: " + eglGetError());
                 }
             };
 
@@ -721,7 +721,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (eglDestroyContext(display, ctx) == 0)
                 {
-                    throw new VeldridException($"Failed to destroy EGLContext {ctx}: {eglGetError()}");
+                    Runtime.GALError($"Failed to destroy EGLContext {ctx}: {eglGetError()}");
                 }
             };
 
@@ -747,7 +747,7 @@ namespace Sedulous.GAL.OpenGL
                 case PixelFormat.R32_Float:
                     return 32;
                 default:
-                    throw new VeldridException($"Unsupported depth format: {value}");
+                    Runtime.GALError($"Unsupported depth format: {value}");
             }
         }
 
@@ -866,7 +866,7 @@ namespace Sedulous.GAL.OpenGL
                 {
                     if (info.Mode != mode)
                     {
-                        throw new VeldridException("The given resource was already mapped with a different MapMode.");
+                        Runtime.GALError("The given resource was already mapped with a different MapMode.");
                     }
 
                     info.RefCount += 1;
@@ -889,7 +889,7 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (_mappedResources.ContainsKey(new MappedResourceCacheKey(buffer, 0)))
                 {
-                    throw new VeldridException("Cannot call UpdateBuffer on a currently-mapped Buffer.");
+                    Runtime.GALError("Cannot call UpdateBuffer on a currently-mapped Buffer.");
                 }
             }
             StagingBlock sb = _stagingMemoryPool.Stage(source, sizeInBytes);
@@ -1489,7 +1489,7 @@ namespace Sedulous.GAL.OpenGL
                                             CheckLastError();
                                         }
                                         uint8* sliceStart = (uint8*)fullBlock.Data + (arrayLayer * subresourceSize);
-                                        Buffer.MemoryCopy(sliceStart, block.Data, subresourceSize, subresourceSize);
+                                        Internal.MemCpy(block.Data, sliceStart, subresourceSize);
                                         _gd._stagingMemoryPool.Free(fullBlock);
                                     }
                                     else
@@ -1619,7 +1619,7 @@ namespace Sedulous.GAL.OpenGL
                             ? _exceptions[0]
                             : new AggregateException(_exceptions.ToArray());
                         _exceptions.Clear();
-                        throw new VeldridException(
+                        Runtime.GALError(
                             "Error(s) were encountered during the execution of OpenGL commands. See InnerException for more information.",
                             innerException);
 
@@ -1641,7 +1641,7 @@ namespace Sedulous.GAL.OpenGL
                 mre.Wait();
                 if (!mrp.Succeeded)
                 {
-                    throw new VeldridException("Failed to map OpenGL resource.");
+                    Runtime.GALError("Failed to map OpenGL resource.");
                 }
 
                 mre.Dispose();

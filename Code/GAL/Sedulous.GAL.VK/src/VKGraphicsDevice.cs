@@ -14,7 +14,7 @@ namespace Sedulous.GAL.VK
     internal class VKGraphicsDevice : GraphicsDevice
     {
         private const uint32 VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001;
-        private static readonly FixedUtf8String s_name = "Veldrid-VKGraphicsDevice";
+        private static readonly FixedUtf8String s_name = "GAL-VKGraphicsDevice";
         private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(CheckIsSupported, isThreadSafe: true);
 
         private VkInstance _instance;
@@ -547,7 +547,7 @@ namespace Sedulous.GAL.VK
             {
                 if (!availableInstanceExtensions.Contains(requiredExt))
                 {
-                    throw new VeldridException($"The required instance extension was not available: {requiredExt}");
+                    Runtime.GALError($"The required instance extension was not available: {requiredExt}");
                 }
 
                 FixedUtf8String utf8Str = new FixedUtf8String(requiredExt);
@@ -661,7 +661,7 @@ namespace Sedulous.GAL.VK
 
             if (debugReportFlags == VkDebugReportFlagsEXT.ErrorEXT)
             {
-                throw new VeldridException("A Vulkan validation error was encountered: " + fullMessage);
+                Runtime.GALError("A Vulkan validation error was encountered: " + fullMessage);
             }
 
             Console.WriteLine(fullMessage);
@@ -798,7 +798,7 @@ namespace Sedulous.GAL.VK
             if (requiredInstanceExtensions.Count != 0)
             {
                 string missingList = string.Join(", ", requiredInstanceExtensions);
-                throw new VeldridException(
+                Runtime.GALError(
                     $"The following Vulkan device extensions were not available: {missingList}");
             }
 

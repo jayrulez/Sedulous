@@ -145,11 +145,11 @@ namespace Sedulous.GAL.D3D11
         {
             RasterizerDescription rssDesc = new RasterizerDescription
             {
-                CullMode = D3D11Formats.VdToD3D11CullMode(key.VeldridDescription.CullMode),
-                FillMode = D3D11Formats.VdToD3D11FillMode(key.VeldridDescription.FillMode),
-                DepthClipEnable = key.VeldridDescription.DepthClipEnabled,
-                ScissorEnable = key.VeldridDescription.ScissorTestEnabled,
-                FrontCounterClockwise = key.VeldridDescription.FrontFace == FrontFace.CounterClockwise,
+                CullMode = D3D11Formats.VdToD3D11CullMode(key.GALDescription.CullMode),
+                FillMode = D3D11Formats.VdToD3D11FillMode(key.GALDescription.FillMode),
+                DepthClipEnable = key.GALDescription.DepthClipEnabled,
+                ScissorEnable = key.GALDescription.ScissorTestEnabled,
+                FrontCounterClockwise = key.GALDescription.FrontFace == FrontFace.CounterClockwise,
                 MultisampleEnable = key.Multisampled
             };
 
@@ -222,7 +222,7 @@ namespace Sedulous.GAL.D3D11
                 case VertexElementSemantic.Color:
                     return "COLOR";
                 default:
-                    throw Illegal.Value<VertexElementSemantic>();
+                    Runtime.IllegalValue<VertexElementSemantic>();
             }
         }
 
@@ -266,7 +266,7 @@ namespace Sedulous.GAL.D3D11
                     case VertexElementSemantic.Color:
                         return si._color++;
                     default:
-                        throw Illegal.Value<VertexElementSemantic>();
+                        Runtime.IllegalValue<VertexElementSemantic>();
                 }
             }
         }
@@ -304,24 +304,24 @@ namespace Sedulous.GAL.D3D11
 
         private struct D3D11RasterizerStateCacheKey : IEquatable<D3D11RasterizerStateCacheKey>
         {
-            public RasterizerStateDescription VeldridDescription;
+            public RasterizerStateDescription GALDescription;
             public bool Multisampled;
 
-            public D3D11RasterizerStateCacheKey(RasterizerStateDescription veldridDescription, bool multisampled)
+            public D3D11RasterizerStateCacheKey(RasterizerStateDescription galDescription, bool multisampled)
             {
-                VeldridDescription = veldridDescription;
+                GALDescription = galDescription;
                 Multisampled = multisampled;
             }
 
             public bool Equals(D3D11RasterizerStateCacheKey other)
             {
-                return VeldridDescription.Equals(other.VeldridDescription)
+                return GALDescription.Equals(other.GALDescription)
                     && Multisampled.Equals(other.Multisampled);
             }
 
             public int GetHashCode()
             {
-                return HashHelper.Combine(VeldridDescription.GetHashCode(), Multisampled.GetHashCode());
+                return HashHelper.Combine(GALDescription.GetHashCode(), Multisampled.GetHashCode());
             }
         }
     }

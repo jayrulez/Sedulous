@@ -142,10 +142,10 @@ namespace Sedulous.GAL.D3D11
                 case PixelFormat.ETC2_R8_G8_B8_UNorm:
                 case PixelFormat.ETC2_R8_G8_B8_A1_UNorm:
                 case PixelFormat.ETC2_R8_G8_B8_A8_UNorm:
-                    throw new VeldridException("ETC2 formats are not supported on Direct3D 11.");
+                    Runtime.GALError("ETC2 formats are not supported on Direct3D 11.");
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -371,7 +371,7 @@ namespace Sedulous.GAL.D3D11
                 case BlendFactor.InverseBlendFactor:
                     return Blend.InverseBlendFactor;
                 default:
-                    throw Illegal.Value<BlendFactor>();
+                    Runtime.IllegalValue<BlendFactor>();
             }
         }
 
@@ -384,7 +384,7 @@ namespace Sedulous.GAL.D3D11
                 case IndexFormat.UInt32:
                     return Format.R32_UInt;
                 default:
-                    throw Illegal.Value<IndexFormat>();
+                    Runtime.IllegalValue<IndexFormat>();
             }
         }
 
@@ -409,7 +409,7 @@ namespace Sedulous.GAL.D3D11
                 case StencilOperation.DecrementAndWrap:
                     return Vortice.Direct3D11.StencilOperation.Decrement;
                 default:
-                    throw Illegal.Value<StencilOperation>();
+                    Runtime.IllegalValue<StencilOperation>();
             }
         }
 
@@ -537,7 +537,7 @@ namespace Sedulous.GAL.D3D11
                 case Format.R11G11B10_Float:
                     return PixelFormat.R11_G11_B10_Float;
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -556,7 +556,7 @@ namespace Sedulous.GAL.D3D11
                 case BlendFunction.Maximum:
                     return BlendOperation.Max;
                 default:
-                    throw Illegal.Value<BlendFunction>();
+                    Runtime.IllegalValue<BlendFunction>();
             }
         }
 
@@ -599,7 +599,7 @@ namespace Sedulous.GAL.D3D11
                 case SamplerFilter.Anisotropic:
                     return isComparison ? Filter.ComparisonAnisotropic : Filter.Anisotropic;
                 default:
-                    throw Illegal.Value<SamplerFilter>();
+                    Runtime.IllegalValue<SamplerFilter>();
             }
         }
 
@@ -614,7 +614,7 @@ namespace Sedulous.GAL.D3D11
                 case MapMode.ReadWrite:
                     return Vortice.Direct3D11.MapMode.ReadWrite;
                 default:
-                    throw Illegal.Value<MapMode>();
+                    Runtime.IllegalValue<MapMode>();
             }
         }
 
@@ -633,7 +633,7 @@ namespace Sedulous.GAL.D3D11
                 case PrimitiveTopology.PointList:
                     return Vortice.Direct3D.PrimitiveTopology.PointList;
                 default:
-                    throw Illegal.Value<PrimitiveTopology>();
+                    Runtime.IllegalValue<PrimitiveTopology>();
             }
         }
 
@@ -646,7 +646,7 @@ namespace Sedulous.GAL.D3D11
                 case PolygonFillMode.Wireframe:
                     return FillMode.Wireframe;
                 default:
-                    throw Illegal.Value<PolygonFillMode>();
+                    Runtime.IllegalValue<PolygonFillMode>();
             }
         }
 
@@ -661,7 +661,7 @@ namespace Sedulous.GAL.D3D11
                 case FaceCullMode.None:
                     return CullMode.None;
                 default:
-                    throw Illegal.Value<FaceCullMode>();
+                    Runtime.IllegalValue<FaceCullMode>();
             }
         }
 
@@ -733,7 +733,7 @@ namespace Sedulous.GAL.D3D11
                     return Format.R16G16B16A16_Float;
 
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    Runtime.IllegalValue<VertexElementFormat>();
             }
         }
 
@@ -758,7 +758,7 @@ namespace Sedulous.GAL.D3D11
                 case ComparisonKind.Always:
                     return ComparisonFunction.Always;
                 default:
-                    throw Illegal.Value<ComparisonKind>();
+                    Runtime.IllegalValue<ComparisonKind>();
             }
         }
 
@@ -775,7 +775,7 @@ namespace Sedulous.GAL.D3D11
                 case SamplerAddressMode.Border:
                     return TextureAddressMode.Border;
                 default:
-                    throw Illegal.Value<SamplerAddressMode>();
+                    Runtime.IllegalValue<SamplerAddressMode>();
             }
         }
 
@@ -792,7 +792,7 @@ namespace Sedulous.GAL.D3D11
                 case PixelFormat.D32_Float_S8_UInt:
                     return Format.D32_Float_S8X24_UInt;
                 default:
-                    throw new VeldridException("Invalid depth texture format: " + format);
+                    Runtime.GALError("Invalid depth texture format: " + format);
             }
         }
     }

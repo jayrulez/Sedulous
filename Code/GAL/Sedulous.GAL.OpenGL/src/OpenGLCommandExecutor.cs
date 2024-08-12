@@ -441,7 +441,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                throw new VeldridException("Invalid Framebuffer type: " + fb.GetType().Name);
+                Runtime.GALError("Invalid Framebuffer type: " + fb.GetType().Name);
             }
 
             _fb = fb;
@@ -887,7 +887,7 @@ namespace Sedulous.GAL.OpenGL
                             if (range.SizeInBytes < uniformBindingInfo.BlockSize)
                             {
                                 string name = glResourceSet.Layout.Elements[element].Name;
-                                throw new VeldridException(
+                                Runtime.GALError(
                                     $"Not enough data in uniform buffer \"{name}\" (slot {slot}, element {element}). Shader expects at least {uniformBindingInfo.BlockSize} bytes, but buffer only contains {range.SizeInBytes} bytes");
                             }
                             glUniformBlockBinding(pipeline.Program, uniformBindingInfo.BlockLocation, ubBaseIndex + ubOffset);
@@ -968,7 +968,7 @@ namespace Sedulous.GAL.OpenGL
                             if (layered && (texViewRW.BaseArrayLayer > 0
                                 || (texViewRW.ArrayLayers > 1 && texViewRW.ArrayLayers < texViewRW.Target.ArrayLayers)))
                             {
-                                throw new VeldridException(
+                                Runtime.GALError(
                                     "Cannot bind texture with BaseArrayLayer > 0 and ArrayLayers > 1, or with an incomplete set of array layers (cubemaps have ArrayLayers == 6 implicitly).");
                             }
 
@@ -1011,7 +1011,7 @@ namespace Sedulous.GAL.OpenGL
                             }
                         }
                         break;
-                    default: throw Illegal.Value<ResourceKind>();
+                    default: Runtime.IllegalValue<ResourceKind>();
                 }
             }
         }
@@ -1443,7 +1443,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                throw new VeldridException($"Invalid OpenGL TextureTarget encountered: {glTex.TextureTarget}.");
+                Runtime.GALError($"Invalid OpenGL TextureTarget encountered: {glTex.TextureTarget}.");
             }
 
             if (unpackAlignment < 4)
@@ -1470,7 +1470,7 @@ namespace Sedulous.GAL.OpenGL
                 case 5:
                     return TextureTarget.TextureCubeMapNegativeZ;
                 default:
-                    throw new VeldridException("Unexpected array layer in UpdateTexture called on a cubemap texture.");
+                    Runtime.GALError("Unexpected array layer in UpdateTexture called on a cubemap texture.");
             }
         }
 
@@ -1568,7 +1568,7 @@ namespace Sedulous.GAL.OpenGL
             bool isCompressed = FormatHelpers.IsCompressedFormat(srcGLTexture.Format);
             if (srcGLTexture.Format != dstGLTexture.Format)
             {
-                throw new VeldridException("Copying to/from Textures with different formats is not supported.");
+                Runtime.GALError("Copying to/from Textures with different formats is not supported.");
             }
 
             uint32 packAlignment = 4;

@@ -10,7 +10,9 @@ namespace Sedulous.GAL.OpenGL
     {
         private static int32? MaxLabelLength;
 
-        [Conditional("DEBUG")]
+#if !VALIDATE_USAGE
+        [SkipCall]//[Conditional("VALIDATE_USAGE")]
+#endif
         [DebuggerNonUserCode]
         internal static void CheckLastError()
         {
@@ -22,7 +24,7 @@ namespace Sedulous.GAL.OpenGL
                     Debugger.Break();
                 }
 
-                throw new VeldridException("glGetError indicated an error: " + (ErrorCode)error);
+                Runtime.GALError("glGetError indicated an error: " + (ErrorCode)error);
             }
         }
 

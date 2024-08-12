@@ -31,11 +31,11 @@ namespace Sedulous.GAL.OpenGL
             {
                 if (_gd.BackendType == GraphicsBackend.OpenGLES)
                 {
-                    throw new VeldridException("Compute shaders require OpenGL ES 3.1.");
+                    Runtime.GALError("Compute shaders require OpenGL ES 3.1.");
                 }
                 else
                 {
-                    throw new VeldridException($"Compute shaders require OpenGL 4.3 or ARB_compute_shader.");
+                    Runtime.GALError($"Compute shaders require OpenGL 4.3 or ARB_compute_shader.");
                 }
             }
 #endif
@@ -96,7 +96,7 @@ namespace Sedulous.GAL.OpenGL
                     ? Encoding.UTF8.GetString(infoLog, (int32)returnedInfoLength)
                     : "<null>";
 
-                throw new VeldridException($"Unable to compile shader code for shader [{_name}] of type {_shaderType}: {message}");
+                Runtime.GALError($"Unable to compile shader code for shader [{_name}] of type {_shaderType}: {message}");
             }
 
             _gd.StagingMemoryPool.Free(_stagingBlock);

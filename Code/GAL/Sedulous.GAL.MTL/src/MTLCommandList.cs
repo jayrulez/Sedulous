@@ -768,7 +768,7 @@ namespace Sedulous.GAL.MTL
                         break;
                     }
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Runtime.IllegalValue<ResourceKind>();
                 }
             }
         }
@@ -826,7 +826,7 @@ namespace Sedulous.GAL.MTL
                         break;
                     }
                     default:
-                        throw Illegal.Value<ResourceKind>();
+                        Runtime.IllegalValue<ResourceKind>();
                 }
             }
         }

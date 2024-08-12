@@ -146,7 +146,7 @@ namespace Sedulous.GAL.OpenGL
             CheckLastError();
             if (errorCode != FramebufferErrorCode.FramebufferComplete)
             {
-                throw new VeldridException("Framebuffer was not successfully created: " + errorCode);
+                Runtime.GALError("Framebuffer was not successfully created: " + errorCode);
             }
 
             Created = true;

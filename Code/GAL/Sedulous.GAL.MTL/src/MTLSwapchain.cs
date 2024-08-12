@@ -92,7 +92,7 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                throw new VeldridException($"A Metal Swapchain can only be created from an NSWindow, NSView, or UIView.");
+                Runtime.GALError($"A Metal Swapchain can only be created from an NSWindow, NSView, or UIView.");
             }
 
             PixelFormat format = description.ColorSrgb

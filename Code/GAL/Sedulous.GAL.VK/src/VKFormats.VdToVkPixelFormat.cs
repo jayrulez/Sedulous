@@ -147,7 +147,7 @@ namespace Sedulous.GAL.VK
                     return VkFormat.B10g11r11UfloatPack32;
 
                 default:
-                    throw new VeldridException($"Invalid {nameof(PixelFormat)}: {format}");
+                    Runtime.GALError($"Invalid {nameof(PixelFormat)}: {format}");
             }
         }
     }

@@ -20,7 +20,7 @@ namespace Sedulous.GAL.VK
 #if VALIDATE_USAGE
             if (ret == 0)
             {
-                throw new VeldridException("An attempt was made to reference a disposed resource.");
+                Runtime.GALError("An attempt was made to reference a disposed resource.");
             }
 #endif
             return ret;

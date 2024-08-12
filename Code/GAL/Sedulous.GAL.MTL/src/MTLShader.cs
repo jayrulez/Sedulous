@@ -56,7 +56,7 @@ namespace Sedulous.GAL.MTL
             Function = Library.newFunctionWithName(description.EntryPoint);
             if (Function.NativePtr == IntPtr.Zero)
             {
-                throw new VeldridException(
+                Runtime.GALError(
                     $"Failed to create Metal {description.Stage} Shader. The given entry point \"{description.EntryPoint}\" was not found.");
             }
 

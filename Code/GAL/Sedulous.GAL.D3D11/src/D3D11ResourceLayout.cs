@@ -45,7 +45,7 @@
                     case ResourceKind.Sampler:
                         slot = samplerIndex++;
                         break;
-                    default: throw Illegal.Value<ResourceKind>();
+                    default: Runtime.IllegalValue<ResourceKind>();
                 }
 
                 _bindingInfosByVdIndex[i] = new ResourceBindingInfo(
@@ -65,7 +65,7 @@
         {
             if (resourceLayoutIndex >= _bindingInfosByVdIndex.Length)
             {
-                throw new VeldridException($"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Length - 1}.");
+                Runtime.GALError($"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Length - 1}.");
             }
 
             return _bindingInfosByVdIndex[resourceLayoutIndex];

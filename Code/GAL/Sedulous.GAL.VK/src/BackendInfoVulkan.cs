@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using Sedulous.GAL.VK;
 using Vulkan;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Exposes Vulkan-specific functionality,
@@ -69,7 +69,7 @@ namespace Veldrid
 
         /// <summary>
         /// Overrides the current VkImageLayout tracked by the given Texture. This should be used when a VkImage is created by
-        /// an external library to inform Veldrid about its initial layout.
+        /// an external library to inform the GAL about its initial layout.
         /// </summary>
         /// <param name="texture">The Texture whose currently-tracked VkImageLayout will be overridden.</param>
         /// <param name="layout">The new VkImageLayout value.</param>
@@ -86,7 +86,7 @@ namespace Veldrid
         }
 
         /// <summary>
-        /// Gets the underlying VkImage wrapped by the given Veldrid Texture. This method can not be used on Textures with
+        /// Gets the underlying VkImage wrapped by the given GAL Texture. This method can not be used on Textures with
         /// TextureUsage.Staging.
         /// </summary>
         /// <param name="texture">The Texture whose underlying VkImage will be returned.</param>
@@ -96,7 +96,7 @@ namespace Veldrid
             VKTexture vkTexture = Util.AssertSubtype<Texture, VKTexture>(texture);
             if ((vkTexture.Usage & TextureUsage.Staging) != 0)
             {
-                throw new VeldridException(
+                Runtime.GALError(
                     $"{nameof(GetVkImage)} cannot be used if the {nameof(Texture)} " +
                     $"has {nameof(TextureUsage)}.{nameof(TextureUsage.Staging)}.");
             }
@@ -117,15 +117,15 @@ namespace Veldrid
         private ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()
         {
             VkExtensionProperties[] vkProps = _gd.GetDeviceExtensionProperties();
-            ExtensionProperties[] veldridProps = new ExtensionProperties[vkProps.Length];
+            ExtensionProperties[] galProps = new ExtensionProperties[vkProps.Length];
 
             for (int32 i = 0; i < vkProps.Length; i++)
             {
                 VkExtensionProperties prop = vkProps[i];
-                veldridProps[i] = new ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
+                galProps[i] = new ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
             }
 
-            return new ReadOnlyCollection<ExtensionProperties>(veldridProps);
+            return new ReadOnlyCollection<ExtensionProperties>(galProps);
         }
 
         public readonly struct ExtensionProperties

@@ -19,7 +19,7 @@ namespace Sedulous.GAL.VK
                 case SamplerAddressMode.Border:
                     return VkSamplerAddressMode.ClampToBorder;
                 default:
-                    throw Illegal.Value<SamplerAddressMode>();
+                    Runtime.IllegalValue<SamplerAddressMode>();
             }
         }
 
@@ -77,7 +77,7 @@ namespace Sedulous.GAL.VK
                     mipmapMode = VkSamplerMipmapMode.Linear;
                     break;
                 default:
-                    throw Illegal.Value<SamplerFilter>();
+                    Runtime.IllegalValue<SamplerFilter>();
             }
         }
 
@@ -118,7 +118,7 @@ namespace Sedulous.GAL.VK
                 case TextureType.Texture3D:
                     return VkImageType.Image3D;
                 default:
-                    throw Illegal.Value<TextureType>();
+                    Runtime.IllegalValue<TextureType>();
             }
         }
 
@@ -139,7 +139,7 @@ namespace Sedulous.GAL.VK
                 case ResourceKind.Sampler:
                     return VkDescriptorType.Sampler;
                 default:
-                    throw Illegal.Value<ResourceKind>();
+                    Runtime.IllegalValue<ResourceKind>();
             }
         }
 
@@ -160,7 +160,7 @@ namespace Sedulous.GAL.VK
                 case TextureSampleCount.Count32:
                     return VkSampleCountFlags.Count32;
                 default:
-                    throw Illegal.Value<TextureSampleCount>();
+                    Runtime.IllegalValue<TextureSampleCount>();
             }
         }
 
@@ -185,7 +185,7 @@ namespace Sedulous.GAL.VK
                 case StencilOperation.DecrementAndWrap:
                     return VkStencilOp.DecrementAndWrap;
                 default:
-                    throw Illegal.Value<StencilOperation>();
+                    Runtime.IllegalValue<StencilOperation>();
             }
         }
 
@@ -198,7 +198,7 @@ namespace Sedulous.GAL.VK
                 case PolygonFillMode.Wireframe:
                     return VkPolygonMode.Line;
                 default:
-                    throw Illegal.Value<PolygonFillMode>();
+                    Runtime.IllegalValue<PolygonFillMode>();
             }
         }
 
@@ -213,7 +213,7 @@ namespace Sedulous.GAL.VK
                 case FaceCullMode.None:
                     return VkCullModeFlags.None;
                 default:
-                    throw Illegal.Value<FaceCullMode>();
+                    Runtime.IllegalValue<FaceCullMode>();
             }
         }
 
@@ -232,7 +232,7 @@ namespace Sedulous.GAL.VK
                 case BlendFunction.Maximum:
                     return VkBlendOp.Max;
                 default:
-                    throw Illegal.Value<BlendFunction>();
+                    Runtime.IllegalValue<BlendFunction>();
             }
         }
 
@@ -267,7 +267,7 @@ namespace Sedulous.GAL.VK
                 case PrimitiveTopology.PointList:
                     return VkPrimitiveTopology.PointList;
                 default:
-                    throw Illegal.Value<PrimitiveTopology>();
+                    Runtime.IllegalValue<PrimitiveTopology>();
             }
         }
 
@@ -294,7 +294,7 @@ namespace Sedulous.GAL.VK
                 case ShaderConstantType.Double:
                     return 8;
                 default:
-                    throw Illegal.Value<ShaderConstantType>();
+                    Runtime.IllegalValue<ShaderConstantType>();
             }
         }
 
@@ -327,7 +327,7 @@ namespace Sedulous.GAL.VK
                 case BlendFactor.InverseBlendFactor:
                     return VkBlendFactor.OneMinusConstantColor;
                 default:
-                    throw Illegal.Value<BlendFactor>();
+                    Runtime.IllegalValue<BlendFactor>();
             }
         }
 
@@ -398,7 +398,7 @@ namespace Sedulous.GAL.VK
                 case VertexElementFormat.Half4:
                     return VkFormat.R16g16b16a16Sfloat;
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    Runtime.IllegalValue<VertexElementFormat>();
             }
         }
 
@@ -438,7 +438,7 @@ namespace Sedulous.GAL.VK
                 case SamplerBorderColor.OpaqueWhite:
                     return VkBorderColor.FloatOpaqueWhite;
                 default:
-                    throw Illegal.Value<SamplerBorderColor>();
+                    Runtime.IllegalValue<SamplerBorderColor>();
             }
         }
 
@@ -451,7 +451,7 @@ namespace Sedulous.GAL.VK
                 case IndexFormat.UInt32:
                     return VkIndexType.Uint32;
                 default:
-                    throw Illegal.Value<IndexFormat>();
+                    Runtime.IllegalValue<IndexFormat>();
             }
         }
 
@@ -476,7 +476,7 @@ namespace Sedulous.GAL.VK
                 case ComparisonKind.Always:
                     return VkCompareOp.Always;
                 default:
-                    throw Illegal.Value<ComparisonKind>();
+                    Runtime.IllegalValue<ComparisonKind>();
             }
         }
 
@@ -609,7 +609,7 @@ namespace Sedulous.GAL.VK
                     return PixelFormat.R11_G11_B10_Float;
 
                 default:
-                    throw Illegal.Value<VkFormat>();
+                    Runtime.IllegalValue<VkFormat>();
             }
         }
     }

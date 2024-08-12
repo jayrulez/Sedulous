@@ -41,7 +41,7 @@ namespace Sedulous.GAL.D3D11
                 case SamplerBorderColor.OpaqueWhite:
                     return new Color4(1, 1, 1, 1);
                 default:
-                    throw Illegal.Value<SamplerBorderColor>();
+                    Runtime.IllegalValue<SamplerBorderColor>();
             }
         }
 

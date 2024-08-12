@@ -141,7 +141,7 @@ namespace Sedulous.GAL.VK
         {
             if (_commandBufferBegun)
             {
-                throw new VeldridException(
+                Runtime.GALError(
                     "CommandList must be in its initial state, or End() must have been called, for Begin() to be valid to call.");
             }
             if (_commandBufferEnded)
@@ -444,7 +444,7 @@ namespace Sedulous.GAL.VK
         {
             if (!_commandBufferBegun)
             {
-                throw new VeldridException("CommandBuffer must have been started before End() may be called.");
+                Runtime.GALError("CommandBuffer must have been started before End() may be called.");
             }
 
             _commandBufferBegun = false;
@@ -1163,7 +1163,9 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        [Conditional("DEBUG")]
+#if !VALIDATE_USAGE
+        [SkipCall]//[Conditional("VALIDATE_USAGE")]
+#endif
         private void DebugFullPipelineBarrier()
         {
             VkMemoryBarrier memoryBarrier = VkMemoryBarrier.New();

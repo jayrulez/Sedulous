@@ -4,7 +4,7 @@ using System.Linq;
 using Sedulous.MetalBindings;
 using Sedulous.GAL.MTL;
 
-namespace Veldrid
+namespace Sedulous.GAL
 {
     /// <summary>
     /// Exposes Metal-specific functionality,

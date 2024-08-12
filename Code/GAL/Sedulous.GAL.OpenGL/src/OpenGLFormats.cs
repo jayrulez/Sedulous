@@ -15,7 +15,7 @@ namespace Sedulous.GAL.OpenGL
                 case IndexFormat.UInt32:
                     return DrawElementsType.UnsignedInt;
                 default:
-                    throw Illegal.Value<IndexFormat>();
+                    Runtime.IllegalValue<IndexFormat>();
             }
         }
 
@@ -36,7 +36,7 @@ namespace Sedulous.GAL.OpenGL
                 case ShaderStages.Compute:
                     return ShaderType.ComputeShader;
                 default:
-                    throw Illegal.Value<ShaderStages>();
+                    Runtime.IllegalValue<ShaderStages>();
             }
         }
 
@@ -180,7 +180,7 @@ namespace Sedulous.GAL.OpenGL
                     return PixelInternalFormat.R11fG11fB10f;
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -197,7 +197,7 @@ namespace Sedulous.GAL.OpenGL
                 case SamplerAddressMode.Border:
                     return TextureWrapMode.ClampToBorder;
                 default:
-                    throw Illegal.Value<SamplerAddressMode>();
+                    Runtime.IllegalValue<SamplerAddressMode>();
             }
         }
 
@@ -290,7 +290,7 @@ namespace Sedulous.GAL.OpenGL
                 case PixelFormat.R11_G11_B10_Float:
                     return GLPixelFormat.Rgb;
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -377,7 +377,7 @@ namespace Sedulous.GAL.OpenGL
                     return GLPixelType.UnsignedInt10F11F11FRev;
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -523,7 +523,7 @@ namespace Sedulous.GAL.OpenGL
                     return (SizedInternalFormat)PixelInternalFormat.R11fG11fB10f;
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -565,7 +565,7 @@ namespace Sedulous.GAL.OpenGL
                     mag = TextureMagFilter.Linear;
                     break;
                 default:
-                    throw Illegal.Value<SamplerFilter>();
+                    Runtime.IllegalValue<SamplerFilter>();
             }
         }
 
@@ -580,7 +580,7 @@ namespace Sedulous.GAL.OpenGL
                 case MapMode.ReadWrite:
                     return BufferAccessMask.Read | BufferAccessMask.Write;
                 default:
-                    throw Illegal.Value<MapMode>();
+                    Runtime.IllegalValue<MapMode>();
             }
         }
 
@@ -659,7 +659,7 @@ namespace Sedulous.GAL.OpenGL
                     isInteger = true;
                     return VertexAttribPointerType.Int;
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    Runtime.IllegalValue<VertexElementFormat>();
             }
         }
 
@@ -725,7 +725,7 @@ namespace Sedulous.GAL.OpenGL
                 case ComparisonKind.Always:
                     return DepthFunction.Always;
                 default:
-                    throw Illegal.Value<ComparisonKind>();
+                    Runtime.IllegalValue<ComparisonKind>();
             }
         }
 
@@ -758,7 +758,7 @@ namespace Sedulous.GAL.OpenGL
                 case BlendFactor.InverseBlendFactor:
                     return BlendingFactorSrc.OneMinusConstantColor;
                 default:
-                    throw Illegal.Value<BlendFactor>();
+                    Runtime.IllegalValue<BlendFactor>();
             }
         }
 
@@ -777,7 +777,7 @@ namespace Sedulous.GAL.OpenGL
                 case BlendFunction.Maximum:
                     return BlendEquationMode.Max;
                 default:
-                    throw Illegal.Value<BlendFunction>();
+                    Runtime.IllegalValue<BlendFunction>();
             }
         }
 
@@ -790,7 +790,7 @@ namespace Sedulous.GAL.OpenGL
                 case PolygonFillMode.Wireframe:
                     return PolygonMode.Line;
                 default:
-                    throw Illegal.Value<PolygonFillMode>();
+                    Runtime.IllegalValue<PolygonFillMode>();
             }
         }
 
@@ -815,7 +815,7 @@ namespace Sedulous.GAL.OpenGL
                 case ComparisonKind.Always:
                     return StencilFunction.Always;
                 default:
-                    throw Illegal.Value<ComparisonKind>();
+                    Runtime.IllegalValue<ComparisonKind>();
             }
         }
 
@@ -840,7 +840,7 @@ namespace Sedulous.GAL.OpenGL
                 case StencilOperation.DecrementAndWrap:
                     return StencilOp.DecrWrap;
                 default:
-                    throw Illegal.Value<StencilOperation>();
+                    Runtime.IllegalValue<StencilOperation>();
             }
         }
 
@@ -853,7 +853,7 @@ namespace Sedulous.GAL.OpenGL
                 case FaceCullMode.Front:
                     return CullFaceMode.Front;
                 default:
-                    throw Illegal.Value<FaceCullMode>();
+                    Runtime.IllegalValue<FaceCullMode>();
             }
         }
 
@@ -872,7 +872,7 @@ namespace Sedulous.GAL.OpenGL
                 case PrimitiveTopology.PointList:
                     return PrimitiveType.Points;
                 default:
-                    throw Illegal.Value<PrimitiveTopology>();
+                    Runtime.IllegalValue<PrimitiveTopology>();
             }
         }
 
@@ -885,7 +885,7 @@ namespace Sedulous.GAL.OpenGL
                 case FrontFace.CounterClockwise:
                     return FrontFaceDirection.Ccw;
                 default:
-                    throw Illegal.Value<FrontFace>();
+                    Runtime.IllegalValue<FrontFace>();
             }
         }
 
@@ -918,7 +918,7 @@ namespace Sedulous.GAL.OpenGL
                 case BlendFactor.InverseBlendFactor:
                     return BlendingFactorDest.OneMinusConstantColor;
                 default:
-                    throw Illegal.Value<BlendFactor>();
+                    Runtime.IllegalValue<BlendFactor>();
             }
         }
     }

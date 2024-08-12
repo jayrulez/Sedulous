@@ -173,7 +173,7 @@ namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 
         public void AddEntry<T>(uint8 id, ref T entry) where T : struct
         {
-            uint32 size = Util.USizeOf<T>();
+            uint32 size = sizeof(T)();
             AddEntry(id, size, ref entry);
         }
 

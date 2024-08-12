@@ -61,7 +61,7 @@ namespace Sedulous.GAL.MTL
                     case ResourceKind.Sampler:
                         slot = samplerIndex++;
                         break;
-                    default: throw Illegal.Value<ResourceKind>();
+                    default: Runtime.IllegalValue<ResourceKind>();
                 }
 
                 _bindingInfosByVdIndex[i] = new ResourceBindingInfo(

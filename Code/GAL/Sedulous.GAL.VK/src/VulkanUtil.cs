@@ -10,12 +10,14 @@ namespace Sedulous.GAL.VK
         private static Lazy<bool> s_isVulkanLoaded = new Lazy<bool>(TryLoadVulkan);
         private static readonly Lazy<string[]> s_instanceExtensions = new Lazy<string[]>(EnumerateInstanceExtensions);
 
-        [Conditional("DEBUG")]
+#if !VALIDATE_USAGE
+        [SkipCall]//[Conditional("VALIDATE_USAGE")]
+#endif
         public static void CheckResult(VkResult result)
         {
             if (result != VkResult.Success)
             {
-                throw new VeldridException("Unsuccessful VkResult: " + result);
+                Runtime.GALError("Unsuccessful VkResult: " + result);
             }
         }
 

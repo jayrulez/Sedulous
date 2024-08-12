@@ -326,7 +326,7 @@ namespace Sedulous.GAL.VK
                 {
                     if (_imageLayouts[CalculateSubresource(baseMipLevel + level, baseArrayLayer + layer)] != oldLayout)
                     {
-                        throw new VeldridException("Unexpected image layout.");
+                        Runtime.GALError("Unexpected image layout.");
                     }
                 }
             }

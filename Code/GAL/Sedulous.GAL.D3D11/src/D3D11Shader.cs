@@ -50,7 +50,7 @@ namespace Sedulous.GAL.D3D11
                     DeviceShader = device.CreateComputeShader(Bytecode);
                     break;
                 default:
-                    throw Illegal.Value<ShaderStages>();
+                    Runtime.IllegalValue<ShaderStages>();
             }
         }
 
@@ -78,7 +78,7 @@ namespace Sedulous.GAL.D3D11
                     profile = "cs_5_0";
                     break;
                 default:
-                    throw Illegal.Value<ShaderStages>();
+                    Runtime.IllegalValue<ShaderStages>();
             }
 
             ShaderFlags flags = description.Debug ? ShaderFlags.Debug : ShaderFlags.OptimizationLevel3;
@@ -88,7 +88,7 @@ namespace Sedulous.GAL.D3D11
 
             if (result == null)
             {
-                throw new VeldridException($"Failed to compile HLSL code: {Encoding.ASCII.GetString(error.AsBytes())}");
+                Runtime.GALError($"Failed to compile HLSL code: {Encoding.ASCII.GetString(error.AsBytes())}");
             }
 
             return result.AsBytes();

@@ -3,9 +3,8 @@ using Vulkan.Xlib;
 using Vulkan.Wayland;
 using static Vulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
-using Veldrid.Android;
+using Sedulous.GAL.Android;
 using System;
-using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.VK
 {
@@ -18,32 +17,32 @@ namespace Sedulous.GAL.VK
             var doCheck = gd != null;
 
             if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME))
-                throw new VeldridException($"The required instance extension was not available: {CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME}");
+                Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME}");
 
             switch (swapchainSource)
             {
                 case XlibSwapchainSource xlibSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME))
                     {
-                        throw new VeldridException($"The required instance extension was not available: {CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateXlib(instance, xlibSource);
                 case WaylandSwapchainSource waylandSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME))
                     {
-                        throw new VeldridException($"The required instance extension was not available: {CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWayland(instance, waylandSource);
                 case Win32SwapchainSource win32Source:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME))
                     {
-                        throw new VeldridException($"The required instance extension was not available: {CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWin32(instance, win32Source);
                 case AndroidSurfaceSwapchainSource androidSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME))
                     {
-                        throw new VeldridException($"The required instance extension was not available: {CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateAndroidSurface(instance, androidSource);
                 case NSWindowSwapchainSource nsWindowSource:
@@ -56,7 +55,7 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            throw new VeldridException($"Neither macOS surface extension was available: " +
+                            Runtime.GALError($"Neither macOS surface extension was available: " +
                                 $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
                         }
                     }
@@ -72,7 +71,7 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            throw new VeldridException($"Neither macOS surface extension was available: " +
+                            Runtime.GALError($"Neither macOS surface extension was available: " +
                                 $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
                         }
                     }
@@ -88,14 +87,14 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            throw new VeldridException($"Neither macOS surface extension was available: " +
+                            Runtime.GALError($"Neither macOS surface extension was available: " +
                                 $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_MVK_IOS_SURFACE_EXTENSION_NAME}");
                         }
                     }
 
                     return CreateUIViewSurface(gd, instance, uiViewSource, false);
                 default:
-                    throw new VeldridException($"The provided SwapchainSource cannot be used to create a Vulkan surface.");
+                    Runtime.GALError($"The provided SwapchainSource cannot be used to create a Vulkan surface.");
             }
         }
 

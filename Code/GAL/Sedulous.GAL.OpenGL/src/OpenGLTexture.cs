@@ -591,7 +591,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                throw new VeldridException("Invalid texture target: " + TextureTarget);
+                Runtime.GALError("Invalid texture target: " + TextureTarget);
             }
 
             Created = true;
@@ -643,7 +643,7 @@ namespace Sedulous.GAL.OpenGL
                 FramebufferErrorCode errorCode = glCheckFramebufferStatus(framebufferTarget);
                 if (errorCode != FramebufferErrorCode.FramebufferComplete)
                 {
-                    throw new VeldridException("Failed to create texture copy FBO: " + errorCode);
+                    Runtime.GALError("Failed to create texture copy FBO: " + errorCode);
                 }
             }
 

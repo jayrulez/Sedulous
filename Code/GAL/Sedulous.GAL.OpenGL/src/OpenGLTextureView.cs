@@ -54,7 +54,7 @@ namespace Sedulous.GAL.OpenGL
                 {
                     if (!_gd.Extensions.ARB_TextureView)
                     {
-                        throw new VeldridException(
+                        Runtime.GALError(
                             "TextureView objects covering a subset of a Texture's dimensions or using a different PixelFormat " +
                             "require OpenGL 4.3, or ARB_texture_view.");
                     }
@@ -63,7 +63,7 @@ namespace Sedulous.GAL.OpenGL
                 {
                     if (!_gd.Extensions.ARB_TextureView)
                     {
-                        throw new VeldridException(
+                        Runtime.GALError(
                             "TextureView objects covering a subset of a Texture's dimensions or using a different PixelFormat are " +
                             "not supported on OpenGL ES.");
                     }
@@ -177,7 +177,7 @@ namespace Sedulous.GAL.OpenGL
                 case PixelFormat.BC5_SNorm:
                 case PixelFormat.BC7_UNorm:
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -275,7 +275,7 @@ namespace Sedulous.GAL.OpenGL
             }
             else
             {
-                throw new VeldridException("The given TextureView parameters are not supported with the OpenGL backend.");
+                Runtime.GALError("The given TextureView parameters are not supported with the OpenGL backend.");
             }
 
             PixelInternalFormat internalFormat = (PixelInternalFormat)OpenGLFormats.VdToGLSizedInternalFormat(

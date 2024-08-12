@@ -1,4 +1,4 @@
-﻿namespace Veldrid
+﻿namespace Sedulous.GAL.VK
 {
     /// <summary>
     /// A structure describing Vulkan-specific device creation options.

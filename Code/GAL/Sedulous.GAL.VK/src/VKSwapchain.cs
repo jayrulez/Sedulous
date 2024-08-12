@@ -68,7 +68,7 @@ namespace Sedulous.GAL.VK
 
             if (!GetPresentQueueIndex(out _presentQueueIndex))
             {
-                throw new VeldridException($"The system does not support presenting the given Vulkan surface.");
+                Runtime.GALError($"The system does not support presenting the given Vulkan surface.");
             }
             vkGetDeviceQueue(_gd.Device, _presentQueueIndex, 0, out _presentQueue);
 
@@ -117,7 +117,7 @@ namespace Sedulous.GAL.VK
             }
             else if (result != VkResult.Success)
             {
-                throw new VeldridException("Could not acquire next image from the Vulkan swapchain.");
+                Runtime.GALError("Could not acquire next image from the Vulkan swapchain.");
             }
 
             return true;
@@ -141,7 +141,7 @@ namespace Sedulous.GAL.VK
             VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_gd.PhysicalDevice, _surface, out VkSurfaceCapabilitiesKHR surfaceCapabilities);
             if (result == VkResult.ErrorSurfaceLostKHR)
             {
-                throw new VeldridException($"The Swapchain's underlying surface has been lost.");
+                Runtime.GALError($"The Swapchain's underlying surface has been lost.");
             }
 
             if (surfaceCapabilities.minImageExtent.width == 0 && surfaceCapabilities.minImageExtent.height == 0
@@ -186,7 +186,7 @@ namespace Sedulous.GAL.VK
                 {
                     if (_colorSrgb && surfaceFormat.format != VkFormat.R8g8b8a8Srgb)
                     {
-                        throw new VeldridException($"Unable to create an sRGB Swapchain for this surface.");
+                        Runtime.GALError($"Unable to create an sRGB Swapchain for this surface.");
                     }
 
                     surfaceFormat = formats[0];

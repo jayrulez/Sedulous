@@ -97,7 +97,7 @@ namespace Sedulous.GAL.VK
             {
                 if (!TryFindMemoryType(memProperties, memoryTypeBits, flags, out var memoryTypeIndex))
                 {
-                    throw new VeldridException("No suitable memory type.");
+                    Runtime.GALError("No suitable memory type.");
                 }
 
                 uint64 minDedicatedAllocationSize = persistentMapped
@@ -122,7 +122,7 @@ namespace Sedulous.GAL.VK
                     VkResult allocationResult = vkAllocateMemory(_device, ref allocateInfo, null, out VkDeviceMemory memory);
                     if (allocationResult != VkResult.Success)
                     {
-                        throw new VeldridException("Unable to allocate sufficient Vulkan memory.");
+                        Runtime.GALError("Unable to allocate sufficient Vulkan memory.");
                     }
 
                     void* mappedPtr = null;
@@ -131,7 +131,7 @@ namespace Sedulous.GAL.VK
                         VkResult mapResult = vkMapMemory(_device, memory, 0, size, 0, &mappedPtr);
                         if (mapResult != VkResult.Success)
                         {
-                            throw new VeldridException("Unable to map newly-allocated Vulkan memory.");
+                            Runtime.GALError("Unable to map newly-allocated Vulkan memory.");
                         }
                     }
 
@@ -143,7 +143,7 @@ namespace Sedulous.GAL.VK
                     bool result = allocator.Allocate(size, alignment, out VkMemoryBlock ret);
                     if (!result)
                     {
-                        throw new VeldridException("Unable to allocate sufficient Vulkan memory.");
+                        Runtime.GALError("Unable to allocate sufficient Vulkan memory.");
                     }
 
                     return ret;

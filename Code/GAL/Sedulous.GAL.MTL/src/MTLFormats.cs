@@ -143,7 +143,7 @@ namespace Sedulous.GAL.MTL
                     return MTLPixelFormat.RG11B10Float;
 
                 default:
-                    throw Illegal.Value<PixelFormat>();
+                    Runtime.IllegalValue<PixelFormat>();
             }
         }
 
@@ -196,7 +196,7 @@ namespace Sedulous.GAL.MTL
                 case PolygonFillMode.Wireframe:
                     return MTLTriangleFillMode.Lines;
                 default:
-                    throw Illegal.Value<PolygonFillMode>();
+                    Runtime.IllegalValue<PolygonFillMode>();
             }
         }
 
@@ -258,7 +258,7 @@ namespace Sedulous.GAL.MTL
                     mip = MTLSamplerMipFilter.Nearest;
                     break;
                 default:
-                    throw Illegal.Value<SamplerFilter>();
+                    Runtime.IllegalValue<SamplerFilter>();
             }
         }
 
@@ -288,7 +288,7 @@ namespace Sedulous.GAL.MTL
                 case TextureType.Texture3D:
                     return MTLTextureType.Type3D;
                 default:
-                    throw Illegal.Value<TextureType>();
+                    Runtime.IllegalValue<TextureType>();
             }
         }
 
@@ -321,7 +321,7 @@ namespace Sedulous.GAL.MTL
                 case BlendFactor.InverseBlendFactor:
                     return MTLBlendFactor.OneMinusBlendColor;
                 default:
-                    throw Illegal.Value<BlendFactor>();
+                    Runtime.IllegalValue<BlendFactor>();
             }
         }
 
@@ -340,7 +340,7 @@ namespace Sedulous.GAL.MTL
                 case BlendFunction.Subtract:
                     return MTLBlendOperation.Subtract;
                 default:
-                    throw Illegal.Value<BlendFunction>();
+                    Runtime.IllegalValue<BlendFunction>();
             }
         }
 
@@ -379,9 +379,9 @@ namespace Sedulous.GAL.MTL
                 case ShaderConstantType.UInt64:
                 case ShaderConstantType.Int64:
                 case ShaderConstantType.Double:
-                    throw new VeldridException($"Metal does not support 64-bit shader constants.");
+                    Runtime.GALError($"Metal does not support 64-bit shader constants.");
                 default:
-                    throw Illegal.Value<ShaderConstantType>();
+                    Runtime.IllegalValue<ShaderConstantType>();
             }
         }
 
@@ -406,7 +406,7 @@ namespace Sedulous.GAL.MTL
                 case ComparisonKind.NotEqual:
                     return MTLCompareFunction.NotEqual;
                 default:
-                    throw Illegal.Value<ComparisonKind>();
+                    Runtime.IllegalValue<ComparisonKind>();
             }
         }
 
@@ -421,7 +421,7 @@ namespace Sedulous.GAL.MTL
                 case FaceCullMode.None:
                     return MTLCullMode.None;
                 default:
-                    throw Illegal.Value<FaceCullMode>();
+                    Runtime.IllegalValue<FaceCullMode>();
             }
         }
 
@@ -436,7 +436,7 @@ namespace Sedulous.GAL.MTL
                 case SamplerBorderColor.OpaqueWhite:
                     return MTLSamplerBorderColor.OpaqueWhite;
                 default:
-                    throw Illegal.Value<SamplerBorderColor>();
+                    Runtime.IllegalValue<SamplerBorderColor>();
             }
         }
 
@@ -453,7 +453,7 @@ namespace Sedulous.GAL.MTL
                 case SamplerAddressMode.Wrap:
                     return MTLSamplerAddressMode.Repeat;
                 default:
-                    throw Illegal.Value<SamplerAddressMode>();
+                    Runtime.IllegalValue<SamplerAddressMode>();
             }
         }
 
@@ -472,7 +472,7 @@ namespace Sedulous.GAL.MTL
                 case PrimitiveTopology.PointList:
                     return MTLPrimitiveType.Point;
                 default:
-                    throw Illegal.Value<PrimitiveTopology>();
+                    Runtime.IllegalValue<PrimitiveTopology>();
             }
         }
 
@@ -564,7 +564,7 @@ namespace Sedulous.GAL.MTL
                 case VertexElementFormat.Half4:
                     return MTLVertexFormat.half4;
                 default:
-                    throw Illegal.Value<VertexElementFormat>();
+                    Runtime.IllegalValue<VertexElementFormat>();
             }
         }
 
@@ -594,7 +594,7 @@ namespace Sedulous.GAL.MTL
                 case StencilOperation.DecrementAndWrap:
                     return MTLStencilOperation.DecrementWrap;
                 default:
-                    throw Illegal.Value<StencilOperation>();
+                    Runtime.IllegalValue<StencilOperation>();
 
             }
         }
