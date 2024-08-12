@@ -1,4 +1,5 @@
 FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.MetalBindings" = "*", "Sedulous.GAL" = "*"}
 
 [Project]
 Name = "Sedulous.GAL.MTL"

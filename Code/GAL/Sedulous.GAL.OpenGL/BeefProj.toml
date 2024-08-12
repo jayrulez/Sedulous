@@ -1,4 +1,5 @@
 FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*", "Sedulous.OpenGLBindings" = "*"}
 
 [Project]
 Name = "Sedulous.GAL.OpenGL"

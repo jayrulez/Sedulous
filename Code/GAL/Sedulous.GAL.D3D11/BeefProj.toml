@@ -1,4 +1,5 @@
 FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*", Win32 = "*"}
 
 [Project]
 Name = "Sedulous.GAL.D3D11"
