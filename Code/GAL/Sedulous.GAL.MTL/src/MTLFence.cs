@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal class MTLFence : Fence
     {

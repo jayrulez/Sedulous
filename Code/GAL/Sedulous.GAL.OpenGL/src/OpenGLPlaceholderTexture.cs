@@ -1,4 +1,4 @@
-﻿namespace Veldrid.OpenGL
+﻿namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLPlaceholderTexture : Texture
     {

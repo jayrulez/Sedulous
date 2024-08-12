@@ -6,9 +6,9 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NativeLibrary = NativeLibraryLoader.NativeLibrary;
-using Veldrid.MetalBindings;
+using Sedulous.MetalBindings;
 
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal unsafe class MTLGraphicsDevice : GraphicsDevice
     {

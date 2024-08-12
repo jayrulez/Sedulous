@@ -1,12 +1,12 @@
-﻿using static Veldrid.OpenGLBinding.OpenGLNative;
-using static Veldrid.OpenGL.OpenGLUtil;
-using Veldrid.OpenGLBinding;
+﻿using static Sedulous.OpenGLBindings.OpenGLNative;
+using static Sedulous.GAL.OpenGL.OpenGLUtil;
+using Sedulous.OpenGLBindings;
 using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal unsafe class OpenGLPipeline : Pipeline, OpenGLDeferredResource
     {

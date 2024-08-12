@@ -12,7 +12,7 @@ using VorticeDXGI = Vortice.DXGI.DXGI;
 using VorticeD3D11 = Vortice.Direct3D11.D3D11;
 using Vortice.DXGI.Debug;
 
-namespace Veldrid.D3D11
+namespace Sedulous.GAL.D3D11
 {
     internal class D3D11GraphicsDevice : GraphicsDevice
     {

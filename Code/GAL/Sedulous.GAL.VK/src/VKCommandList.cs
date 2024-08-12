@@ -1,7 +1,7 @@
 ﻿using System;
 using Vulkan;
 using static Vulkan.VulkanNative;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -9,7 +9,7 @@ using System.Text;
 
 using static Vulkan.RawConstants;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal unsafe class VKCommandList : CommandList
     {

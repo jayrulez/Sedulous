@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct MTLSize

@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Veldrid.MetalBindings;
+using Sedulous.MetalBindings;
 
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal class MTLFeatureSupport : IReadOnlyCollection<MTLFeatureSet>
     {

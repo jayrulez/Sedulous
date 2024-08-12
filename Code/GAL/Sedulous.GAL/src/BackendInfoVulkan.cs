@@ -1,7 +1,7 @@
 ﻿#if !EXCLUDE_VULKAN_BACKEND
 using System;
 using System.Collections.ObjectModel;
-using Veldrid.Vk;
+using Sedulous.GAL.VK;
 using Vulkan;
 
 namespace Veldrid

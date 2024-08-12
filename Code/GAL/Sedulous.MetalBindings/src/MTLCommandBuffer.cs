@@ -1,8 +1,8 @@
-using static Veldrid.MetalBindings.ObjectiveCRuntime;
+using static Sedulous.MetalBindings.ObjectiveCRuntime;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct MTLCommandBuffer

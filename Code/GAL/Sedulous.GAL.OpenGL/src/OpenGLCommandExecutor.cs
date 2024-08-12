@@ -1,10 +1,10 @@
 ﻿using System;
-using static Veldrid.OpenGLBinding.OpenGLNative;
-using static Veldrid.OpenGL.OpenGLUtil;
-using Veldrid.OpenGLBinding;
+using static Sedulous.OpenGLBindings.OpenGLNative;
+using static Sedulous.GAL.OpenGL.OpenGLUtil;
+using Sedulous.OpenGLBindings;
 using System.Text;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal unsafe class OpenGLCommandExecutor
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Veldrid.OpenGLBinding
+namespace Sedulous.OpenGLBindings
 {
     /// <summary>
     /// A boolean value stored in an unsigned byte.

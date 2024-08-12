@@ -1,9 +1,9 @@
 ﻿using Vulkan;
 using static Vulkan.VulkanNative;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 using System;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal unsafe class VKShader : Shader
     {

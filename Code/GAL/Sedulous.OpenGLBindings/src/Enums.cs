@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Veldrid.OpenGLBinding
+namespace Sedulous.OpenGLBindings
 {
     public enum DrawBufferMode
     {

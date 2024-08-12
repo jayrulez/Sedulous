@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLExtensions : IReadOnlyCollection<string>
     {

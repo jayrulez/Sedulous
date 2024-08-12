@@ -1,4 +1,4 @@
-namespace Veldrid.OpenGL.NoAllocEntryList
+namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 {
     internal struct NoAllocInsertDebugMarkerEntry
     {

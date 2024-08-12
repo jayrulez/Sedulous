@@ -1,4 +1,4 @@
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal struct MTLUnalignedBufferCopyInfo
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Vulkan;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal abstract class VKFramebufferBase : Framebuffer
     {

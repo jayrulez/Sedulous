@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public static class MTLUtil
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLFence : Fence
     {

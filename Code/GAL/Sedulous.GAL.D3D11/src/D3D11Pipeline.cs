@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System;
 using Vortice.Mathematics;
 
-namespace Veldrid.D3D11
+namespace Sedulous.GAL.D3D11
 {
     internal class D3D11Pipeline : Pipeline
     {

@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Vulkan;
 using static Vulkan.VulkanNative;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal class VKDescriptorPoolManager
     {

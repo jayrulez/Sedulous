@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Vulkan;
 using static Vulkan.VulkanNative;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal unsafe class VKResourceSet : ResourceSet
     {

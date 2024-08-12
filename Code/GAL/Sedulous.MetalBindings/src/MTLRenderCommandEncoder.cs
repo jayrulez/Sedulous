@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using static Veldrid.MetalBindings.ObjectiveCRuntime;
+using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct MTLRenderCommandEncoder

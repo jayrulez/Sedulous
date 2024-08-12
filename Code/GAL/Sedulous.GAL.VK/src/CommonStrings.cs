@@ -1,4 +1,4 @@
-﻿namespace Veldrid.Vk
+﻿namespace Sedulous.GAL.VK
 {
     internal static class CommonStrings
     {

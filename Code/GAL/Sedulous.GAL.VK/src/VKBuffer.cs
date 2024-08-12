@@ -1,9 +1,9 @@
 ﻿using System;
 using Vulkan;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 using static Vulkan.VulkanNative;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal unsafe class VKBuffer : DeviceBuffer
     {

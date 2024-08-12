@@ -1,6 +1,6 @@
 ﻿using Vortice.Direct3D11;
 
-namespace Veldrid.D3D11
+namespace Sedulous.GAL.D3D11
 {
     internal static class D3D11Util
     {

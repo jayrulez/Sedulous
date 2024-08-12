@@ -1,11 +1,11 @@
 ﻿using Vulkan;
 using static Vulkan.VulkanNative;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal unsafe class VKPipeline : Pipeline
     {

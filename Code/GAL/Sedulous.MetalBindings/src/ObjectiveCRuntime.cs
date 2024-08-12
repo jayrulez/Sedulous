@@ -2,7 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public static unsafe class ObjectiveCRuntime
     {

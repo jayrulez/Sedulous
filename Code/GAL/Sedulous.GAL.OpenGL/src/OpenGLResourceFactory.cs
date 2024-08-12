@@ -1,9 +1,9 @@
-﻿using static Veldrid.OpenGLBinding.OpenGLNative;
-using Veldrid.OpenGL;
-using Veldrid.OpenGLBinding;
+﻿using static Sedulous.OpenGLBindings.OpenGLNative;
+using Sedulous.GAL.OpenGL;
+using Sedulous.OpenGLBindings;
 using System;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLResourceFactory : ResourceFactory
     {

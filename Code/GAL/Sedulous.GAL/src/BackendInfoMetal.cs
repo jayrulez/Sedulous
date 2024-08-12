@@ -1,8 +1,8 @@
 ﻿#if !EXCLUDE_METAL_BACKEND
 using System.Collections.ObjectModel;
 using System.Linq;
-using Veldrid.MetalBindings;
-using Veldrid.MTL;
+using Sedulous.MetalBindings;
+using Sedulous.GAL.MTL;
 
 namespace Veldrid
 {

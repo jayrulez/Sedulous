@@ -1,6 +1,6 @@
-using Veldrid.MetalBindings;
+using Sedulous.MetalBindings;
 
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal class MTLResourceFactory : ResourceFactory
     {

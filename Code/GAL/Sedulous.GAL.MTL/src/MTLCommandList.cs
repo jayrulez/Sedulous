@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Veldrid.MetalBindings;
+using Sedulous.MetalBindings;
 
-namespace Veldrid.MTL
+namespace Sedulous.GAL.MTL
 {
     internal unsafe class MTLCommandList : CommandList
     {

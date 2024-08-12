@@ -1,9 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
-using Veldrid.MetalBindings;
-using static Veldrid.MetalBindings.ObjectiveCRuntime;
+using Sedulous.MetalBindings;
+using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
-namespace Veldrid.OpenGL.EAGL
+namespace Sedulous.GAL.OpenGL.EAGL
 {
     [StructLayout(LayoutKind.Sequential)]
     internal struct CAEAGLLayer

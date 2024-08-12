@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using Veldrid.OpenGLBinding;
+using Sedulous.OpenGLBindings;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal static class OpenGLFormats
     {

@@ -1,6 +1,6 @@
 ﻿#if !EXCLUDE_D3D11_BACKEND
 using System;
-using Veldrid.D3D11;
+using Sedulous.GAL.D3D11;
 
 namespace Veldrid
 {

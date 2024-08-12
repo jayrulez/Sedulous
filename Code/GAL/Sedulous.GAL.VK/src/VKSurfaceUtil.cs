@@ -2,12 +2,12 @@
 using Vulkan.Xlib;
 using Vulkan.Wayland;
 using static Vulkan.VulkanNative;
-using static Veldrid.Vk.VulkanUtil;
+using static Sedulous.GAL.VK.VulkanUtil;
 using Veldrid.Android;
 using System;
-using Veldrid.MetalBindings;
+using Sedulous.MetalBindings;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal static unsafe class VKSurfaceUtil
     {

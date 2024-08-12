@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public unsafe struct Selector
     {

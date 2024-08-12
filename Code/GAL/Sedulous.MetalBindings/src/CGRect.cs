@@ -1,4 +1,4 @@
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public struct CGRect
     {

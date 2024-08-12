@@ -1,7 +1,7 @@
-using static Veldrid.MetalBindings.ObjectiveCRuntime;
+using static Sedulous.MetalBindings.ObjectiveCRuntime;
 using System;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public struct NSObject
     {

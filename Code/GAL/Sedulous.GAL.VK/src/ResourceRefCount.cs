@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace Veldrid.Vk
+namespace Sedulous.GAL.VK
 {
     internal class ResourceRefCount
     {

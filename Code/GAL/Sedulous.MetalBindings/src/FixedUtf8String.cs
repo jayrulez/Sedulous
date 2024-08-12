@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     internal unsafe class FixedUtf8String : IDisposable
     {

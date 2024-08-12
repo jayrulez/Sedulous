@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     [Flags]
     public enum MTLTextureUsage

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Veldrid.OpenGL.ManagedEntryList
+namespace Sedulous.GAL.OpenGL.ManagedEntryList
 {
     internal class OpenGLPooledCommandEntryList : OpenGLCommandEntryList
     {

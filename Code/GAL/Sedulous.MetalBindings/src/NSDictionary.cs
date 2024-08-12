@@ -1,6 +1,6 @@
 using System;
 
-namespace Veldrid.MetalBindings
+namespace Sedulous.MetalBindings
 {
     public struct NSDictionary
     {

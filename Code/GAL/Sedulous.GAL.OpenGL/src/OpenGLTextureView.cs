@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using Veldrid.OpenGLBinding;
-using static Veldrid.OpenGL.OpenGLUtil;
-using static Veldrid.OpenGLBinding.OpenGLNative;
+using Sedulous.OpenGLBindings;
+using static Sedulous.GAL.OpenGL.OpenGLUtil;
+using static Sedulous.OpenGLBindings.OpenGLNative;
 
-namespace Veldrid.OpenGL
+namespace Sedulous.GAL.OpenGL
 {
     internal class OpenGLTextureView : TextureView, OpenGLDeferredResource
     {
