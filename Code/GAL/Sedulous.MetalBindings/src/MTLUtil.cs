@@ -4,7 +4,7 @@ namespace Sedulous.MetalBindings
 {
     public static class MTLUtil
     {
-        public static unsafe string GetUtf8String(byte* stringStart)
+        public static string GetUtf8String(byte* stringStart)
         {
             int characters = 0;
             while (stringStart[characters] != 0)

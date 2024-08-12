@@ -5,7 +5,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe static class VulkanUtil
+    internal static class VulkanUtil
     {
         private static Lazy<bool> s_isVulkanLoaded = new Lazy<bool>(TryLoadVulkan);
         private static readonly Lazy<string[]> s_instanceExtensions = new Lazy<string[]>(EnumerateInstanceExtensions);
@@ -314,7 +314,7 @@ namespace Sedulous.GAL.VK
         }
     }
 
-    internal unsafe static class VkPhysicalDeviceMemoryPropertiesEx
+    internal static class VkPhysicalDeviceMemoryPropertiesEx
     {
         public static VkMemoryType GetMemoryType(this VkPhysicalDeviceMemoryProperties memoryProperties, uint index)
         {

@@ -8,7 +8,7 @@ using System;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLPipeline : Pipeline, OpenGLDeferredResource
+    internal class OpenGLPipeline : Pipeline, OpenGLDeferredResource
     {
         private const uint GL_INVALID_INDEX = 0xFFFFFFFF;
         private readonly OpenGLGraphicsDevice _gd;

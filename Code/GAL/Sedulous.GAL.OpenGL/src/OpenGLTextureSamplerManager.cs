@@ -8,7 +8,7 @@ namespace Sedulous.GAL.OpenGL
     /// <summary>
     /// A utility class managing the relationships between textures, samplers, and their binding locations.
     /// </summary>
-    internal unsafe class OpenGLTextureSamplerManager
+    internal class OpenGLTextureSamplerManager
     {
         private readonly bool _dsaAvailable;
         private readonly int _maxTextureUnits;

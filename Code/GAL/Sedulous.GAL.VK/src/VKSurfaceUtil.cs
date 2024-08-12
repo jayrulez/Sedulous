@@ -9,7 +9,7 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.VK
 {
-    internal static unsafe class VKSurfaceUtil
+    internal static class VKSurfaceUtil
     {
         internal static VkSurfaceKHR CreateSurface(VKGraphicsDevice gd, VkInstance instance, SwapchainSource swapchainSource)
         {
@@ -140,13 +140,13 @@ namespace Sedulous.GAL.VK
             return surface;
         }
 
-        private static unsafe VkSurfaceKHR CreateNSWindowSurface(VKGraphicsDevice gd, VkInstance instance, NSWindowSwapchainSource nsWindowSource, bool hasExtMetalSurface)
+        private static VkSurfaceKHR CreateNSWindowSurface(VKGraphicsDevice gd, VkInstance instance, NSWindowSwapchainSource nsWindowSource, bool hasExtMetalSurface)
         {
             NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
             return CreateNSViewSurface(gd, instance, new NSViewSwapchainSource(nswindow.contentView), hasExtMetalSurface);
         }
 
-        private static unsafe VkSurfaceKHR CreateNSViewSurface(VKGraphicsDevice gd, VkInstance instance, NSViewSwapchainSource nsViewSource, bool hasExtMetalSurface)
+        private static VkSurfaceKHR CreateNSViewSurface(VKGraphicsDevice gd, VkInstance instance, NSViewSwapchainSource nsViewSource, bool hasExtMetalSurface)
         {
             NSView contentView = new NSView(nsViewSource.NSView);
 

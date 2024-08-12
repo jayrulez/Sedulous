@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 {
-    internal unsafe class OpenGLNoAllocCommandEntryList : OpenGLCommandEntryList, IDisposable
+    internal class OpenGLNoAllocCommandEntryList : OpenGLCommandEntryList, IDisposable
     {
         private readonly StagingMemoryPool _memoryPool;
         private readonly List<EntryStorageBlock> _blocks = new List<EntryStorageBlock>();

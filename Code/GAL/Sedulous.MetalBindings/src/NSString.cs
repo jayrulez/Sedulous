@@ -3,7 +3,7 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct NSString
+    public struct NSString
     {
         public readonly IntPtr NativePtr;
         public NSString(IntPtr ptr) => NativePtr = ptr;

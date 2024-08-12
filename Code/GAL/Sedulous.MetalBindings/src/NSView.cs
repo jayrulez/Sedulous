@@ -4,7 +4,7 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct NSView
+    public struct NSView
     {
         public readonly IntPtr NativePtr;
         public static implicit operator IntPtr(NSView nsView) => nsView.NativePtr;

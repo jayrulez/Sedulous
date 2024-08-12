@@ -5,7 +5,7 @@ namespace Sedulous.MetalBindings
 {
     // TODO: Technically this should be "pointer-sized",
     // but there are no non-64-bit platforms that anyone cares about.
-    public unsafe struct CGFloat
+    public struct CGFloat
     {
         private readonly double _value;
 

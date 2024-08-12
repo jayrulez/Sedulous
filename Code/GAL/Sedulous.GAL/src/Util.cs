@@ -46,7 +46,7 @@ namespace Veldrid
             return (uint)Unsafe.SizeOf<T>();
         }
 
-        internal static unsafe string GetString(byte* stringStart)
+        internal static string GetString(byte* stringStart)
         {
             int characters = 0;
             while (stringStart[characters] != 0)
@@ -202,7 +202,7 @@ namespace Veldrid
             return layerPitch * arrayLayer;
         }
 
-        public static unsafe void CopyTextureRegion(
+        public static void CopyTextureRegion(
             void* src,
             uint srcX, uint srcY, uint srcZ,
             uint srcRowPitch,

@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKPipeline : Pipeline
+    internal class VKPipeline : Pipeline
     {
         private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkPipeline _devicePipeline;

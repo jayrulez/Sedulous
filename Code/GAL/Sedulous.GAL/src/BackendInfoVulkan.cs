@@ -114,7 +114,7 @@ namespace Veldrid
             _gd.TransitionImageLayout(Util.AssertSubtype<Texture, VKTexture>(texture), (VkImageLayout)layout);
         }
 
-        private unsafe ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()
+        private ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()
         {
             VkExtensionProperties[] vkProps = _gd.GetDeviceExtensionProperties();
             ExtensionProperties[] veldridProps = new ExtensionProperties[vkProps.Length];

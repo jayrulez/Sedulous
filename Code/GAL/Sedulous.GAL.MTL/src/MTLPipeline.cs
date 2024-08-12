@@ -266,7 +266,7 @@ namespace Sedulous.GAL.MTL
             ObjectiveCRuntime.release(mtlDesc.NativePtr);
         }
 
-        private unsafe MTLFunctionConstantValues CreateConstantValues(SpecializationConstant[] specializations)
+        private MTLFunctionConstantValues CreateConstantValues(SpecializationConstant[] specializations)
         {
             MTLFunctionConstantValues ret = MTLFunctionConstantValues.New();
             if (specializations != null)

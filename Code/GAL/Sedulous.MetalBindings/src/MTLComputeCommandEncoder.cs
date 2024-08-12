@@ -26,7 +26,7 @@ namespace Sedulous.MetalBindings
                 offset,
                 index);
 
-        public unsafe void setBytes(void* bytes, UIntPtr length, UIntPtr index)
+        public void setBytes(void* bytes, UIntPtr length, UIntPtr index)
             => objc_msgSend(NativePtr, sel_setBytes, bytes, length, index);
 
         public void dispatchThreadGroups(MTLSize threadgroupsPerGrid, MTLSize threadsPerThreadgroup)

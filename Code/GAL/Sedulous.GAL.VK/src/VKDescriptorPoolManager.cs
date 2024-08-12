@@ -18,7 +18,7 @@ namespace Sedulous.GAL.VK
             _pools.Add(CreateNewPool());
         }
 
-        public unsafe DescriptorAllocationToken Allocate(DescriptorResourceCounts counts, VkDescriptorSetLayout setLayout)
+        public DescriptorAllocationToken Allocate(DescriptorResourceCounts counts, VkDescriptorSetLayout setLayout)
         {
             lock (_lock)
             {
@@ -68,7 +68,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private unsafe PoolInfo CreateNewPool()
+        private PoolInfo CreateNewPool()
         {
             uint totalSets = 1000;
             uint descriptorCount = 100;
@@ -101,7 +101,7 @@ namespace Sedulous.GAL.VK
             return new PoolInfo(descriptorPool, totalSets, descriptorCount);
         }
 
-        internal unsafe void DestroyAll()
+        internal void DestroyAll()
         {
             foreach (PoolInfo poolInfo in _pools)
             {

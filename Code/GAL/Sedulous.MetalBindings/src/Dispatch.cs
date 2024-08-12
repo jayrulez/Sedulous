@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    public static unsafe class Dispatch
+    public static class Dispatch
     {
         private const string LibdispatchLocation = @"/usr/lib/system/libdispatch.dylib";
 

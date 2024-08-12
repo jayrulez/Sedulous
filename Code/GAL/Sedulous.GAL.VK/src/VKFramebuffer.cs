@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKFramebuffer : VKFramebufferBase
+    internal class VKFramebuffer : VKFramebufferBase
     {
         private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkFramebuffer _deviceFramebuffer;

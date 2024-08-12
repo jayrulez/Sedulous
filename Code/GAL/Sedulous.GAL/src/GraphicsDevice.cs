@@ -459,7 +459,7 @@ namespace Veldrid
         /// <see cref="Texture"/>.</param>
         /// <param name="arrayLayer">The array layer to update. Must be less than the total array layer count contained in the
         /// <see cref="Texture"/>.</param>
-        public unsafe void UpdateTexture<T>(
+        public void UpdateTexture<T>(
             Texture texture,
             ReadOnlySpan<T> source,
             uint x, uint y, uint z,
@@ -589,7 +589,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/> storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">The value to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             T source) where T : unmanaged
@@ -610,7 +610,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/>'s storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">A reference to the single value to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ref T source) where T : unmanaged
@@ -632,7 +632,7 @@ namespace Veldrid
         /// which new data will be uploaded.</param>
         /// <param name="source">A reference to the first of a series of values to upload.</param>
         /// <param name="sizeInBytes">The total size of the uploaded data, in bytes.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ref T source,
@@ -671,7 +671,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/>'s storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">A readonly span containing the data to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ReadOnlySpan<T> source) where T : unmanaged

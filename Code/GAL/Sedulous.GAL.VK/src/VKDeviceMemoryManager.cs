@@ -7,7 +7,7 @@ using System;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKDeviceMemoryManager : IDisposable
+    internal class VKDeviceMemoryManager : IDisposable
     {
         private const ulong MinDedicatedAllocationSizeDynamic = 1024 * 1024 * 64;
         private const ulong MinDedicatedAllocationSizeNonDynamic = 1024 * 1024 * 256;
@@ -455,7 +455,7 @@ namespace Sedulous.GAL.VK
     }
 
     [DebuggerDisplay("[Mem:{DeviceMemory.Handle}] Off:{Offset}, Size:{Size} End:{Offset+Size}")]
-    internal unsafe struct VkMemoryBlock : IEquatable<VkMemoryBlock>
+    internal struct VkMemoryBlock : IEquatable<VkMemoryBlock>
     {
         public readonly uint MemoryTypeIndex;
         public readonly VkDeviceMemory DeviceMemory;

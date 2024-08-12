@@ -705,7 +705,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private unsafe void FlushVertexBindings()
+        private void FlushVertexBindings()
         {
             if (_vertexBindingsChanged)
             {
@@ -1156,7 +1156,7 @@ namespace Sedulous.GAL.D3D11
             _context.ClearDepthStencilView(D3D11Framebuffer.DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, depth, stencil);
         }
 
-        private protected unsafe override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
+        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint bufferOffsetInBytes, IntPtr source, uint sizeInBytes)
         {
             D3D11Buffer d3dBuffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
             if (sizeInBytes == 0)
@@ -1214,7 +1214,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private unsafe void UpdateSubresource_Workaround(
+        private void UpdateSubresource_Workaround(
             ID3D11Resource resource,
             int subresource,
             Box region,

@@ -3,7 +3,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKFence : Fence
+    internal class VKFence : Fence
     {
         private readonly VKGraphicsDevice _gd;
         private Vulkan.VkFence _fence;

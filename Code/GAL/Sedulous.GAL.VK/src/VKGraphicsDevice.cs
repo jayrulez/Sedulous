@@ -11,7 +11,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKGraphicsDevice : GraphicsDevice
+    internal class VKGraphicsDevice : GraphicsDevice
     {
         private const uint VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR = 0x00000001;
         private static readonly FixedUtf8String s_name = "Veldrid-VKGraphicsDevice";
@@ -1602,36 +1602,36 @@ namespace Sedulous.GAL.VK
         }
     }
 
-    internal unsafe delegate VkResult vkCreateDebugReportCallbackEXT_d(
+    internal delegate VkResult vkCreateDebugReportCallbackEXT_d(
         VkInstance instance,
         VkDebugReportCallbackCreateInfoEXT* createInfo,
         IntPtr allocatorPtr,
         out VkDebugReportCallbackEXT ret);
 
-    internal unsafe delegate void vkDestroyDebugReportCallbackEXT_d(
+    internal delegate void vkDestroyDebugReportCallbackEXT_d(
         VkInstance instance,
         VkDebugReportCallbackEXT callback,
         VkAllocationCallbacks* pAllocator);
 
-    internal unsafe delegate VkResult vkDebugMarkerSetObjectNameEXT_t(VkDevice device, VkDebugMarkerObjectNameInfoEXT* pNameInfo);
-    internal unsafe delegate void vkCmdDebugMarkerBeginEXT_t(VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT* pMarkerInfo);
-    internal unsafe delegate void vkCmdDebugMarkerEndEXT_t(VkCommandBuffer commandBuffer);
-    internal unsafe delegate void vkCmdDebugMarkerInsertEXT_t(VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT* pMarkerInfo);
+    internal delegate VkResult vkDebugMarkerSetObjectNameEXT_t(VkDevice device, VkDebugMarkerObjectNameInfoEXT* pNameInfo);
+    internal delegate void vkCmdDebugMarkerBeginEXT_t(VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT* pMarkerInfo);
+    internal delegate void vkCmdDebugMarkerEndEXT_t(VkCommandBuffer commandBuffer);
+    internal delegate void vkCmdDebugMarkerInsertEXT_t(VkCommandBuffer commandBuffer, VkDebugMarkerMarkerInfoEXT* pMarkerInfo);
 
-    internal unsafe delegate void vkGetBufferMemoryRequirements2_t(VkDevice device, VkBufferMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements);
-    internal unsafe delegate void vkGetImageMemoryRequirements2_t(VkDevice device, VkImageMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements);
+    internal delegate void vkGetBufferMemoryRequirements2_t(VkDevice device, VkBufferMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements);
+    internal delegate void vkGetImageMemoryRequirements2_t(VkDevice device, VkImageMemoryRequirementsInfo2KHR* pInfo, VkMemoryRequirements2KHR* pMemoryRequirements);
 
-    internal unsafe delegate void vkGetPhysicalDeviceProperties2_t(VkPhysicalDevice physicalDevice, void* properties);
+    internal delegate void vkGetPhysicalDeviceProperties2_t(VkPhysicalDevice physicalDevice, void* properties);
 
     // VK_EXT_metal_surface
 
-    internal unsafe delegate VkResult vkCreateMetalSurfaceEXT_t(
+    internal delegate VkResult vkCreateMetalSurfaceEXT_t(
         VkInstance instance,
         VkMetalSurfaceCreateInfoEXT* pCreateInfo,
         VkAllocationCallbacks* pAllocator,
         VkSurfaceKHR* pSurface);
 
-    internal unsafe struct VkMetalSurfaceCreateInfoEXT
+    internal struct VkMetalSurfaceCreateInfoEXT
     {
         public const VkStructureType VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT = (VkStructureType)1000217000;
 
@@ -1641,7 +1641,7 @@ namespace Sedulous.GAL.VK
         public void* pLayer;
     }
 
-    internal unsafe struct VkPhysicalDeviceDriverProperties
+    internal struct VkPhysicalDeviceDriverProperties
     {
         public const int DriverNameLength = 256;
         public const int DriverInfoLength = 256;

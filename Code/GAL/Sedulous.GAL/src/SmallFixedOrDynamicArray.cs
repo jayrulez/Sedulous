@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Veldrid
 {
-    internal unsafe struct SmallFixedOrDynamicArray : IDisposable
+    internal struct SmallFixedOrDynamicArray : IDisposable
     {
         private const int MaxFixedValues = 5;
 

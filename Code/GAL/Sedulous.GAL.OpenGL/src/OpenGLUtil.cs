@@ -26,7 +26,7 @@ namespace Sedulous.GAL.OpenGL
             }
         }
 
-        internal static unsafe void SetObjectLabel(ObjectLabelIdentifier identifier, uint target, string name)
+        internal static void SetObjectLabel(ObjectLabelIdentifier identifier, uint target, string name)
         {
             if (HasGlObjectLabel)
             {

@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct Selector
+    public struct Selector
     {
         public readonly IntPtr NativePtr;
 

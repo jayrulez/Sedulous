@@ -4,7 +4,7 @@ using Sedulous.OpenGLBindings;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLSampler : Sampler, OpenGLDeferredResource
+    internal class OpenGLSampler : Sampler, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
         private readonly SamplerDescription _description;

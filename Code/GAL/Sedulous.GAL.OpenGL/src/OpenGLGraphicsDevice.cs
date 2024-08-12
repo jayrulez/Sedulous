@@ -14,7 +14,7 @@ using System.Runtime.CompilerServices;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLGraphicsDevice : GraphicsDevice
+    internal class OpenGLGraphicsDevice : GraphicsDevice
     {
         private ResourceFactory _resourceFactory;
         private string _deviceName;
@@ -1757,7 +1757,7 @@ namespace Sedulous.GAL.OpenGL
             InitializeResource,
         }
 
-        private unsafe struct ExecutionThreadWorkItem
+        private struct ExecutionThreadWorkItem
         {
             public readonly WorkItemType Type;
             public readonly object Object0;

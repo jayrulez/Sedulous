@@ -8,7 +8,7 @@ namespace Sedulous.OpenGLBindings
     // GLuint64 = uint64
     // GLenum = uint
     // Glclampf = 32-bit float, [0, 1]
-    public static unsafe class OpenGLNative
+    public static class OpenGLNative
     {
         private static Func<string, IntPtr> s_getProcAddress;
 

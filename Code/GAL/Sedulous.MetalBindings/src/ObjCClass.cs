@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct ObjCClass
+    public struct ObjCClass
     {
         public readonly IntPtr NativePtr;
         public static implicit operator IntPtr(ObjCClass c) => c.NativePtr;

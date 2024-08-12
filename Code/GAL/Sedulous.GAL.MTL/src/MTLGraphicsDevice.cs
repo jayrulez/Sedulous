@@ -10,7 +10,7 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal unsafe class MTLGraphicsDevice : GraphicsDevice
+    internal class MTLGraphicsDevice : GraphicsDevice
     {
         private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(GetIsSupported);
         private static readonly Dictionary<IntPtr, MTLGraphicsDevice> s_aotRegisteredBlocks

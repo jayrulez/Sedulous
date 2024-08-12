@@ -2,7 +2,7 @@
 
 namespace Sedulous.GAL.OpenGL.NoAllocEntryList
 {
-    internal unsafe struct NoAllocSetResourceSetEntry
+    internal struct NoAllocSetResourceSetEntry
     {
         public const int MaxInlineDynamicOffsets = 10;
 

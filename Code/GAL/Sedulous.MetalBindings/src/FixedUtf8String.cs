@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Sedulous.MetalBindings
 {
-    internal unsafe class FixedUtf8String : IDisposable
+    internal class FixedUtf8String : IDisposable
     {
         private GCHandle _handle;
         private uint _numBytes;

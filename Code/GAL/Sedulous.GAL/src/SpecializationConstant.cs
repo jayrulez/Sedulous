@@ -92,7 +92,7 @@ namespace Veldrid
         /// <param name="value">The constant value.</param>
         public SpecializationConstant(uint id, double value) : this(id, ShaderConstantType.Double, Store(value)) { }
 
-        internal static unsafe ulong Store<T>(T value)
+        internal static ulong Store<T>(T value)
         {
             ulong ret;
             Unsafe.Write(&ret, value);

@@ -7,7 +7,7 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal unsafe class MTLCommandList : CommandList
+    internal class MTLCommandList : CommandList
     {
         private readonly MTLGraphicsDevice _gd;
         private MTLCommandBuffer _cb;

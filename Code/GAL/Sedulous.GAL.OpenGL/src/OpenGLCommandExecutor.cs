@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLCommandExecutor
+    internal class OpenGLCommandExecutor
     {
         private readonly OpenGLGraphicsDevice _gd;
         private readonly GraphicsBackend _backend;

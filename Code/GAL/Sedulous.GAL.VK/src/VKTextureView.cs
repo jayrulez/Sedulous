@@ -4,7 +4,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKTextureView : TextureView
+    internal class VKTextureView : TextureView
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkImageView _imageView;

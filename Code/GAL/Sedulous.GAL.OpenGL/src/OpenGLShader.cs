@@ -6,7 +6,7 @@ using System;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLShader : Shader, OpenGLDeferredResource
+    internal class OpenGLShader : Shader, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
         private readonly ShaderType _shaderType;

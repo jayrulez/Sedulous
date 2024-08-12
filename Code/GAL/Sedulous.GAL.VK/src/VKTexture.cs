@@ -6,7 +6,7 @@ using System;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKTexture : Texture
+    internal class VKTexture : Texture
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkImage _optimalImage;

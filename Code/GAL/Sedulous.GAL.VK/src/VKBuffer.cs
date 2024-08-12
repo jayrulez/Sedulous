@@ -5,7 +5,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKBuffer : DeviceBuffer
+    internal class VKBuffer : DeviceBuffer
     {
         private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkBuffer _deviceBuffer;

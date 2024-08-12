@@ -11,7 +11,7 @@ namespace Sedulous.MetalBindings
             return s_class.AllocInit<MTLFunctionConstantValues>();
         }
 
-        public unsafe void setConstantValuetypeatIndex(void* value, MTLDataType type, UIntPtr index)
+        public void setConstantValuetypeatIndex(void* value, MTLDataType type, UIntPtr index)
         {
             ObjectiveCRuntime.objc_msgSend(NativePtr, sel_setConstantValuetypeatIndex, value, (uint)type, index);
         }

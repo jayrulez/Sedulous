@@ -3,7 +3,7 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct UIScreen
+    public struct UIScreen
     {
         public readonly IntPtr NativePtr;
         public UIScreen(IntPtr ptr)

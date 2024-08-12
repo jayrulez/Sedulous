@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.GAL.OpenGL.EGL
 {
-    internal static unsafe class EGLNative
+    internal static class EGLNative
     {
         private const string LibName = "libEGL.so";
 

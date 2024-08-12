@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKSwapchainFramebuffer : VKFramebufferBase
+    internal class VKSwapchainFramebuffer : VKFramebufferBase
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VKSwapchain _swapchain;

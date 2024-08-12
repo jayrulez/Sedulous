@@ -2,7 +2,7 @@ using System;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct BlockLiteral
+    public struct BlockLiteral
     {
         public IntPtr isa;
         public int flags;
@@ -11,7 +11,7 @@ namespace Sedulous.MetalBindings
         public BlockDescriptor* descriptor;
     };
 
-    public unsafe struct BlockDescriptor
+    public struct BlockDescriptor
     {
         public ulong reserved;
         public ulong Block_size;

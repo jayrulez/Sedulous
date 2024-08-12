@@ -97,16 +97,16 @@ namespace Sedulous.MetalBindings
                 indirectBuffer,
                 indirectBufferOffset);
 
-        public unsafe void setViewport(MTLViewport viewport)
+        public void setViewport(MTLViewport viewport)
             => objc_msgSend(NativePtr, sel_setViewport, viewport);
 
-        public unsafe void setViewports(MTLViewport* viewports, UIntPtr count)
+        public void setViewports(MTLViewport* viewports, UIntPtr count)
             => objc_msgSend(NativePtr, sel_setViewports, viewports, count);
 
-        public unsafe void setScissorRect(MTLScissorRect scissorRect)
+        public void setScissorRect(MTLScissorRect scissorRect)
             => objc_msgSend(NativePtr, sel_setScissorRect, scissorRect);
 
-        public unsafe void setScissorRects(MTLScissorRect* scissorRects, UIntPtr count)
+        public void setScissorRects(MTLScissorRect* scissorRects, UIntPtr count)
             => objc_msgSend(NativePtr, sel_setScissorRects, scissorRects, count);
 
         public void setCullMode(MTLCullMode cullMode)

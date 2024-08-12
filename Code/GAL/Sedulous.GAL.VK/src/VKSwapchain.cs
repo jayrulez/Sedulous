@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKSwapchain : Swapchain
+    internal class VKSwapchain : Swapchain
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkSurfaceKHR _surface;

@@ -3,7 +3,7 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct MTLVertexDescriptor
+    public struct MTLVertexDescriptor
     {
         public readonly IntPtr NativePtr;
 

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Sedulous.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct MTLBuffer
+    public struct MTLBuffer
     {
         public readonly IntPtr NativePtr;
         public MTLBuffer(IntPtr ptr) => NativePtr = ptr;

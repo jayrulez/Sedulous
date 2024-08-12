@@ -3,7 +3,7 @@ using static Vulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKSampler : Sampler
+    internal class VKSampler : Sampler
     {
         private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkSampler _sampler;

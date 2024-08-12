@@ -4,7 +4,7 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    public unsafe struct MTLDevice
+    public struct MTLDevice
     {
         private const string MetalFramework = "/System/Library/Frameworks/Metal.framework/Metal";
 

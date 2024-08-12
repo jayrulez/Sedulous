@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLBuffer : DeviceBuffer, OpenGLDeferredResource
+    internal class OpenGLBuffer : DeviceBuffer, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
         private uint _buffer;

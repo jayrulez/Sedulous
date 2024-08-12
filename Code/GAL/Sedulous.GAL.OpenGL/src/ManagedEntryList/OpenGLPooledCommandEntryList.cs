@@ -173,7 +173,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
             _commands.Add(_resolveTextureEntryPool.Rent().Init(source, destination));
         }
 
-        public unsafe void ExecuteAll(OpenGLCommandExecutor executor)
+        public void ExecuteAll(OpenGLCommandExecutor executor)
         {
             foreach (OpenGLCommandEntry entry in _commands)
             {

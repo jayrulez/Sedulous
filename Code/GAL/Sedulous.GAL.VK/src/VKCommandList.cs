@@ -11,7 +11,7 @@ using static Vulkan.RawConstants;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKCommandList : CommandList
+    internal class VKCommandList : CommandList
     {
         private readonly VKGraphicsDevice _gd;
         private VkCommandPool _pool;

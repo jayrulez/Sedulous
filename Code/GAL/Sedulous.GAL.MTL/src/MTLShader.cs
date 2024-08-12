@@ -16,7 +16,7 @@ namespace Sedulous.GAL.MTL
         public bool HasFunctionConstants { get; }
         public override bool IsDisposed => _disposed;
 
-        public unsafe MTLShader(ref ShaderDescription description, MTLGraphicsDevice gd)
+        public MTLShader(ref ShaderDescription description, MTLGraphicsDevice gd)
             : base(description.Stage, description.EntryPoint)
         {
             _device = gd;

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace Sedulous.MetalBindings
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct MTLTexture
+    public struct MTLTexture
     {
         public readonly IntPtr NativePtr;
 

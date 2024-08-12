@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    public static unsafe class ObjectiveCRuntime
+    public static class ObjectiveCRuntime
     {
         private const string ObjCLibrary = "/usr/lib/libobjc.A.dylib";
 

@@ -76,7 +76,7 @@ namespace Veldrid
     /// mapped resource.
     /// </summary>
     /// <typeparam name="T">The blittable value type which mapped data is viewed as.</typeparam>
-    public unsafe struct MappedResourceView<T> where T : struct
+    public struct MappedResourceView<T> where T : struct
     {
         private static readonly int s_sizeofT = Unsafe.SizeOf<T>();
 

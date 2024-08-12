@@ -33,7 +33,7 @@ namespace Sedulous.GAL.VK
         /// <param name="display">A pointer to the Xlib Display.</param>
         /// <param name="window">An Xlib window.</param>
         /// <returns>A new VkSurfaceSource.</returns>
-        public unsafe static VKSurfaceSource CreateXlib(Display* display, Window window) => new XlibVkSurfaceInfo(display, window);
+        public static VKSurfaceSource CreateXlib(Display* display, Window window) => new XlibVkSurfaceInfo(display, window);
 
         internal abstract SwapchainSource GetSurfaceSource();
     }
@@ -49,7 +49,7 @@ namespace Sedulous.GAL.VK
             _hwnd = hwnd;
         }
 
-        public unsafe override VkSurfaceKHR CreateSurface(VkInstance instance)
+        public override VkSurfaceKHR CreateSurface(VkInstance instance)
         {
             return VKSurfaceUtil.CreateSurface(null, instance, GetSurfaceSource());
         }
@@ -62,21 +62,21 @@ namespace Sedulous.GAL.VK
 
     internal class XlibVkSurfaceInfo : VKSurfaceSource
     {
-        private readonly unsafe Display* _display;
+        private readonly Display* _display;
         private readonly Window _window;
 
-        public unsafe XlibVkSurfaceInfo(Display* display, Window window)
+        public XlibVkSurfaceInfo(Display* display, Window window)
         {
             _display = display;
             _window = window;
         }
 
-        public unsafe override VkSurfaceKHR CreateSurface(VkInstance instance)
+        public override VkSurfaceKHR CreateSurface(VkInstance instance)
         {
             return VKSurfaceUtil.CreateSurface(null, instance, GetSurfaceSource());
         }
 
-        internal unsafe override SwapchainSource GetSurfaceSource()
+        internal override SwapchainSource GetSurfaceSource()
         {
             return new XlibSwapchainSource((IntPtr)_display, _window.Value);
         }

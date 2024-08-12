@@ -5,7 +5,7 @@ using static Sedulous.GAL.VK.VulkanUtil;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKResourceSet : ResourceSet
+    internal class VKResourceSet : ResourceSet
     {
         private readonly VKGraphicsDevice _gd;
         private readonly DescriptorResourceCounts _descriptorCounts;

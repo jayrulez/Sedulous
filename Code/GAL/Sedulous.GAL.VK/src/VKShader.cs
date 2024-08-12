@@ -5,7 +5,7 @@ using System;
 
 namespace Sedulous.GAL.VK
 {
-    internal unsafe class VKShader : Shader
+    internal class VKShader : Shader
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkShaderModule _shaderModule;

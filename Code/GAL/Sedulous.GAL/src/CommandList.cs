@@ -174,7 +174,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="slot">The resource slot.</param>
         /// <param name="rs">The new <see cref="ResourceSet"/>.</param>
-        public unsafe void SetGraphicsResourceSet(uint slot, ResourceSet rs)
+        public void SetGraphicsResourceSet(uint slot, ResourceSet rs)
             => SetGraphicsResourceSet(slot, rs, 0, ref Unsafe.AsRef<uint>(null));
 
         /// <summary>
@@ -291,7 +291,7 @@ namespace Veldrid
         /// </summary>
         /// <param name="slot">The resource slot.</param>
         /// <param name="rs">The new <see cref="ResourceSet"/>.</param>
-        public unsafe void SetComputeResourceSet(uint slot, ResourceSet rs)
+        public void SetComputeResourceSet(uint slot, ResourceSet rs)
             => SetComputeResourceSet(slot, rs, 0, ref Unsafe.AsRef<uint>(null));
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace Veldrid
         /// elements appear in the <see cref="ResourceSet"/>. Each of these offsets must be a multiple of either
         /// <see cref="GraphicsDevice.UniformBufferMinOffsetAlignment"/> or
         /// <see cref="GraphicsDevice.StructuredBufferMinOffsetAlignment"/>, depending on the kind of resource.</param>
-        public unsafe void SetComputeResourceSet(uint slot, ResourceSet rs, uint dynamicOffsetsCount, ref uint dynamicOffsets)
+        public void SetComputeResourceSet(uint slot, ResourceSet rs, uint dynamicOffsetsCount, ref uint dynamicOffsets)
         {
 #if VALIDATE_USAGE
             if (_computePipeline == null)
@@ -589,7 +589,7 @@ namespace Veldrid
         /// <param name="drawCount">The number of draw commands to read and issue from the indirect Buffer.</param>
         /// <param name="stride">The stride, in bytes, between consecutive draw commands in the indirect Buffer. This value must
         /// be a multiple of four, and must be larger than the size of <see cref="IndirectDrawArguments"/>.</param>
-        public unsafe void DrawIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
         {
             ValidateDrawIndirectSupport();
             ValidateIndirectBuffer(indirectBuffer);
@@ -621,7 +621,7 @@ namespace Veldrid
         /// <param name="drawCount">The number of draw commands to read and issue from the indirect Buffer.</param>
         /// <param name="stride">The stride, in bytes, between consecutive draw commands in the indirect Buffer. This value must
         /// be a multiple of four, and must be larger than the size of <see cref="IndirectDrawIndexedArguments"/>.</param>
-        public unsafe void DrawIndexedIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
+        public void DrawIndexedIndirect(DeviceBuffer indirectBuffer, uint offset, uint drawCount, uint stride)
         {
             ValidateDrawIndirectSupport();
             ValidateIndirectBuffer(indirectBuffer);
@@ -753,7 +753,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/> storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">The value to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             T source) where T : unmanaged
@@ -774,7 +774,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/>'s storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">A reference to the single value to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ref T source) where T : unmanaged
@@ -796,7 +796,7 @@ namespace Veldrid
         /// which new data will be uploaded.</param>
         /// <param name="source">A reference to the first of a series of values to upload.</param>
         /// <param name="sizeInBytes">The total size of the uploaded data, in bytes.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ref T source,
@@ -835,7 +835,7 @@ namespace Veldrid
         /// <param name="bufferOffsetInBytes">An offset, in bytes, from the beginning of the <see cref="DeviceBuffer"/>'s storage, at
         /// which new data will be uploaded.</param>
         /// <param name="source">An readonly span containing the data to upload.</param>
-        public unsafe void UpdateBuffer<T>(
+        public void UpdateBuffer<T>(
             DeviceBuffer buffer,
             uint bufferOffsetInBytes,
             ReadOnlySpan<T> source) where T : unmanaged

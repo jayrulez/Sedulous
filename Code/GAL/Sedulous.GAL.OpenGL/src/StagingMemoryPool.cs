@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe sealed class StagingMemoryPool : IDisposable
+    internal sealed class StagingMemoryPool : IDisposable
     {
         private const uint MinimumCapacity = 128;
 
@@ -114,7 +114,7 @@ namespace Sedulous.GAL.OpenGL
         }
     }
 
-    internal unsafe struct StagingBlock
+    internal struct StagingBlock
     {
         public readonly uint Id;
         public readonly void* Data;

@@ -152,7 +152,7 @@ namespace Sedulous.GAL.OpenGL.ManagedEntryList
 
         }
 
-        public unsafe void ExecuteAll(OpenGLCommandExecutor executor)
+        public void ExecuteAll(OpenGLCommandExecutor executor)
         {
             foreach (OpenGLCommandEntry entry in _commands)
             {

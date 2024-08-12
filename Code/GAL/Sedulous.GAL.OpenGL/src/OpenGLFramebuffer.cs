@@ -4,7 +4,7 @@ using Sedulous.OpenGLBindings;
 
 namespace Sedulous.GAL.OpenGL
 {
-    internal unsafe class OpenGLFramebuffer : Framebuffer, OpenGLDeferredResource
+    internal class OpenGLFramebuffer : Framebuffer, OpenGLDeferredResource
     {
         private readonly OpenGLGraphicsDevice _gd;
         private uint _framebuffer;
