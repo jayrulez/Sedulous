@@ -7,7 +7,7 @@ using System;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkDeviceMemoryManager : IDisposable
+    internal unsafe class VKDeviceMemoryManager : IDisposable
     {
         private const ulong MinDedicatedAllocationSizeDynamic = 1024 * 1024 * 64;
         private const ulong MinDedicatedAllocationSizeNonDynamic = 1024 * 1024 * 256;
@@ -22,7 +22,7 @@ namespace Veldrid.Vk
         private readonly vkGetBufferMemoryRequirements2_t _getBufferMemoryRequirements2;
         private readonly vkGetImageMemoryRequirements2_t _getImageMemoryRequirements2;
 
-        public VkDeviceMemoryManager(
+        public VKDeviceMemoryManager(
             VkDevice device,
             VkPhysicalDevice physicalDevice,
             ulong bufferImageGranularity,

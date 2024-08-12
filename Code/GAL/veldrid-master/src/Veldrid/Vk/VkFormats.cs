@@ -4,7 +4,7 @@ using Vulkan;
 
 namespace Veldrid.Vk
 {
-    internal static partial class VkFormats
+    internal static partial class VKFormats
     {
         internal static VkSamplerAddressMode VdToVkSamplerAddressMode(SamplerAddressMode mode)
         {

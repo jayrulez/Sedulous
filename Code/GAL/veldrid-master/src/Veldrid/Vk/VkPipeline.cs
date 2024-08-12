@@ -7,9 +7,9 @@ using System.Runtime.CompilerServices;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkPipeline : Pipeline
+    internal unsafe class VKPipeline : Pipeline
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkPipeline _devicePipeline;
         private readonly VkPipelineLayout _pipelineLayout;
         private readonly VkRenderPass _renderPass;
@@ -30,7 +30,7 @@ namespace Veldrid.Vk
 
         public override bool IsDisposed => _destroyed;
 
-        public VkPipeline(VkGraphicsDevice gd, ref GraphicsPipelineDescription description)
+        public VKPipeline(VKGraphicsDevice gd, ref GraphicsPipelineDescription description)
             : base(ref description)
         {
             _gd = gd;
@@ -48,13 +48,13 @@ namespace Veldrid.Vk
             {
                 BlendAttachmentDescription vdDesc = description.BlendState.AttachmentStates[i];
                 VkPipelineColorBlendAttachmentState attachmentState = new VkPipelineColorBlendAttachmentState();
-                attachmentState.srcColorBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.SourceColorFactor);
-                attachmentState.dstColorBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.DestinationColorFactor);
-                attachmentState.colorBlendOp = VkFormats.VdToVkBlendOp(vdDesc.ColorFunction);
-                attachmentState.srcAlphaBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.SourceAlphaFactor);
-                attachmentState.dstAlphaBlendFactor = VkFormats.VdToVkBlendFactor(vdDesc.DestinationAlphaFactor);
-                attachmentState.alphaBlendOp = VkFormats.VdToVkBlendOp(vdDesc.AlphaFunction);
-                attachmentState.colorWriteMask = VkFormats.VdToVkColorWriteMask(vdDesc.ColorWriteMask.GetOrDefault());
+                attachmentState.srcColorBlendFactor = VKFormats.VdToVkBlendFactor(vdDesc.SourceColorFactor);
+                attachmentState.dstColorBlendFactor = VKFormats.VdToVkBlendFactor(vdDesc.DestinationColorFactor);
+                attachmentState.colorBlendOp = VKFormats.VdToVkBlendOp(vdDesc.ColorFunction);
+                attachmentState.srcAlphaBlendFactor = VKFormats.VdToVkBlendFactor(vdDesc.SourceAlphaFactor);
+                attachmentState.dstAlphaBlendFactor = VKFormats.VdToVkBlendFactor(vdDesc.DestinationAlphaFactor);
+                attachmentState.alphaBlendOp = VKFormats.VdToVkBlendOp(vdDesc.AlphaFunction);
+                attachmentState.colorWriteMask = VKFormats.VdToVkColorWriteMask(vdDesc.ColorWriteMask.GetOrDefault());
                 attachmentState.blendEnable = vdDesc.BlendEnabled;
                 attachmentsPtr[i] = attachmentState;
             }
@@ -72,8 +72,8 @@ namespace Veldrid.Vk
             // Rasterizer State
             RasterizerStateDescription rsDesc = description.RasterizerState;
             VkPipelineRasterizationStateCreateInfo rsCI = VkPipelineRasterizationStateCreateInfo.New();
-            rsCI.cullMode = VkFormats.VdToVkCullMode(rsDesc.CullMode);
-            rsCI.polygonMode = VkFormats.VdToVkPolygonMode(rsDesc.FillMode);
+            rsCI.cullMode = VKFormats.VdToVkCullMode(rsDesc.CullMode);
+            rsCI.polygonMode = VKFormats.VdToVkPolygonMode(rsDesc.FillMode);
             rsCI.depthClampEnable = !rsDesc.DepthClipEnabled;
             rsCI.frontFace = rsDesc.FrontFace == FrontFace.Clockwise ? VkFrontFace.Clockwise : VkFrontFace.CounterClockwise;
             rsCI.lineWidth = 1f;
@@ -97,21 +97,21 @@ namespace Veldrid.Vk
             VkPipelineDepthStencilStateCreateInfo dssCI = VkPipelineDepthStencilStateCreateInfo.New();
             dssCI.depthWriteEnable = vdDssDesc.DepthWriteEnabled;
             dssCI.depthTestEnable = vdDssDesc.DepthTestEnabled;
-            dssCI.depthCompareOp = VkFormats.VdToVkCompareOp(vdDssDesc.DepthComparison);
+            dssCI.depthCompareOp = VKFormats.VdToVkCompareOp(vdDssDesc.DepthComparison);
             dssCI.stencilTestEnable = vdDssDesc.StencilTestEnabled;
 
-            dssCI.front.failOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilFront.Fail);
-            dssCI.front.passOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilFront.Pass);
-            dssCI.front.depthFailOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilFront.DepthFail);
-            dssCI.front.compareOp = VkFormats.VdToVkCompareOp(vdDssDesc.StencilFront.Comparison);
+            dssCI.front.failOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilFront.Fail);
+            dssCI.front.passOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilFront.Pass);
+            dssCI.front.depthFailOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilFront.DepthFail);
+            dssCI.front.compareOp = VKFormats.VdToVkCompareOp(vdDssDesc.StencilFront.Comparison);
             dssCI.front.compareMask = vdDssDesc.StencilReadMask;
             dssCI.front.writeMask = vdDssDesc.StencilWriteMask;
             dssCI.front.reference = vdDssDesc.StencilReference;
 
-            dssCI.back.failOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilBack.Fail);
-            dssCI.back.passOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilBack.Pass);
-            dssCI.back.depthFailOp = VkFormats.VdToVkStencilOp(vdDssDesc.StencilBack.DepthFail);
-            dssCI.back.compareOp = VkFormats.VdToVkCompareOp(vdDssDesc.StencilBack.Comparison);
+            dssCI.back.failOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilBack.Fail);
+            dssCI.back.passOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilBack.Pass);
+            dssCI.back.depthFailOp = VKFormats.VdToVkStencilOp(vdDssDesc.StencilBack.DepthFail);
+            dssCI.back.compareOp = VKFormats.VdToVkCompareOp(vdDssDesc.StencilBack.Comparison);
             dssCI.back.compareMask = vdDssDesc.StencilReadMask;
             dssCI.back.writeMask = vdDssDesc.StencilWriteMask;
             dssCI.back.reference = vdDssDesc.StencilReference;
@@ -120,7 +120,7 @@ namespace Veldrid.Vk
 
             // Multisample
             VkPipelineMultisampleStateCreateInfo multisampleCI = VkPipelineMultisampleStateCreateInfo.New();
-            VkSampleCountFlags vkSampleCount = VkFormats.VdToVkSampleCount(description.Outputs.SampleCount);
+            VkSampleCountFlags vkSampleCount = VKFormats.VdToVkSampleCount(description.Outputs.SampleCount);
             multisampleCI.rasterizationSamples = vkSampleCount;
             multisampleCI.alphaToCoverageEnable = description.BlendState.AlphaToCoverageEnabled;
 
@@ -128,7 +128,7 @@ namespace Veldrid.Vk
 
             // Input Assembly
             VkPipelineInputAssemblyStateCreateInfo inputAssemblyCI = VkPipelineInputAssemblyStateCreateInfo.New();
-            inputAssemblyCI.topology = VkFormats.VdToVkPrimitiveTopology(description.PrimitiveTopology);
+            inputAssemblyCI.topology = VKFormats.VdToVkPrimitiveTopology(description.PrimitiveTopology);
 
             pipelineCI.pInputAssemblyState = &inputAssemblyCI;
 
@@ -164,7 +164,7 @@ namespace Veldrid.Vk
 
                     attributeDescs[targetIndex] = new VkVertexInputAttributeDescription()
                     {
-                        format = VkFormats.VdToVkVertexElementFormat(inputElement.Format),
+                        format = VKFormats.VdToVkVertexElementFormat(inputElement.Format),
                         binding = (uint)binding,
                         location = (uint)(targetLocation + location),
                         offset = inputElement.Offset != 0 ? inputElement.Offset : currentOffset
@@ -193,7 +193,7 @@ namespace Veldrid.Vk
                 uint specDataSize = 0;
                 foreach (SpecializationConstant spec in specDescs)
                 {
-                    specDataSize += VkFormats.GetSpecializationConstantSize(spec.Type);
+                    specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
                 byte* fullSpecData = stackalloc byte[(int)specDataSize];
                 int specializationCount = specDescs.Length;
@@ -203,7 +203,7 @@ namespace Veldrid.Vk
                 {
                     ulong data = specDescs[i].Data;
                     byte* srcData = (byte*)&data;
-                    uint dataSize = VkFormats.GetSpecializationConstantSize(specDescs[i].Type);
+                    uint dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
                     Unsafe.CopyBlock(fullSpecData + specOffset, srcData, dataSize);
                     mapEntries[i].constantID = specDescs[i].ID;
                     mapEntries[i].offset = specOffset;
@@ -220,10 +220,10 @@ namespace Veldrid.Vk
             StackList<VkPipelineShaderStageCreateInfo> stages = new StackList<VkPipelineShaderStageCreateInfo>();
             foreach (Shader shader in shaders)
             {
-                VkShader vkShader = Util.AssertSubtype<Shader, VkShader>(shader);
+                VKShader vkShader = Util.AssertSubtype<Shader, VKShader>(shader);
                 VkPipelineShaderStageCreateInfo stageCI = VkPipelineShaderStageCreateInfo.New();
                 stageCI.module = vkShader.ShaderModule;
-                stageCI.stage = VkFormats.VdToVkShaderStages(shader.Stage);
+                stageCI.stage = VKFormats.VdToVkShaderStages(shader.Stage);
                 // stageCI.pName = CommonStrings.main; // Meh
                 stageCI.pName = new FixedUtf8String(shader.EntryPoint); // TODO: DONT ALLOCATE HERE
                 stageCI.pSpecializationInfo = &specializationInfo;
@@ -247,7 +247,7 @@ namespace Veldrid.Vk
             VkDescriptorSetLayout* dsls = stackalloc VkDescriptorSetLayout[resourceLayouts.Length];
             for (int i = 0; i < resourceLayouts.Length; i++)
             {
-                dsls[i] = Util.AssertSubtype<ResourceLayout, VkResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
+                dsls[i] = Util.AssertSubtype<ResourceLayout, VKResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
             }
             pipelineLayoutCI.pSetLayouts = dsls;
 
@@ -266,7 +266,7 @@ namespace Veldrid.Vk
             StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
             for (uint i = 0; i < outputDesc.ColorAttachments.Length; i++)
             {
-                colorAttachmentDescs[i].format = VkFormats.VdToVkPixelFormat(outputDesc.ColorAttachments[i].Format);
+                colorAttachmentDescs[i].format = VKFormats.VdToVkPixelFormat(outputDesc.ColorAttachments[i].Format);
                 colorAttachmentDescs[i].samples = vkSampleCount;
                 colorAttachmentDescs[i].loadOp = VkAttachmentLoadOp.DontCare;
                 colorAttachmentDescs[i].storeOp = VkAttachmentStoreOp.Store;
@@ -286,7 +286,7 @@ namespace Veldrid.Vk
             {
                 PixelFormat depthFormat = outputDesc.DepthAttachment.Value.Format;
                 bool hasStencil = FormatHelpers.IsStencilFormat(depthFormat);
-                depthAttachmentDesc.format = VkFormats.VdToVkPixelFormat(outputDesc.DepthAttachment.Value.Format, toDepthFormat: true);
+                depthAttachmentDesc.format = VKFormats.VdToVkPixelFormat(outputDesc.DepthAttachment.Value.Format, toDepthFormat: true);
                 depthAttachmentDesc.samples = vkSampleCount;
                 depthAttachmentDesc.loadOp = VkAttachmentLoadOp.DontCare;
                 depthAttachmentDesc.storeOp = VkAttachmentStoreOp.Store;
@@ -337,13 +337,13 @@ namespace Veldrid.Vk
 
             ResourceSetCount = (uint)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
-            foreach (VkResourceLayout layout in description.ResourceLayouts)
+            foreach (VKResourceLayout layout in description.ResourceLayouts)
             {
                 DynamicOffsetsCount += layout.DynamicBufferCount;
             }
         }
 
-        public VkPipeline(VkGraphicsDevice gd, ref ComputePipelineDescription description)
+        public VKPipeline(VKGraphicsDevice gd, ref ComputePipelineDescription description)
             : base(ref description)
         {
             _gd = gd;
@@ -359,7 +359,7 @@ namespace Veldrid.Vk
             VkDescriptorSetLayout* dsls = stackalloc VkDescriptorSetLayout[resourceLayouts.Length];
             for (int i = 0; i < resourceLayouts.Length; i++)
             {
-                dsls[i] = Util.AssertSubtype<ResourceLayout, VkResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
+                dsls[i] = Util.AssertSubtype<ResourceLayout, VKResourceLayout>(resourceLayouts[i]).DescriptorSetLayout;
             }
             pipelineLayoutCI.pSetLayouts = dsls;
 
@@ -375,7 +375,7 @@ namespace Veldrid.Vk
                 uint specDataSize = 0;
                 foreach (SpecializationConstant spec in specDescs)
                 {
-                    specDataSize += VkFormats.GetSpecializationConstantSize(spec.Type);
+                    specDataSize += VKFormats.GetSpecializationConstantSize(spec.Type);
                 }
                 byte* fullSpecData = stackalloc byte[(int)specDataSize];
                 int specializationCount = specDescs.Length;
@@ -385,7 +385,7 @@ namespace Veldrid.Vk
                 {
                     ulong data = specDescs[i].Data;
                     byte* srcData = (byte*)&data;
-                    uint dataSize = VkFormats.GetSpecializationConstantSize(specDescs[i].Type);
+                    uint dataSize = VKFormats.GetSpecializationConstantSize(specDescs[i].Type);
                     Unsafe.CopyBlock(fullSpecData + specOffset, srcData, dataSize);
                     mapEntries[i].constantID = specDescs[i].ID;
                     mapEntries[i].offset = specOffset;
@@ -399,10 +399,10 @@ namespace Veldrid.Vk
             }
 
             Shader shader = description.ComputeShader;
-            VkShader vkShader = Util.AssertSubtype<Shader, VkShader>(shader);
+            VKShader vkShader = Util.AssertSubtype<Shader, VKShader>(shader);
             VkPipelineShaderStageCreateInfo stageCI = VkPipelineShaderStageCreateInfo.New();
             stageCI.module = vkShader.ShaderModule;
-            stageCI.stage = VkFormats.VdToVkShaderStages(shader.Stage);
+            stageCI.stage = VKFormats.VdToVkShaderStages(shader.Stage);
             stageCI.pName = CommonStrings.main; // Meh
             stageCI.pSpecializationInfo = &specializationInfo;
             pipelineCI.stage = stageCI;
@@ -418,7 +418,7 @@ namespace Veldrid.Vk
 
             ResourceSetCount = (uint)description.ResourceLayouts.Length;
             DynamicOffsetsCount = 0;
-            foreach (VkResourceLayout layout in description.ResourceLayouts)
+            foreach (VKResourceLayout layout in description.ResourceLayouts)
             {
                 DynamicOffsetsCount += layout.DynamicBufferCount;
             }

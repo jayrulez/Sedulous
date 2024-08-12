@@ -3,9 +3,9 @@ using Vulkan;
 
 namespace Veldrid.Vk
 {
-    internal abstract class VkFramebufferBase : Framebuffer
+    internal abstract class VKFramebufferBase : Framebuffer
     {
-        public VkFramebufferBase(
+        public VKFramebufferBase(
             FramebufferAttachmentDescription? depthTexture,
             IReadOnlyList<FramebufferAttachmentDescription> colorTextures)
             : base(depthTexture, colorTextures)
@@ -13,7 +13,7 @@ namespace Veldrid.Vk
             RefCount = new ResourceRefCount(DisposeCore);
         }
 
-        public VkFramebufferBase()
+        public VKFramebufferBase()
         {
             RefCount = new ResourceRefCount(DisposeCore);
         }

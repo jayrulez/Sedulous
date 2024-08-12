@@ -3,16 +3,16 @@ using static Vulkan.VulkanNative;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkFence : Fence
+    internal unsafe class VKFence : Fence
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private Vulkan.VkFence _fence;
         private string _name;
         private bool _destroyed;
 
         public Vulkan.VkFence DeviceFence => _fence;
 
-        public VkFence(VkGraphicsDevice gd, bool signaled)
+        public VKFence(VKGraphicsDevice gd, bool signaled)
         {
             _gd = gd;
             VkFenceCreateInfo fenceCI = VkFenceCreateInfo.New();

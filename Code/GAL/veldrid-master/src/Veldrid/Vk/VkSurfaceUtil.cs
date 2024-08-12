@@ -9,9 +9,9 @@ using Veldrid.MetalBindings;
 
 namespace Veldrid.Vk
 {
-    internal static unsafe class VkSurfaceUtil
+    internal static unsafe class VKSurfaceUtil
     {
-        internal static VkSurfaceKHR CreateSurface(VkGraphicsDevice gd, VkInstance instance, SwapchainSource swapchainSource)
+        internal static VkSurfaceKHR CreateSurface(VKGraphicsDevice gd, VkInstance instance, SwapchainSource swapchainSource)
         {
             // TODO a null GD is passed from VkSurfaceSource.CreateSurface for compatibility
             //      when VkSurfaceInfo is removed we do not have to handle gd == null anymore
@@ -140,13 +140,13 @@ namespace Veldrid.Vk
             return surface;
         }
 
-        private static unsafe VkSurfaceKHR CreateNSWindowSurface(VkGraphicsDevice gd, VkInstance instance, NSWindowSwapchainSource nsWindowSource, bool hasExtMetalSurface)
+        private static unsafe VkSurfaceKHR CreateNSWindowSurface(VKGraphicsDevice gd, VkInstance instance, NSWindowSwapchainSource nsWindowSource, bool hasExtMetalSurface)
         {
             NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
             return CreateNSViewSurface(gd, instance, new NSViewSwapchainSource(nswindow.contentView), hasExtMetalSurface);
         }
 
-        private static unsafe VkSurfaceKHR CreateNSViewSurface(VkGraphicsDevice gd, VkInstance instance, NSViewSwapchainSource nsViewSource, bool hasExtMetalSurface)
+        private static unsafe VkSurfaceKHR CreateNSViewSurface(VKGraphicsDevice gd, VkInstance instance, NSViewSwapchainSource nsViewSource, bool hasExtMetalSurface)
         {
             NSView contentView = new NSView(nsViewSource.NSView);
 
@@ -177,7 +177,7 @@ namespace Veldrid.Vk
             }
         }
 
-        private static VkSurfaceKHR CreateUIViewSurface(VkGraphicsDevice gd, VkInstance instance, UIViewSwapchainSource uiViewSource, bool hasExtMetalSurface)
+        private static VkSurfaceKHR CreateUIViewSurface(VKGraphicsDevice gd, VkInstance instance, UIViewSwapchainSource uiViewSource, bool hasExtMetalSurface)
         {
             UIView uiView = new UIView(uiViewSource.UIView);
 

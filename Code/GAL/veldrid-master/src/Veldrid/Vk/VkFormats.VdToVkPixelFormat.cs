@@ -5,7 +5,7 @@ using Vulkan;
 
 namespace Veldrid.Vk
 {
-    internal static partial class VkFormats
+    internal static partial class VKFormats
     {
         internal static VkFormat VdToVkPixelFormat(PixelFormat format, bool toDepthFormat = false)
         {

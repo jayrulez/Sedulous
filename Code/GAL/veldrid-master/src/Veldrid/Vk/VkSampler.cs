@@ -3,9 +3,9 @@ using static Vulkan.VulkanNative;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkSampler : Sampler
+    internal unsafe class VKSampler : Sampler
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkSampler _sampler;
         private bool _disposed;
         private string _name;
@@ -16,30 +16,30 @@ namespace Veldrid.Vk
 
         public override bool IsDisposed => _disposed;
 
-        public VkSampler(VkGraphicsDevice gd, ref SamplerDescription description)
+        public VKSampler(VKGraphicsDevice gd, ref SamplerDescription description)
         {
             _gd = gd;
-            VkFormats.GetFilterParams(description.Filter, out VkFilter minFilter, out VkFilter magFilter, out VkSamplerMipmapMode mipmapMode);
+            VKFormats.GetFilterParams(description.Filter, out VkFilter minFilter, out VkFilter magFilter, out VkSamplerMipmapMode mipmapMode);
 
             VkSamplerCreateInfo samplerCI = new VkSamplerCreateInfo
             {
                 sType = VkStructureType.SamplerCreateInfo,
-                addressModeU = VkFormats.VdToVkSamplerAddressMode(description.AddressModeU),
-                addressModeV = VkFormats.VdToVkSamplerAddressMode(description.AddressModeV),
-                addressModeW = VkFormats.VdToVkSamplerAddressMode(description.AddressModeW),
+                addressModeU = VKFormats.VdToVkSamplerAddressMode(description.AddressModeU),
+                addressModeV = VKFormats.VdToVkSamplerAddressMode(description.AddressModeV),
+                addressModeW = VKFormats.VdToVkSamplerAddressMode(description.AddressModeW),
                 minFilter = minFilter,
                 magFilter = magFilter,
                 mipmapMode = mipmapMode,
                 compareEnable = description.ComparisonKind != null,
                 compareOp = description.ComparisonKind != null
-                    ? VkFormats.VdToVkCompareOp(description.ComparisonKind.Value)
+                    ? VKFormats.VdToVkCompareOp(description.ComparisonKind.Value)
                     : VkCompareOp.Never,
                 anisotropyEnable = description.Filter == SamplerFilter.Anisotropic,
                 maxAnisotropy = description.MaximumAnisotropy,
                 minLod = description.MinimumLod,
                 maxLod = description.MaximumLod,
                 mipLodBias = description.LodBias,
-                borderColor = VkFormats.VdToVkSamplerBorderColor(description.BorderColor)
+                borderColor = VKFormats.VdToVkSamplerBorderColor(description.BorderColor)
             };
 
             vkCreateSampler(_gd.Device, ref samplerCI, null, out _sampler);

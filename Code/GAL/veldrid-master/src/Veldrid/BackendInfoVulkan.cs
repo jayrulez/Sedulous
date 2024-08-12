@@ -13,12 +13,12 @@ namespace Veldrid
     /// </summary>
     public class BackendInfoVulkan
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly Lazy<ReadOnlyCollection<string>> _instanceLayers;
         private readonly ReadOnlyCollection<string> _instanceExtensions;
         private readonly Lazy<ReadOnlyCollection<ExtensionProperties>> _deviceExtensions;
 
-        internal BackendInfoVulkan(VkGraphicsDevice gd)
+        internal BackendInfoVulkan(VKGraphicsDevice gd)
         {
             _gd = gd;
             _instanceLayers = new Lazy<ReadOnlyCollection<string>>(() => new ReadOnlyCollection<string>(VulkanUtil.EnumerateInstanceLayers()));
@@ -75,7 +75,7 @@ namespace Veldrid
         /// <param name="layout">The new VkImageLayout value.</param>
         public void OverrideImageLayout(Texture texture, uint layout)
         {
-            VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(texture);
+            VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(texture);
             for (uint layer = 0; layer < vkTex.ArrayLayers; layer++)
             {
                 for (uint level = 0; level < vkTex.MipLevels; level++)
@@ -93,7 +93,7 @@ namespace Veldrid
         /// <returns>The underlying VkImage for the given Texture.</returns>
         public ulong GetVkImage(Texture texture)
         {
-            VkTexture vkTexture = Util.AssertSubtype<Texture, VkTexture>(texture);
+            VKTexture vkTexture = Util.AssertSubtype<Texture, VKTexture>(texture);
             if ((vkTexture.Usage & TextureUsage.Staging) != 0)
             {
                 throw new VeldridException(
@@ -111,7 +111,7 @@ namespace Veldrid
         /// <param name="layout">The new VkImageLayout value.</param>
         public void TransitionImageLayout(Texture texture, uint layout)
         {
-            _gd.TransitionImageLayout(Util.AssertSubtype<Texture, VkTexture>(texture), (VkImageLayout)layout);
+            _gd.TransitionImageLayout(Util.AssertSubtype<Texture, VKTexture>(texture), (VkImageLayout)layout);
         }
 
         private unsafe ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()

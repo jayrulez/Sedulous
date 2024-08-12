@@ -4,29 +4,29 @@ using static Vulkan.VulkanNative;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkTextureView : TextureView
+    internal unsafe class VKTextureView : TextureView
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly VkImageView _imageView;
         private bool _destroyed;
         private string _name;
 
         public VkImageView ImageView => _imageView;
 
-        public new VkTexture Target => (VkTexture)base.Target;
+        public new VKTexture Target => (VKTexture)base.Target;
 
         public ResourceRefCount RefCount { get; }
 
         public override bool IsDisposed => _destroyed;
 
-        public VkTextureView(VkGraphicsDevice gd, ref TextureViewDescription description)
+        public VKTextureView(VKGraphicsDevice gd, ref TextureViewDescription description)
             : base(ref description)
         {
             _gd = gd;
             VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
-            VkTexture tex = Util.AssertSubtype<Texture, VkTexture>(description.Target);
+            VKTexture tex = Util.AssertSubtype<Texture, VKTexture>(description.Target);
             imageViewCI.image = tex.OptimalDeviceImage;
-            imageViewCI.format = VkFormats.VdToVkPixelFormat(Format, (Target.Usage & TextureUsage.DepthStencil) != 0);
+            imageViewCI.format = VKFormats.VdToVkPixelFormat(Format, (Target.Usage & TextureUsage.DepthStencil) != 0);
 
             VkImageAspectFlags aspectFlags;
             if ((description.Target.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)

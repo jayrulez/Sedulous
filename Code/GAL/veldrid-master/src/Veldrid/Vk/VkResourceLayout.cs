@@ -4,9 +4,9 @@ using static Veldrid.Vk.VulkanUtil;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkResourceLayout : ResourceLayout
+    internal unsafe class VKResourceLayout : ResourceLayout
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly VkDescriptorSetLayout _dsl;
         private readonly VkDescriptorType[] _descriptorTypes;
         private bool _disposed;
@@ -19,7 +19,7 @@ namespace Veldrid.Vk
 
         public override bool IsDisposed => _disposed;
 
-        public VkResourceLayout(VkGraphicsDevice gd, ref ResourceLayoutDescription description)
+        public VKResourceLayout(VKGraphicsDevice gd, ref ResourceLayoutDescription description)
             : base(ref description)
         {
             _gd = gd;
@@ -40,9 +40,9 @@ namespace Veldrid.Vk
             {
                 bindings[i].binding = i;
                 bindings[i].descriptorCount = 1;
-                VkDescriptorType descriptorType = VkFormats.VdToVkDescriptorType(elements[i].Kind, elements[i].Options);
+                VkDescriptorType descriptorType = VKFormats.VdToVkDescriptorType(elements[i].Kind, elements[i].Options);
                 bindings[i].descriptorType = descriptorType;
-                bindings[i].stageFlags = VkFormats.VdToVkShaderStages(elements[i].Stages);
+                bindings[i].stageFlags = VKFormats.VdToVkShaderStages(elements[i].Stages);
                 if ((elements[i].Options & ResourceLayoutElementOptions.DynamicBinding) != 0)
                 {
                     DynamicBufferCount += 1;

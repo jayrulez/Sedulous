@@ -6,9 +6,9 @@ using System;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkTexture : Texture
+    internal unsafe class VKTexture : Texture
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly VkImage _optimalImage;
         private readonly VkMemoryBlock _memoryBlock;
         private readonly Vulkan.VkBuffer _stagingBuffer;
@@ -56,7 +56,7 @@ namespace Veldrid.Vk
         public ResourceRefCount RefCount { get; }
         public bool IsSwapchainTexture => _isSwapchainTexture;
 
-        internal VkTexture(VkGraphicsDevice gd, ref TextureDescription description)
+        internal VKTexture(VKGraphicsDevice gd, ref TextureDescription description)
         {
             _gd = gd;
             _width = description.Width;
@@ -72,8 +72,8 @@ namespace Veldrid.Vk
             Usage = description.Usage;
             Type = description.Type;
             SampleCount = description.SampleCount;
-            VkSampleCount = VkFormats.VdToVkSampleCount(SampleCount);
-            VkFormat = VkFormats.VdToVkPixelFormat(Format, (description.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil);
+            VkSampleCount = VKFormats.VdToVkSampleCount(SampleCount);
+            VkFormat = VKFormats.VdToVkPixelFormat(Format, (description.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil);
 
             bool isStaging = (Usage & TextureUsage.Staging) == TextureUsage.Staging;
 
@@ -82,12 +82,12 @@ namespace Veldrid.Vk
                 VkImageCreateInfo imageCI = VkImageCreateInfo.New();
                 imageCI.mipLevels = MipLevels;
                 imageCI.arrayLayers = _actualImageArrayLayers;
-                imageCI.imageType = VkFormats.VdToVkTextureType(Type);
+                imageCI.imageType = VKFormats.VdToVkTextureType(Type);
                 imageCI.extent.width = Width;
                 imageCI.extent.height = Height;
                 imageCI.extent.depth = Depth;
                 imageCI.initialLayout = VkImageLayout.Preinitialized;
-                imageCI.usage = VkFormats.VdToVkTextureUsage(Usage);
+                imageCI.usage = VKFormats.VdToVkTextureUsage(Usage);
                 imageCI.tiling = isStaging ? VkImageTiling.Linear : VkImageTiling.Optimal;
                 imageCI.format = VkFormat;
                 imageCI.flags = VkImageCreateFlags.MutableFormat;
@@ -213,8 +213,8 @@ namespace Veldrid.Vk
         }
 
         // Used to construct Swapchain textures.
-        internal VkTexture(
-            VkGraphicsDevice gd,
+        internal VKTexture(
+            VKGraphicsDevice gd,
             uint width,
             uint height,
             uint mipLevels,
@@ -231,12 +231,12 @@ namespace Veldrid.Vk
             _height = height;
             _depth = 1;
             VkFormat = vkFormat;
-            _format = VkFormats.VkToVdPixelFormat(VkFormat);
+            _format = VKFormats.VkToVdPixelFormat(VkFormat);
             ArrayLayers = arrayLayers;
             Usage = usage;
             Type = TextureType.Texture2D;
             SampleCount = sampleCount;
-            VkSampleCount = VkFormats.VdToVkSampleCount(sampleCount);
+            VkSampleCount = VKFormats.VdToVkSampleCount(sampleCount);
             _optimalImage = existingImage;
             _imageLayouts = new[] { VkImageLayout.Undefined };
             _isSwapchainTexture = true;

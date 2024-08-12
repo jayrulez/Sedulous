@@ -6,13 +6,13 @@ using static Vulkan.VulkanNative;
 
 namespace Veldrid.Vk
 {
-    internal class VkDescriptorPoolManager
+    internal class VKDescriptorPoolManager
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly List<PoolInfo> _pools = new List<PoolInfo>();
         private readonly object _lock = new object();
 
-        public VkDescriptorPoolManager(VkGraphicsDevice gd)
+        public VKDescriptorPoolManager(VKGraphicsDevice gd)
         {
             _gd = gd;
             _pools.Add(CreateNewPool());

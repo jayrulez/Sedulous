@@ -7,12 +7,12 @@ using System.Runtime.InteropServices;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkSwapchain : Swapchain
+    internal unsafe class VKSwapchain : Swapchain
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly VkSurfaceKHR _surface;
         private VkSwapchainKHR _deviceSwapchain;
-        private readonly VkSwapchainFramebuffer _framebuffer;
+        private readonly VKSwapchainFramebuffer _framebuffer;
         private Vulkan.VkFence _imageAvailableFence;
         private readonly uint _presentQueueIndex;
         private readonly VkQueue _presentQueue;
@@ -48,9 +48,9 @@ namespace Veldrid.Vk
         public uint PresentQueueIndex => _presentQueueIndex;
         public ResourceRefCount RefCount { get; }
 
-        public VkSwapchain(VkGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, VkSurfaceKHR.Null) { }
+        public VKSwapchain(VKGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, VkSurfaceKHR.Null) { }
 
-        public VkSwapchain(VkGraphicsDevice gd, ref SwapchainDescription description, VkSurfaceKHR existingSurface)
+        public VKSwapchain(VKGraphicsDevice gd, ref SwapchainDescription description, VkSurfaceKHR existingSurface)
         {
             _gd = gd;
             _syncToVBlank = description.SyncToVerticalBlank;
@@ -59,7 +59,7 @@ namespace Veldrid.Vk
 
             if (existingSurface == VkSurfaceKHR.Null)
             {
-                _surface = VkSurfaceUtil.CreateSurface(gd, gd.Instance, _swapchainSource);
+                _surface = VKSurfaceUtil.CreateSurface(gd, gd.Instance, _swapchainSource);
             }
             else
             {
@@ -72,7 +72,7 @@ namespace Veldrid.Vk
             }
             vkGetDeviceQueue(_gd.Device, _presentQueueIndex, 0, out _presentQueue);
 
-            _framebuffer = new VkSwapchainFramebuffer(gd, this, _surface, description.Width, description.Height, description.DepthFormat);
+            _framebuffer = new VKSwapchainFramebuffer(gd, this, _surface, description.Width, description.Height, description.DepthFormat);
 
             CreateSwapchain(description.Width, description.Height);
 

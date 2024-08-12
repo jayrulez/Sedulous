@@ -975,7 +975,7 @@ namespace Veldrid
 #endif
                 case GraphicsBackend.Vulkan:
 #if !EXCLUDE_VULKAN_BACKEND
-                    return Vk.VkGraphicsDevice.IsSupported();
+                    return Vk.VKGraphicsDevice.IsSupported();
 #else
                     return false;
 #endif
@@ -1105,7 +1105,7 @@ namespace Veldrid
         /// <returns>A new <see cref="GraphicsDevice"/> using the Vulkan API.</returns>
         public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options)
         {
-            return new Vk.VkGraphicsDevice(options, null);
+            return new Vk.VKGraphicsDevice(options, null);
         }
 
         /// <summary>
@@ -1116,7 +1116,7 @@ namespace Veldrid
         /// <returns>A new <see cref="GraphicsDevice"/> using the Vulkan API.</returns>
         public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, VulkanDeviceOptions vkOptions)
         {
-            return new Vk.VkGraphicsDevice(options, null, vkOptions);
+            return new Vk.VKGraphicsDevice(options, null, vkOptions);
         }
 
         /// <summary>
@@ -1127,7 +1127,7 @@ namespace Veldrid
         /// <returns>A new <see cref="GraphicsDevice"/> using the Vulkan API.</returns>
         public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, SwapchainDescription swapchainDescription)
         {
-            return new Vk.VkGraphicsDevice(options, swapchainDescription);
+            return new Vk.VKGraphicsDevice(options, swapchainDescription);
         }
 
         /// <summary>
@@ -1142,7 +1142,7 @@ namespace Veldrid
             SwapchainDescription swapchainDescription,
             VulkanDeviceOptions vkOptions)
         {
-            return new Vk.VkGraphicsDevice(options, swapchainDescription, vkOptions);
+            return new Vk.VKGraphicsDevice(options, swapchainDescription, vkOptions);
         }
 
         /// <summary>
@@ -1153,7 +1153,7 @@ namespace Veldrid
         /// <param name="width">The initial width of the window.</param>
         /// <param name="height">The initial height of the window.</param>
         /// <returns>A new <see cref="GraphicsDevice"/> using the Vulkan API.</returns>
-        public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, Vk.VkSurfaceSource surfaceSource, uint width, uint height)
+        public static GraphicsDevice CreateVulkan(GraphicsDeviceOptions options, Vk.VKSurfaceSource surfaceSource, uint width, uint height)
         {
             SwapchainDescription scDesc = new SwapchainDescription(
                 surfaceSource.GetSurfaceSource(),
@@ -1162,7 +1162,7 @@ namespace Veldrid
                 options.SyncToVerticalBlank,
                 options.SwapchainSrgbFormat);
 
-            return new Vk.VkGraphicsDevice(options, scDesc);
+            return new Vk.VKGraphicsDevice(options, scDesc);
         }
 #endif
 

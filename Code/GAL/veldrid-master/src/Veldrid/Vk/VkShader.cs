@@ -5,9 +5,9 @@ using System;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkShader : Shader
+    internal unsafe class VKShader : Shader
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly VkShaderModule _shaderModule;
         private bool _disposed;
         private string _name;
@@ -16,7 +16,7 @@ namespace Veldrid.Vk
 
         public override bool IsDisposed => _disposed;
 
-        public VkShader(VkGraphicsDevice gd, ref ShaderDescription description)
+        public VKShader(VKGraphicsDevice gd, ref ShaderDescription description)
             : base(description.Stage, description.EntryPoint)
         {
             _gd = gd;

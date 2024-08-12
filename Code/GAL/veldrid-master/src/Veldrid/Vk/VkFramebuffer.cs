@@ -7,9 +7,9 @@ using System.Diagnostics;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkFramebuffer : VkFramebufferBase
+    internal unsafe class VKFramebuffer : VKFramebufferBase
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkFramebuffer _deviceFramebuffer;
         private readonly VkRenderPass _renderPassNoClearLoad;
         private readonly VkRenderPass _renderPassNoClear;
@@ -30,7 +30,7 @@ namespace Veldrid.Vk
 
         public override bool IsDisposed => _destroyed;
 
-        public VkFramebuffer(VkGraphicsDevice gd, ref FramebufferDescription description, bool isPresented)
+        public VKFramebuffer(VKGraphicsDevice gd, ref FramebufferDescription description, bool isPresented)
             : base(description.DepthTarget, description.ColorTargets)
         {
             _gd = gd;
@@ -43,7 +43,7 @@ namespace Veldrid.Vk
             StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
             for (int i = 0; i < colorAttachmentCount; i++)
             {
-                VkTexture vkColorTex = Util.AssertSubtype<Texture, VkTexture>(ColorTargets[i].Target);
+                VKTexture vkColorTex = Util.AssertSubtype<Texture, VKTexture>(ColorTargets[i].Target);
                 VkAttachmentDescription colorAttachmentDesc = new VkAttachmentDescription();
                 colorAttachmentDesc.format = vkColorTex.VkFormat;
                 colorAttachmentDesc.samples = vkColorTex.VkSampleCount;
@@ -69,7 +69,7 @@ namespace Veldrid.Vk
             VkAttachmentReference depthAttachmentRef = new VkAttachmentReference();
             if (DepthTarget != null)
             {
-                VkTexture vkDepthTex = Util.AssertSubtype<Texture, VkTexture>(DepthTarget.Value.Target);
+                VKTexture vkDepthTex = Util.AssertSubtype<Texture, VKTexture>(DepthTarget.Value.Target);
                 bool hasStencil = FormatHelpers.IsStencilFormat(vkDepthTex.Format);
                 depthAttachmentDesc.format = vkDepthTex.VkFormat;
                 depthAttachmentDesc.samples = vkDepthTex.VkSampleCount;
@@ -170,7 +170,7 @@ namespace Veldrid.Vk
             VkImageView* fbAttachments = stackalloc VkImageView[(int)fbAttachmentsCount];
             for (int i = 0; i < colorAttachmentCount; i++)
             {
-                VkTexture vkColorTarget = Util.AssertSubtype<Texture, VkTexture>(description.ColorTargets[i].Target);
+                VKTexture vkColorTarget = Util.AssertSubtype<Texture, VKTexture>(description.ColorTargets[i].Target);
                 VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
                 imageViewCI.image = vkColorTarget.OptimalDeviceImage;
                 imageViewCI.format = vkColorTarget.VkFormat;
@@ -190,7 +190,7 @@ namespace Veldrid.Vk
             // Depth
             if (description.DepthTarget != null)
             {
-                VkTexture vkDepthTarget = Util.AssertSubtype<Texture, VkTexture>(description.DepthTarget.Value.Target);
+                VKTexture vkDepthTarget = Util.AssertSubtype<Texture, VKTexture>(description.DepthTarget.Value.Target);
                 bool hasStencil = FormatHelpers.IsStencilFormat(vkDepthTarget.Format);
                 VkImageViewCreateInfo depthViewCI = VkImageViewCreateInfo.New();
                 depthViewCI.image = vkDepthTarget.OptimalDeviceImage;
@@ -254,12 +254,12 @@ namespace Veldrid.Vk
             for (int i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
-                VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(ca.Target);
+                VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
                 vkTex.SetImageLayout(ca.MipLevel, ca.ArrayLayer, VkImageLayout.ColorAttachmentOptimal);
             }
             if (DepthTarget != null)
             {
-                VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(DepthTarget.Value.Target);
+                VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(DepthTarget.Value.Target);
                 vkTex.SetImageLayout(
                     DepthTarget.Value.MipLevel,
                     DepthTarget.Value.ArrayLayer,
@@ -272,7 +272,7 @@ namespace Veldrid.Vk
             for (int i = 0; i < ColorTargets.Count; i++)
             {
                 FramebufferAttachment ca = ColorTargets[i];
-                VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(ca.Target);
+                VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
                 if ((vkTex.Usage & TextureUsage.Sampled) != 0)
                 {
                     vkTex.TransitionImageLayout(
@@ -284,7 +284,7 @@ namespace Veldrid.Vk
             }
             if (DepthTarget != null)
             {
-                VkTexture vkTex = Util.AssertSubtype<Texture, VkTexture>(DepthTarget.Value.Target);
+                VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(DepthTarget.Value.Target);
                 if ((vkTex.Usage & TextureUsage.Sampled) != 0)
                 {
                     vkTex.TransitionImageLayout(

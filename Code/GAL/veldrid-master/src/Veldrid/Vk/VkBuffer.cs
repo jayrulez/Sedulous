@@ -5,9 +5,9 @@ using static Vulkan.VulkanNative;
 
 namespace Veldrid.Vk
 {
-    internal unsafe class VkBuffer : DeviceBuffer
+    internal unsafe class VKBuffer : DeviceBuffer
     {
-        private readonly VkGraphicsDevice _gd;
+        private readonly VKGraphicsDevice _gd;
         private readonly Vulkan.VkBuffer _deviceBuffer;
         private readonly VkMemoryBlock _memory;
         private readonly VkMemoryRequirements _bufferMemoryRequirements;
@@ -24,7 +24,7 @@ namespace Veldrid.Vk
 
         public VkMemoryRequirements BufferMemoryRequirements => _bufferMemoryRequirements;
 
-        public VkBuffer(VkGraphicsDevice gd, uint sizeInBytes, BufferUsage usage, string callerMember = null)
+        public VKBuffer(VKGraphicsDevice gd, uint sizeInBytes, BufferUsage usage, string callerMember = null)
         {
             _gd = gd;
             SizeInBytes = sizeInBytes;
