@@ -25,13 +25,13 @@ namespace Sedulous.GAL.VK
         private uint32 _height;
         private uint32 _depth;
 
-        public override uint32 Width => _width;
+        public override uint32 Width { get => _width; protected set {} }
 
-        public override uint32 Height => _height;
+        public override uint32 Height { get => _height; protected set {} }
 
-        public override uint32 Depth => _depth;
+        public override uint32 Depth  { get => _depth; protected set {} }
 
-        public override PixelFormat Format => _format;
+        public override PixelFormat Format { get => _format; protected set {} }
 
         public override uint32 MipLevels { get; protected set; }
 

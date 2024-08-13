@@ -1,28 +1,33 @@
-﻿using System;
-using Vortice.Direct3D11;
+using System;
+using Win32.Graphics.Direct3D11;
+using Win32.Foundation;
+using Sedulous.Foundation.Collections;
 
 namespace Sedulous.GAL.D3D11
 {
-    internal class D3D11Framebuffer : Framebuffer
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.D3D11;
+
+    public class D3D11Framebuffer : Framebuffer
     {
-        private string _name;
+        private String _name;
         private bool _disposed;
 
-        public ID3D11RenderTargetView[] RenderTargetViews { get; }
-        public ID3D11DepthStencilView DepthStencilView { get; }
+        public ref FixedList<ID3D11RenderTargetView*, const 8> RenderTargetViews { get; }
+        public ref ID3D11DepthStencilView* DepthStencilView { get; }
 
         // Only non-null if this is the Framebuffer for a Swapchain.
         internal D3D11Swapchain Swapchain { get; set; }
 
         public override bool IsDisposed => _disposed;
 
-        public D3D11Framebuffer(ID3D11Device device, ref FramebufferDescription description)
+        public this(ID3D11Device* device, in FramebufferDescription description)
             : base(description.DepthTarget, description.ColorTargets)
         {
             if (description.DepthTarget != null)
             {
                 D3D11Texture d3dDepthTarget = Util.AssertSubtype<Texture, D3D11Texture>(description.DepthTarget.Value.Target);
-                DepthStencilViewDescription dsvDesc = new DepthStencilViewDescription()
+                D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = D3D11_DEPTH_STENCIL_VIEW_DESC()
                 {
                     Format = D3D11Formats.GetDepthFormat(d3dDepthTarget.Format),
                 };
@@ -30,41 +35,41 @@ namespace Sedulous.GAL.D3D11
                 {
                     if (d3dDepthTarget.SampleCount == TextureSampleCount.Count1)
                     {
-                        dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2D;
-                        dsvDesc.Texture2D.MipSlice = (int32)description.DepthTarget.Value.MipLevel;
+                        dsvDesc.ViewDimension = .D3D11_DSV_DIMENSION_TEXTURE2D;
+                        dsvDesc.Texture2D.MipSlice = description.DepthTarget.Value.MipLevel;
                     }
                     else
                     {
-                        dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2DMultisampled;
+                        dsvDesc.ViewDimension = .D3D11_DSV_DIMENSION_TEXTURE2DMS;
                     }
                 }
                 else
                 {
                     if (d3dDepthTarget.SampleCount == TextureSampleCount.Count1)
                     {
-                        dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2DArray;
-                        dsvDesc.Texture2DArray.FirstArraySlice = (int32)description.DepthTarget.Value.ArrayLayer;
+                        dsvDesc.ViewDimension = .D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+                        dsvDesc.Texture2DArray.FirstArraySlice = description.DepthTarget.Value.ArrayLayer;
                         dsvDesc.Texture2DArray.ArraySize = 1;
-                        dsvDesc.Texture2DArray.MipSlice = (int32)description.DepthTarget.Value.MipLevel;
+                        dsvDesc.Texture2DArray.MipSlice = description.DepthTarget.Value.MipLevel;
                     }
                     else
                     {
-                        dsvDesc.ViewDimension = DepthStencilViewDimension.Texture2DMultisampledArray;
-                        dsvDesc.Texture2DMSArray.FirstArraySlice = (int32)description.DepthTarget.Value.ArrayLayer;
+                        dsvDesc.ViewDimension = .D3D11_DSV_DIMENSION_TEXTURE2DMSARRAY;
+                        dsvDesc.Texture2DMSArray.FirstArraySlice = description.DepthTarget.Value.ArrayLayer;
                         dsvDesc.Texture2DMSArray.ArraySize = 1;
                     }
                 }
 
-                DepthStencilView = device.CreateDepthStencilView(d3dDepthTarget.DeviceTexture, dsvDesc);
+                HRESULT hr = device.CreateDepthStencilView(d3dDepthTarget.DeviceTexture, &dsvDesc, &DepthStencilView);
             }
 
-            if (description.ColorTargets != null && description.ColorTargets.Length > 0)
+            if (/*description.ColorTargets != null &&*/ description.ColorTargets.Count > 0)
             {
-                RenderTargetViews = new ID3D11RenderTargetView[description.ColorTargets.Length];
-                for (int32 i = 0; i < RenderTargetViews.Length; i++)
+                RenderTargetViews = .() {Count = description.ColorTargets.Count};
+                for (int32 i = 0; i < RenderTargetViews.Count; i++)
                 {
                     D3D11Texture d3dColorTarget = Util.AssertSubtype<Texture, D3D11Texture>(description.ColorTargets[i].Target);
-                    RenderTargetViewDescription rtvDesc = new RenderTargetViewDescription
+                    D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = D3D11_RENDER_TARGET_VIEW_DESC()
                     {
                         Format = D3D11Formats.ToDxgiFormat(d3dColorTarget.Format, false),
                     };
@@ -72,21 +77,21 @@ namespace Sedulous.GAL.D3D11
                     {
                         if (d3dColorTarget.SampleCount == TextureSampleCount.Count1)
                         {
-                            rtvDesc.ViewDimension = RenderTargetViewDimension.Texture2DArray;
-                            rtvDesc.Texture2DArray = new Texture2DArrayRenderTargetView
+                            rtvDesc.ViewDimension = .D3D11_RTV_DIMENSION_TEXTURE2DARRAY;
+                            rtvDesc.Texture2DArray = .()
                             {
                                 ArraySize = 1,
-                                FirstArraySlice = (int32)description.ColorTargets[i].ArrayLayer,
-                                MipSlice = (int32)description.ColorTargets[i].MipLevel
+                                FirstArraySlice = description.ColorTargets[i].ArrayLayer,
+                                MipSlice = description.ColorTargets[i].MipLevel
                             };
                         }
                         else
                         {
-                            rtvDesc.ViewDimension = RenderTargetViewDimension.Texture2DMultisampledArray;
-                            rtvDesc.Texture2DMSArray = new Texture2DMultisampledArrayRenderTargetView
+                            rtvDesc.ViewDimension = .D3D11_RTV_DIMENSION_TEXTURE2DMSARRAY;
+                            rtvDesc.Texture2DMSArray = .()
                             {
                                 ArraySize = 1,
-                                FirstArraySlice = (int32)description.ColorTargets[i].ArrayLayer
+                                FirstArraySlice = description.ColorTargets[i].ArrayLayer
                             };
                         }
                     }
@@ -94,36 +99,36 @@ namespace Sedulous.GAL.D3D11
                     {
                         if (d3dColorTarget.SampleCount == TextureSampleCount.Count1)
                         {
-                            rtvDesc.ViewDimension = RenderTargetViewDimension.Texture2D;
-                            rtvDesc.Texture2D.MipSlice = (int32)description.ColorTargets[i].MipLevel;
+                            rtvDesc.ViewDimension = .D3D11_RTV_DIMENSION_TEXTURE2D;
+                            rtvDesc.Texture2D.MipSlice = description.ColorTargets[i].MipLevel;
                         }
                         else
                         {
-                            rtvDesc.ViewDimension = RenderTargetViewDimension.Texture2DMultisampled;
+                            rtvDesc.ViewDimension = .D3D11_RTV_DIMENSION_TEXTURE2DMS;
                         }
                     }
-                    RenderTargetViews[i] = device.CreateRenderTargetView(d3dColorTarget.DeviceTexture, rtvDesc);
+                    HRESULT hr = device.CreateRenderTargetView(d3dColorTarget.DeviceTexture, &rtvDesc, &RenderTargetViews[i]);
                 }
             }
             else
             {
-                RenderTargetViews = Array.Empty<ID3D11RenderTargetView>();
+                RenderTargetViews = .();
             }
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
             {
                 _name = value;
-                for (int32 i = 0; i < RenderTargetViews.Length; i++)
+                for (int32 i = 0; i < RenderTargetViews.Count; i++)
                 {
-                    RenderTargetViews[i].DebugName = value + "_RTV" + i;
+                    D3D11Util.SetDebugName(RenderTargetViews[i], scope $"{value}_RTV{i}");
                 }
                 if (DepthStencilView != null)
                 {
-                    DepthStencilView.DebugName = value + "_DSV";
+                    D3D11Util.SetDebugName(DepthStencilView, scope $"{value}_DSV");
                 }
             }
         }
@@ -132,10 +137,10 @@ namespace Sedulous.GAL.D3D11
         {
             if (!_disposed)
             {
-                DepthStencilView?.Dispose();
-                for (ID3D11RenderTargetView rtv in RenderTargetViews)
+                DepthStencilView?.Release();
+                for (ID3D11RenderTargetView* rtv in RenderTargetViews)
                 {
-                    rtv.Dispose();
+                    rtv.Release();
                 }
 
                 _disposed = true;

@@ -121,6 +121,16 @@ namespace Sedulous.GAL
         }
 
         /// <summary>
+        /// Converts this RgbaFloat into a float[4].
+        /// </summary>
+        /// <returns></returns>
+        [Inline]
+        public float[4] ToFloat4()
+        {
+            return .(_channels.X, _channels.Y, _channels.Z, _channels.W);
+        }
+
+        /// <summary>
         /// Element-wise equality.
         /// </summary>
         /// <param name="other">The instance to compare to.</param>

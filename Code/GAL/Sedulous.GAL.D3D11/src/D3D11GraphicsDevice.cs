@@ -1,45 +1,43 @@
-﻿using Vortice;
-using Vortice.Direct3D11;
-using Vortice.DXGI;
+using Win32.Graphics.Direct3D11;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using Vortice.Mathematics;
-using Vortice.Direct3D11.Debug;
-using VorticeDXGI = Vortice.DXGI.DXGI;
-using VorticeD3D11 = Vortice.Direct3D11.D3D11;
-using Vortice.DXGI.Debug;
+using Win32.Graphics.Dxgi;
+using System.Collections;
+using Win32.Foundation;
+using Win32.Graphics.Direct3D;
+using Win32;
+using Win32.Graphics.Dxgi.Common;
 
 namespace Sedulous.GAL.D3D11
 {
-    internal class D3D11GraphicsDevice : GraphicsDevice
+	using internal Sedulous.GAL;
+
+    public class D3D11GraphicsDevice : GraphicsDevice
     {
-        private readonly IDXGIAdapter _dxgiAdapter;
-        private readonly ID3D11Device _device;
-        private readonly string _deviceName;
-        private readonly string _vendorName;
+        private readonly IDXGIAdapter* _dxgiAdapter;
+        private readonly ID3D11Device* _device;
+        private readonly String _deviceName;
+        private readonly String _vendorName;
         private readonly GraphicsApiVersion _apiVersion;
         private readonly int32 _deviceId;
-        private readonly ID3D11DeviceContext _immediateContext;
+        private readonly ID3D11DeviceContext* _immediateContext;
         private readonly D3D11ResourceFactory _d3d11ResourceFactory;
         private readonly D3D11Swapchain _mainSwapchain;
         private readonly bool _supportsConcurrentResources;
         private readonly bool _supportsCommandLists;
-        private readonly object _immediateContextLock = new object();
+        private readonly Monitor _immediateContextLock = new .() ~ delete _;
         private readonly BackendInfoD3D11 _d3d11Info;
 
-        private readonly object _mappedResourceLock = new object();
-        private readonly Dictionary<MappedResourceCacheKey, MappedResourceInfo> _mappedResources
-            = new Dictionary<MappedResourceCacheKey, MappedResourceInfo>();
+        private readonly Monitor _mappedResourceLock = new .() ~ delete _;
+        private readonly Dictionary<MappedResourceCacheKey, MappedResourceInfo> _mappedResources = new .() ~ delete _;
 
-        private readonly object _stagingResourcesLock = new object();
+        private readonly Monitor _stagingResourcesLock = new .() ~ delete _;
         private readonly List<D3D11Buffer> _availableStagingBuffers = new List<D3D11Buffer>();
 
-        public override string DeviceName => _deviceName;
+        public override String DeviceName => _deviceName;
 
-        public override string VendorName => _vendorName;
+        public override String VendorName => _vendorName;
 
         public override GraphicsApiVersion ApiVersion => _apiVersion;
 
@@ -51,11 +49,11 @@ namespace Sedulous.GAL.D3D11
 
         public override bool IsClipSpaceYInverted => false;
 
-        public override ResourceFactory ResourceFactory => _d3d11ResourceFactory;
+        public override ResourceFactory ResourceFactory { get => _d3d11ResourceFactory; protected set {}}
 
-        public ID3D11Device Device => _device;
+        public ID3D11Device* Device => _device;
 
-        public IDXGIAdapter Adapter => _dxgiAdapter;
+        public IDXGIAdapter* Adapter => _dxgiAdapter;
 
         public bool IsDebugEnabled { get; }
 
@@ -67,113 +65,147 @@ namespace Sedulous.GAL.D3D11
 
         public override Swapchain MainSwapchain => _mainSwapchain;
 
-        public override GraphicsDeviceFeatures Features { get; }
+        public override GraphicsDeviceFeatures Features { get; protected set; }
 
-        public D3D11GraphicsDevice(GraphicsDeviceOptions options, D3D11DeviceOptions d3D11DeviceOptions, SwapchainDescription? swapchainDesc)
+        public this(GraphicsDeviceOptions options, D3D11DeviceOptions d3D11DeviceOptions, SwapchainDescription? swapchainDesc)
             : this(MergeOptions(d3D11DeviceOptions, options), swapchainDesc)
         {
         }
 
-        public D3D11GraphicsDevice(D3D11DeviceOptions options, SwapchainDescription? swapchainDesc)
+        public this(D3D11DeviceOptions options, SwapchainDescription? swapchainDesc)
         {
-            var flags = (DeviceCreationFlags)options.DeviceCreationFlags;
+            var flags = (D3D11_CREATE_DEVICE_FLAG)options.DeviceCreationFlags;
 #if DEBUG
-            flags |= DeviceCreationFlags.Debug;
+            flags |= D3D11_CREATE_DEVICE_FLAG.D3D11_CREATE_DEVICE_DEBUG;
 #endif
+			bool sdkLayersAvailable = D3D11CreateDevice(null, .D3D_DRIVER_TYPE_NULL, 0, .D3D11_CREATE_DEVICE_DEBUG, null, 0, D3D11_SDK_VERSION, null, null, null) == S_OK;
             // If debug flag set but SDK layers aren't available we can't enable debug.
-            if (0 != (flags & DeviceCreationFlags.Debug) && !Vortice.Direct3D11.D3D11.SdkLayersAvailable())
+            if (0 != (flags & D3D11_CREATE_DEVICE_FLAG.D3D11_CREATE_DEVICE_DEBUG) && !sdkLayersAvailable)
             {
-                flags &= ~DeviceCreationFlags.Debug;
+                flags &= ~D3D11_CREATE_DEVICE_FLAG.D3D11_CREATE_DEVICE_DEBUG;
             }
 
-            try
+			HRESULT hr = S_OK;
             {
-                if (options.AdapterPtr != IntPtr.Zero)
-                {
-                    VorticeD3D11.D3D11CreateDevice(options.AdapterPtr,
-                        Vortice.Direct3D.DriverType.Hardware,
-                        flags,
-                        new[]
-                        {
-                            Vortice.Direct3D.FeatureLevel.Level_11_1,
-                            Vortice.Direct3D.FeatureLevel.Level_11_0,
-                        },
-                        out _device).CheckError();
-                }
-                else
-                {
-                    VorticeD3D11.D3D11CreateDevice(IntPtr.Zero,
-                        Vortice.Direct3D.DriverType.Hardware,
-                        flags,
-                        new[]
-                        {
-                            Vortice.Direct3D.FeatureLevel.Level_11_1,
-                            Vortice.Direct3D.FeatureLevel.Level_11_0,
-                        },
-                        out _device).CheckError();
-                }
+                if (options.AdapterPtr != null)
+				{
+				    hr = D3D11CreateDevice(options.AdapterPtr,
+				        .D3D_DRIVER_TYPE_HARDWARE,
+						0,
+				        flags,
+				        scope D3D_FEATURE_LEVEL[]*
+				        (
+				            .D3D_FEATURE_LEVEL_11_1,
+				            .D3D_FEATURE_LEVEL_11_0,
+				        ),
+						2,
+						0,
+				        &_device,
+						null,
+						null);
+				}
+				else
+				{
+				    hr = D3D11CreateDevice(null,
+				        .D3D_DRIVER_TYPE_HARDWARE,
+						0,
+				        flags,
+				        scope D3D_FEATURE_LEVEL[]*
+				        (
+				            .D3D_FEATURE_LEVEL_11_1,
+				            .D3D_FEATURE_LEVEL_11_0,
+				        ),
+						2,
+						0,
+				        &_device,
+						null,
+						null);
+				}
             }
-            catch
+            if(hr != S_OK)
             {
-                VorticeD3D11.D3D11CreateDevice(IntPtr.Zero,
-                    Vortice.Direct3D.DriverType.Hardware,
-                    flags,
-                    null,
-                    out _device).CheckError();
+                hr = D3D11CreateDevice(null,
+				    .D3D_DRIVER_TYPE_HARDWARE,
+					0,
+				flags,
+				null,
+				0,
+				0,
+				&_device,
+				null,
+				null);
             }
 
-            using (IDXGIDevice dxgiDevice = _device.QueryInterface<IDXGIDevice>())
+            IDXGIDevice* dxgiDevice = _device.QueryInterface<IDXGIDevice>();
+			defer dxgiDevice.Release();
             {
                 // Store a pointer to the DXGI adapter.
                 // This is for the case of no preferred DXGI adapter, or fallback to WARP.
-                dxgiDevice.GetAdapter(out _dxgiAdapter).CheckError();
+                if(dxgiDevice.GetAdapter(&_dxgiAdapter) != S_OK){
+					// todo: error?
+				}
 
-                AdapterDescription desc = _dxgiAdapter.Description;
-                _deviceName = desc.Description;
-                _vendorName = "id:" + ((uint32)desc.VendorId).ToString("x8");
-                _deviceId = desc.DeviceId;
+                DXGI_ADAPTER_DESC desc = .();
+				_dxgiAdapter.GetDesc(&desc);
+				_deviceName = new .(&desc.Description);
+				_vendorName = new .(scope $"id:{desc.VendorId:x8}");
+				_deviceId = (.)desc.DeviceId;
             }
 
-            switch (_device.FeatureLevel)
-            {
-                case Vortice.Direct3D.FeatureLevel.Level_10_0:
-                    _apiVersion = new GraphicsApiVersion(10, 0, 0, 0);
-                    break;
+            switch (_device.GetFeatureLevel())
+			{
+			    case .D3D_FEATURE_LEVEL_10_0:
+			        _apiVersion = GraphicsApiVersion(10, 0, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_10_1:
-                    _apiVersion = new GraphicsApiVersion(10, 1, 0, 0);
-                    break;
+			    case .D3D_FEATURE_LEVEL_10_1:
+			        _apiVersion = GraphicsApiVersion(10, 1, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_11_0:
-                    _apiVersion = new GraphicsApiVersion(11, 0, 0, 0);
-                    break;
+			    case .D3D_FEATURE_LEVEL_11_0:
+			        _apiVersion = GraphicsApiVersion(11, 0, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_11_1:
-                    _apiVersion = new GraphicsApiVersion(11, 1, 0, 0);
-                    break;
+			    case .D3D_FEATURE_LEVEL_11_1:
+			        _apiVersion = GraphicsApiVersion(11, 1, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_12_0:
-                    _apiVersion = new GraphicsApiVersion(12, 0, 0, 0);
-                    break;
+			    case .D3D_FEATURE_LEVEL_12_0:
+			        _apiVersion = GraphicsApiVersion(12, 0, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_12_1:
-                    _apiVersion = new GraphicsApiVersion(12, 1, 0, 0);
-                    break;
+			    case .D3D_FEATURE_LEVEL_12_1:
+			        _apiVersion = GraphicsApiVersion(12, 1, 0, 0);
+			        break;
 
-                case Vortice.Direct3D.FeatureLevel.Level_12_2:
-                    _apiVersion = new GraphicsApiVersion(12, 2, 0, 0);
-                    break;
-            }
+			    case .D3D_FEATURE_LEVEL_12_2:
+			        _apiVersion = GraphicsApiVersion(12, 2, 0, 0);
+			        break;
+			default: break;
+			}
 
             if (swapchainDesc != null)
             {
                 SwapchainDescription desc = swapchainDesc.Value;
-                _mainSwapchain = new D3D11Swapchain(this, ref desc);
+                _mainSwapchain = new D3D11Swapchain(this, desc);
             }
-            _immediateContext = _device.ImmediateContext;
-            _device.CheckThreadingSupport(out _supportsConcurrentResources, out _supportsCommandLists);
+            _device.GetImmediateContext(&_immediateContext);
+            (int32 DriverConcurrentCreates, int32 DriverCommandLists) threadingSupport = (0, 0);
+			hr = _device.CheckFeatureSupport(.D3D11_FEATURE_THREADING, &threadingSupport, sizeof(decltype(threadingSupport)));
+			if (hr < S_OK)
+			{
+				_supportsCommandLists = false;
+				_supportsConcurrentResources = false;
+			} else
+			{
+				_supportsCommandLists = threadingSupport.DriverCommandLists == TRUE;
+				_supportsConcurrentResources = threadingSupport.DriverConcurrentCreates == TRUE;
+			}
 
-            IsDebugEnabled = (flags & DeviceCreationFlags.Debug) != 0;
+			IsDebugEnabled = (flags & (.)D3D11_CREATE_DEVICE_FLAG.D3D11_CREATE_DEVICE_DEBUG) != 0;
+
+			D3D11_FEATURE_DATA_DOUBLES featureDouble = ?;
+			hr = _device.CheckFeatureSupport(.D3D11_FEATURE_DOUBLES, &featureDouble, sizeof(D3D11_FEATURE_DATA_DOUBLES));
 
             Features = new GraphicsDeviceFeatures(
                 computeShader: true,
@@ -192,9 +224,9 @@ namespace Sedulous.GAL.D3D11
                 independentBlend: true,
                 structuredBuffer: true,
                 subsetTextureView: true,
-                commandListDebugMarkers: _device.FeatureLevel >= Vortice.Direct3D.FeatureLevel.Level_11_1,
-                bufferRangeBinding: _device.FeatureLevel >= Vortice.Direct3D.FeatureLevel.Level_11_1,
-                shaderFloat64: _device.CheckFeatureSupport<FeatureDataDoubles>(Vortice.Direct3D11.Feature.Doubles).DoublePrecisionFloatShaderOps);
+                commandListDebugMarkers: _device.GetFeatureLevel() >= .D3D_FEATURE_LEVEL_11_1,
+                bufferRangeBinding: _device.GetFeatureLevel() >= .D3D_FEATURE_LEVEL_11_1,
+                shaderFloat64: featureDouble.DoublePrecisionFloatShaderOps == TRUE);
 
             _d3d11ResourceFactory = new D3D11ResourceFactory(this);
             _d3d11Info = new BackendInfoD3D11(this);
@@ -204,44 +236,45 @@ namespace Sedulous.GAL.D3D11
 
         private static D3D11DeviceOptions MergeOptions(D3D11DeviceOptions d3D11DeviceOptions, GraphicsDeviceOptions options)
         {
+			var d3D11DeviceOptions;
             if (options.Debug)
             {
-                d3D11DeviceOptions.DeviceCreationFlags |= (uint32)DeviceCreationFlags.Debug;
+                d3D11DeviceOptions.DeviceCreationFlags |= (uint32)D3D11_CREATE_DEVICE_FLAG.D3D11_CREATE_DEVICE_DEBUG;
             }
 
             return d3D11DeviceOptions;
         }
 
-        private protected override void SubmitCommandsCore(CommandList cl, Fence fence)
+        protected override void SubmitCommandsCore(CommandList cl, Fence fence)
         {
             D3D11CommandList d3d11CL = Util.AssertSubtype<CommandList, D3D11CommandList>(cl);
-            lock (_immediateContextLock)
+            using (_immediateContextLock.Enter())
             {
                 if (d3d11CL.DeviceCommandList != null) // CommandList may have been reset in the meantime (resized swapchain).
                 {
-                    _immediateContext.ExecuteCommandList(d3d11CL.DeviceCommandList, false);
+                    _immediateContext.ExecuteCommandList(d3d11CL.DeviceCommandList, FALSE);
                     d3d11CL.OnCompleted();
                 }
             }
 
-            if (fence is D3D11Fence d3d11Fence)
+            if (let d3d11Fence = fence as D3D11Fence)
             {
                 d3d11Fence.Set();
             }
         }
 
-        private protected override void SwapBuffersCore(Swapchain swapchain)
+        protected override void SwapBuffersCore(Swapchain swapchain)
         {
-            lock (_immediateContextLock)
+            using (_immediateContextLock.Enter())
             {
                 D3D11Swapchain d3d11SC = Util.AssertSubtype<Swapchain, D3D11Swapchain>(swapchain);
-                d3d11SC.DxgiSwapChain.Present(d3d11SC.SyncInterval, PresentFlags.None);
+                d3d11SC.DxgiSwapChain.Present((uint32)d3d11SC.SyncInterval, /*DXGI_PRESENT_NONE*/0);
             }
         }
 
         public override TextureSampleCount GetSampleCountLimit(PixelFormat format, bool depthFormat)
         {
-            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, depthFormat);
+            DXGI_FORMAT dxgiFormat = D3D11Formats.ToDxgiFormat(format, depthFormat);
             if (CheckFormatMultisample(dxgiFormat, 32))
             {
                 return TextureSampleCount.Count32;
@@ -266,12 +299,12 @@ namespace Sedulous.GAL.D3D11
             return TextureSampleCount.Count1;
         }
 
-        private bool CheckFormatMultisample(Format format, int32 sampleCount)
+        private bool CheckFormatMultisample(DXGI_FORMAT format, int32 sampleCount)
         {
-            return _device.CheckMultisampleQualityLevels(format, sampleCount) != 0;
+            return _device.CheckMultisampleQualityLevels(format, (uint32)sampleCount, null) != 0;
         }
 
-        private protected override bool GetPixelFormatSupportCore(
+        protected override bool GetPixelFormatSupportCore(
             PixelFormat format,
             TextureType type,
             TextureUsage usage,
@@ -283,14 +316,15 @@ namespace Sedulous.GAL.D3D11
                 return false;
             }
 
-            Format dxgiFormat = D3D11Formats.ToDxgiFormat(format, (usage & TextureUsage.DepthStencil) != 0);
-            FormatSupport fs = _device.CheckFormatSupport(dxgiFormat);
+            DXGI_FORMAT dxgiFormat = D3D11Formats.ToDxgiFormat(format, (usage & TextureUsage.DepthStencil) != 0);
+            D3D11_FORMAT_SUPPORT fs = 0;
+			HRESULT hr = _device.CheckFormatSupport(dxgiFormat, (.)&fs);
 
-            if ((usage & TextureUsage.RenderTarget) != 0 && (fs & FormatSupport.RenderTarget) == 0
-                || (usage & TextureUsage.DepthStencil) != 0 && (fs & FormatSupport.DepthStencil) == 0
-                || (usage & TextureUsage.Sampled) != 0 && (fs & FormatSupport.ShaderSample) == 0
-                || (usage & TextureUsage.Cubemap) != 0 && (fs & FormatSupport.TextureCube) == 0
-                || (usage & TextureUsage.Storage) != 0 && (fs & FormatSupport.TypedUnorderedAccessView) == 0)
+            if ((usage & TextureUsage.RenderTarget) != 0 && (fs & .D3D11_FORMAT_SUPPORT_RENDER_TARGET) == 0
+				|| (usage & TextureUsage.DepthStencil) != 0 && (fs & .D3D11_FORMAT_SUPPORT_DEPTH_STENCIL) == 0
+				|| (usage & TextureUsage.Sampled) != 0 && (fs & .D3D11_FORMAT_SUPPORT_SHADER_SAMPLE) == 0
+				|| (usage & TextureUsage.Cubemap) != 0 && (fs & .D3D11_FORMAT_SUPPORT_TEXTURECUBE) == 0
+				|| (usage & TextureUsage.Storage) != 0 && (fs & .D3D11_FORMAT_SUPPORT_TYPED_UNORDERED_ACCESS_VIEW) == 0)
             {
                 properties = default(PixelFormatProperties);
                 return false;
@@ -307,7 +341,7 @@ namespace Sedulous.GAL.D3D11
             if (CheckFormatMultisample(dxgiFormat, 16)) { sampleCounts |= (1 << 4); }
             if (CheckFormatMultisample(dxgiFormat, 32)) { sampleCounts |= (1 << 5); }
 
-            properties = new PixelFormatProperties(
+            properties = PixelFormatProperties(
                 MaxTextureDimension,
                 type == TextureType.Texture1D ? 1 : MaxTextureDimension,
                 type != TextureType.Texture3D ? 1 : MaxVolumeExtent,
@@ -319,10 +353,10 @@ namespace Sedulous.GAL.D3D11
 
         protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource)
         {
-            MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
-            lock (_mappedResourceLock)
+            MappedResourceCacheKey key = MappedResourceCacheKey(resource, subresource);
+            using (_mappedResourceLock.Enter())
             {
-                if (_mappedResources.TryGetValue(key, out MappedResourceInfo info))
+                if (_mappedResources.TryGetValue(key, var info))
                 {
                     if (info.Mode != mode)
                     {
@@ -336,17 +370,18 @@ namespace Sedulous.GAL.D3D11
                 {
                     // No current mapping exists -- create one.
 
-                    if (resource is D3D11Buffer buffer)
+                    if (let buffer = resource as D3D11Buffer)
                     {
-                        lock (_immediateContextLock)
+                        using (_immediateContextLock.Enter())
                         {
-                            MappedSubresource msr = _immediateContext.Map(
-                                buffer.Buffer,
-                                0,
-                                D3D11Formats.VdToD3D11MapMode((buffer.Usage & BufferUsage.Dynamic) == BufferUsage.Dynamic, mode),
-                                Vortice.Direct3D11.MapFlags.None);
+							D3D11_MAPPED_SUBRESOURCE msr = .();
+                            HRESULT hr = _immediateContext.Map(
+								buffer.Buffer,
+								0,
+								D3D11Formats.VdToD3D11MapMode((buffer.Usage & BufferUsage.Dynamic) == BufferUsage.Dynamic, mode),
+								(int32)(D3D11_MAP_FLAG)0, &msr);
 
-                            info.MappedResource = new MappedResource(resource, mode, msr.DataPointer, buffer.SizeInBytes);
+                            info.MappedResource = MappedResource(resource, mode, msr.pData, buffer.SizeInBytes);
                             info.RefCount = 1;
                             info.Mode = mode;
                             _mappedResources.Add(key, info);
@@ -355,22 +390,22 @@ namespace Sedulous.GAL.D3D11
                     else
                     {
                         D3D11Texture texture = Util.AssertSubtype<MappableResource, D3D11Texture>(resource);
-                        lock (_immediateContextLock)
+                        using (_immediateContextLock.Enter())
                         {
-                            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint32 mipLevel, out uint32 arrayLayer);
+                            Util.GetMipLevelAndArrayLayer(texture, subresource, var mipLevel, var arrayLayer);
+							uint32 subresourceIndex = texture.CalculateSubresourceIndex(mipLevel, arrayLayer);
+							D3D11_MAPPED_SUBRESOURCE msr = .();
                             _immediateContext.Map(
-                                texture.DeviceTexture,
-                                (int32)mipLevel,
-                                (int32)arrayLayer,
-                                D3D11Formats.VdToD3D11MapMode(false, mode),
-                                Vortice.Direct3D11.MapFlags.None,
-                                out int32 mipSize,
-                                out MappedSubresource msr);
+								texture.DeviceTexture,
+								subresourceIndex,
+								D3D11Formats.VdToD3D11MapMode(false, mode),
+								(int32)(D3D11_MAP_FLAG)0,
+								&msr);
 
-                            info.MappedResource = new MappedResource(
+                            info.MappedResource = MappedResource(
                                 resource,
                                 mode,
-                                msr.DataPointer,
+                                msr.pData,
                                 texture.Height * (uint32)msr.RowPitch,
                                 subresource,
                                 (uint32)msr.RowPitch,
@@ -388,30 +423,30 @@ namespace Sedulous.GAL.D3D11
 
         protected override void UnmapCore(MappableResource resource, uint32 subresource)
         {
-            MappedResourceCacheKey key = new MappedResourceCacheKey(resource, subresource);
+            MappedResourceCacheKey key = MappedResourceCacheKey(resource, subresource);
             bool commitUnmap;
 
-            lock (_mappedResourceLock)
+            using (_mappedResourceLock.Enter())
             {
-                if (!_mappedResources.TryGetValue(key, out MappedResourceInfo info))
+                if (!_mappedResources.TryGetValue(key, var info))
                 {
-                    Runtime.GALError($"The given resource ({resource}) is not mapped.");
+                    Runtime.GALError(scope $"The given resource ({resource}) is not mapped.");
                 }
 
                 info.RefCount -= 1;
                 commitUnmap = info.RefCount == 0;
                 if (commitUnmap)
                 {
-                    lock (_immediateContextLock)
+                    using (_immediateContextLock.Enter())
                     {
-                        if (resource is D3D11Buffer buffer)
+                        if (let buffer = resource as D3D11Buffer)
                         {
                             _immediateContext.Unmap(buffer.Buffer, 0);
                         }
                         else
                         {
                             D3D11Texture texture = Util.AssertSubtype<MappableResource, D3D11Texture>(resource);
-                            _immediateContext.Unmap(texture.DeviceTexture, (int32)subresource);
+                            _immediateContext.Unmap(texture.DeviceTexture, subresource);
                         }
 
                         bool result = _mappedResources.Remove(key);
@@ -425,7 +460,7 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
+        protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, void* source, uint32 sizeInBytes)
         {
             D3D11Buffer d3dBuffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
             if (sizeInBytes == 0)
@@ -442,14 +477,14 @@ namespace Sedulous.GAL.D3D11
 
             if (useUpdateSubresource)
             {
-                Box? subregion = new Box((int32)bufferOffsetInBytes, 0, 0, (int32)(sizeInBytes + bufferOffsetInBytes), 1, 1);
+                D3D11_BOX* subregion = scope :: .(bufferOffsetInBytes, 0, 0, (sizeInBytes + bufferOffsetInBytes), 1, 1);
 
                 if (isUniformBuffer)
                 {
                     subregion = null;
                 }
 
-                lock (_immediateContextLock)
+                using (_immediateContextLock.Enter())
                 {
                     _immediateContext.UpdateSubresource(d3dBuffer.Buffer, 0, subregion, source, 0, 0);
                 }
@@ -459,13 +494,13 @@ namespace Sedulous.GAL.D3D11
                 MappedResource mr = MapCore(buffer, MapMode.Write, 0);
                 if (sizeInBytes < 1024)
                 {
-                    Unsafe.CopyBlock((uint8*)mr.Data + bufferOffsetInBytes, source.ToPointer(), sizeInBytes);
+                    Internal.MemCpy((uint8*)mr.Data + bufferOffsetInBytes, source, sizeInBytes);
                 }
                 else
                 {
                     Internal.MemCpy(
                         (uint8*)mr.Data + bufferOffsetInBytes,
-                        source.ToPointer(),
+                        source,
                         sizeInBytes);
                 }
                 UnmapCore(buffer, 0);
@@ -474,16 +509,16 @@ namespace Sedulous.GAL.D3D11
             {
                 D3D11Buffer staging = GetFreeStagingBuffer(sizeInBytes);
                 UpdateBuffer(staging, 0, source, sizeInBytes);
-                Box sourceRegion = new Box(0, 0, 0, (int32)sizeInBytes, 1, 1);
-                lock (_immediateContextLock)
+                D3D11_BOX sourceRegion = .(0, 0, 0, sizeInBytes, 1, 1);
+                using (_immediateContextLock.Enter())
                 {
                     _immediateContext.CopySubresourceRegion(
-                        d3dBuffer.Buffer, 0, (int32)bufferOffsetInBytes, 0, 0,
+                        d3dBuffer.Buffer, 0, bufferOffsetInBytes, 0, 0,
                         staging.Buffer, 0,
-                        sourceRegion);
+                        &sourceRegion);
                 }
 
-                lock (_stagingResourcesLock)
+                using (_stagingResourcesLock.Enter())
                 {
                     _availableStagingBuffers.Add(staging);
                 }
@@ -492,7 +527,7 @@ namespace Sedulous.GAL.D3D11
 
         private D3D11Buffer GetFreeStagingBuffer(uint32 sizeInBytes)
         {
-            lock (_stagingResourcesLock)
+            using (_stagingResourcesLock.Enter())
             {
                 for (D3D11Buffer buffer in _availableStagingBuffers)
                 {
@@ -505,14 +540,14 @@ namespace Sedulous.GAL.D3D11
             }
 
             DeviceBuffer staging = ResourceFactory.CreateBuffer(
-                new BufferDescription(sizeInBytes, BufferUsage.Staging));
+                BufferDescription(sizeInBytes, BufferUsage.Staging));
 
             return Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(staging);
         }
 
-        private protected override void UpdateTextureCore(
+        protected override void UpdateTextureCore(
             Texture texture,
-            IntPtr source,
+            void* source,
             uint32 sizeInBytes,
             uint32 x,
             uint32 y,
@@ -528,17 +563,17 @@ namespace Sedulous.GAL.D3D11
             if (useMap)
             {
                 uint32 subresource = texture.CalculateSubresource(mipLevel, arrayLayer);
-                MappedResourceCacheKey key = new MappedResourceCacheKey(texture, subresource);
+                MappedResourceCacheKey key = MappedResourceCacheKey(texture, subresource);
                 MappedResource map = MapCore(texture, MapMode.Write, subresource);
 
                 uint32 denseRowSize = FormatHelpers.GetRowPitch(width, texture.Format);
                 uint32 denseSliceSize = FormatHelpers.GetDepthPitch(denseRowSize, height, texture.Format);
 
                 Util.CopyTextureRegion(
-                    source.ToPointer(),
+                    source,
                     0, 0, 0,
                     denseRowSize, denseSliceSize,
-                    map.Data.ToPointer(),
+                    map.Data,
                     x, y, z,
                     map.RowPitch, map.DepthPitch,
                     width, height, depth,
@@ -549,25 +584,25 @@ namespace Sedulous.GAL.D3D11
             else
             {
                 int32 subresource = D3D11Util.ComputeSubresource(mipLevel, texture.MipLevels, arrayLayer);
-                Box resourceRegion = new Box(
-                    left: (int32)x,
-                    right: (int32)(x + width),
-                    top: (int32)y,
-                    front: (int32)z,
-                    bottom: (int32)(y + height),
-                    back: (int32)(z + depth));
+                D3D11_BOX resourceRegion = .(
+                    left: x,
+                    right: (x + width),
+                    top: y,
+                    front: z,
+                    bottom: (y + height),
+                    back: (z + depth));
 
                 uint32 srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
                 uint32 srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
-                lock (_immediateContextLock)
+                using (_immediateContextLock.Enter())
                 {
                     _immediateContext.UpdateSubresource(
                         d3dTex.DeviceTexture,
-                        subresource,
-                        resourceRegion,
+                        (uint32)subresource,
+                        &resourceRegion,
                         source,
-                        (int32)srcRowPitch,
-                        (int32)srcDepthPitch);
+                        srcRowPitch,
+                        srcDepthPitch);
                 }
             }
         }
@@ -586,23 +621,23 @@ namespace Sedulous.GAL.D3D11
             }
             else
             {
-                msTimeout = (int32)Math.Min(nanosecondTimeout / 1_000_000, int32.MaxValue);
+                msTimeout = (int32)Math.Min<uint64>(nanosecondTimeout / 1000000, int32.MaxValue);
             }
 
-            ManualResetEvent[] events = GetResetEventArray(fences.Length);
-            for (int32 i = 0; i < fences.Length; i++)
+            ManualResetEvent[] events = GetResetEventArray(fences.Count);
+            for (int i = 0; i < fences.Count; i++)
             {
                 events[i] = Util.AssertSubtype<Fence, D3D11Fence>(fences[i]).ResetEvent;
             }
             bool result;
             if (waitAll)
             {
-                result = WaitHandle.WaitAll(events, msTimeout);
+                result = WaitAll(events, (uint32)msTimeout);
             }
             else
             {
-                int32 index = WaitHandle.WaitAny(events, msTimeout);
-                result = index != WaitHandle.WaitTimeout;
+                uint32 index = WaitAny(events, (uint32)msTimeout);
+                result = index != (uint32)WIN32_ERROR.WAIT_TIMEOUT;
             }
 
             ReturnResetEventArray(events);
@@ -610,17 +645,43 @@ namespace Sedulous.GAL.D3D11
             return result;
         }
 
-        private readonly object _resetEventsLock = new object();
-        private readonly List<ManualResetEvent[]> _resetEvents = new List<ManualResetEvent[]>();
+		private bool WaitAll(Span<ManualResetEvent> events, uint32 msTimeout)
+		{
+			List<HANDLE> eventHandles = scope .();
 
-        private ManualResetEvent[] GetResetEventArray(int32 length)
+			for(var event in events)
+			{
+				eventHandles.Add(event.Handle);
+			}
+			
+			int32 index = (.)Win32.System.Threading.WaitForMultipleObjects((uint32)eventHandles.Count, eventHandles.Ptr, TRUE, msTimeout);
+		    return (index >= (.)WIN32_ERROR.WAIT_OBJECT_0) && (index < (.)WIN32_ERROR.WAIT_ABANDONED);
+		}
+
+		private uint32 WaitAny(Span<ManualResetEvent> events, uint32 msTimeout)
+		{
+			List<HANDLE> eventHandles = scope .();
+
+			for(var event in events)
+			{
+				eventHandles.Add(event.Handle);
+			}
+			
+			uint32 index = (.)Win32.System.Threading.WaitForMultipleObjects((uint32)eventHandles.Count, eventHandles.Ptr, FALSE, msTimeout);
+			return index;
+		}
+
+        private readonly Monitor _resetEventsLock = new .() ~ delete _;
+        private readonly List<ManualResetEvent[]> _resetEvents = new .();
+
+        private ManualResetEvent[] GetResetEventArray(int length)
         {
-            lock (_resetEventsLock)
+            using (_resetEventsLock.Enter())
             {
-                for (int32 i = _resetEvents.Count - 1; i > 0; i--)
+                for (int i = _resetEvents.Count - 1; i > 0; i--)
                 {
                     ManualResetEvent[] array = _resetEvents[i];
-                    if (array.Length == length)
+                    if (array.Count == length)
                     {
                         _resetEvents.RemoveAt(i);
                         return array;
@@ -634,7 +695,7 @@ namespace Sedulous.GAL.D3D11
 
         private void ReturnResetEventArray(ManualResetEvent[] array)
         {
-            lock (_resetEventsLock)
+            using (_resetEventsLock.Enter())
             {
                 _resetEvents.Add(array);
             }
@@ -645,9 +706,9 @@ namespace Sedulous.GAL.D3D11
             Util.AssertSubtype<Fence, D3D11Fence>(fence).Reset();
         }
 
-        internal override uint32 GetUniformBufferMinOffsetAlignmentCore() => 256u;
+        protected override uint32 GetUniformBufferMinOffsetAlignmentCore() => 256u;
 
-        internal override uint32 GetStructuredBufferMinOffsetAlignmentCore() => 16;
+        protected override uint32 GetStructuredBufferMinOffsetAlignmentCore() => 16;
 
         protected override void PlatformDispose()
         {
@@ -660,42 +721,43 @@ namespace Sedulous.GAL.D3D11
 
             _d3d11ResourceFactory.Dispose();
             _mainSwapchain?.Dispose();
-            _immediateContext.Dispose();
+            _immediateContext.Release();
 
             if (IsDebugEnabled)
             {
                 uint32 refCount = _device.Release();
                 if (refCount > 0)
                 {
-                    ID3D11Debug deviceDebug = _device.QueryInterfaceOrNull<ID3D11Debug>();
+                    ID3D11Debug* deviceDebug = _device.QueryInterface<ID3D11Debug>();
                     if (deviceDebug != null)
                     {
-                        deviceDebug.ReportLiveDeviceObjects(ReportLiveDeviceObjectFlags.Summary | ReportLiveDeviceObjectFlags.Detail | ReportLiveDeviceObjectFlags.IgnoreInternal);
-                        deviceDebug.Dispose();
+                        deviceDebug.ReportLiveDeviceObjects(.D3D11_RLDO_SUMMARY | .D3D11_RLDO_DETAIL | .D3D11_RLDO_IGNORE_INTERNAL);
+                        deviceDebug.Release();
                     }
                 }
 
-                _dxgiAdapter.Dispose();
+                _dxgiAdapter.Release();
 
                 // Report live objects using DXGI if available (DXGIGetDebugInterface1 will fail on pre Windows 8 OS).
-                if (VorticeDXGI.DXGIGetDebugInterface1(out IDXGIDebug1 dxgiDebug).Success)
+				IDXGIDebug1* dxgiDebug = null;
+                if (DXGIGetDebugInterface1(0, IDXGIDebug1.IID, (void**)&dxgiDebug) == S_OK)
                 {
-                    dxgiDebug.ReportLiveObjects(VorticeDXGI.DebugAll, ReportLiveObjectFlags.Summary | ReportLiveObjectFlags.IgnoreInternal);
-                    dxgiDebug.Dispose();
+                    dxgiDebug.ReportLiveObjects(DXGI_DEBUG_ALL, .DXGI_DEBUG_RLO_SUMMARY | .DXGI_DEBUG_RLO_IGNORE_INTERNAL);
+                    dxgiDebug.Release();
                 }
             }
             else
             {
-                _device.Dispose();
-                _dxgiAdapter.Dispose();
+                _device.Release();
+                _dxgiAdapter.Release();
             }
         }
 
-        private protected override void WaitForIdleCore()
+        protected override void WaitForIdleCore()
         {
         }
 
-        public override bool GetD3D11Info(out BackendInfoD3D11 info)
+        public bool GetD3D11Info(out BackendInfoD3D11 info)
         {
             info = _d3d11Info;
             return true;

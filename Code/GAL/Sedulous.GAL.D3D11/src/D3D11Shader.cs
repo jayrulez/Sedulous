@@ -1,62 +1,64 @@
-﻿using System;
+using System;
 using System.Text;
-using Vortice.D3DCompiler;
-using Vortice.Direct3D;
-using Vortice.Direct3D11;
+using Win32.Graphics.Direct3D11;
+using System.Collections;
+using Sedulous.GAL.D3D11.ShaderCompiler;
 
 namespace Sedulous.GAL.D3D11
 {
-    internal class D3D11Shader : Shader
+	using internal Sedulous.GAL.D3D11;
+
+    public class D3D11Shader : Shader
     {
-        private string _name;
+        private String _name;
 
-        public ID3D11DeviceChild DeviceShader { get; }
-        public uint8[] Bytecode { get; internal set; }
+        public ref ID3D11DeviceChild* DeviceShader { get; }
+        public ref List<uint8> Bytecode { get; internal set; }
 
-        public D3D11Shader(ID3D11Device device, ShaderDescription description)
+        public this(ID3D11Device* device, ShaderDescription description)
             : base(description.Stage, description.EntryPoint)
         {
-            if (description.ShaderBytes.Length > 4
+            if (description.ShaderBytes.Count > 4
                 && description.ShaderBytes[0] == 0x44
                 && description.ShaderBytes[1] == 0x58
                 && description.ShaderBytes[2] == 0x42
                 && description.ShaderBytes[3] == 0x43)
             {
-                Bytecode = Util.ShallowClone(description.ShaderBytes);
+                Bytecode = new .(description.ShaderBytes);
             }
             else
             {
-                Bytecode = CompileCode(description);
+                Bytecode = CompileCode(description, .. new .());
             }
 
             switch (description.Stage)
             {
                 case ShaderStages.Vertex:
-                    DeviceShader = device.CreateVertexShader(Bytecode);
+                    device.CreateVertexShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11VertexShader**)&DeviceShader);
                     break;
                 case ShaderStages.Geometry:
-                    DeviceShader = device.CreateGeometryShader(Bytecode);
+                    device.CreateGeometryShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11GeometryShader**)&DeviceShader);
                     break;
                 case ShaderStages.TessellationControl:
-                    DeviceShader = device.CreateHullShader(Bytecode);
+                    device.CreateHullShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11HullShader**)&DeviceShader);
                     break;
                 case ShaderStages.TessellationEvaluation:
-                    DeviceShader = device.CreateDomainShader(Bytecode);
+                    device.CreateDomainShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11DomainShader**)&DeviceShader);
                     break;
                 case ShaderStages.Fragment:
-                    DeviceShader = device.CreatePixelShader(Bytecode);
+                    device.CreatePixelShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11PixelShader**)&DeviceShader);
                     break;
                 case ShaderStages.Compute:
-                    DeviceShader = device.CreateComputeShader(Bytecode);
+                    device.CreateComputeShader(Bytecode.Ptr, (.)Bytecode.Count, null, .. (ID3D11ComputeShader**)&DeviceShader);
                     break;
                 default:
                     Runtime.IllegalValue<ShaderStages>();
             }
         }
 
-        private uint8[] CompileCode(ShaderDescription description)
+        private void CompileCode(ShaderDescription description, List<uint8> byteCode)
         {
-            string profile;
+            String profile;
             switch (description.Stage)
             {
                 case ShaderStages.Vertex:
@@ -82,33 +84,33 @@ namespace Sedulous.GAL.D3D11
             }
 
             ShaderFlags flags = description.Debug ? ShaderFlags.Debug : ShaderFlags.OptimizationLevel3;
-            Compiler.Compile(description.ShaderBytes, null, null,
-                             description.EntryPoint, null,
-                             profile, flags, out Blob result, out Blob error);
+            FxcCompiler.Compile(scope .((char8*)description.ShaderBytes.Ptr, description.ShaderBytes.Count), null, null,
+				scope .(description.EntryPoint), null,
+				profile, flags, .None, var result, var error);
 
             if (result == null)
             {
-                Runtime.GALError($"Failed to compile HLSL code: {Encoding.ASCII.GetString(error.AsBytes())}");
+                Runtime.GALError(scope $"Failed to compile HLSL code: {scope String((char8*)error.GetBufferPointer(), (.)error.GetBufferSize())}");
             }
 
-            return result.AsBytes();
+            byteCode.AddRange(Span<uint8>((uint8*)result.GetBufferPointer(), (.)result.GetBufferSize()));
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
             {
                 _name = value;
-                DeviceShader.DebugName = value;
+                D3D11Util.SetDebugName(DeviceShader, value);
             }
         }
 
-        public override bool IsDisposed => DeviceShader.NativePointer == IntPtr.Zero;
+        public override bool IsDisposed => DeviceShader == null;
 
         public override void Dispose()
         {
-            DeviceShader.Dispose();
+            DeviceShader.Release();
         }
     }
 }

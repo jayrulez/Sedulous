@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Threading;
+using Win32;
 
 namespace Sedulous.GAL.D3D11
 {
@@ -8,12 +9,12 @@ namespace Sedulous.GAL.D3D11
         private readonly ManualResetEvent _mre;
         private bool _disposed;
 
-        public D3D11Fence(bool signaled)
+        public this(bool signaled)
         {
             _mre = new ManualResetEvent(signaled);
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
         public ManualResetEvent ResetEvent => _mre;
 
         public void Set() => _mre.Set();
@@ -32,8 +33,8 @@ namespace Sedulous.GAL.D3D11
 
         internal bool Wait(uint64 nanosecondTimeout)
         {
-            uint64 timeout = Math.Min(int32.MaxValue, nanosecondTimeout / 1_000_000);
-            return _mre.WaitOne((int32)timeout);
+            uint64 timeout = Math.Min(uint32.MaxValue, nanosecondTimeout / 1000000);
+            return _mre.WaitOne((uint32)timeout);
         }
     }
 }

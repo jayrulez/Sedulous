@@ -1,51 +1,52 @@
-﻿using System;
+using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Buffers;
-using Vortice.Direct3D11;
-using Vortice;
-using System.Drawing;
-using Vortice.Mathematics;
+using Win32.Graphics.Direct3D11;
+using Win32.Foundation;
+using System.Collections;
+using Win32.Graphics.Direct3D;
+using Win32;
 
 namespace Sedulous.GAL.D3D11
 {
-    internal class D3D11CommandList : CommandList
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.D3D11;
+
+    public class D3D11CommandList : CommandList
     {
         private readonly D3D11GraphicsDevice _gd;
-        private readonly ID3D11DeviceContext _context;
-        private readonly ID3D11DeviceContext1 _context1;
-        private readonly ID3DUserDefinedAnnotation _uda;
+        private readonly ID3D11DeviceContext* _context;
+        private readonly ID3D11DeviceContext1* _context1;
+        private readonly ID3DUserDefinedAnnotation* _uda;
         private bool _begun;
         private bool _disposed;
-        private ID3D11CommandList _commandList;
+        private ID3D11CommandList* _commandList;
 
-        private Viewport[] _viewports = new Viewport[0];
-        private RawRect[] _scissors = new RawRect[0];
+        private D3D11_VIEWPORT[] _viewports = new D3D11_VIEWPORT[0];
+        private RECT[] _scissors = new RECT[0];
         private bool _viewportsChanged;
         private bool _scissorRectsChanged;
 
         private uint32 _numVertexBindings = 0;
-        private ID3D11Buffer[] _vertexBindings = new ID3D11Buffer[1];
+        private ID3D11Buffer*[] _vertexBindings = new ID3D11Buffer*[1];
         private int32[] _vertexStrides = new int32[1];
         private int32[] _vertexOffsets = new int32[1];
 
         // Cached pipeline State
         private DeviceBuffer _ib;
         private uint32 _ibOffset;
-        private ID3D11BlendState _blendState;
-        private Color4 _blendFactor;
-        private ID3D11DepthStencilState _depthStencilState;
+        private ID3D11BlendState* _blendState;
+        private float[4] _blendFactor;
+        private ID3D11DepthStencilState* _depthStencilState;
         private uint32 _stencilReference;
-        private ID3D11RasterizerState _rasterizerState;
-        private Vortice.Direct3D.PrimitiveTopology _primitiveTopology;
-        private ID3D11InputLayout _inputLayout;
-        private ID3D11VertexShader _vertexShader;
-        private ID3D11GeometryShader _geometryShader;
-        private ID3D11HullShader _hullShader;
-        private ID3D11DomainShader _domainShader;
-        private ID3D11PixelShader _pixelShader;
+        private ID3D11RasterizerState* _rasterizerState;
+        private D3D_PRIMITIVE_TOPOLOGY _primitiveTopology;
+        private ID3D11InputLayout* _inputLayout;
+        private ID3D11VertexShader* _vertexShader;
+        private ID3D11GeometryShader* _geometryShader;
+        private ID3D11HullShader* _hullShader;
+        private ID3D11DomainShader* _domainShader;
+        private ID3D11PixelShader* _pixelShader;
 
         private new D3D11Pipeline _graphicsPipeline;
         private BoundResourceSetInfo[] _graphicsResourceSets = new BoundResourceSetInfo[1];
@@ -56,9 +57,9 @@ namespace Sedulous.GAL.D3D11
         private BoundResourceSetInfo[] _computeResourceSets = new BoundResourceSetInfo[1];
         // Resource sets are invalidated when a new resource set is bound with an incompatible SRV or UAV.
         private bool[] _invalidatedComputeResourceSets = new bool[1];
-        private string _name;
+        private String _name;
         private bool _vertexBindingsChanged;
-        private ID3D11Buffer[] _cbOut = new ID3D11Buffer[1];
+        private ID3D11Buffer*[] _cbOut = new ID3D11Buffer*[1];
         private int32[] _firstConstRef = new int32[1];
         private int32[] _numConstsRef = new int32[1];
 
@@ -78,26 +79,26 @@ namespace Sedulous.GAL.D3D11
         private readonly List<List<BoundTextureInfo>> _boundTextureInfoPool = new List<List<BoundTextureInfo>>(20);
 
         private const int32 MaxUAVs = 8;
-        private readonly List<(DeviceBuffer, int32)> _boundComputeUAVBuffers = new List<(DeviceBuffer, int32)>(MaxUAVs);
-        private readonly List<(DeviceBuffer, int32)> _boundOMUAVBuffers = new List<(DeviceBuffer, int32)>(MaxUAVs);
+        private readonly List<(DeviceBuffer Buffer, int32 Slot)> _boundComputeUAVBuffers = new .(MaxUAVs);
+        private readonly List<(DeviceBuffer Buffer, int32 Slot)> _boundOMUAVBuffers = new .(MaxUAVs);
 
         private readonly List<D3D11Buffer> _availableStagingBuffers = new List<D3D11Buffer>();
         private readonly List<D3D11Buffer> _submittedStagingBuffers = new List<D3D11Buffer>();
 
         private readonly List<D3D11Swapchain> _referencedSwapchains = new List<D3D11Swapchain>();
 
-        public D3D11CommandList(D3D11GraphicsDevice gd, ref CommandListDescription description)
-            : base(ref description, gd.Features, gd.UniformBufferMinOffsetAlignment, gd.StructuredBufferMinOffsetAlignment)
+        public this(D3D11GraphicsDevice gd, in CommandListDescription description)
+            : base(description, gd.Features, gd.UniformBufferMinOffsetAlignment, gd.StructuredBufferMinOffsetAlignment)
         {
             _gd = gd;
-            _context = gd.Device.CreateDeferredContext();
-            _context1 = _context.QueryInterfaceOrNull<ID3D11DeviceContext1>();
-            _uda = _context.QueryInterfaceOrNull<ID3DUserDefinedAnnotation>();
+            _gd.Device.CreateDeferredContext(0, &_context);
+			_context1 = _context.QueryInterface<ID3D11DeviceContext1>();
+			_uda = _context.QueryInterface<ID3DUserDefinedAnnotation>();
         }
 
-        public ID3D11CommandList DeviceCommandList => _commandList;
+        public ID3D11CommandList* DeviceCommandList => _commandList;
 
-        internal ID3D11DeviceContext DeviceContext => _context;
+        internal ID3D11DeviceContext* DeviceContext => _context;
 
         private D3D11Framebuffer D3D11Framebuffer => Util.AssertSubtype<Framebuffer, D3D11Framebuffer>(_framebuffer);
 
@@ -105,7 +106,7 @@ namespace Sedulous.GAL.D3D11
 
         public override void Begin()
         {
-            _commandList?.Dispose();
+            _commandList?.Release();
             _commandList = null;
             ClearState();
             _begun = true;
@@ -137,7 +138,7 @@ namespace Sedulous.GAL.D3D11
             _blendState = null;
             _depthStencilState = null;
             _rasterizerState = null;
-            _primitiveTopology = Vortice.Direct3D.PrimitiveTopology.Undefined;
+            _primitiveTopology = D3D_PRIMITIVE_TOPOLOGY.D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
             _inputLayout = null;
             _vertexShader = null;
             _geometryShader = null;
@@ -158,7 +159,7 @@ namespace Sedulous.GAL.D3D11
             _computePipeline = null;
             ClearSets(_computeResourceSets);
 
-            for (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundSRVs)
+            for ((Texture, List<BoundTextureInfo> Value) kvp in _boundSRVs)
             {
                 List<BoundTextureInfo> list = kvp.Value;
                 list.Clear();
@@ -166,7 +167,7 @@ namespace Sedulous.GAL.D3D11
             }
             _boundSRVs.Clear();
 
-            for (KeyValuePair<Texture, List<BoundTextureInfo>> kvp in _boundUAVs)
+            for ((Texture, List<BoundTextureInfo> Value) kvp in _boundUAVs)
             {
                 List<BoundTextureInfo> list = kvp.Value;
                 list.Clear();
@@ -191,8 +192,8 @@ namespace Sedulous.GAL.D3D11
                 Runtime.GALError("Invalid use of End().");
             }
 
-            _context.FinishCommandList(false, out _commandList).CheckError();
-            _commandList.DebugName = _name;
+            HRESULT hr = _context.FinishCommandList(FALSE, &_commandList);
+			D3D11Util.SetDebugName(_commandList, _name);
             ResetManagedState();
             _begun = false;
         }
@@ -201,14 +202,14 @@ namespace Sedulous.GAL.D3D11
         {
             if (_commandList != null)
             {
-                _commandList.Dispose();
+                _commandList.Release();
                 _commandList = null;
             }
             else if (_begun)
             {
                 _context.ClearState();
-                _context.FinishCommandList(false, out _commandList);
-                _commandList.Dispose();
+                _context.FinishCommandList(FALSE, &_commandList);
+				_commandList.Release();
                 _commandList = null;
             }
 
@@ -216,7 +217,7 @@ namespace Sedulous.GAL.D3D11
             _begun = false;
         }
 
-        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
+        protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             if (_ib != buffer || _ibOffset != offset)
             {
@@ -224,11 +225,11 @@ namespace Sedulous.GAL.D3D11
                 _ibOffset = offset;
                 D3D11Buffer d3d11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
                 UnbindUAVBuffer(buffer);
-                _context.IASetIndexBuffer(d3d11Buffer.Buffer, D3D11Formats.ToDxgiFormat(format), (int32)offset);
+                _context.IASetIndexBuffer(d3d11Buffer.Buffer, D3D11Formats.ToDxgiFormat(format), offset);
             }
         }
 
-        private protected override void SetPipelineCore(Pipeline pipeline)
+        protected override void SetPipelineCore(Pipeline pipeline)
         {
             if (!pipeline.IsComputePipeline && _graphicsPipeline != pipeline)
             {
@@ -237,78 +238,78 @@ namespace Sedulous.GAL.D3D11
                 ClearSets(_graphicsResourceSets); // Invalidate resource set bindings -- they may be invalid.
                 Util.ClearArray(_invalidatedGraphicsResourceSets);
 
-                ID3D11BlendState blendState = d3dPipeline.BlendState;
-                Color4 blendFactor = d3dPipeline.BlendFactor;
+                ID3D11BlendState* blendState = d3dPipeline.BlendState;
+                float[4] blendFactor = d3dPipeline.BlendFactor;
                 if (_blendState != blendState || _blendFactor != blendFactor)
                 {
                     _blendState = blendState;
                     _blendFactor = blendFactor;
-                    _context.OMSetBlendState(blendState, blendFactor);
+                    _context.OMSetBlendState(blendState, &blendFactor, uint32.MaxValue);
                 }
 
-                ID3D11DepthStencilState depthStencilState = d3dPipeline.DepthStencilState;
+                ID3D11DepthStencilState* depthStencilState = d3dPipeline.DepthStencilState;
                 uint32 stencilReference = d3dPipeline.StencilReference;
                 if (_depthStencilState != depthStencilState || _stencilReference != stencilReference)
                 {
                     _depthStencilState = depthStencilState;
                     _stencilReference = stencilReference;
-                    _context.OMSetDepthStencilState(depthStencilState, (int32)stencilReference);
+                    _context.OMSetDepthStencilState(depthStencilState, stencilReference);
                 }
 
-                ID3D11RasterizerState rasterizerState = d3dPipeline.RasterizerState;
+                ID3D11RasterizerState* rasterizerState = d3dPipeline.RasterizerState;
                 if (_rasterizerState != rasterizerState)
                 {
                     _rasterizerState = rasterizerState;
                     _context.RSSetState(rasterizerState);
                 }
 
-                Vortice.Direct3D.PrimitiveTopology primitiveTopology = d3dPipeline.PrimitiveTopology;
+                D3D_PRIMITIVE_TOPOLOGY primitiveTopology = d3dPipeline.PrimitiveTopology;
                 if (_primitiveTopology != primitiveTopology)
                 {
                     _primitiveTopology = primitiveTopology;
                     _context.IASetPrimitiveTopology(primitiveTopology);
                 }
 
-                ID3D11InputLayout inputLayout = d3dPipeline.InputLayout;
+                ID3D11InputLayout* inputLayout = d3dPipeline.InputLayout;
                 if (_inputLayout != inputLayout)
                 {
                     _inputLayout = inputLayout;
                     _context.IASetInputLayout(inputLayout);
                 }
 
-                ID3D11VertexShader vertexShader = d3dPipeline.VertexShader;
+                ID3D11VertexShader* vertexShader = d3dPipeline.VertexShader;
                 if (_vertexShader != vertexShader)
                 {
                     _vertexShader = vertexShader;
-                    _context.VSSetShader(vertexShader);
+                    _context.VSSetShader(vertexShader, null, 0);
                 }
 
-                ID3D11GeometryShader geometryShader = d3dPipeline.GeometryShader;
+                ID3D11GeometryShader* geometryShader = d3dPipeline.GeometryShader;
                 if (_geometryShader != geometryShader)
                 {
                     _geometryShader = geometryShader;
-                    _context.GSSetShader(geometryShader);
+                    _context.GSSetShader(geometryShader, null, 0);
                 }
 
-                ID3D11HullShader hullShader = d3dPipeline.HullShader;
+                ID3D11HullShader* hullShader = d3dPipeline.HullShader;
                 if (_hullShader != hullShader)
                 {
                     _hullShader = hullShader;
-                    _context.HSSetShader(hullShader);
+                    _context.HSSetShader(hullShader, null, 0);
                 }
 
-                ID3D11DomainShader domainShader = d3dPipeline.DomainShader;
+                ID3D11DomainShader* domainShader = d3dPipeline.DomainShader;
                 if (_domainShader != domainShader)
                 {
                     _domainShader = domainShader;
-                    _context.DSSetShader(domainShader);
+                    _context.DSSetShader(domainShader, null, 0);
                 }
 
-                ID3D11PixelShader pixelShader = d3dPipeline.PixelShader;
+                ID3D11PixelShader* pixelShader = d3dPipeline.PixelShader;
                 if (_pixelShader != pixelShader)
                 {
                     _pixelShader = pixelShader;
-                    _context.PSSetShader(pixelShader);
+                    _context.PSSetShader(pixelShader, null, 0);
                 }
 
                 if (!Util.ArrayEqualsEquatable(_vertexStrides, d3dPipeline.VertexStrides))
@@ -317,17 +318,17 @@ namespace Sedulous.GAL.D3D11
 
                     if (d3dPipeline.VertexStrides != null)
                     {
-                        Util.EnsureArrayMinimumSize(ref _vertexStrides, (uint32)d3dPipeline.VertexStrides.Length);
+                        Util.EnsureArrayMinimumSize(ref _vertexStrides, (uint32)d3dPipeline.VertexStrides.Count);
                         d3dPipeline.VertexStrides.CopyTo(_vertexStrides, 0);
                     }
                 }
 
                 Util.EnsureArrayMinimumSize(ref _vertexStrides, 1);
-                Util.EnsureArrayMinimumSize(ref _vertexBindings, (uint32)_vertexStrides.Length);
-                Util.EnsureArrayMinimumSize(ref _vertexOffsets, (uint32)_vertexStrides.Length);
+                Util.EnsureArrayMinimumSize(ref _vertexBindings, (uint32)_vertexStrides.Count);
+                Util.EnsureArrayMinimumSize(ref _vertexOffsets, (uint32)_vertexStrides.Count);
 
-                Util.EnsureArrayMinimumSize(ref _graphicsResourceSets, (uint32)d3dPipeline.ResourceLayouts.Length);
-                Util.EnsureArrayMinimumSize(ref _invalidatedGraphicsResourceSets, (uint32)d3dPipeline.ResourceLayouts.Length);
+                Util.EnsureArrayMinimumSize(ref _graphicsResourceSets, (uint32)d3dPipeline.ResourceLayouts.Count);
+                Util.EnsureArrayMinimumSize(ref _invalidatedGraphicsResourceSets, (uint32)d3dPipeline.ResourceLayouts.Count);
             }
             else if (pipeline.IsComputePipeline && _computePipeline != pipeline)
             {
@@ -336,34 +337,34 @@ namespace Sedulous.GAL.D3D11
                 ClearSets(_computeResourceSets); // Invalidate resource set bindings -- they may be invalid.
                 Util.ClearArray(_invalidatedComputeResourceSets);
 
-                ID3D11ComputeShader computeShader = d3dPipeline.ComputeShader;
-                _context.CSSetShader(computeShader);
-                Util.EnsureArrayMinimumSize(ref _computeResourceSets, (uint32)d3dPipeline.ResourceLayouts.Length);
-                Util.EnsureArrayMinimumSize(ref _invalidatedComputeResourceSets, (uint32)d3dPipeline.ResourceLayouts.Length);
+                ID3D11ComputeShader* computeShader = d3dPipeline.ComputeShader;
+                _context.CSSetShader(computeShader, null, 0);
+                Util.EnsureArrayMinimumSize(ref _computeResourceSets, (uint32)d3dPipeline.ResourceLayouts.Count);
+                Util.EnsureArrayMinimumSize(ref _invalidatedComputeResourceSets, (uint32)d3dPipeline.ResourceLayouts.Count);
             }
         }
 
-        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
+        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, uint32* dynamicOffsets)
         {
-            if (_graphicsResourceSets[slot].Equals(rs, dynamicOffsetsCount, ref dynamicOffsets))
+            if (_graphicsResourceSets[slot].Equals(rs, dynamicOffsetsCount, dynamicOffsets))
             {
                 return;
             }
 
             _graphicsResourceSets[slot].Offsets.Dispose();
-            _graphicsResourceSets[slot] = new BoundResourceSetInfo(rs, dynamicOffsetsCount, ref dynamicOffsets);
+            _graphicsResourceSets[slot] = BoundResourceSetInfo(rs, dynamicOffsetsCount, dynamicOffsets);
             ActivateResourceSet(slot, _graphicsResourceSets[slot], true);
         }
 
-        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet set, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
+        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet set, uint32 dynamicOffsetsCount, uint32* dynamicOffsets)
         {
-            if (_computeResourceSets[slot].Equals(set, dynamicOffsetsCount, ref dynamicOffsets))
+            if (_computeResourceSets[slot].Equals(set, dynamicOffsetsCount, dynamicOffsets))
             {
                 return;
             }
 
             _computeResourceSets[slot].Offsets.Dispose();
-            _computeResourceSets[slot] = new BoundResourceSetInfo(set, dynamicOffsetsCount, ref dynamicOffsets);
+            _computeResourceSets[slot] = BoundResourceSetInfo(set, dynamicOffsetsCount, dynamicOffsets);
             ActivateResourceSet(slot, _computeResourceSets[slot], false);
         }
 
@@ -379,7 +380,7 @@ namespace Sedulous.GAL.D3D11
             D3D11ResourceLayout layout = d3d11RS.Layout;
             BindableResource[] resources = d3d11RS.Resources;
             uint32 dynamicOffsetIndex = 0;
-            for (int32 i = 0; i < resources.Length; i++)
+            for (int32 i = 0; i < resources.Count; i++)
             {
                 BindableResource resource = resources[i];
                 uint32 bufferOffset = 0;
@@ -406,8 +407,8 @@ namespace Sedulous.GAL.D3D11
                     case ResourceKind.StructuredBufferReadWrite:
                         {
                             D3D11BufferRange range = GetBufferRange(resource, bufferOffset);
-                            ID3D11UnorderedAccessView uav = range.Buffer.GetUnorderedAccessView(range.Offset, range.Size);
-                            BindUnorderedAccessView(null, range.Buffer, uav, uaBase + rbi.Slot, rbi.Stages, slot);
+                            ID3D11UnorderedAccessView* uav = range.Buffer.GetUnorderedAccessView(range.Offset, range.Size);
+                            BindUnorderedAccessView(null, range.Buffer, ref uav, uaBase + rbi.Slot, rbi.Stages, slot);
                             break;
                         }
                     case ResourceKind.TextureReadOnly:
@@ -420,7 +421,7 @@ namespace Sedulous.GAL.D3D11
                         TextureView rwTexView = Util.GetTextureView(_gd, resource);
                         D3D11TextureView d3d11RWTexView = Util.AssertSubtype<TextureView, D3D11TextureView>(rwTexView);
                         UnbindSRVTexture(d3d11RWTexView.Target);
-                        BindUnorderedAccessView(d3d11RWTexView.Target, null, d3d11RWTexView.UnorderedAccessView, uaBase + rbi.Slot, rbi.Stages, slot);
+                        BindUnorderedAccessView(d3d11RWTexView.Target, null, ref d3d11RWTexView.UnorderedAccessView, uaBase + rbi.Slot, rbi.Stages, slot);
                         break;
                     case ResourceKind.Sampler:
                         D3D11Sampler sampler = Util.AssertSubtype<BindableResource, D3D11Sampler>(resource);
@@ -433,26 +434,26 @@ namespace Sedulous.GAL.D3D11
 
         private D3D11BufferRange GetBufferRange(BindableResource resource, uint32 additionalOffset)
         {
-            if (resource is D3D11Buffer d3d11Buff)
+            if (let d3d11Buff = resource as D3D11Buffer)
             {
-                return new D3D11BufferRange(d3d11Buff, additionalOffset, d3d11Buff.SizeInBytes);
+                return D3D11BufferRange(d3d11Buff, additionalOffset, d3d11Buff.SizeInBytes);
             }
-            else if (resource is DeviceBufferRange range)
+            else if (let range = resource as DeviceBufferRange?)
             {
-                return new D3D11BufferRange(
+                return D3D11BufferRange(
                     Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(range.Buffer),
                     range.Offset + additionalOffset,
                     range.SizeInBytes);
             }
             else
             {
-                Runtime.GALError($"Unexpected resource type used in a buffer type slot: {resource.GetType().Name}");
+                Runtime.GALError(scope $"Unexpected resource type used in a buffer type slot: {resource.GetType().GetName(.. scope .())}");
             }
         }
 
         private void UnbindSRVTexture(Texture target)
         {
-            if (_boundSRVs.TryGetValue(target, out List<BoundTextureInfo> btis))
+            if (_boundSRVs.TryGetValue(target, var btis))
             {
                 for (BoundTextureInfo bti in btis)
                 {
@@ -483,11 +484,12 @@ namespace Sedulous.GAL.D3D11
 
         private void UnbindUAVTexture(Texture target)
         {
-            if (_boundUAVs.TryGetValue(target, out List<BoundTextureInfo> btis))
+            if (_boundUAVs.TryGetValue(target, var btis))
             {
+				ID3D11UnorderedAccessView* pNullView = null;
                 for (BoundTextureInfo bti in btis)
                 {
-                    BindUnorderedAccessView(null, null, null, bti.Slot, bti.Stages, bti.ResourceSet);
+                    BindUnorderedAccessView(null, null, ref pNullView, bti.Slot, bti.Stages, bti.ResourceSet);
                     if ((bti.Stages & ShaderStages.Compute) == ShaderStages.Compute)
                     {
                         _invalidatedComputeResourceSets[bti.ResourceSet] = true;
@@ -510,7 +512,7 @@ namespace Sedulous.GAL.D3D11
         {
             D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
             int32 ret = 0;
-            for (int32 i = 0; i < slot; i++)
+            for (int i = 0; i < slot; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].UniformBufferCount;
@@ -523,7 +525,7 @@ namespace Sedulous.GAL.D3D11
         {
             D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
             int32 ret = 0;
-            for (int32 i = 0; i < slot; i++)
+            for (int i = 0; i < slot; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].StorageBufferCount;
@@ -536,7 +538,7 @@ namespace Sedulous.GAL.D3D11
         {
             D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
             int32 ret = 0;
-            for (int32 i = 0; i < slot; i++)
+            for (int i = 0; i < slot; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].TextureCount;
@@ -549,7 +551,7 @@ namespace Sedulous.GAL.D3D11
         {
             D3D11ResourceLayout[] layouts = graphics ? _graphicsPipeline.ResourceLayouts : _computePipeline.ResourceLayouts;
             int32 ret = 0;
-            for (int32 i = 0; i < slot; i++)
+            for (int i = 0; i < slot; i++)
             {
                 Debug.Assert(layouts[i] != null);
                 ret += layouts[i].SamplerCount;
@@ -558,10 +560,10 @@ namespace Sedulous.GAL.D3D11
             return ret;
         }
 
-        private protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
+        protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             D3D11Buffer d3d11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
-            if (_vertexBindings[index] != d3d11Buffer.Buffer || _vertexOffsets[index] != offset)
+            if (_vertexBindings[index] != d3d11Buffer.Buffer || _vertexOffsets[index] != (int32)offset)
             {
                 _vertexBindingsChanged = true;
                 UnbindUAVBuffer(buffer);
@@ -571,32 +573,32 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
+        protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             PreDrawCommand();
 
             if (instanceCount == 1 && instanceStart == 0)
             {
-                _context.Draw((int32)vertexCount, (int32)vertexStart);
+                _context.Draw(vertexCount, vertexStart);
             }
             else
             {
-                _context.DrawInstanced((int32)vertexCount, (int32)instanceCount, (int32)vertexStart, (int32)instanceStart);
+                _context.DrawInstanced(vertexCount, instanceCount, vertexStart, instanceStart);
             }
         }
 
-        private protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
+        protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             PreDrawCommand();
 
             Debug.Assert(_ib != null);
             if (instanceCount == 1 && instanceStart == 0)
             {
-                _context.DrawIndexed((int32)indexCount, (int32)indexStart, vertexOffset);
+                _context.DrawIndexed(indexCount, indexStart, vertexOffset);
             }
             else
             {
-                _context.DrawIndexedInstanced((int32)indexCount, (int32)instanceCount, (int32)indexStart, vertexOffset, (int32)instanceStart);
+                _context.DrawIndexedInstanced(indexCount, instanceCount, indexStart, vertexOffset, instanceStart);
             }
         }
 
@@ -605,11 +607,11 @@ namespace Sedulous.GAL.D3D11
             PreDrawCommand();
 
             D3D11Buffer d3d11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(indirectBuffer);
-            int32 currentOffset = (int32)offset;
+            uint32 currentOffset = offset;
             for (uint32 i = 0; i < drawCount; i++)
             {
                 _context.DrawInstancedIndirect(d3d11Buffer.Buffer, currentOffset);
-                currentOffset += (int32)stride;
+                currentOffset += stride;
             }
         }
 
@@ -618,11 +620,11 @@ namespace Sedulous.GAL.D3D11
             PreDrawCommand();
 
             D3D11Buffer d3d11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(indirectBuffer);
-            int32 currentOffset = (int32)offset;
+            uint32 currentOffset = offset;
             for (uint32 i = 0; i < drawCount; i++)
             {
                 _context.DrawIndexedInstancedIndirect(d3d11Buffer.Buffer, currentOffset);
-                currentOffset += (int32)stride;
+                currentOffset += stride;
             }
         }
 
@@ -632,7 +634,7 @@ namespace Sedulous.GAL.D3D11
             FlushScissorRects();
             FlushVertexBindings();
 
-            int32 graphicsResourceCount = _graphicsPipeline.ResourceLayouts.Length;
+            int graphicsResourceCount = _graphicsPipeline.ResourceLayouts.Count;
             for (uint32 i = 0; i < graphicsResourceCount; i++)
             {
                 if (_invalidatedGraphicsResourceSets[i])
@@ -647,19 +649,19 @@ namespace Sedulous.GAL.D3D11
         {
             PreDispatchCommand();
 
-            _context.Dispatch((int32)groupCountX, (int32)groupCountY, (int32)groupCountZ);
+            _context.Dispatch(groupCountX, groupCountY, groupCountZ);
         }
 
         protected override void DispatchIndirectCore(DeviceBuffer indirectBuffer, uint32 offset)
         {
             PreDispatchCommand();
             D3D11Buffer d3d11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(indirectBuffer);
-            _context.DispatchIndirect(d3d11Buffer.Buffer, (int32)offset);
+            _context.DispatchIndirect(d3d11Buffer.Buffer, offset);
         }
 
         private void PreDispatchCommand()
         {
-            int32 computeResourceCount = _computePipeline.ResourceLayouts.Length;
+            int computeResourceCount = _computePipeline.ResourceLayouts.Count;
             for (uint32 i = 0; i < computeResourceCount; i++)
             {
                 if (_invalidatedComputeResourceSets[i])
@@ -687,7 +689,7 @@ namespace Sedulous.GAL.D3D11
             if (_viewportsChanged)
             {
                 _viewportsChanged = false;
-                _context.RSSetViewports(_viewports);
+                _context.RSSetViewports((uint32)_viewports.Count, _viewports.Ptr);
             }
         }
 
@@ -696,11 +698,11 @@ namespace Sedulous.GAL.D3D11
             if (_scissorRectsChanged)
             {
                 _scissorRectsChanged = false;
-                if (_scissors.Length > 0)
+                if (_scissors.Count > 0)
                 {
                     // Because this array is resized using Util.EnsureMinimumArraySize, this might set more scissor rectangles
                     // than are actually needed, but this is okay -- extras are essentially ignored and should be harmless.
-                    _context.RSSetScissorRects(_scissors);
+                    _context.RSSetScissorRects((uint32)_scissors.Count, _scissors.Ptr);
                 }
             }
         }
@@ -710,10 +712,10 @@ namespace Sedulous.GAL.D3D11
             if (_vertexBindingsChanged)
             {
                 _context.IASetVertexBuffers(
-                    0, (int32)_numVertexBindings,
-                    _vertexBindings,
-                    _vertexStrides,
-                    _vertexOffsets);
+                    0, _numVertexBindings,
+                    _vertexBindings.Ptr,
+                    (uint32*)_vertexStrides.Ptr,
+                    (uint32*)_vertexOffsets.Ptr);
 
                 _vertexBindingsChanged = false;
             }
@@ -723,92 +725,92 @@ namespace Sedulous.GAL.D3D11
         {
             _scissorRectsChanged = true;
             Util.EnsureArrayMinimumSize(ref _scissors, index + 1);
-            _scissors[index] = new RawRect((int32)x, (int32)y, (int32)(x + width), (int32)(y + height));
+            _scissors[index] = RECT((int32)x, (int32)y, (int32)(x + width), (int32)(y + height));
         }
 
-        public override void SetViewport(uint32 index, ref Viewport viewport)
+        public override void SetViewport(uint32 index, in Viewport viewport)
         {
             _viewportsChanged = true;
             Util.EnsureArrayMinimumSize(ref _viewports, index + 1);
-            _viewports[index] = viewport;
+            _viewports[index] =  D3D11_VIEWPORT(viewport.X, viewport.Y, viewport.Width, viewport.Height, viewport.MinDepth, viewport.MaxDepth);
         }
 
         private void BindTextureView(D3D11TextureView texView, int32 slot, ShaderStages stages, uint32 resourceSet)
         {
-            ID3D11ShaderResourceView srv = texView?.ShaderResourceView ?? null;
-            if (srv != null)
-            {
-                if (!_boundSRVs.TryGetValue(texView.Target, out List<BoundTextureInfo> list))
-                {
-                    list = GetNewOrCachedBoundTextureInfoList();
-                    _boundSRVs.Add(texView.Target, list);
-                }
-                list.Add(new BoundTextureInfo { Slot = slot, Stages = stages, ResourceSet = resourceSet });
-            }
+		    ID3D11ShaderResourceView* srv = texView?.ShaderResourceView ?? null;
+		    if (srv != null)
+		    {
+		        if (!_boundSRVs.TryGetValue(texView.Target, var list))
+		        {
+		            list = GetNewOrCachedBoundTextureInfoList();
+		            _boundSRVs.Add(texView.Target, list);
+		        }
+		        list.Add(BoundTextureInfo { Slot = slot, Stages = stages, ResourceSet = resourceSet });
+		    }
 
-            if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
-            {
-                bool bind = false;
-                if (slot < MaxCachedUniformBuffers)
-                {
-                    if (_vertexBoundTextureViews[slot] != texView)
-                    {
-                        _vertexBoundTextureViews[slot] = texView;
-                        bind = true;
-                    }
-                }
-                else
-                {
-                    bind = true;
-                }
-                if (bind)
-                {
-                    _context.VSSetShaderResource(slot, srv);
-                }
-            }
-            if ((stages & ShaderStages.Geometry) == ShaderStages.Geometry)
-            {
-                _context.GSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
-            {
-                _context.HSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
-            {
-                _context.DSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
-            {
-                bool bind = false;
-                if (slot < MaxCachedUniformBuffers)
-                {
-                    if (_fragmentBoundTextureViews[slot] != texView)
-                    {
-                        _fragmentBoundTextureViews[slot] = texView;
-                        bind = true;
-                    }
-                }
-                else
-                {
-                    bind = true;
-                }
-                if (bind)
-                {
-                    _context.PSSetShaderResource(slot, srv);
-                }
-            }
-            if ((stages & ShaderStages.Compute) == ShaderStages.Compute)
-            {
-                _context.CSSetShaderResource(slot, srv);
-            }
-        }
+		    if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
+		    {
+		        bool bind = false;
+		        if (slot < MaxCachedUniformBuffers)
+		        {
+		            if (_vertexBoundTextureViews[slot] != texView)
+		            {
+		                _vertexBoundTextureViews[slot] = texView;
+		                bind = true;
+		            }
+		        }
+		        else
+		        {
+		            bind = true;
+		        }
+		        if (bind)
+		        {
+		            _context.VSSetShaderResources((uint32)slot, 1, &srv);
+		        }
+		    }
+		    if ((stages & ShaderStages.Geometry) == ShaderStages.Geometry)
+		    {
+		        _context.GSSetShaderResources((uint32)slot, 1, &srv);
+		    }
+		    if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
+		    {
+		        _context.HSSetShaderResources((uint32)slot, 1, &srv);
+		    }
+		    if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
+		    {
+		        _context.DSSetShaderResources((uint32)slot, 1, &srv);
+		    }
+		    if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
+		    {
+		        bool bind = false;
+		        if (slot < MaxCachedUniformBuffers)
+		        {
+		            if (_fragmentBoundTextureViews[slot] != texView)
+		            {
+		                _fragmentBoundTextureViews[slot] = texView;
+		                bind = true;
+		            }
+		        }
+		        else
+		        {
+		            bind = true;
+		        }
+		        if (bind)
+		        {
+		            _context.PSSetShaderResources((uint32)slot, 1, &srv);
+		        }
+		    }
+		    if ((stages & ShaderStages.Compute) == ShaderStages.Compute)
+		    {
+		        _context.CSSetShaderResources((uint32)slot, 1, &srv);
+		    }
+		}
 
         private List<BoundTextureInfo> GetNewOrCachedBoundTextureInfoList()
         {
             if (_boundTextureInfoPool.Count > 0)
             {
-                int32 index = _boundTextureInfoPool.Count - 1;
+                int index = _boundTextureInfoPool.Count - 1;
                 List<BoundTextureInfo> ret = _boundTextureInfoPool[index];
                 _boundTextureInfoPool.RemoveAt(index);
                 return ret;
@@ -822,32 +824,32 @@ namespace Sedulous.GAL.D3D11
             bool compute = (stages & ShaderStages.Compute) != 0;
             UnbindUAVBuffer(range.Buffer);
 
-            ID3D11ShaderResourceView srv = range.Buffer.GetShaderResourceView(range.Offset, range.Size);
+            ID3D11ShaderResourceView* srv = range.Buffer.GetShaderResourceView(range.Offset, range.Size);
 
             if ((stages & ShaderStages.Vertex) == ShaderStages.Vertex)
-            {
-                _context.VSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.Geometry) == ShaderStages.Geometry)
-            {
-                _context.GSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
-            {
-                _context.HSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
-            {
-                _context.DSSetShaderResource(slot, srv);
-            }
-            if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
-            {
-                _context.PSSetShaderResource(slot, srv);
-            }
-            if (compute)
-            {
-                _context.CSSetShaderResource(slot, srv);
-            }
+			{
+			    _context.VSSetShaderResources((uint32)slot, 1, &srv);
+			}
+			if ((stages & ShaderStages.Geometry) == ShaderStages.Geometry)
+			{
+			    _context.GSSetShaderResources((uint32)slot, 1, &srv);
+			}
+			if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
+			{
+			    _context.HSSetShaderResources((uint32)slot, 1, &srv);
+			}
+			if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
+			{
+			    _context.DSSetShaderResources((uint32)slot, 1, &srv);
+			}
+			if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
+			{
+			    _context.PSSetShaderResources((uint32)slot, 1, &srv);
+			}
+			if (compute)
+			{
+			    _context.CSSetShaderResources((uint32)slot, 1, &srv);
+			}
         }
 
         private void BindUniformBuffer(D3D11BufferRange range, int32 slot, ShaderStages stages)
@@ -871,16 +873,16 @@ namespace Sedulous.GAL.D3D11
                 {
                     if (range.IsFullRange)
                     {
-                        _context.VSSetConstantBuffer(slot, range.Buffer.Buffer);
+                        _context.VSSetConstantBuffers((uint32)slot, 1, &range.Buffer.Buffer);
                     }
                     else
                     {
                         PackRangeParams(range);
                         if (!_gd.SupportsCommandLists)
                         {
-                            _context.VSUnsetConstantBuffer(slot);
+                            _context.VSSetConstantBuffers((.)slot, 1, null);
                         }
-                        _context1.VSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                        _context1.VSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                     }
                 }
             }
@@ -888,48 +890,48 @@ namespace Sedulous.GAL.D3D11
             {
                 if (range.IsFullRange)
                 {
-                    _context.GSSetConstantBuffer(slot, range.Buffer.Buffer);
+                    _context.GSSetConstantBuffers((.)slot, 1, &range.Buffer.Buffer);
                 }
                 else
                 {
                     PackRangeParams(range);
                     if (!_gd.SupportsCommandLists)
                     {
-                        _context.GSUnsetConstantBuffer(slot);
+                        _context.GSSetConstantBuffers((.)slot, 1, null);
                     }
-                    _context1.GSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                    _context1.GSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                 }
             }
             if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
             {
                 if (range.IsFullRange)
                 {
-                    _context.HSSetConstantBuffer(slot, range.Buffer.Buffer);
+                    _context.HSSetConstantBuffers((.)slot, 1, &range.Buffer.Buffer);
                 }
                 else
                 {
                     PackRangeParams(range);
                     if (!_gd.SupportsCommandLists)
                     {
-                        _context.HSUnsetConstantBuffer(slot);
+                        _context.HSSetConstantBuffers((.)slot, 1, null);
                     }
-                    _context1.HSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                    _context1.HSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                 }
             }
             if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
             {
                 if (range.IsFullRange)
                 {
-                    _context.DSSetConstantBuffer(slot, range.Buffer.Buffer);
+                    _context.DSSetConstantBuffers((.)slot, 1, &range.Buffer.Buffer);
                 }
                 else
                 {
                     PackRangeParams(range);
                     if (!_gd.SupportsCommandLists)
                     {
-                        _context.DSUnsetConstantBuffer(slot);
+                         _context.DSSetConstantBuffers((.)slot, 1, null);
                     }
-                    _context1.DSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                    _context1.DSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                 }
             }
             if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
@@ -951,16 +953,16 @@ namespace Sedulous.GAL.D3D11
                 {
                     if (range.IsFullRange)
                     {
-                        _context.PSSetConstantBuffer(slot, range.Buffer.Buffer);
+                        _context.PSSetConstantBuffers((.)slot, 1, &range.Buffer.Buffer);
                     }
                     else
                     {
                         PackRangeParams(range);
                         if (!_gd.SupportsCommandLists)
                         {
-                            _context.PSUnsetConstantBuffer(slot);
+                            _context.PSSetConstantBuffers((.)slot, 1, null);
                         }
-                        _context1.PSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                        _context1.PSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                     }
                 }
             }
@@ -968,16 +970,16 @@ namespace Sedulous.GAL.D3D11
             {
                 if (range.IsFullRange)
                 {
-                    _context.CSSetConstantBuffer(slot, range.Buffer.Buffer);
+                    _context.CSSetConstantBuffers((.)slot, 1, &range.Buffer.Buffer);
                 }
                 else
                 {
                     PackRangeParams(range);
                     if (!_gd.SupportsCommandLists)
                     {
-                        _context.CSSetConstantBuffer(slot, (ID3D11Buffer)null);
+                        _context.CSSetConstantBuffers((.)slot, 1, (ID3D11Buffer**)null);
                     }
-                    _context1.CSSetConstantBuffers1(slot, 1, _cbOut, _firstConstRef, _numConstsRef);
+                    _context1.CSSetConstantBuffers1((.)slot, 1, _cbOut.Ptr, (.)_firstConstRef.Ptr, (.)_numConstsRef.Ptr);
                 }
             }
         }
@@ -993,7 +995,7 @@ namespace Sedulous.GAL.D3D11
         private void BindUnorderedAccessView(
             Texture texture,
             DeviceBuffer buffer,
-            ID3D11UnorderedAccessView uav,
+            ref ID3D11UnorderedAccessView* uav,
             int32 slot,
             ShaderStages stages,
             uint32 resourceSet)
@@ -1004,39 +1006,39 @@ namespace Sedulous.GAL.D3D11
 
             if (texture != null && uav != null)
             {
-                if (!_boundUAVs.TryGetValue(texture, out List<BoundTextureInfo> list))
+                if (!_boundUAVs.TryGetValue(texture, var list))
                 {
                     list = GetNewOrCachedBoundTextureInfoList();
                     _boundUAVs.Add(texture, list);
                 }
-                list.Add(new BoundTextureInfo { Slot = slot, Stages = stages, ResourceSet = resourceSet });
+                list.Add(BoundTextureInfo() { Slot = slot, Stages = stages, ResourceSet = resourceSet });
             }
 
-            int32 baseSlot = 0;
+            int baseSlot = 0;
             if (!compute && _fragmentBoundSamplers != null)
             {
                 baseSlot = _framebuffer.ColorTargets.Count;
             }
-            int32 actualSlot = baseSlot + slot;
+            uint32 actualSlot = (uint32)baseSlot + (uint32)slot;
 
             if (buffer != null)
             {
-                TrackBoundUAVBuffer(buffer, actualSlot, compute);
+                TrackBoundUAVBuffer(buffer, (int32)actualSlot, compute);
             }
 
             if (compute)
             {
-                _context.CSSetUnorderedAccessView(actualSlot, uav);
+                _context.CSSetUnorderedAccessViews(actualSlot, 1, &uav, null);
             }
             else
             {
-                _context.OMSetUnorderedAccessView(actualSlot, uav);
+                _context.OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL, null, null, (uint32)actualSlot, 1, &uav, null);
             }
         }
 
         private void TrackBoundUAVBuffer(DeviceBuffer buffer, int32 slot, bool compute)
         {
-            List<(DeviceBuffer, int32)> list = compute ? _boundComputeUAVBuffers : _boundOMUAVBuffers;
+            List<(DeviceBuffer Buffer, int32 Slot)> list = compute ? _boundComputeUAVBuffers : _boundOMUAVBuffers;
             list.Add((buffer, slot));
         }
 
@@ -1048,19 +1050,19 @@ namespace Sedulous.GAL.D3D11
 
         private void UnbindUAVBufferIndividual(DeviceBuffer buffer, bool compute)
         {
-            List<(DeviceBuffer, int32)> list = compute ? _boundComputeUAVBuffers : _boundOMUAVBuffers;
-            for (int32 i = 0; i < list.Count; i++)
+            List<(DeviceBuffer Buffer, int32 Slot)> list = compute ? _boundComputeUAVBuffers : _boundOMUAVBuffers;
+            for (int i = 0; i < list.Count; i++)
             {
-                if (list[i].Item1 == buffer)
+                if (list[i].Buffer == buffer)
                 {
-                    int32 slot = list[i].Item2;
+                    int32 slot = list[i].Slot;
                     if (compute)
                     {
-                        _context.CSUnsetUnorderedAccessView(slot);
+                        _context.CSSetUnorderedAccessViews((.)slot, 1, null, null);
                     }
                     else
                     {
-                        _context.OMUnsetUnorderedAccessView(slot);
+                        _context.OMSetRenderTargetsAndUnorderedAccessViews(D3D11_KEEP_RENDER_TARGETS_AND_DEPTH_STENCIL , null, null, (.)slot, 1, null, null);
                     }
 
                     list.RemoveAt(i);
@@ -1088,20 +1090,20 @@ namespace Sedulous.GAL.D3D11
                 }
                 if (bind)
                 {
-                    _context.VSSetSampler(slot, sampler.DeviceSampler);
+                     _context.VSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
                 }
             }
             if ((stages & ShaderStages.Geometry) == ShaderStages.Geometry)
             {
-                _context.GSSetSampler(slot, sampler.DeviceSampler);
+                _context.GSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
             }
             if ((stages & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
             {
-                _context.HSSetSampler(slot, sampler.DeviceSampler);
+                _context.HSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
             }
             if ((stages & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
             {
-                _context.DSSetSampler(slot, sampler.DeviceSampler);
+                _context.DSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
             }
             if ((stages & ShaderStages.Fragment) == ShaderStages.Fragment)
             {
@@ -1120,12 +1122,12 @@ namespace Sedulous.GAL.D3D11
                 }
                 if (bind)
                 {
-                    _context.PSSetSampler(slot, sampler.DeviceSampler);
+                    _context.PSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
                 }
             }
             if((stages & ShaderStages.Compute) == ShaderStages.Compute)
             {
-                _context.CSSetSampler(slot, sampler.DeviceSampler);
+                _context.CSSetSamplers((.)slot, 1, &sampler.DeviceSampler);
             }
         }
 
@@ -1143,20 +1145,21 @@ namespace Sedulous.GAL.D3D11
                 UnbindSRVTexture(fb.ColorTargets[i].Target);
             }
 
-            _context.OMSetRenderTargets(d3dFB.RenderTargetViews, d3dFB.DepthStencilView);
+            _context.OMSetRenderTargets((uint32)d3dFB.RenderTargetViews.Count, d3dFB.RenderTargetViews.Ptr, d3dFB.DepthStencilView);
         }
 
-        private protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
+        protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
         {
-            _context.ClearRenderTargetView(D3D11Framebuffer.RenderTargetViews[index], new Color4(clearColor.R, clearColor.G, clearColor.B, clearColor.A));
+			float[4] colorRGBA = .(clearColor.R, clearColor.G, clearColor.B, clearColor.A);
+            _context.ClearRenderTargetView(D3D11Framebuffer.RenderTargetViews[index], &colorRGBA);
         }
 
-        private protected override void ClearDepthStencilCore(float depth, uint8 stencil)
+        protected override void ClearDepthStencilCore(float depth, uint8 stencil)
         {
-            _context.ClearDepthStencilView(D3D11Framebuffer.DepthStencilView, DepthStencilClearFlags.Depth | DepthStencilClearFlags.Stencil, depth, stencil);
+            _context.ClearDepthStencilView(D3D11Framebuffer.DepthStencilView, (uint32)(D3D11_CLEAR_FLAG.D3D11_CLEAR_DEPTH | D3D11_CLEAR_FLAG.D3D11_CLEAR_STENCIL), depth, stencil);
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
+        protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, void* source, uint32 sizeInBytes)
         {
             D3D11Buffer d3dBuffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(buffer);
             if (sizeInBytes == 0)
@@ -1173,7 +1176,7 @@ namespace Sedulous.GAL.D3D11
 
             if (useUpdateSubresource)
             {
-                Box? subregion = new Box((int32)bufferOffsetInBytes, 0, 0, (int32)(sizeInBytes + bufferOffsetInBytes), 1, 1);
+                D3D11_BOX* subregion = scope :: .(bufferOffsetInBytes, 0, 0, (sizeInBytes + bufferOffsetInBytes), 1, 1);
                 if (isUniformBuffer)
                 {
                     subregion = null;
@@ -1185,23 +1188,24 @@ namespace Sedulous.GAL.D3D11
                 }
                 else
                 {
-                    UpdateSubresource_Workaround(d3dBuffer.Buffer, 0, subregion.Value, source);
+                    UpdateSubresource_Workaround(d3dBuffer.Buffer, 0, subregion, source);
                 }
             }
             else if (useMap && updateFullBuffer) // Can only update full buffer with WriteDiscard.
             {
-                MappedSubresource msb = _context.Map(
-                     d3dBuffer.Buffer,
-                     0,
-                     D3D11Formats.VdToD3D11MapMode(isDynamic, MapMode.Write),
-                     MapFlags.None);
+                D3D11_MAPPED_SUBRESOURCE msb = .();
+				HRESULT hr = _context.Map(
+					d3dBuffer.Buffer,
+					0,
+					D3D11Formats.VdToD3D11MapMode(isDynamic, MapMode.Write),
+					0, &msb);
                 if (sizeInBytes < 1024)
                 {
-                    Unsafe.CopyBlock(msb.DataPointer.ToPointer(), source.ToPointer(), sizeInBytes);
+                    Internal.MemCpy(msb.pData, source, sizeInBytes);
                 }
                 else
                 {
-                    Internal.MemCpy(msb.DataPointer.ToPointer(), source.ToPointer(), sizeInBytes);
+                    Internal.MemCpy(msb.pData, source, sizeInBytes);
                 }
                 _context.Unmap(d3dBuffer.Buffer, 0);
             }
@@ -1215,20 +1219,20 @@ namespace Sedulous.GAL.D3D11
         }
 
         private void UpdateSubresource_Workaround(
-            ID3D11Resource resource,
+            ID3D11Resource* resource,
             int32 subresource,
-            Box region,
-            IntPtr data)
+            D3D11_BOX* region,
+            void* data)
         {
             bool needWorkaround = !_gd.SupportsCommandLists;
-            void* pAdjustedSrcData = data.ToPointer();
+            void* pAdjustedSrcData = data;
             if (needWorkaround)
             {
-                Debug.Assert(region.Top == 0 && region.Front == 0);
-                pAdjustedSrcData = (uint8*)data - region.Left;
+                Debug.Assert(region.top == 0 && region.front == 0);
+                pAdjustedSrcData = (uint8*)data - region.left;
             }
 
-            _context.UpdateSubresource(resource, subresource, region, (IntPtr)pAdjustedSrcData, 0, 0);
+            _context.UpdateSubresource(resource, (uint32)subresource, region, pAdjustedSrcData, 0, 0);
         }
 
 
@@ -1244,7 +1248,7 @@ namespace Sedulous.GAL.D3D11
             }
 
             DeviceBuffer staging = _gd.ResourceFactory.CreateBuffer(
-                new BufferDescription(sizeInBytes, BufferUsage.Staging));
+                BufferDescription(sizeInBytes, BufferUsage.Staging));
 
             return Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(staging);
         }
@@ -1254,9 +1258,9 @@ namespace Sedulous.GAL.D3D11
             D3D11Buffer srcD3D11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(source);
             D3D11Buffer dstD3D11Buffer = Util.AssertSubtype<DeviceBuffer, D3D11Buffer>(destination);
 
-            Box region = new Box((int32)sourceOffset, 0, 0, (int32)(sourceOffset + sizeInBytes), 1, 1);
+            D3D11_BOX* region = scope .(sourceOffset, 0, 0, (sourceOffset + sizeInBytes), 1, 1);
 
-            _context.CopySubresourceRegion(dstD3D11Buffer.Buffer, 0, (int32)destinationOffset, 0, 0, srcD3D11Buffer.Buffer, 0, region);
+            _context.CopySubresourceRegion(dstD3D11Buffer.Buffer, 0, destinationOffset, 0, 0, srcD3D11Buffer.Buffer, 0, region);
         }
 
         protected override void CopyTextureCore(
@@ -1278,17 +1282,17 @@ namespace Sedulous.GAL.D3D11
             uint32 clampedWidth = Math.Max(blockSize, width);
             uint32 clampedHeight = Math.Max(blockSize, height);
 
-            Box? region = null;
+            D3D11_BOX* region = null;
             if (srcX != 0 || srcY != 0 || srcZ != 0
                 || clampedWidth != source.Width || clampedHeight != source.Height || depth != source.Depth)
             {
-                region = new Box(
-                    (int32)srcX,
-                    (int32)srcY,
-                    (int32)srcZ,
-                    (int32)(srcX + clampedWidth),
-                    (int32)(srcY + clampedHeight),
-                    (int32)(srcZ + depth));
+                region = scope :: .(
+                    srcX,
+                    srcY,
+                    srcZ,
+                    (srcX + clampedWidth),
+                    (srcY + clampedHeight),
+                    (srcZ + depth));
             }
 
             for (uint32 i = 0; i < layerCount; i++)
@@ -1298,37 +1302,37 @@ namespace Sedulous.GAL.D3D11
 
                 _context.CopySubresourceRegion(
                     dstD3D11Texture.DeviceTexture,
-                    dstSubresource,
-                    (int32)dstX,
-                    (int32)dstY,
-                    (int32)dstZ,
+                    (uint32)dstSubresource,
+                    dstX,
+                    dstY,
+                    dstZ,
                     srcD3D11Texture.DeviceTexture,
-                    srcSubresource,
+                    (uint32)srcSubresource,
                     region);
             }
         }
 
-        private protected override void GenerateMipmapsCore(Texture texture)
+        protected override void GenerateMipmapsCore(Texture texture)
         {
             TextureView fullTexView = texture.GetFullTextureView(_gd);
             D3D11TextureView d3d11View = Util.AssertSubtype<TextureView, D3D11TextureView>(fullTexView);
-            ID3D11ShaderResourceView srv = d3d11View.ShaderResourceView;
+            ID3D11ShaderResourceView* srv = d3d11View.ShaderResourceView;
             _context.GenerateMips(srv);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
             {
                 _name = value;
-                _context.DebugName = value;
+                D3D11Util.SetDebugName(_context, value);
             }
         }
 
         internal void OnCompleted()
         {
-            _commandList.Dispose();
+            _commandList.Release();
             _commandList = null;
 
             for (D3D11Swapchain sc in _referencedSwapchains)
@@ -1345,29 +1349,29 @@ namespace Sedulous.GAL.D3D11
             _submittedStagingBuffers.Clear();
         }
 
-        private protected override void PushDebugGroupCore(string name)
+        protected override void PushDebugGroupCore(String name)
         {
-            _uda?.BeginEvent(name);
+            _uda?.BeginEvent(name.ToScopedNativeWChar!());
         }
 
-        private protected override void PopDebugGroupCore()
+        protected override void PopDebugGroupCore()
         {
             _uda?.EndEvent();
         }
 
-        private protected override void InsertDebugMarkerCore(string name)
+        protected override void InsertDebugMarkerCore(String name)
         {
-            _uda?.SetMarker(name);
+            _uda?.SetMarker(name.ToScopedNativeWChar!());
         }
 
         public override void Dispose()
         {
             if (!_disposed)
             {
-                _uda?.Dispose();
-                DeviceCommandList?.Dispose();
-                _context1?.Dispose();
-                _context.Dispose();
+                _uda?.Release();
+                DeviceCommandList?.Release();
+                _context1?.Release();
+                _context.Release();
 
                 for (BoundResourceSetInfo boundGraphicsSet in _graphicsResourceSets)
                 {
@@ -1403,7 +1407,7 @@ namespace Sedulous.GAL.D3D11
 
             public bool IsFullRange => Offset == 0 && Size == Buffer.SizeInBytes;
 
-            public D3D11BufferRange(D3D11Buffer buffer, uint32 offset, uint32 size)
+            public this(D3D11Buffer buffer, uint32 offset, uint32 size)
             {
                 Buffer = buffer;
                 Offset = offset;
@@ -1412,7 +1416,7 @@ namespace Sedulous.GAL.D3D11
 
             public bool Equals(D3D11BufferRange other)
             {
-                return Buffer == other.Buffer && Offset.Equals(other.Offset) && Size.Equals(other.Size);
+                return Buffer == other.Buffer && Offset == other.Offset && Size == other.Size;
             }
         }
     }

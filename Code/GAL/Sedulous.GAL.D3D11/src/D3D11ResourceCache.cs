@@ -1,98 +1,101 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
 using System.Threading;
-using Vortice.Direct3D11;
+using Win32.Graphics.Direct3D11;
+using System.Collections;
+using Win32;
+using Win32.Foundation;
 
 namespace Sedulous.GAL.D3D11
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.D3D11;
+
     internal class D3D11ResourceCache : IDisposable
     {
-        private readonly ID3D11Device _device;
-        private readonly object _lock = new object();
+        private readonly ID3D11Device* _device;
+        private readonly Monitor _lock = new .() ~ delete _;
 
-        private readonly Dictionary<BlendStateDescription, ID3D11BlendState> _blendStates
-            = new Dictionary<BlendStateDescription, ID3D11BlendState>();
+        private readonly Dictionary<BlendStateDescription, ID3D11BlendState*> _blendStates = new .() ~ delete _;
 
-        private readonly Dictionary<DepthStencilStateDescription, ID3D11DepthStencilState> _depthStencilStates
-            = new Dictionary<DepthStencilStateDescription, ID3D11DepthStencilState>();
+        private readonly Dictionary<DepthStencilStateDescription, ID3D11DepthStencilState*> _depthStencilStates = new .() ~ delete _;
 
-        private readonly Dictionary<D3D11RasterizerStateCacheKey, ID3D11RasterizerState> _rasterizerStates
-            = new Dictionary<D3D11RasterizerStateCacheKey, ID3D11RasterizerState>();
+        private readonly Dictionary<D3D11RasterizerStateCacheKey, ID3D11RasterizerState*> _rasterizerStates = new .() ~ delete _;
 
-        private readonly Dictionary<InputLayoutCacheKey, ID3D11InputLayout> _inputLayouts
-            = new Dictionary<InputLayoutCacheKey, ID3D11InputLayout>();
+        private readonly Dictionary<InputLayoutCacheKey, ID3D11InputLayout*> _inputLayouts = new .() ~ delete _;
 
-        public D3D11ResourceCache(ID3D11Device device)
+        public this(ID3D11Device* device)
         {
             _device = device;
         }
 
         public void GetPipelineResources(
-            ref BlendStateDescription blendDesc,
-            ref DepthStencilStateDescription dssDesc,
-            ref RasterizerStateDescription rasterDesc,
+            in BlendStateDescription blendDesc,
+            in DepthStencilStateDescription dssDesc,
+            in RasterizerStateDescription rasterDesc,
             bool multisample,
             VertexLayoutDescription[] vertexLayouts,
-            uint8[] vsBytecode,
-            out ID3D11BlendState blendState,
-            out ID3D11DepthStencilState depthState,
-            out ID3D11RasterizerState rasterState,
-            out ID3D11InputLayout inputLayout)
+            List<uint8> vsBytecode,
+            out ID3D11BlendState* blendState,
+            out ID3D11DepthStencilState* depthState,
+            out ID3D11RasterizerState* rasterState,
+            out ID3D11InputLayout* inputLayout)
         {
-            lock (_lock)
+            using (_lock.Enter())
             {
-                blendState = GetBlendState(ref blendDesc);
-                depthState = GetDepthStencilState(ref dssDesc);
-                rasterState = GetRasterizerState(ref rasterDesc, multisample);
+                blendState = GetBlendState(blendDesc);
+                depthState = GetDepthStencilState(dssDesc);
+                rasterState = GetRasterizerState(rasterDesc, multisample);
                 inputLayout = GetInputLayout(vertexLayouts, vsBytecode);
             }
         }
 
-        private ID3D11BlendState GetBlendState(ref BlendStateDescription description)
+        private ID3D11BlendState* GetBlendState(in BlendStateDescription description)
         {
-            Debug.Assert(Monitor.IsEntered(_lock));
-            if (!_blendStates.TryGetValue(description, out ID3D11BlendState blendState))
+            //Debug.Assert(Monitor.IsEntered(_lock));
+            if (!_blendStates.TryGetValue(description, var blendState))
             {
-                blendState = CreateNewBlendState(ref description);
+                blendState = CreateNewBlendState(description);
                 BlendStateDescription key = description;
-                key.AttachmentStates = (BlendAttachmentDescription[])key.AttachmentStates.Clone();
+				//key.AttachmentStates = (BlendAttachmentDescription[])key.AttachmentStates.Clone(); // AttachmentStates is value type and is copied
                 _blendStates.Add(key, blendState);
             }
 
             return blendState;
         }
 
-        private ID3D11BlendState CreateNewBlendState(ref BlendStateDescription description)
+        private ID3D11BlendState* CreateNewBlendState(in BlendStateDescription description)
         {
-            BlendAttachmentDescription[] attachmentStates = description.AttachmentStates;
-            Vortice.Direct3D11.BlendDescription d3dBlendStateDesc = new Vortice.Direct3D11.BlendDescription();
+            BlendAttachmentList attachmentStates = description.AttachmentStates;
+            D3D11_BLEND_DESC d3dBlendStateDesc = D3D11_BLEND_DESC();
 
-            for (int32 i = 0; i < attachmentStates.Length; i++)
+            for (int i = 0; i < attachmentStates.Count; i++)
             {
                 BlendAttachmentDescription state = attachmentStates[i];
-                d3dBlendStateDesc.RenderTarget[i].BlendEnable = state.BlendEnabled;
-                d3dBlendStateDesc.RenderTarget[i].RenderTargetWriteMask = D3D11Formats.VdToD3D11ColorWriteEnable(state.ColorWriteMask.GetOrDefault());
-                d3dBlendStateDesc.RenderTarget[i].SourceBlend = D3D11Formats.VdToD3D11Blend(state.SourceColorFactor);
-                d3dBlendStateDesc.RenderTarget[i].DestinationBlend = D3D11Formats.VdToD3D11Blend(state.DestinationColorFactor);
-                d3dBlendStateDesc.RenderTarget[i].BlendOperation = D3D11Formats.VdToD3D11BlendOperation(state.ColorFunction);
-                d3dBlendStateDesc.RenderTarget[i].SourceBlendAlpha = D3D11Formats.VdToD3D11Blend(state.SourceAlphaFactor);
-                d3dBlendStateDesc.RenderTarget[i].DestinationBlendAlpha = D3D11Formats.VdToD3D11Blend(state.DestinationAlphaFactor);
-                d3dBlendStateDesc.RenderTarget[i].BlendOperationAlpha = D3D11Formats.VdToD3D11BlendOperation(state.AlphaFunction);
+                d3dBlendStateDesc.RenderTarget[i].BlendEnable = state.BlendEnabled ? TRUE : FALSE;
+                d3dBlendStateDesc.RenderTarget[i].RenderTargetWriteMask = (uint8)D3D11Formats.VdToD3D11ColorWriteEnable(state.ColorWriteMask.GetValueOrDefault());
+                d3dBlendStateDesc.RenderTarget[i].SrcBlend = D3D11Formats.VdToD3D11Blend(state.SourceColorFactor);
+                d3dBlendStateDesc.RenderTarget[i].DestBlend = D3D11Formats.VdToD3D11Blend(state.DestinationColorFactor);
+                d3dBlendStateDesc.RenderTarget[i].BlendOp = D3D11Formats.VdToD3D11BlendOperation(state.ColorFunction);
+                d3dBlendStateDesc.RenderTarget[i].SrcBlendAlpha = D3D11Formats.VdToD3D11Blend(state.SourceAlphaFactor);
+                d3dBlendStateDesc.RenderTarget[i].DestBlendAlpha = D3D11Formats.VdToD3D11Blend(state.DestinationAlphaFactor);
+                d3dBlendStateDesc.RenderTarget[i].BlendOpAlpha = D3D11Formats.VdToD3D11BlendOperation(state.AlphaFunction);
             }
 
-            d3dBlendStateDesc.AlphaToCoverageEnable = description.AlphaToCoverageEnabled;
-            d3dBlendStateDesc.IndependentBlendEnable = true;
+            d3dBlendStateDesc.AlphaToCoverageEnable = description.AlphaToCoverageEnabled ? TRUE : FALSE;
+			d3dBlendStateDesc.IndependentBlendEnable = TRUE;
 
-            return _device.CreateBlendState(d3dBlendStateDesc);
+			ID3D11BlendState* bs = null;
+			HRESULT hr = _device.CreateBlendState(&d3dBlendStateDesc, &bs);
+			return bs;
         }
 
-        private ID3D11DepthStencilState GetDepthStencilState(ref DepthStencilStateDescription description)
+        private ID3D11DepthStencilState* GetDepthStencilState(in DepthStencilStateDescription description)
         {
-            Debug.Assert(Monitor.IsEntered(_lock));
-            if (!_depthStencilStates.TryGetValue(description, out ID3D11DepthStencilState dss))
+            //Debug.Assert(Monitor.IsEntered(_lock));
+            if (!_depthStencilStates.TryGetValue(description, var dss))
             {
-                dss = CreateNewDepthStencilState(ref description);
+                dss = CreateNewDepthStencilState(description);
                 DepthStencilStateDescription key = description;
                 _depthStencilStates.Add(key, dss);
             }
@@ -100,26 +103,28 @@ namespace Sedulous.GAL.D3D11
             return dss;
         }
 
-        private ID3D11DepthStencilState CreateNewDepthStencilState(ref DepthStencilStateDescription description)
+        private ID3D11DepthStencilState* CreateNewDepthStencilState(in DepthStencilStateDescription description)
         {
-            DepthStencilDescription dssDesc = new DepthStencilDescription
+            D3D11_DEPTH_STENCIL_DESC dssDesc = D3D11_DEPTH_STENCIL_DESC()
             {
                 DepthFunc = D3D11Formats.VdToD3D11ComparisonFunc(description.DepthComparison),
-                DepthEnable = description.DepthTestEnabled,
-                DepthWriteMask = description.DepthWriteEnabled ? DepthWriteMask.All : DepthWriteMask.Zero,
-                StencilEnable = description.StencilTestEnabled,
+                DepthEnable = description.DepthTestEnabled ? TRUE : FALSE,
+				DepthWriteMask = description.DepthWriteEnabled ? .D3D11_DEPTH_WRITE_MASK_ALL : .D3D11_DEPTH_WRITE_MASK_ZERO,
+				StencilEnable = description.StencilTestEnabled ? TRUE : FALSE,
                 FrontFace = ToD3D11StencilOpDesc(description.StencilFront),
                 BackFace = ToD3D11StencilOpDesc(description.StencilBack),
                 StencilReadMask = description.StencilReadMask,
                 StencilWriteMask = description.StencilWriteMask
             };
 
-            return _device.CreateDepthStencilState(dssDesc);
+            ID3D11DepthStencilState* dss = null;
+			HRESULT hr = _device.CreateDepthStencilState(&dssDesc, &dss);
+			return dss;
         }
 
-        private DepthStencilOperationDescription ToD3D11StencilOpDesc(StencilBehaviorDescription sbd)
+        private D3D11_DEPTH_STENCILOP_DESC ToD3D11StencilOpDesc(StencilBehaviorDescription sbd)
         {
-            return new DepthStencilOperationDescription
+            return D3D11_DEPTH_STENCILOP_DESC()
             {
                 StencilFunc = D3D11Formats.VdToD3D11ComparisonFunc(sbd.Comparison),
                 StencilPassOp = D3D11Formats.VdToD3D11StencilOperation(sbd.Pass),
@@ -128,42 +133,44 @@ namespace Sedulous.GAL.D3D11
             };
         }
 
-        private ID3D11RasterizerState GetRasterizerState(ref RasterizerStateDescription description, bool multisample)
+        private ID3D11RasterizerState* GetRasterizerState(in RasterizerStateDescription description, bool multisample)
         {
-            Debug.Assert(Monitor.IsEntered(_lock));
-            D3D11RasterizerStateCacheKey key = new D3D11RasterizerStateCacheKey(description, multisample);
-            if (!_rasterizerStates.TryGetValue(key, out ID3D11RasterizerState rasterizerState))
+            //Debug.Assert(Monitor.IsEntered(_lock));
+            D3D11RasterizerStateCacheKey key = D3D11RasterizerStateCacheKey(description, multisample);
+            if (!_rasterizerStates.TryGetValue(key, var rasterizerState))
             {
-                rasterizerState = CreateNewRasterizerState(ref key);
+                rasterizerState = CreateNewRasterizerState(key);
                 _rasterizerStates.Add(key, rasterizerState);
             }
 
             return rasterizerState;
         }
 
-        private ID3D11RasterizerState CreateNewRasterizerState(ref D3D11RasterizerStateCacheKey key)
+        private ID3D11RasterizerState* CreateNewRasterizerState(in D3D11RasterizerStateCacheKey key)
         {
-            RasterizerDescription rssDesc = new RasterizerDescription
+            D3D11_RASTERIZER_DESC rssDesc = D3D11_RASTERIZER_DESC()
             {
                 CullMode = D3D11Formats.VdToD3D11CullMode(key.GALDescription.CullMode),
                 FillMode = D3D11Formats.VdToD3D11FillMode(key.GALDescription.FillMode),
-                DepthClipEnable = key.GALDescription.DepthClipEnabled,
-                ScissorEnable = key.GALDescription.ScissorTestEnabled,
-                FrontCounterClockwise = key.GALDescription.FrontFace == FrontFace.CounterClockwise,
-                MultisampleEnable = key.Multisampled
+                DepthClipEnable = key.GALDescription.DepthClipEnabled ? TRUE : FALSE,
+                ScissorEnable = key.GALDescription.ScissorTestEnabled ? TRUE : FALSE,
+                FrontCounterClockwise = key.GALDescription.FrontFace == FrontFace.CounterClockwise ? TRUE : FALSE,
+                MultisampleEnable = key.Multisampled ? TRUE : FALSE
             };
 
-            return _device.CreateRasterizerState(rssDesc);
+            ID3D11RasterizerState* rs = null;
+			HRESULT hr= _device.CreateRasterizerState(&rssDesc, &rs);
+			return rs;
         }
 
-        private ID3D11InputLayout GetInputLayout(VertexLayoutDescription[] vertexLayouts, uint8[] vsBytecode)
+        private ID3D11InputLayout* GetInputLayout(VertexLayoutDescription[] vertexLayouts, List<uint8> vsBytecode)
         {
-            Debug.Assert(Monitor.IsEntered(_lock));
+            //Debug.Assert(Monitor.IsEntered(_lock));
 
-            if (vsBytecode == null || vertexLayouts == null || vertexLayouts.Length == 0) { return null; }
+            if (vsBytecode == null || vertexLayouts == null || vertexLayouts.Count == 0) { return null; }
 
             InputLayoutCacheKey tempKey = InputLayoutCacheKey.CreateTempKey(vertexLayouts);
-            if (!_inputLayouts.TryGetValue(tempKey, out ID3D11InputLayout inputLayout))
+            if (!_inputLayouts.TryGetValue(tempKey, var inputLayout))
             {
                 inputLayout = CreateNewInputLayout(vertexLayouts, vsBytecode);
                 InputLayoutCacheKey permanentKey = InputLayoutCacheKey.CreatePermanentKey(vertexLayouts);
@@ -173,43 +180,45 @@ namespace Sedulous.GAL.D3D11
             return inputLayout;
         }
 
-        private ID3D11InputLayout CreateNewInputLayout(VertexLayoutDescription[] vertexLayouts, uint8[] vsBytecode)
+        private ID3D11InputLayout* CreateNewInputLayout(VertexLayoutDescription[] vertexLayouts, List<uint8> vsBytecode)
         {
-            int32 totalCount = 0;
-            for (int32 i = 0; i < vertexLayouts.Length; i++)
+            int totalCount = 0;
+            for (int i = 0; i < vertexLayouts.Count; i++)
             {
-                totalCount += vertexLayouts[i].Elements.Length;
+                totalCount += vertexLayouts[i].Elements.Count;
             }
 
             int32 element = 0; // Total element index across slots.
-            InputElementDescription[] elements = new InputElementDescription[totalCount];
-            SemanticIndices si = new SemanticIndices();
-            for (int32 slot = 0; slot < vertexLayouts.Length; slot++)
+            D3D11_INPUT_ELEMENT_DESC[] elements = scope D3D11_INPUT_ELEMENT_DESC[totalCount];
+            SemanticIndices si = SemanticIndices();
+            for (int32 slot = 0; slot < vertexLayouts.Count; slot++)
             {
                 VertexElementDescription[] elementDescs = vertexLayouts[slot].Elements;
                 uint32 stepRate = vertexLayouts[slot].InstanceStepRate;
-                int32 currentOffset = 0;
-                for (int32 i = 0; i < elementDescs.Length; i++)
+                uint32 currentOffset = 0;
+                for (int32 i = 0; i < elementDescs.Count; i++)
                 {
                     VertexElementDescription desc = elementDescs[i];
-                    elements[element] = new InputElementDescription(
-                        GetSemanticString(desc.Semantic),
-                        SemanticIndices.GetAndIncrement(ref si, desc.Semantic),
-                        D3D11Formats.ToDxgiFormat(desc.Format),
-                        desc.Offset != 0 ? (int32)desc.Offset : currentOffset,
-                        slot,
-                        stepRate == 0 ? InputClassification.PerVertexData : InputClassification.PerInstanceData,
-                        (int32)stepRate);
+                    elements[element] = D3D11_INPUT_ELEMENT_DESC(
+                        semanticName: (uint8*)GetSemanticString(desc.Semantic).CStr(),
+                        semanticIndex: (uint32)SemanticIndices.GetAndIncrement(ref si, desc.Semantic),
+                        format: D3D11Formats.ToDxgiFormat(desc.Format),
+                        alignedByteOffset: desc.Offset != 0 ? desc.Offset : currentOffset,
+                        inputSlot: (uint32)slot,
+                        inputSlotClass: stepRate == 0 ? .D3D11_INPUT_PER_VERTEX_DATA : .D3D11_INPUT_PER_INSTANCE_DATA,
+                        instanceDataStepRate: stepRate);
 
-                    currentOffset += (int32)FormatSizeHelpers.GetSizeInBytes(desc.Format);
+                    currentOffset += FormatSizeHelpers.GetSizeInBytes(desc.Format);
                     element += 1;
                 }
             }
 
-            return _device.CreateInputLayout(elements, vsBytecode);
+            ID3D11InputLayout* il = null;
+			HRESULT hr = _device.CreateInputLayout(elements.Ptr, (.)elements.Count, vsBytecode.Ptr, (.)vsBytecode.Count, &il);
+			return il;
         }
 
-        private string GetSemanticString(VertexElementSemantic semantic)
+        private String GetSemanticString(VertexElementSemantic semantic)
         {
             switch (semantic)
             {
@@ -228,21 +237,21 @@ namespace Sedulous.GAL.D3D11
 
         public void Dispose()
         {
-            for (KeyValuePair<BlendStateDescription, ID3D11BlendState> kvp in _blendStates)
+            for ((BlendStateDescription Key, ID3D11BlendState* Value)kvp in _blendStates)
             {
-                kvp.Value.Dispose();
+                kvp.Value.Release();
             }
-            for (KeyValuePair<DepthStencilStateDescription, ID3D11DepthStencilState> kvp in _depthStencilStates)
+            for ((DepthStencilStateDescription Key, ID3D11DepthStencilState* Value) kvp in _depthStencilStates)
             {
-                kvp.Value.Dispose();
+                kvp.Value.Release();
             }
-            for (KeyValuePair<D3D11RasterizerStateCacheKey, ID3D11RasterizerState> kvp in _rasterizerStates)
+            for ((D3D11RasterizerStateCacheKey Key, ID3D11RasterizerState* Value) kvp in _rasterizerStates)
             {
-                kvp.Value.Dispose();
+                kvp.Value.Release();
             }
-            for (KeyValuePair<InputLayoutCacheKey, ID3D11InputLayout> kvp in _inputLayouts)
+            for ((InputLayoutCacheKey Key, ID3D11InputLayout* Value) kvp in _inputLayouts)
             {
-                kvp.Value.Dispose();
+                kvp.Value.Release();
             }
         }
 
@@ -271,24 +280,24 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private struct InputLayoutCacheKey : IEquatable<InputLayoutCacheKey>
+        private struct InputLayoutCacheKey : IEquatable<InputLayoutCacheKey>, IHashable
         {
             public VertexLayoutDescription[] VertexLayouts;
 
             public static InputLayoutCacheKey CreateTempKey(VertexLayoutDescription[] original)
-                => new InputLayoutCacheKey { VertexLayouts = original };
+                => InputLayoutCacheKey() { VertexLayouts = original };
 
             public static InputLayoutCacheKey CreatePermanentKey(VertexLayoutDescription[] original)
             {
-                VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[original.Length];
-                for (int32 i = 0; i < original.Length; i++)
+                VertexLayoutDescription[] vertexLayouts = new VertexLayoutDescription[original.Count];
+                for (int i = 0; i < original.Count; i++)
                 {
                     vertexLayouts[i].Stride = original[i].Stride;
                     vertexLayouts[i].InstanceStepRate = original[i].InstanceStepRate;
                     vertexLayouts[i].Elements = (VertexElementDescription[])original[i].Elements.Clone();
                 }
 
-                return new InputLayoutCacheKey { VertexLayouts = vertexLayouts };
+                return InputLayoutCacheKey() { VertexLayouts = vertexLayouts };
             }
 
             public bool Equals(InputLayoutCacheKey other)
@@ -302,12 +311,12 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private struct D3D11RasterizerStateCacheKey : IEquatable<D3D11RasterizerStateCacheKey>
+        private struct D3D11RasterizerStateCacheKey : IEquatable<D3D11RasterizerStateCacheKey>, IHashable
         {
             public RasterizerStateDescription GALDescription;
             public bool Multisampled;
 
-            public D3D11RasterizerStateCacheKey(RasterizerStateDescription galDescription, bool multisampled)
+            public this(RasterizerStateDescription galDescription, bool multisampled)
             {
                 GALDescription = galDescription;
                 Multisampled = multisampled;
@@ -316,7 +325,7 @@ namespace Sedulous.GAL.D3D11
             public bool Equals(D3D11RasterizerStateCacheKey other)
             {
                 return GALDescription.Equals(other.GALDescription)
-                    && Multisampled.Equals(other.Multisampled);
+                    && Multisampled == other.Multisampled;
             }
 
             public int GetHashCode()

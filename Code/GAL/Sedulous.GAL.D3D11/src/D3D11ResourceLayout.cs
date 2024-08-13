@@ -1,9 +1,10 @@
-﻿namespace Sedulous.GAL.D3D11
+using System;
+namespace Sedulous.GAL.D3D11
 {
-    internal class D3D11ResourceLayout : ResourceLayout
+    public class D3D11ResourceLayout : ResourceLayout
     {
         private readonly ResourceBindingInfo[] _bindingInfosByVdIndex;
-        private string _name;
+        private String _name;
         private bool _disposed;
 
         public int32 UniformBufferCount { get; }
@@ -11,18 +12,18 @@
         public int32 TextureCount { get; }
         public int32 SamplerCount { get; }
 
-        public D3D11ResourceLayout(ref ResourceLayoutDescription description)
-            : base(ref description)
+        public this(in ResourceLayoutDescription description)
+            : base(description)
         {
             ResourceLayoutElementDescription[] elements = description.Elements;
-            _bindingInfosByVdIndex = new ResourceBindingInfo[elements.Length];
+            _bindingInfosByVdIndex = new ResourceBindingInfo[elements.Count];
 
             int32 cbIndex = 0;
             int32 texIndex = 0;
             int32 samplerIndex = 0;
             int32 unorderedAccessIndex = 0;
 
-            for (int32 i = 0; i < _bindingInfosByVdIndex.Length; i++)
+            for (int i = 0; i < _bindingInfosByVdIndex.Count; i++)
             {
                 int32 slot;
                 switch (elements[i].Kind)
@@ -48,7 +49,7 @@
                     default: Runtime.IllegalValue<ResourceKind>();
                 }
 
-                _bindingInfosByVdIndex[i] = new ResourceBindingInfo(
+                _bindingInfosByVdIndex[i] = ResourceBindingInfo(
                     slot,
                     elements[i].Stages,
                     elements[i].Kind,
@@ -61,11 +62,11 @@
             SamplerCount = samplerIndex;
         }
 
-        public ResourceBindingInfo GetDeviceSlotIndex(int32 resourceLayoutIndex)
+        internal ResourceBindingInfo GetDeviceSlotIndex(int32 resourceLayoutIndex)
         {
-            if (resourceLayoutIndex >= _bindingInfosByVdIndex.Length)
+            if (resourceLayoutIndex >= _bindingInfosByVdIndex.Count)
             {
-                Runtime.GALError($"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Length - 1}.");
+                Runtime.GALError(scope $"Invalid resource index: {resourceLayoutIndex}. Maximum is: {_bindingInfosByVdIndex.Count - 1}.");
             }
 
             return _bindingInfosByVdIndex[resourceLayoutIndex];
@@ -73,7 +74,7 @@
 
         public bool IsDynamicBuffer(int32 index) => _bindingInfosByVdIndex[index].DynamicBuffer;
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set => _name = value;
@@ -93,7 +94,7 @@
             public ResourceKind Kind;
             public bool DynamicBuffer;
 
-            public ResourceBindingInfo(int32 slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
+            public this(int32 slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
             {
                 Slot = slot;
                 Stages = stages;

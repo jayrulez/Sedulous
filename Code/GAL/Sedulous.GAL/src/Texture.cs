@@ -26,19 +26,19 @@ namespace Sedulous.GAL
         /// <summary>
         /// The format of individual texture elements stored in this instance.
         /// </summary>
-        public abstract PixelFormat Format { get; }
+        public abstract PixelFormat Format { get; protected set; }
         /// <summary>
         /// The total width of this instance, in texels.
         /// </summary>
-        public abstract uint32 Width { get; }
+        public abstract uint32 Width { get; protected set; }
         /// <summary>
         /// The total height of this instance, in texels.
         /// </summary>
-        public abstract uint32 Height { get; }
+        public abstract uint32 Height { get; protected set; }
         /// <summary>
         /// The total depth of this instance, in texels.
         /// </summary>
-        public abstract uint32 Depth { get; }
+        public abstract uint32 Depth { get; protected set; }
         /// <summary>
         /// The total number of mipmap levels in this instance.
         /// </summary>
