@@ -18,8 +18,8 @@ namespace Sedulous.GAL.VK
         private String _name;
         public override bool IsDisposed => _destroyed;
 
-        public override uint32 SizeInBytes { get; }
-        public override BufferUsage Usage { get; }
+        public override uint32 SizeInBytes { get; protected set; }
+        public override BufferUsage Usage { get; protected set; }
 
         public VkBuffer DeviceBuffer => _deviceBuffer;
         public VkMemoryBlock Memory => _memory;

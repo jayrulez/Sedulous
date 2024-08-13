@@ -12,12 +12,12 @@ namespace Sedulous.GAL
         /// <summary>
         /// The total capacity, in bytes, of the buffer. This value is fixed upon creation.
         /// </summary>
-        public abstract uint32 SizeInBytes { get; }
+        public abstract uint32 SizeInBytes { get; protected set; }
 
         /// <summary>
         /// A bitmask indicating how this instance is permitted to be used.
         /// </summary>
-        public abstract BufferUsage Usage { get; }
+        public abstract BufferUsage Usage { get; protected set; }
 
         /// <summary>
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other

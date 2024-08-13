@@ -2,6 +2,7 @@
 using System;
 using Sedulous.GAL.VK;
 using Bulkan;
+using System.Collections;
 
 namespace Sedulous.GAL.VK
 {
@@ -16,16 +17,16 @@ namespace Sedulous.GAL.VK
     public class BackendInfoVulkan
     {
         private readonly VKGraphicsDevice _gd;
-        private readonly Lazy<ReadOnlyCollection<string>> _instanceLayers;
-        private readonly ReadOnlyCollection<string> _instanceExtensions;
-        private readonly Lazy<ReadOnlyCollection<ExtensionProperties>> _deviceExtensions;
+        private readonly List<String> _instanceLayers;
+        private readonly List<String> _instanceExtensions;
+        private readonly List<ExtensionProperties> _deviceExtensions;
 
         internal this(VKGraphicsDevice gd)
         {
             _gd = gd;
-            _instanceLayers = new Lazy<ReadOnlyCollection<string>>(() => new ReadOnlyCollection<string>(VulkanUtil.EnumerateInstanceLayers()));
-            _instanceExtensions = new ReadOnlyCollection<string>(VulkanUtil.GetInstanceExtensions());
-            _deviceExtensions = new Lazy<ReadOnlyCollection<ExtensionProperties>>(EnumerateDeviceExtensions);
+            _instanceLayers = VulkanUtil.EnumerateInstanceLayers(.. new .());
+            _instanceExtensions = VulkanUtil.GetInstanceExtensions(.. new .());
+            _deviceExtensions = EnumerateDeviceExtensions(.. new .());
         }
 
         /// <summary>
@@ -63,11 +64,11 @@ namespace Sedulous.GAL.VK
         /// </summary>
         public String DriverInfo => _gd.DriverInfo;
 
-        public Span<String> AvailableInstanceLayers => _instanceLayers.Value;
+        public Span<String> AvailableInstanceLayers => _instanceLayers;
 
         public Span<String> AvailableInstanceExtensions => _instanceExtensions;
 
-        public Span<ExtensionProperties> AvailableDeviceExtensions => _deviceExtensions.Value;
+        public Span<ExtensionProperties> AvailableDeviceExtensions => _deviceExtensions;
 
         /// <summary>
         /// Overrides the current VkImageLayout tracked by the given Texture. This should be used when a VkImage is created by
@@ -115,18 +116,15 @@ namespace Sedulous.GAL.VK
             _gd.TransitionImageLayout(Util.AssertSubtype<Texture, VKTexture>(texture), (VkImageLayout)layout);
         }
 
-        private ReadOnlyCollection<ExtensionProperties> EnumerateDeviceExtensions()
+        private void EnumerateDeviceExtensions(List<ExtensionProperties> deviceExtensions)
         {
-            VkExtensionProperties[] vkProps = _gd.GetDeviceExtensionProperties();
-            ExtensionProperties[] galProps = new ExtensionProperties[vkProps.Length];
+            List<VkExtensionProperties> vkProps = _gd.GetDeviceExtensionProperties(.. scope .());
+            deviceExtensions.Resize(vkProps.Count);
 
-            for (int32 i = 0; i < vkProps.Length; i++)
+            for (int i = 0; i < vkProps.Count; i++)
             {
-                VkExtensionProperties prop = vkProps[i];
-                galProps[i] = ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
+                deviceExtensions[i] = ExtensionProperties(new .(&vkProps[i].extensionName), vkProps[i].specVersion);
             }
-
-            return new ReadOnlyCollection<ExtensionProperties>(galProps);
         }
 
         public struct ExtensionProperties
@@ -136,7 +134,7 @@ namespace Sedulous.GAL.VK
 
             public this(String name, uint32 specVersion)
             {
-                Name = name ?? throw new ArgumentNullException(nameof(name));
+                Name = name;
                 SpecVersion = specVersion;
             }
 

@@ -21,31 +21,36 @@ namespace Sedulous.GAL.VK
 
             switch (swapchainSource)
             {
-                case XlibSwapchainSource xlibSource:
+                case _ as XlibSwapchainSource://case XlibSwapchainSource xlibSource:
+				var xlibSource = (XlibSwapchainSource)_;
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME))
                     {
                         Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateXlib(instance, xlibSource);
-                case WaylandSwapchainSource waylandSource:
+                case _ as WaylandSwapchainSource://case WaylandSwapchainSource waylandSource:
+				var waylandSource = (WaylandSwapchainSource)_;
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME))
                     {
                         Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWayland(instance, waylandSource);
-                case Win32SwapchainSource win32Source:
+                case _ as Win32SwapchainSource://case Win32SwapchainSource win32Source:
+				var win32Source = (Win32SwapchainSource)_;
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME))
                     {
                         Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWin32(instance, win32Source);
-                case AndroidSurfaceSwapchainSource androidSource:
+                case _ as AndroidSurfaceSwapchainSource:
+				var androidSource = (AndroidSurfaceSwapchainSource)_;
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME))
                     {
                         Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateAndroidSurface(instance, androidSource);
-                case NSWindowSwapchainSource nsWindowSource:
+                case _ as NSWindowSwapchainSource://case NSWindowSwapchainSource nsWindowSource:
+				var nsWindowSource = (NSWindowSwapchainSource)_;
                     if (doCheck)
                     {
                         bool hasMetalExtension = gd.HasSurfaceExtension(CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME);
@@ -60,7 +65,8 @@ namespace Sedulous.GAL.VK
                     }
 
                     return CreateNSWindowSurface(gd, instance, nsWindowSource, false);
-                case NSViewSwapchainSource nsViewSource:
+                case _ as NSViewSwapchainSource://case NSViewSwapchainSource nsViewSource:
+				var nsViewSource = (NSViewSwapchainSource)_;
                     if (doCheck)
                     {
                         bool hasMetalExtension = gd.HasSurfaceExtension(CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME);
@@ -75,7 +81,8 @@ namespace Sedulous.GAL.VK
                     }
 
                     return CreateNSViewSurface(gd, instance, nsViewSource, false);
-                case UIViewSwapchainSource uiViewSource:
+                case _ as UIViewSwapchainSource://case UIViewSwapchainSource uiViewSource:
+				var uiViewSource = (UIViewSwapchainSource)_;
                     if (doCheck)
                     {
                         bool hasMetalExtension = gd.HasSurfaceExtension(CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME);
@@ -142,15 +149,17 @@ namespace Sedulous.GAL.VK
 
         private static VkSurfaceKHR CreateNSWindowSurface(VKGraphicsDevice gd, VkInstance instance, NSWindowSwapchainSource nsWindowSource, bool hasExtMetalSurface)
         {
-            NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
-            return CreateNSViewSurface(gd, instance, new NSViewSwapchainSource(nswindow.contentView), hasExtMetalSurface);
+			return .Null;
+            /*NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
+            return CreateNSViewSurface(gd, instance, new NSViewSwapchainSource(nswindow.contentView), hasExtMetalSurface);*/
         }
 
         private static VkSurfaceKHR CreateNSViewSurface(VKGraphicsDevice gd, VkInstance instance, NSViewSwapchainSource nsViewSource, bool hasExtMetalSurface)
         {
-            NSView contentView = new NSView(nsViewSource.NSView);
+			return .Null;
+            /*NSView contentView = new NSView(nsViewSource.NSView);
 
-            if (!CAMetalLayer.TryCast(contentView.layer, out var metalLayer))
+            if (!CAMetalLayer.TryCast(contentView.layer, var metalLayer))
             {
                 metalLayer = CAMetalLayer.New();
                 contentView.wantsLayer = true;
@@ -159,29 +168,30 @@ namespace Sedulous.GAL.VK
 
             if (hasExtMetalSurface)
             {
-                VkMetalSurfaceCreateInfoEXT surfaceCI = new VkMetalSurfaceCreateInfoEXT();
-                surfaceCI.sType = VkMetalSurfaceCreateInfoEXT.VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+                VkMetalSurfaceCreateInfoEXT surfaceCI = VkMetalSurfaceCreateInfoEXT() {sType = .VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT};
                 surfaceCI.pLayer = metalLayer.NativePtr.ToPointer();
-                VkSurfaceKHR surface;
+                VkSurfaceKHR surface = .Null;
                 VkResult result = gd.CreateMetalSurfaceEXT(instance, &surfaceCI, null, &surface);
                 CheckResult(result);
                 return surface;
             }
             else
             {
-                VkMacOSSurfaceCreateInfoMVK surfaceCI = VkMacOSSurfaceCreateInfoMVK.New();
+                VkMacOSSurfaceCreateInfoMVK surfaceCI = VkMacOSSurfaceCreateInfoMVK() {sType = .VK_STRUCTURE_TYPE_MACOS_SURFACE_CREATE_INFO_MVK};
                 surfaceCI.pView = contentView.NativePtr.ToPointer();
-                VkResult result = vkCreateMacOSSurfaceMVK(instance, ref surfaceCI, null, out VkSurfaceKHR surface);
+				VkSurfaceKHR surface = .Null;
+                VkResult result = vkCreateMacOSSurfaceMVK(instance, &surfaceCI, null, &surface);
                 CheckResult(result);
                 return surface;
-            }
+            }*/
         }
 
         private static VkSurfaceKHR CreateUIViewSurface(VKGraphicsDevice gd, VkInstance instance, UIViewSwapchainSource uiViewSource, bool hasExtMetalSurface)
         {
-            UIView uiView = new UIView(uiViewSource.UIView);
+			return .Null;
+            /*UIView uiView = new UIView(uiViewSource.UIView);
 
-            if (!CAMetalLayer.TryCast(uiView.layer, out var metalLayer))
+            if (!CAMetalLayer.TryCast(uiView.layer, var metalLayer))
             {
                 metalLayer = CAMetalLayer.New();
                 metalLayer.frame = uiView.frame;
@@ -200,13 +210,13 @@ namespace Sedulous.GAL.VK
             }
             else
             {
-                VkIOSSurfaceCreateInfoMVK surfaceCI = VkIOSSurfaceCreateInfoMVK.New();
+                VkIOSSurfaceCreateInfoMVK surfaceCI = VkIOSSurfaceCreateInfoMVK(){sType = .VK_STRUCTURE_TYPE_IOS_SURFACE_CREATE_INFO_MVK};
                 surfaceCI.pView = uiView.NativePtr.ToPointer();
 				VkSurfaceKHR surface = .Null;
                 VkResult result = vkCreateIOSSurfaceMVK(instance, &surfaceCI, null, &surface);
 				CheckResult(result);
                 return surface;
-            }
+            }*/
         }
     }
 }
