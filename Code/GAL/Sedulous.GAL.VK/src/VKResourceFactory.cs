@@ -1,13 +1,16 @@
-﻿using Vulkan;
+using Bulkan;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     internal class VKResourceFactory : ResourceFactory
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkDevice _device;
 
-        public VKResourceFactory(VKGraphicsDevice vkGraphicsDevice)
+        public this(VKGraphicsDevice vkGraphicsDevice)
             : base (vkGraphicsDevice.Features)
         {
             _gd = vkGraphicsDevice;
@@ -16,53 +19,53 @@ namespace Sedulous.GAL.VK
 
         public override GraphicsBackend BackendType => GraphicsBackend.Vulkan;
 
-        public override CommandList CreateCommandList(ref CommandListDescription description)
+        public override CommandList CreateCommandList(in CommandListDescription description)
         {
-            return new VKCommandList(_gd, ref description);
+            return new VKCommandList(_gd, description);
         }
 
-        public override Framebuffer CreateFramebuffer(ref FramebufferDescription description)
+        public override Framebuffer CreateFramebuffer(in FramebufferDescription description)
         {
-            return new VKFramebuffer(_gd, ref description, false);
+            return new VKFramebuffer(_gd, description, false);
         }
 
-        protected override Pipeline CreateGraphicsPipelineCore(ref GraphicsPipelineDescription description)
+        protected override Pipeline CreateGraphicsPipelineCore(in GraphicsPipelineDescription description)
         {
-            return new VKPipeline(_gd, ref description);
+            return new VKPipeline(_gd, description);
         }
 
-        public override Pipeline CreateComputePipeline(ref ComputePipelineDescription description)
+        public override Pipeline CreateComputePipeline(in ComputePipelineDescription description)
         {
-            return new VKPipeline(_gd, ref description);
+            return new VKPipeline(_gd, description);
         }
 
-        public override ResourceLayout CreateResourceLayout(ref ResourceLayoutDescription description)
+        public override ResourceLayout CreateResourceLayout(in ResourceLayoutDescription description)
         {
-            return new VKResourceLayout(_gd, ref description);
+            return new VKResourceLayout(_gd, description);
         }
 
-        public override ResourceSet CreateResourceSet(ref ResourceSetDescription description)
+        public override ResourceSet CreateResourceSet(in ResourceSetDescription description)
         {
-            ValidationHelpers.ValidateResourceSet(_gd, ref description);
-            return new VKResourceSet(_gd, ref description);
+            ValidationHelpers.ValidateResourceSet(_gd, description);
+            return new VKResourceSet(_gd, description);
         }
 
-        protected override Sampler CreateSamplerCore(ref SamplerDescription description)
+        protected override Sampler CreateSamplerCore(in SamplerDescription description)
         {
-            return new VKSampler(_gd, ref description);
+            return new VKSampler(_gd, description);
         }
 
-        protected override Shader CreateShaderCore(ref ShaderDescription description)
+        protected override Shader CreateShaderCore(in ShaderDescription description)
         {
-            return new VKShader(_gd, ref description);
+            return new VKShader(_gd, description);
         }
 
-        protected override Texture CreateTextureCore(ref TextureDescription description)
+        protected override Texture CreateTextureCore(in TextureDescription description)
         {
-            return new VKTexture(_gd, ref description);
+            return new VKTexture(_gd, description);
         }
 
-        protected override Texture CreateTextureCore(uint64 nativeTexture, ref TextureDescription description)
+        protected override Texture CreateTextureCore(uint64 nativeTexture, in TextureDescription description)
         {
             return new VKTexture(
                 _gd,
@@ -74,12 +77,12 @@ namespace Sedulous.GAL.VK
                 nativeTexture);
         }
 
-        protected override TextureView CreateTextureViewCore(ref TextureViewDescription description)
+        protected override TextureView CreateTextureViewCore(in TextureViewDescription description)
         {
-            return new VKTextureView(_gd, ref description);
+            return new VKTextureView(_gd, description);
         }
 
-        protected override DeviceBuffer CreateBufferCore(ref BufferDescription description)
+        protected override DeviceBuffer CreateBufferCore(in BufferDescription description)
         {
             return new VKBuffer(_gd, description.SizeInBytes, description.Usage);
         }
@@ -89,9 +92,9 @@ namespace Sedulous.GAL.VK
             return new VKFence(_gd, signaled);
         }
 
-        public override Swapchain CreateSwapchain(ref SwapchainDescription description)
+        public override Swapchain CreateSwapchain(in SwapchainDescription description)
         {
-            return new VKSwapchain(_gd, ref description);
+            return new VKSwapchain(_gd, description);
         }
     }
 }

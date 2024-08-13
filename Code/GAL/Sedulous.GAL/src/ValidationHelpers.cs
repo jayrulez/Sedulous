@@ -10,7 +10,7 @@ namespace Sedulous.GAL
 #if !VALIDATE_USAGE
         [SkipCall]//[Conditional("VALIDATE_USAGE")]
 #endif
-        internal static void ValidateResourceSet(GraphicsDevice gd, ref ResourceSetDescription description)
+        internal static void ValidateResourceSet(GraphicsDevice gd, in ResourceSetDescription description)
         {
 #if VALIDATE_USAGE
             ResourceLayoutElementDescription[] elements = description.Layout.Description.Elements;

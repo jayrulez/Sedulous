@@ -37,7 +37,7 @@ namespace Sedulous.GAL
 #endif
 
         internal this(
-            ref CommandListDescription description,
+            in CommandListDescription description,
             GraphicsDeviceFeatures features,
             uint32 uniformAlignment,
             uint32 structuredAlignment)

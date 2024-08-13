@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*", Bulkan = "*"}
+Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.GAL" = "*", Bulkan = "*", "Sedulous.GAL.Android" = "*"}
 
 [Project]
 Name = "Sedulous.GAL.VK"

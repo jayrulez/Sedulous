@@ -9,13 +9,13 @@ namespace Sedulous.GAL
         public ResourceSet Set;
         public SmallFixedOrDynamicArray Offsets;
 
-        public this(ResourceSet set, uint32 offsetsCount, ref uint32* offsets)
+        public this(ResourceSet set, uint32 offsetsCount, uint32* offsets)
         {
             Set = set;
-            Offsets = SmallFixedOrDynamicArray(offsetsCount, ref offsets);
+            Offsets = SmallFixedOrDynamicArray(offsetsCount, offsets);
         }
 
-        public bool Equals(ResourceSet set, uint32 offsetsCount, ref uint32* offsets)
+        public bool Equals(ResourceSet set, uint32 offsetsCount, uint32* offsets)
         {
             if (set != Set || offsetsCount != Offsets.Count) { return false; }
 

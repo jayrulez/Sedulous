@@ -1,29 +1,32 @@
-﻿using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using System;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
-    internal class VKSampler : Sampler
+	using internal Sedulous.GAL.VK;
+
+    public class VKSampler : Sampler
     {
         private readonly VKGraphicsDevice _gd;
-        private readonly Vulkan.VkSampler _sampler;
+        private readonly VkSampler _sampler;
         private bool _disposed;
-        private string _name;
+        private String _name;
 
-        public Vulkan.VkSampler DeviceSampler => _sampler;
+        public VkSampler DeviceSampler => _sampler;
 
-        public ResourceRefCount RefCount { get; }
+        internal ResourceRefCount RefCount { get; }
 
         public override bool IsDisposed => _disposed;
 
-        public VKSampler(VKGraphicsDevice gd, ref SamplerDescription description)
+        public this(VKGraphicsDevice gd, in SamplerDescription description)
         {
             _gd = gd;
-            VKFormats.GetFilterParams(description.Filter, out VkFilter minFilter, out VkFilter magFilter, out VkSamplerMipmapMode mipmapMode);
+            VKFormats.GetFilterParams(description.Filter, var minFilter, var magFilter, var mipmapMode);
 
-            VkSamplerCreateInfo samplerCI = new VkSamplerCreateInfo
+            VkSamplerCreateInfo samplerCI = VkSamplerCreateInfo()
             {
-                sType = VkStructureType.SamplerCreateInfo,
+                sType = VkStructureType.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
                 addressModeU = VKFormats.VdToVkSamplerAddressMode(description.AddressModeU),
                 addressModeV = VKFormats.VdToVkSamplerAddressMode(description.AddressModeV),
                 addressModeW = VKFormats.VdToVkSamplerAddressMode(description.AddressModeW),
@@ -33,7 +36,7 @@ namespace Sedulous.GAL.VK
                 compareEnable = description.ComparisonKind != null,
                 compareOp = description.ComparisonKind != null
                     ? VKFormats.VdToVkCompareOp(description.ComparisonKind.Value)
-                    : VkCompareOp.Never,
+                    : VkCompareOp.VK_COMPARE_OP_NEVER,
                 anisotropyEnable = description.Filter == SamplerFilter.Anisotropic,
                 maxAnisotropy = description.MaximumAnisotropy,
                 minLod = description.MinimumLod,
@@ -42,11 +45,11 @@ namespace Sedulous.GAL.VK
                 borderColor = VKFormats.VdToVkSamplerBorderColor(description.BorderColor)
             };
 
-            vkCreateSampler(_gd.Device, ref samplerCI, null, out _sampler);
-            RefCount = new ResourceRefCount(DisposeCore);
+            vkCreateSampler(_gd.Device, &samplerCI, null, &_sampler);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

@@ -9,7 +9,7 @@ namespace Sedulous.GAL
 	/// </summary>
 	public abstract class Pipeline : DeviceResource, IDisposable
 	{
-		internal this(ref GraphicsPipelineDescription graphicsDescription)
+		internal this(in GraphicsPipelineDescription graphicsDescription)
 			: this(graphicsDescription.ResourceLayouts)
 		{
 #if VALIDATE_USAGE
@@ -17,7 +17,7 @@ namespace Sedulous.GAL
 #endif
 		}
 
-		internal this(ref ComputePipelineDescription computeDescription)
+		internal this(in ComputePipelineDescription computeDescription)
 			: this(computeDescription.ResourceLayouts)
 			{ }
 
@@ -44,7 +44,7 @@ namespace Sedulous.GAL
 		/// Gets a value indicating whether this instance represents a compute Pipeline.
 		/// If false, this instance is a graphics pipeline.
 		/// </summary>
-		public abstract bool IsComputePipeline { get; }
+		public abstract bool IsComputePipeline { get; protected set; }
 
 		/// <summary>
 		/// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other

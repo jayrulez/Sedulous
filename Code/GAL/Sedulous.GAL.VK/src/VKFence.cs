@@ -1,23 +1,26 @@
-using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using System;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL.VK;
+
     internal class VKFence : Fence
     {
         private readonly VKGraphicsDevice _gd;
-        private Vulkan.VkFence _fence;
-        private string _name;
+        private VkFence _fence;
+        private String _name;
         private bool _destroyed;
 
-        public Vulkan.VkFence DeviceFence => _fence;
+        public VkFence DeviceFence => _fence;
 
-        public VKFence(VKGraphicsDevice gd, bool signaled)
+        public this(VKGraphicsDevice gd, bool signaled)
         {
             _gd = gd;
-            VkFenceCreateInfo fenceCI = VkFenceCreateInfo.New();
-            fenceCI.flags = signaled ? VkFenceCreateFlags.Signaled : VkFenceCreateFlags.None;
-            VkResult result = vkCreateFence(_gd.Device, ref fenceCI, null, out _fence);
+            VkFenceCreateInfo fenceCI = VkFenceCreateInfo(){sType = .VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
+            fenceCI.flags = signaled ? VkFenceCreateFlags.VK_FENCE_CREATE_SIGNALED_BIT : VkFenceCreateFlags.None;
+            VkResult result = vkCreateFence(_gd.Device, &fenceCI, null, &_fence);
             VulkanUtil.CheckResult(result);
         }
 
@@ -29,7 +32,7 @@ namespace Sedulous.GAL.VK
         public override bool Signaled => vkGetFenceStatus(_gd.Device, _fence) == VkResult.VK_SUCCESS;
         public override bool IsDisposed => _destroyed;
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

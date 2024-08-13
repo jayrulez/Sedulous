@@ -9,7 +9,7 @@ namespace Sedulous.GAL
     /// </summary>
     public abstract class ResourceSet : DeviceResource, IDisposable
     {
-        internal this(ref ResourceSetDescription description)
+        internal this(in ResourceSetDescription description)
         {
 #if VALIDATE_USAGE
             Layout = description.Layout;

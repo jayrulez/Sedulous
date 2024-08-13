@@ -2,6 +2,7 @@ using Bulkan;
 using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System;
+using System.Threading;
 
 namespace Sedulous.GAL.VK
 {
@@ -23,6 +24,8 @@ namespace Sedulous.GAL.VK
         private uint32 _currentImageIndex;
         private String _name;
         private bool _disposed;
+
+		public Monitor PresentLock = new .() ~ delete _;
 
         public override String Name { get => _name; set { _name = value; _gd.SetResourceName(this, value); } }
         public override Framebuffer Framebuffer => _framebuffer;
@@ -48,9 +51,9 @@ namespace Sedulous.GAL.VK
         public uint32 PresentQueueIndex => _presentQueueIndex;
         internal ResourceRefCount RefCount { get; }
 
-        public this(VKGraphicsDevice gd, ref SwapchainDescription description) : this(gd, ref description, .Null) { }
+        public this(VKGraphicsDevice gd, in SwapchainDescription description) : this(gd, description, .Null) { }
 
-        public this(VKGraphicsDevice gd, ref SwapchainDescription description, VkSurfaceKHR existingSurface)
+        public this(VKGraphicsDevice gd, in SwapchainDescription description, VkSurfaceKHR existingSurface)
         {
             _gd = gd;
             _syncToVBlank = description.SyncToVerticalBlank;
@@ -76,15 +79,15 @@ namespace Sedulous.GAL.VK
 
             CreateSwapchain(description.Width, description.Height);
 
-            VkFenceCreateInfo fenceCI = VkFenceCreateInfo.New();
+            VkFenceCreateInfo fenceCI = VkFenceCreateInfo(){sType = .VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
             fenceCI.flags = VkFenceCreateFlags.None;
-            vkCreateFence(_gd.Device, ref fenceCI, null, out _imageAvailableFence);
+            vkCreateFence(_gd.Device, &fenceCI, null, &_imageAvailableFence);
 
             AcquireNextImage(_gd.Device, VkSemaphore.Null, _imageAvailableFence);
-            vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, uint64.MaxValue);
-            vkResetFences(_gd.Device, 1, ref _imageAvailableFence);
+            vkWaitForFences(_gd.Device, 1, &_imageAvailableFence, true, uint64.MaxValue);
+            vkResetFences(_gd.Device, 1, &_imageAvailableFence);
 
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
         public override void Resize(uint32 width, uint32 height)
@@ -92,7 +95,7 @@ namespace Sedulous.GAL.VK
             RecreateAndReacquire(width, height);
         }
 
-        public bool AcquireNextImage(VkDevice device, VkSemaphore semaphore, Vulkan.VkFence fence)
+        public bool AcquireNextImage(VkDevice device, VkSemaphore semaphore, VkFence fence)
         {
             if (_newSyncToVBlank != null)
             {
@@ -108,9 +111,9 @@ namespace Sedulous.GAL.VK
                 uint64.MaxValue,
                 semaphore,
                 fence,
-                ref _currentImageIndex);
+                &_currentImageIndex);
             _framebuffer.SetImageIndex(_currentImageIndex);
-            if (result == VkResult.ErrorOutOfDateKHR || result == VkResult.SuboptimalKHR)
+            if (result == VkResult.VK_ERROR_OUT_OF_DATE_KHR || result == VkResult.VK_SUBOPTIMAL_KHR)
             {
                 CreateSwapchain(_framebuffer.Width, _framebuffer.Height);
                 return false;
@@ -129,8 +132,8 @@ namespace Sedulous.GAL.VK
             {
                 if (AcquireNextImage(_gd.Device, VkSemaphore.Null, _imageAvailableFence))
                 {
-                    vkWaitForFences(_gd.Device, 1, ref _imageAvailableFence, true, uint64.MaxValue);
-                    vkResetFences(_gd.Device, 1, ref _imageAvailableFence);
+                    vkWaitForFences(_gd.Device, 1, &_imageAvailableFence, true, uint64.MaxValue);
+                    vkResetFences(_gd.Device, 1, &_imageAvailableFence);
                 }
             }
         }
@@ -138,8 +141,9 @@ namespace Sedulous.GAL.VK
         private bool CreateSwapchain(uint32 width, uint32 height)
         {
             // Obtain the surface capabilities first -- this will indicate whether the surface has been lost.
-            VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_gd.PhysicalDevice, _surface, out VkSurfaceCapabilitiesKHR surfaceCapabilities);
-            if (result == VkResult.ErrorSurfaceLostKHR)
+			VkSurfaceCapabilitiesKHR surfaceCapabilities = .();
+            VkResult result = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(_gd.PhysicalDevice, _surface, &surfaceCapabilities);
+            if (result == VkResult.VK_ERROR_SURFACE_LOST_KHR)
             {
                 Runtime.GALError($"The Swapchain's underlying surface has been lost.");
             }
@@ -157,34 +161,34 @@ namespace Sedulous.GAL.VK
 
             _currentImageIndex = 0;
             uint32 surfaceFormatCount = 0;
-            result = vkGetPhysicalDeviceSurfaceFormatsKHR(_gd.PhysicalDevice, _surface, ref surfaceFormatCount, null);
+            result = vkGetPhysicalDeviceSurfaceFormatsKHR(_gd.PhysicalDevice, _surface, &surfaceFormatCount, null);
             CheckResult(result);
-            VkSurfaceFormatKHR[] formats = new VkSurfaceFormatKHR[surfaceFormatCount];
-            result = vkGetPhysicalDeviceSurfaceFormatsKHR(_gd.PhysicalDevice, _surface, ref surfaceFormatCount, out formats[0]);
+            VkSurfaceFormatKHR[] formats = scope VkSurfaceFormatKHR[surfaceFormatCount];
+            result = vkGetPhysicalDeviceSurfaceFormatsKHR(_gd.PhysicalDevice, _surface, &surfaceFormatCount, formats.Ptr);
             CheckResult(result);
 
             VkFormat desiredFormat = _colorSrgb
-                ? VkFormat.B8g8r8a8Srgb
-                : VkFormat.B8g8r8a8Unorm;
+                ? VkFormat.VK_FORMAT_B8G8R8A8_SRGB
+                : VkFormat.VK_FORMAT_B8G8R8A8_UNORM;
 
-            VkSurfaceFormatKHR surfaceFormat = new VkSurfaceFormatKHR();
-            if (formats.Length == 1 && formats[0].format == VkFormat.Undefined)
+            VkSurfaceFormatKHR surfaceFormat = VkSurfaceFormatKHR();
+            if (formats.Count == 1 && formats[0].format == VkFormat.VK_FORMAT_UNDEFINED)
             {
-                surfaceFormat = new VkSurfaceFormatKHR { colorSpace = VkColorSpaceKHR.SrgbNonlinearKHR, format = desiredFormat };
+                surfaceFormat = VkSurfaceFormatKHR() { colorSpace = VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, format = desiredFormat };
             }
             else
             {
                 for (VkSurfaceFormatKHR format in formats)
                 {
-                    if (format.colorSpace == VkColorSpaceKHR.SrgbNonlinearKHR && format.format == desiredFormat)
+                    if (format.colorSpace == VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR && format.format == desiredFormat)
                     {
                         surfaceFormat = format;
                         break;
                     }
                 }
-                if (surfaceFormat.format == VkFormat.Undefined)
+                if (surfaceFormat.format == VkFormat.VK_FORMAT_UNDEFINED)
                 {
-                    if (_colorSrgb && surfaceFormat.format != VkFormat.R8g8b8a8Srgb)
+                    if (_colorSrgb && surfaceFormat.format != VkFormat.VK_FORMAT_R8G8B8A8_SRGB)
                     {
                         Runtime.GALError($"Unable to create an sRGB Swapchain for this surface.");
                     }
@@ -194,70 +198,70 @@ namespace Sedulous.GAL.VK
             }
 
             uint32 presentModeCount = 0;
-            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_gd.PhysicalDevice, _surface, ref presentModeCount, null);
+            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_gd.PhysicalDevice, _surface, &presentModeCount, null);
             CheckResult(result);
-            VkPresentModeKHR[] presentModes = new VkPresentModeKHR[presentModeCount];
-            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_gd.PhysicalDevice, _surface, ref presentModeCount, out presentModes[0]);
+            VkPresentModeKHR[] presentModes = scope VkPresentModeKHR[presentModeCount];
+            result = vkGetPhysicalDeviceSurfacePresentModesKHR(_gd.PhysicalDevice, _surface, &presentModeCount, presentModes.Ptr);
             CheckResult(result);
 
-            VkPresentModeKHR presentMode = VkPresentModeKHR.FifoKHR;
+            VkPresentModeKHR presentMode = VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
 
             if (_syncToVBlank)
             {
-                if (presentModes.Contains(VkPresentModeKHR.FifoRelaxedKHR))
+                if (presentModes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_FIFO_RELAXED_KHR))
                 {
-                    presentMode = VkPresentModeKHR.FifoRelaxedKHR;
+                    presentMode = VkPresentModeKHR.VK_PRESENT_MODE_FIFO_RELAXED_KHR;
                 }
             }
             else
             {
-                if (presentModes.Contains(VkPresentModeKHR.MailboxKHR))
+                if (presentModes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR))
                 {
-                    presentMode = VkPresentModeKHR.MailboxKHR;
+                    presentMode = VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
                 }
-                else if (presentModes.Contains(VkPresentModeKHR.ImmediateKHR))
+                else if (presentModes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR))
                 {
-                    presentMode = VkPresentModeKHR.ImmediateKHR;
+                    presentMode = VkPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR;
                 }
             }
 
             uint32 maxImageCount = surfaceCapabilities.maxImageCount == 0 ? uint32.MaxValue : surfaceCapabilities.maxImageCount;
             uint32 imageCount = Math.Min(maxImageCount, surfaceCapabilities.minImageCount + 1);
 
-            VkSwapchainCreateInfoKHR swapchainCI = VkSwapchainCreateInfoKHR.New();
+            VkSwapchainCreateInfoKHR swapchainCI = VkSwapchainCreateInfoKHR(){sType = .VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR};
             swapchainCI.surface = _surface;
             swapchainCI.presentMode = presentMode;
             swapchainCI.imageFormat = surfaceFormat.format;
             swapchainCI.imageColorSpace = surfaceFormat.colorSpace;
             uint32 clampedWidth = Util.Clamp(width, surfaceCapabilities.minImageExtent.width, surfaceCapabilities.maxImageExtent.width);
             uint32 clampedHeight = Util.Clamp(height, surfaceCapabilities.minImageExtent.height, surfaceCapabilities.maxImageExtent.height);
-            swapchainCI.imageExtent = new VkExtent2D { width = clampedWidth, height = clampedHeight };
+            swapchainCI.imageExtent = VkExtent2D() { width = clampedWidth, height = clampedHeight };
             swapchainCI.minImageCount = imageCount;
             swapchainCI.imageArrayLayers = 1;
-            swapchainCI.imageUsage = VkImageUsageFlags.ColorAttachment | VkImageUsageFlags.TransferDst;
+            swapchainCI.imageUsage = VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 
-            FixedArray2<uint32> queueFamilyIndices = new FixedArray2<uint32>(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
+            uint32[2] queueFamilyIndices = .(_gd.GraphicsQueueIndex, _gd.PresentQueueIndex);
 
             if (_gd.GraphicsQueueIndex != _gd.PresentQueueIndex)
             {
-                swapchainCI.imageSharingMode = VkSharingMode.Concurrent;
+                swapchainCI.imageSharingMode = VkSharingMode.VK_SHARING_MODE_CONCURRENT;
                 swapchainCI.queueFamilyIndexCount = 2;
-                swapchainCI.pQueueFamilyIndices = &queueFamilyIndices.First;
+                swapchainCI.pQueueFamilyIndices = &queueFamilyIndices;
             }
             else
             {
-                swapchainCI.imageSharingMode = VkSharingMode.Exclusive;
+                swapchainCI.imageSharingMode = VkSharingMode.VK_SHARING_MODE_EXCLUSIVE;
                 swapchainCI.queueFamilyIndexCount = 0;
             }
 
-            swapchainCI.preTransform = VkSurfaceTransformFlagsKHR.IdentityKHR;
-            swapchainCI.compositeAlpha = VkCompositeAlphaFlagsKHR.OpaqueKHR;
+            swapchainCI.preTransform = VkSurfaceTransformFlagsKHR.VK_SURFACE_TRANSFORM_IDENTITY_BIT_KHR;
+            swapchainCI.compositeAlpha = VkCompositeAlphaFlagsKHR.VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
             swapchainCI.clipped = true;
 
             VkSwapchainKHR oldSwapchain = _deviceSwapchain;
             swapchainCI.oldSwapchain = oldSwapchain;
 
-            result = vkCreateSwapchainKHR(_gd.Device, ref swapchainCI, null, out _deviceSwapchain);
+            result = vkCreateSwapchainKHR(_gd.Device, &swapchainCI, null, &_deviceSwapchain);
             CheckResult(result);
             if (oldSwapchain != VkSwapchainKHR.Null)
             {
@@ -290,11 +294,12 @@ namespace Sedulous.GAL.VK
 
         private bool QueueSupportsPresent(uint32 queueFamilyIndex, VkSurfaceKHR surface)
         {
+			VkBool32 supported = false;
             VkResult result = vkGetPhysicalDeviceSurfaceSupportKHR(
                 _gd.PhysicalDevice,
                 queueFamilyIndex,
                 surface,
-                out VkBool32 supported);
+                &supported);
             CheckResult(result);
             return supported;
         }

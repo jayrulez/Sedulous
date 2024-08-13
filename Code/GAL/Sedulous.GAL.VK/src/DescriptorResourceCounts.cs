@@ -1,4 +1,4 @@
-﻿namespace Sedulous.GAL.VK
+namespace Sedulous.GAL.VK
 {
     internal struct DescriptorResourceCounts
     {
@@ -10,7 +10,7 @@
         public readonly uint32 UniformBufferDynamicCount;
         public readonly uint32 StorageBufferDynamicCount;
 
-        public DescriptorResourceCounts(
+        public this(
             uint32 uniformBufferCount,
             uint32 uniformBufferDynamicCount,
             uint32 sampledImageCount,

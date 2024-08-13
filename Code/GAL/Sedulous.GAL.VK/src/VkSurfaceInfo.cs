@@ -1,17 +1,19 @@
-﻿using System;
-using Vulkan;
-using Vulkan.Xlib;
+using System;
+using Bulkan;
 using static Sedulous.GAL.VK.VulkanUtil;
-using static Vulkan.VulkanNative;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     /// <summary>
     /// An object which can be used to create a VkSurfaceKHR.
     /// </summary>
     public abstract class VKSurfaceSource
     {
-        internal VKSurfaceSource() { }
+        internal this() { }
 
         /// <summary>
         /// Creates a new VkSurfaceKHR attached to this source.
@@ -26,24 +28,24 @@ namespace Sedulous.GAL.VK
         /// <param name="hinstance">The Win32 instance handle.</param>
         /// <param name="hwnd">The Win32 window handle.</param>
         /// <returns>A new VkSurfaceSource.</returns>
-        public static VKSurfaceSource CreateWin32(IntPtr hinstance, IntPtr hwnd) => new Win32VkSurfaceInfo(hinstance, hwnd);
+        public static VKSurfaceSource CreateWin32(void* hinstance, void* hwnd) => new Win32VkSurfaceInfo(hinstance, hwnd);
         /// <summary>
         /// Creates a new VkSurfaceSource from the given Xlib information.
         /// </summary>
         /// <param name="display">A pointer to the Xlib Display.</param>
         /// <param name="window">An Xlib window.</param>
         /// <returns>A new VkSurfaceSource.</returns>
-        public static VKSurfaceSource CreateXlib(Display* display, Window window) => new XlibVkSurfaceInfo(display, window);
+        public static VKSurfaceSource CreateXlib(void* display, void* window) => new XlibVkSurfaceInfo(display, window);
 
-        internal abstract SwapchainSource GetSurfaceSource();
+        protected abstract SwapchainSource GetSurfaceSource();
     }
 
     internal class Win32VkSurfaceInfo : VKSurfaceSource
     {
-        private readonly IntPtr _hinstance;
-        private readonly IntPtr _hwnd;
+        private readonly void* _hinstance;
+        private readonly void* _hwnd;
 
-        public Win32VkSurfaceInfo(IntPtr hinstance, IntPtr hwnd)
+        public this(void* hinstance, void* hwnd)
         {
             _hinstance = hinstance;
             _hwnd = hwnd;
@@ -54,7 +56,7 @@ namespace Sedulous.GAL.VK
             return VKSurfaceUtil.CreateSurface(null, instance, GetSurfaceSource());
         }
 
-        internal override SwapchainSource GetSurfaceSource()
+        protected override SwapchainSource GetSurfaceSource()
         {
             return new Win32SwapchainSource(_hwnd, _hinstance);
         }
@@ -62,10 +64,10 @@ namespace Sedulous.GAL.VK
 
     internal class XlibVkSurfaceInfo : VKSurfaceSource
     {
-        private readonly Display* _display;
-        private readonly Window _window;
+        private readonly void* _display;
+        private readonly void* _window;
 
-        public XlibVkSurfaceInfo(Display* display, Window window)
+        public this(void* display, void* window)
         {
             _display = display;
             _window = window;
@@ -76,9 +78,9 @@ namespace Sedulous.GAL.VK
             return VKSurfaceUtil.CreateSurface(null, instance, GetSurfaceSource());
         }
 
-        internal override SwapchainSource GetSurfaceSource()
+        protected override SwapchainSource GetSurfaceSource()
         {
-            return new XlibSwapchainSource((IntPtr)_display, _window.Value);
+            return new XlibSwapchainSource(_display, _window);
         }
     }
 }

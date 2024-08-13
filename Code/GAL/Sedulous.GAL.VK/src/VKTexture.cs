@@ -33,16 +33,16 @@ namespace Sedulous.GAL.VK
 
         public override PixelFormat Format => _format;
 
-        public override uint32 MipLevels { get; }
+        public override uint32 MipLevels { get; protected set; }
 
-        public override uint32 ArrayLayers { get; }
+        public override uint32 ArrayLayers { get; protected set; }
         public uint32 ActualArrayLayers => _actualImageArrayLayers;
 
-        public override TextureUsage Usage { get; }
+        public override TextureUsage Usage { get; protected set; }
 
-        public override TextureType Type { get; }
+        public override TextureType Type { get; protected set; }
 
-        public override TextureSampleCount SampleCount { get; }
+        public override TextureSampleCount SampleCount { get; protected set; }
 
         public override bool IsDisposed => _destroyed;
 
@@ -60,7 +60,7 @@ namespace Sedulous.GAL.VK
         internal ResourceRefCount RefCount { get; }
         public bool IsSwapchainTexture => _isSwapchainTexture;
 
-        internal this(VKGraphicsDevice gd, ref TextureDescription description)
+        internal this(VKGraphicsDevice gd, in TextureDescription description)
         {
             _gd = gd;
             _width = description.Width;

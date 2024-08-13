@@ -1,114 +1,118 @@
-﻿using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using System;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 
 namespace Sedulous.GAL.VK
 {
-    internal class VKResourceLayout : ResourceLayout
-    {
-        private readonly VKGraphicsDevice _gd;
-        private readonly VkDescriptorSetLayout _dsl;
-        private readonly VkDescriptorType[] _descriptorTypes;
-        private bool _disposed;
-        private string _name;
+	using internal Sedulous.GAL.VK;
 
-        public VkDescriptorSetLayout DescriptorSetLayout => _dsl;
-        public VkDescriptorType[] DescriptorTypes => _descriptorTypes;
-        public DescriptorResourceCounts DescriptorResourceCounts { get; }
-        public new int32 DynamicBufferCount { get; }
+	public class VKResourceLayout : ResourceLayout
+	{
+		private readonly VKGraphicsDevice _gd;
+		private readonly VkDescriptorSetLayout _dsl;
+		private readonly VkDescriptorType[] _descriptorTypes;
+		private bool _disposed;
+		private String _name;
 
-        public override bool IsDisposed => _disposed;
+		public VkDescriptorSetLayout DescriptorSetLayout => _dsl;
+		public VkDescriptorType[] DescriptorTypes => _descriptorTypes;
+		internal DescriptorResourceCounts DescriptorResourceCounts { get; }
+		public new int32 DynamicBufferCount { get; }
 
-        public VKResourceLayout(VKGraphicsDevice gd, ref ResourceLayoutDescription description)
-            : base(ref description)
-        {
-            _gd = gd;
-            VkDescriptorSetLayoutCreateInfo dslCI = VkDescriptorSetLayoutCreateInfo.New();
-            ResourceLayoutElementDescription[] elements = description.Elements;
-            _descriptorTypes = new VkDescriptorType[elements.Length];
-            VkDescriptorSetLayoutBinding* bindings = stackalloc VkDescriptorSetLayoutBinding[elements.Length];
+		public override bool IsDisposed => _disposed;
 
-            uint32 uniformBufferCount = 0;
-            uint32 uniformBufferDynamicCount = 0;
-            uint32 sampledImageCount = 0;
-            uint32 samplerCount = 0;
-            uint32 storageBufferCount = 0;
-            uint32 storageBufferDynamicCount = 0;
-            uint32 storageImageCount = 0;
+		public this(VKGraphicsDevice gd, in ResourceLayoutDescription description)
+			: base(description)
+		{
+			_gd = gd;
+			VkDescriptorSetLayoutCreateInfo dslCI = VkDescriptorSetLayoutCreateInfo() { sType = .VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO };
+			ResourceLayoutElementDescription[] elements = description.Elements;
+			_descriptorTypes = new VkDescriptorType[elements.Count];
+			VkDescriptorSetLayoutBinding* bindings = scope VkDescriptorSetLayoutBinding[elements.Count]*;
 
-            for (uint32 i = 0; i < elements.Length; i++)
-            {
-                bindings[i].binding = i;
-                bindings[i].descriptorCount = 1;
-                VkDescriptorType descriptorType = VKFormats.VdToVkDescriptorType(elements[i].Kind, elements[i].Options);
-                bindings[i].descriptorType = descriptorType;
-                bindings[i].stageFlags = VKFormats.VdToVkShaderStages(elements[i].Stages);
-                if ((elements[i].Options & ResourceLayoutElementOptions.DynamicBinding) != 0)
-                {
-                    DynamicBufferCount += 1;
-                }
+			uint32 uniformBufferCount = 0;
+			uint32 uniformBufferDynamicCount = 0;
+			uint32 sampledImageCount = 0;
+			uint32 samplerCount = 0;
+			uint32 storageBufferCount = 0;
+			uint32 storageBufferDynamicCount = 0;
+			uint32 storageImageCount = 0;
 
-                _descriptorTypes[i] = descriptorType;
+			for (uint32 i = 0; i < elements.Count; i++)
+			{
+				bindings[i].binding = i;
+				bindings[i].descriptorCount = 1;
+				VkDescriptorType descriptorType = VKFormats.VdToVkDescriptorType(elements[i].Kind, elements[i].Options);
+				bindings[i].descriptorType = descriptorType;
+				bindings[i].stageFlags = VKFormats.VdToVkShaderStages(elements[i].Stages);
+				if ((elements[i].Options & ResourceLayoutElementOptions.DynamicBinding) != 0)
+				{
+					DynamicBufferCount += 1;
+				}
 
-                switch (descriptorType)
-                {
-                    case VkDescriptorType.Sampler:
-                        samplerCount += 1;
-                        break;
-                    case VkDescriptorType.SampledImage:
-                        sampledImageCount += 1;
-                        break;
-                    case VkDescriptorType.StorageImage:
-                        storageImageCount += 1;
-                        break;
-                    case VkDescriptorType.UniformBuffer:
-                        uniformBufferCount += 1;
-                        break;
-                    case VkDescriptorType.UniformBufferDynamic:
-                        uniformBufferDynamicCount += 1;
-                        break;
-                    case VkDescriptorType.StorageBuffer:
-                        storageBufferCount += 1;
-                        break;
-                    case VkDescriptorType.StorageBufferDynamic:
-                        storageBufferDynamicCount += 1;
-                        break;
-                }
-            }
+				_descriptorTypes[i] = descriptorType;
 
-            DescriptorResourceCounts = new DescriptorResourceCounts(
-                uniformBufferCount,
-                uniformBufferDynamicCount,
-                sampledImageCount,
-                samplerCount,
-                storageBufferCount,
-                storageBufferDynamicCount,
-                storageImageCount);
+				switch (descriptorType)
+				{
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER:
+					samplerCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE:
+					sampledImageCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE:
+					storageImageCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+					uniformBufferCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC:
+					uniformBufferDynamicCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER:
+					storageBufferCount += 1;
+					break;
+				case VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC:
+					storageBufferDynamicCount += 1;
+					break;
+				default: break;
+				}
+			}
 
-            dslCI.bindingCount = (uint32)elements.Length;
-            dslCI.pBindings = bindings;
+			DescriptorResourceCounts = DescriptorResourceCounts(
+				uniformBufferCount,
+				uniformBufferDynamicCount,
+				sampledImageCount,
+				samplerCount,
+				storageBufferCount,
+				storageBufferDynamicCount,
+				storageImageCount);
 
-            VkResult result = vkCreateDescriptorSetLayout(_gd.Device, ref dslCI, null, out _dsl);
-            CheckResult(result);
-        }
+			dslCI.bindingCount = (uint32)elements.Count;
+			dslCI.pBindings = bindings;
 
-        public override string Name
-        {
-            get => _name;
-            set
-            {
-                _name = value;
-                _gd.SetResourceName(this, value);
-            }
-        }
+			VkResult result = vkCreateDescriptorSetLayout(_gd.Device, &dslCI, null, &_dsl);
+			CheckResult(result);
+		}
 
-        public override void Dispose()
-        {
-            if (!_disposed)
-            {
-                _disposed = true;
-                vkDestroyDescriptorSetLayout(_gd.Device, _dsl, null);
-            }
-        }
-    }
+		public override String Name
+		{
+			get => _name;
+			set
+			{
+				_name = value;
+				_gd.SetResourceName(this, value);
+			}
+		}
+
+		public override void Dispose()
+		{
+			if (!_disposed)
+			{
+				_disposed = true;
+				vkDestroyDescriptorSetLayout(_gd.Device, _dsl, null);
+			}
+		}
+	}
 }

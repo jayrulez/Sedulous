@@ -42,25 +42,25 @@ namespace Sedulous.GAL
         /// <summary>
         /// The total number of mipmap levels in this instance.
         /// </summary>
-        public abstract uint32 MipLevels { get; }
+        public abstract uint32 MipLevels { get; protected set; }
         /// <summary>
         /// The total number of array layers in this instance.
         /// </summary>
-        public abstract uint32 ArrayLayers { get; }
+        public abstract uint32 ArrayLayers { get; protected set; }
         /// <summary>
         /// The usage flags given when this instance was created. This property controls how this instance is permitted to be
         /// used, and it is an error to attempt to use the Texture outside of those contexts.
         /// </summary>
-        public abstract TextureUsage Usage { get; }
+        public abstract TextureUsage Usage { get; protected set; }
         /// <summary>
         /// The <see cref="TextureType"/> of this instance.
         /// </summary>
-        public abstract TextureType Type { get; }
+        public abstract TextureType Type { get; protected set; }
         /// <summary>
         /// The number of samples in this instance. If this returns any value other than <see cref="TextureSampleCount.Count1"/>,
         /// then this instance is a multipsample texture.
         /// </summary>
-        public abstract TextureSampleCount SampleCount { get; }
+        public abstract TextureSampleCount SampleCount { get; protected set; }
         /// <summary>
         /// A string identifying this instance. Can be used to differentiate between objects in graphics debuggers and other
         /// tools.

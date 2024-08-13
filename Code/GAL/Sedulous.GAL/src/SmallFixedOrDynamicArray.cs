@@ -12,7 +12,7 @@ namespace Sedulous.GAL
 
         public uint32 Get(uint32 i) => Count > MaxFixedValues ? Data[i] : FixedData[i];
 
-        public this(uint32 count, ref uint32* data)
+        public this(uint32 count, uint32* data)
         {
             if (count > MaxFixedValues)
             {

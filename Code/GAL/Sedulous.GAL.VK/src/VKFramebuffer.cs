@@ -29,7 +29,7 @@ namespace Sedulous.GAL.VK
         public override uint32 RenderableWidth => Width;
         public override uint32 RenderableHeight => Height;
 
-        public override uint32 AttachmentCount { get; }
+        public override uint32 AttachmentCount { get; protected set; }
 
         public override bool IsDisposed => _destroyed;
 
@@ -38,16 +38,16 @@ namespace Sedulous.GAL.VK
         {
             _gd = gd;
 
-            VkRenderPassCreateInfo renderPassCI = VkRenderPassCreateInfo.New();
+            VkRenderPassCreateInfo renderPassCI = VkRenderPassCreateInfo(){sType = .VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO};
 
-            StackList<VkAttachmentDescription> attachments = new StackList<VkAttachmentDescription>();
+            List<VkAttachmentDescription> attachments = scope .();
 
             uint32 colorAttachmentCount = (uint32)ColorTargets.Count;
-            StackList<VkAttachmentReference> colorAttachmentRefs = new StackList<VkAttachmentReference>();
+            List<VkAttachmentReference> colorAttachmentRefs = scope .();
             for (int i = 0; i < colorAttachmentCount; i++)
             {
                 VKTexture vkColorTex = Util.AssertSubtype<Texture, VKTexture>(ColorTargets[i].Target);
-                VkAttachmentDescription colorAttachmentDesc = new VkAttachmentDescription();
+                VkAttachmentDescription colorAttachmentDesc = VkAttachmentDescription();
                 colorAttachmentDesc.format = vkColorTex.VkFormat;
                 colorAttachmentDesc.samples = vkColorTex.VkSampleCount;
                 colorAttachmentDesc.loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -57,46 +57,46 @@ namespace Sedulous.GAL.VK
                 colorAttachmentDesc.initialLayout = isPresented
                     ? VkImageLayout.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
                     : ((vkColorTex.Usage & TextureUsage.Sampled) != 0)
-                        ? VkImageLayout.ShaderReadOnlyOptimal
-                        : VkImageLayout.ColorAttachmentOptimal;
-                colorAttachmentDesc.finalLayout = VkImageLayout.ColorAttachmentOptimal;
+                        ? VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+                        : VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+                colorAttachmentDesc.finalLayout = VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
                 attachments.Add(colorAttachmentDesc);
 
-                VkAttachmentReference colorAttachmentRef = new VkAttachmentReference();
+                VkAttachmentReference colorAttachmentRef = VkAttachmentReference();
                 colorAttachmentRef.attachment = (uint32)i;
-                colorAttachmentRef.layout = VkImageLayout.ColorAttachmentOptimal;
+                colorAttachmentRef.layout = VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
                 colorAttachmentRefs.Add(colorAttachmentRef);
             }
 
-            VkAttachmentDescription depthAttachmentDesc = new VkAttachmentDescription();
-            VkAttachmentReference depthAttachmentRef = new VkAttachmentReference();
+            VkAttachmentDescription depthAttachmentDesc = VkAttachmentDescription();
+            VkAttachmentReference depthAttachmentRef = VkAttachmentReference();
             if (DepthTarget != null)
             {
                 VKTexture vkDepthTex = Util.AssertSubtype<Texture, VKTexture>(DepthTarget.Value.Target);
                 bool hasStencil = FormatHelpers.IsStencilFormat(vkDepthTex.Format);
                 depthAttachmentDesc.format = vkDepthTex.VkFormat;
                 depthAttachmentDesc.samples = vkDepthTex.VkSampleCount;
-                depthAttachmentDesc.loadOp = VkAttachmentLoadOp.Load;
-                depthAttachmentDesc.storeOp = VkAttachmentStoreOp.Store;
-                depthAttachmentDesc.stencilLoadOp = VkAttachmentLoadOp.DontCare;
+                depthAttachmentDesc.loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+                depthAttachmentDesc.storeOp = VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE;
+                depthAttachmentDesc.stencilLoadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_DONT_CARE;
                 depthAttachmentDesc.stencilStoreOp = hasStencil
-                    ? VkAttachmentStoreOp.Store
-                    : VkAttachmentStoreOp.DontCare;
+                    ? VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_STORE
+                    : VkAttachmentStoreOp.VK_ATTACHMENT_STORE_OP_DONT_CARE;
                 depthAttachmentDesc.initialLayout = ((vkDepthTex.Usage & TextureUsage.Sampled) != 0)
-                    ? VkImageLayout.ShaderReadOnlyOptimal
-                    : VkImageLayout.DepthStencilAttachmentOptimal;
-                depthAttachmentDesc.finalLayout = VkImageLayout.DepthStencilAttachmentOptimal;
+                    ? VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+                    : VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+                depthAttachmentDesc.finalLayout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-                depthAttachmentRef.attachment = (uint32)description.ColorTargets.Length;
-                depthAttachmentRef.layout = VkImageLayout.DepthStencilAttachmentOptimal;
+                depthAttachmentRef.attachment = (uint32)description.ColorTargets.Count;
+                depthAttachmentRef.layout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
             }
 
-            VkSubpassDescription subpass = new VkSubpassDescription();
-            subpass.pipelineBindPoint = VkPipelineBindPoint.Graphics;
+            VkSubpassDescription subpass = VkSubpassDescription();
+            subpass.pipelineBindPoint = VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS;
             if (ColorTargets.Count > 0)
             {
                 subpass.colorAttachmentCount = colorAttachmentCount;
-                subpass.pColorAttachments = (VkAttachmentReference*)colorAttachmentRefs.Data;
+                subpass.pColorAttachments = (VkAttachmentReference*)colorAttachmentRefs.Ptr;
             }
 
             if (DepthTarget != null)
@@ -105,39 +105,39 @@ namespace Sedulous.GAL.VK
                 attachments.Add(depthAttachmentDesc);
             }
 
-            VkSubpassDependency subpassDependency = new VkSubpassDependency();
-            subpassDependency.srcSubpass = SubpassExternal;
-            subpassDependency.srcStageMask = VkPipelineStageFlags.ColorAttachmentOutput;
-            subpassDependency.dstStageMask = VkPipelineStageFlags.ColorAttachmentOutput;
-            subpassDependency.dstAccessMask = VkAccessFlags.ColorAttachmentRead | VkAccessFlags.ColorAttachmentWrite;
+            VkSubpassDependency subpassDependency = VkSubpassDependency();
+            subpassDependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+            subpassDependency.srcStageMask = VkPipelineStageFlags.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            subpassDependency.dstStageMask = VkPipelineStageFlags.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            subpassDependency.dstAccessMask = VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VkAccessFlags.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
 
-            renderPassCI.attachmentCount = attachments.Count;
-            renderPassCI.pAttachments = (VkAttachmentDescription*)attachments.Data;
+            renderPassCI.attachmentCount = (uint32)attachments.Count;
+            renderPassCI.pAttachments = (VkAttachmentDescription*)attachments.Ptr;
             renderPassCI.subpassCount = 1;
             renderPassCI.pSubpasses = &subpass;
             renderPassCI.dependencyCount = 1;
             renderPassCI.pDependencies = &subpassDependency;
 
-            VkResult creationResult = vkCreateRenderPass(_gd.Device, ref renderPassCI, null, out _renderPassNoClear);
+            VkResult creationResult = vkCreateRenderPass(_gd.Device, &renderPassCI, null, &_renderPassNoClear);
             CheckResult(creationResult);
 
             for (int i = 0; i < colorAttachmentCount; i++)
             {
-                attachments[i].loadOp = VkAttachmentLoadOp.Load;
-                attachments[i].initialLayout = VkImageLayout.ColorAttachmentOptimal;
+                attachments[i].loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+                attachments[i].initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
             }
             if (DepthTarget != null)
             {
-                attachments[attachments.Count - 1].loadOp = VkAttachmentLoadOp.Load;
-                attachments[attachments.Count - 1].initialLayout = VkImageLayout.DepthStencilAttachmentOptimal;
+                attachments[attachments.Count - 1].loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
+                attachments[attachments.Count - 1].initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
                 bool hasStencil = FormatHelpers.IsStencilFormat(DepthTarget.Value.Target.Format);
                 if (hasStencil)
                 {
-                    attachments[attachments.Count - 1].stencilLoadOp = VkAttachmentLoadOp.Load;
+                    attachments[attachments.Count - 1].stencilLoadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_LOAD;
                 }
 
             }
-            creationResult = vkCreateRenderPass(_gd.Device, ref renderPassCI, null, out _renderPassNoClearLoad);
+            creationResult = vkCreateRenderPass(_gd.Device, &renderPassCI, null, &_renderPassNoClearLoad);
             CheckResult(creationResult);
 
 
@@ -145,47 +145,47 @@ namespace Sedulous.GAL.VK
 
             if (DepthTarget != null)
             {
-                attachments[attachments.Count - 1].loadOp = VkAttachmentLoadOp.Clear;
-                attachments[attachments.Count - 1].initialLayout = VkImageLayout.Undefined;
+                attachments[attachments.Count - 1].loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
+                attachments[attachments.Count - 1].initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
                 bool hasStencil = FormatHelpers.IsStencilFormat(DepthTarget.Value.Target.Format);
                 if (hasStencil)
                 {
-                    attachments[attachments.Count - 1].stencilLoadOp = VkAttachmentLoadOp.Clear;
+                    attachments[attachments.Count - 1].stencilLoadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
                 }
             }
 
             for (int i = 0; i < colorAttachmentCount; i++)
             {
-                attachments[i].loadOp = VkAttachmentLoadOp.Clear;
-                attachments[i].initialLayout = VkImageLayout.Undefined;
+                attachments[i].loadOp = VkAttachmentLoadOp.VK_ATTACHMENT_LOAD_OP_CLEAR;
+                attachments[i].initialLayout = VkImageLayout.VK_IMAGE_LAYOUT_UNDEFINED;
             }
 
             creationResult = vkCreateRenderPass(_gd.Device, &renderPassCI, null, &_renderPassClear);
             CheckResult(creationResult);
 
-            VkFramebufferCreateInfo fbCI = VkFramebufferCreateInfo.New();
+            VkFramebufferCreateInfo fbCI = VkFramebufferCreateInfo() {sType = .VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO};
             uint32 fbAttachmentsCount = (uint32)description.ColorTargets.Count;
             if (description.DepthTarget != null)
             {
                 fbAttachmentsCount += 1;
             }
 
-            VkImageView* fbAttachments = stackalloc VkImageView[(int32)fbAttachmentsCount];
-            for (int32 i = 0; i < colorAttachmentCount; i++)
+            VkImageView* fbAttachments = scope VkImageView[(int32)fbAttachmentsCount]*;
+            for (int i = 0; i < colorAttachmentCount; i++)
             {
                 VKTexture vkColorTarget = Util.AssertSubtype<Texture, VKTexture>(description.ColorTargets[i].Target);
-                VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
+                VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo(){sType = .VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
                 imageViewCI.image = vkColorTarget.OptimalDeviceImage;
                 imageViewCI.format = vkColorTarget.VkFormat;
-                imageViewCI.viewType = VkImageViewType.Image2D;
-                imageViewCI.subresourceRange = new VkImageSubresourceRange(
-                    VkImageAspectFlags.Color,
-                    description.ColorTargets[i].MipLevel,
-                    1,
-                    description.ColorTargets[i].ArrayLayer,
-                    1);
+                imageViewCI.viewType = VkImageViewType.VK_IMAGE_VIEW_TYPE_2D;
+                imageViewCI.subresourceRange = VkImageSubresourceRange(){
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
+                    baseMipLevel = description.ColorTargets[i].MipLevel,
+                    levelCount = 1,
+                    baseArrayLayer = description.ColorTargets[i].ArrayLayer,
+                    layerCount = 1};
                 VkImageView* dest = (fbAttachments + i);
-                VkResult result = vkCreateImageView(_gd.Device, ref imageViewCI, null, dest);
+                VkResult result = vkCreateImageView(_gd.Device, &imageViewCI, null, dest);
                 CheckResult(result);
                 _attachmentViews.Add(*dest);
             }
@@ -195,20 +195,20 @@ namespace Sedulous.GAL.VK
             {
                 VKTexture vkDepthTarget = Util.AssertSubtype<Texture, VKTexture>(description.DepthTarget.Value.Target);
                 bool hasStencil = FormatHelpers.IsStencilFormat(vkDepthTarget.Format);
-                VkImageViewCreateInfo depthViewCI = VkImageViewCreateInfo.New();
+                VkImageViewCreateInfo depthViewCI = VkImageViewCreateInfo(){sType = .VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
                 depthViewCI.image = vkDepthTarget.OptimalDeviceImage;
                 depthViewCI.format = vkDepthTarget.VkFormat;
                 depthViewCI.viewType = description.DepthTarget.Value.Target.ArrayLayers == 1
-                    ? VkImageViewType.Image2D
-                    : VkImageViewType.Image2DArray;
-                depthViewCI.subresourceRange = new VkImageSubresourceRange(
-                    hasStencil ? VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil : VkImageAspectFlags.Depth,
-                    description.DepthTarget.Value.MipLevel,
-                    1,
-                    description.DepthTarget.Value.ArrayLayer,
-                    1);
+                    ? VkImageViewType.VK_IMAGE_VIEW_TYPE_2D
+                    : VkImageViewType.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+                depthViewCI.subresourceRange = VkImageSubresourceRange(){
+                    aspectMask = hasStencil ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT : VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT,
+                    baseMipLevel = description.DepthTarget.Value.MipLevel,
+                    levelCount = 1,
+                    baseArrayLayer = description.DepthTarget.Value.ArrayLayer,
+                    layerCount = 1};
                 VkImageView* dest = (fbAttachments + (fbAttachmentsCount - 1));
-                VkResult result = vkCreateImageView(_gd.Device, ref depthViewCI, null, dest);
+                VkResult result = vkCreateImageView(_gd.Device, &depthViewCI, null, dest);
                 CheckResult(result);
                 _attachmentViews.Add(*dest);
             }
@@ -258,7 +258,7 @@ namespace Sedulous.GAL.VK
             {
                 FramebufferAttachmentDescription ca = ColorTargets[i];
                 VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(ca.Target);
-                vkTex.SetImageLayout(ca.MipLevel, ca.ArrayLayer, VkImageLayout.ColorAttachmentOptimal);
+                vkTex.SetImageLayout(ca.MipLevel, ca.ArrayLayer, VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
             }
             if (DepthTarget != null)
             {
@@ -266,7 +266,7 @@ namespace Sedulous.GAL.VK
                 vkTex.SetImageLayout(
                     DepthTarget.Value.MipLevel,
                     DepthTarget.Value.ArrayLayer,
-                    VkImageLayout.DepthStencilAttachmentOptimal);
+                    VkImageLayout.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
             }
         }
 
@@ -282,7 +282,7 @@ namespace Sedulous.GAL.VK
                         cb,
                         ca.MipLevel, 1,
                         ca.ArrayLayer, 1,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
             }
             if (DepthTarget != null)
@@ -294,7 +294,7 @@ namespace Sedulous.GAL.VK
                         cb,
                         DepthTarget.Value.MipLevel, 1,
                         DepthTarget.Value.ArrayLayer, 1,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
             }
         }

@@ -10,13 +10,13 @@ namespace Sedulous.GAL.VK
             switch (mode)
             {
                 case SamplerAddressMode.Wrap:
-                    return VkSamplerAddressMode.Repeat;
+                    return VkSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_REPEAT;
                 case SamplerAddressMode.Mirror:
-                    return VkSamplerAddressMode.MirroredRepeat;
+                    return VkSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
                 case SamplerAddressMode.Clamp:
-                    return VkSamplerAddressMode.ClampToEdge;
+                    return VkSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
                 case SamplerAddressMode.Border:
-                    return VkSamplerAddressMode.ClampToBorder;
+                    return VkSamplerAddressMode.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER;
                 default:
                     Runtime.IllegalValue<SamplerAddressMode>();
             }
@@ -31,49 +31,49 @@ namespace Sedulous.GAL.VK
             switch (filter)
             {
                 case SamplerFilter.Anisotropic:
-                    minFilter = VkFilter.Linear;
-                    magFilter = VkFilter.Linear;
-                    mipmapMode = VkSamplerMipmapMode.Linear;
+                    minFilter = VkFilter.VK_FILTER_LINEAR;
+                    magFilter = VkFilter.VK_FILTER_LINEAR;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_LINEAR;
                     break;
                 case SamplerFilter.MinPoint_MagPoint_MipPoint:
-                    minFilter = VkFilter.Nearest;
-                    magFilter = VkFilter.Nearest;
-                    mipmapMode = VkSamplerMipmapMode.Nearest;
+                    minFilter = VkFilter.VK_FILTER_NEAREST;
+                    magFilter = VkFilter.VK_FILTER_NEAREST;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
                     break;
                 case SamplerFilter.MinPoint_MagPoint_MipLinear:
-                    minFilter = VkFilter.Nearest;
-                    magFilter = VkFilter.Nearest;
-                    mipmapMode = VkSamplerMipmapMode.Linear;
+                    minFilter = VkFilter.VK_FILTER_NEAREST;
+                    magFilter = VkFilter.VK_FILTER_NEAREST;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_LINEAR;
                     break;
                 case SamplerFilter.MinPoint_MagLinear_MipPoint:
-                    minFilter = VkFilter.Nearest;
-                    magFilter = VkFilter.Linear;
-                    mipmapMode = VkSamplerMipmapMode.Nearest;
+                    minFilter = VkFilter.VK_FILTER_NEAREST;
+                    magFilter = VkFilter.VK_FILTER_LINEAR;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
                     break;
                 case SamplerFilter.MinPoint_MagLinear_MipLinear:
-                    minFilter = VkFilter.Nearest;
-                    magFilter = VkFilter.Linear;
-                    mipmapMode = VkSamplerMipmapMode.Linear;
+                    minFilter = VkFilter.VK_FILTER_NEAREST;
+                    magFilter = VkFilter.VK_FILTER_LINEAR;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_LINEAR;
                     break;
                 case SamplerFilter.MinLinear_MagPoint_MipPoint:
-                    minFilter = VkFilter.Linear;
-                    magFilter = VkFilter.Nearest;
-                    mipmapMode = VkSamplerMipmapMode.Nearest;
+                    minFilter = VkFilter.VK_FILTER_LINEAR;
+                    magFilter = VkFilter.VK_FILTER_NEAREST;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
                     break;
                 case SamplerFilter.MinLinear_MagPoint_MipLinear:
-                    minFilter = VkFilter.Linear;
-                    magFilter = VkFilter.Nearest;
-                    mipmapMode = VkSamplerMipmapMode.Linear;
+                    minFilter = VkFilter.VK_FILTER_LINEAR;
+                    magFilter = VkFilter.VK_FILTER_NEAREST;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_LINEAR;
                     break;
                 case SamplerFilter.MinLinear_MagLinear_MipPoint:
-                    minFilter = VkFilter.Linear;
-                    magFilter = VkFilter.Linear;
-                    mipmapMode = VkSamplerMipmapMode.Nearest;
+                    minFilter = VkFilter.VK_FILTER_LINEAR;
+                    magFilter = VkFilter.VK_FILTER_LINEAR;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_NEAREST;
                     break;
                 case SamplerFilter.MinLinear_MagLinear_MipLinear:
-                    minFilter = VkFilter.Linear;
-                    magFilter = VkFilter.Linear;
-                    mipmapMode = VkSamplerMipmapMode.Linear;
+                    minFilter = VkFilter.VK_FILTER_LINEAR;
+                    magFilter = VkFilter.VK_FILTER_LINEAR;
+                    mipmapMode = VkSamplerMipmapMode.VK_SAMPLER_MIPMAP_MODE_LINEAR;
                     break;
                 default:
                     Runtime.IllegalValue<SamplerFilter>();
@@ -84,23 +84,23 @@ namespace Sedulous.GAL.VK
         {
             VkImageUsageFlags vkUsage = VkImageUsageFlags.None;
 
-            vkUsage = VkImageUsageFlags.TransferDst | VkImageUsageFlags.TransferSrc;
+            vkUsage = VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_DST_BIT | VkImageUsageFlags.VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
             bool isDepthStencil = (vdUsage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil;
             if ((vdUsage & TextureUsage.Sampled) == TextureUsage.Sampled)
             {
-                vkUsage |= VkImageUsageFlags.Sampled;
+                vkUsage |= VkImageUsageFlags.VK_IMAGE_USAGE_SAMPLED_BIT;
             }
             if (isDepthStencil)
             {
-                vkUsage |= VkImageUsageFlags.DepthStencilAttachment;
+                vkUsage |= VkImageUsageFlags.VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
             }
             if ((vdUsage & TextureUsage.RenderTarget) == TextureUsage.RenderTarget)
             {
-                vkUsage |= VkImageUsageFlags.ColorAttachment;
+                vkUsage |= VkImageUsageFlags.VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
             }
             if ((vdUsage & TextureUsage.Storage) == TextureUsage.Storage)
             {
-                vkUsage |= VkImageUsageFlags.Storage;
+                vkUsage |= VkImageUsageFlags.VK_IMAGE_USAGE_STORAGE_BIT;
             }
 
             return vkUsage;
@@ -111,11 +111,11 @@ namespace Sedulous.GAL.VK
             switch (type)
             {
                 case TextureType.Texture1D:
-                    return VkImageType.Image1D;
+                    return VkImageType.VK_IMAGE_TYPE_1D;
                 case TextureType.Texture2D:
-                    return VkImageType.Image2D;
+                    return VkImageType.VK_IMAGE_TYPE_2D;
                 case TextureType.Texture3D:
-                    return VkImageType.Image3D;
+                    return VkImageType.VK_IMAGE_TYPE_3D;
                 default:
                     Runtime.IllegalValue<TextureType>();
             }
@@ -127,16 +127,16 @@ namespace Sedulous.GAL.VK
             switch (kind)
             {
                 case ResourceKind.UniformBuffer:
-                    return dynamicBinding ? VkDescriptorType.UniformBufferDynamic : VkDescriptorType.UniformBuffer;
+                    return dynamicBinding ? VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC : VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
                 case ResourceKind.StructuredBufferReadWrite:
                 case ResourceKind.StructuredBufferReadOnly:
-                    return dynamicBinding ? VkDescriptorType.StorageBufferDynamic : VkDescriptorType.StorageBuffer;
+                    return dynamicBinding ? VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC : VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
                 case ResourceKind.TextureReadOnly:
-                    return VkDescriptorType.SampledImage;
+                    return VkDescriptorType.eSampledImage;
                 case ResourceKind.TextureReadWrite:
-                    return VkDescriptorType.StorageImage;
+                    return VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
                 case ResourceKind.Sampler:
-                    return VkDescriptorType.Sampler;
+                    return VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER;
                 default:
                     Runtime.IllegalValue<ResourceKind>();
             }
@@ -147,17 +147,17 @@ namespace Sedulous.GAL.VK
             switch (sampleCount)
             {
                 case TextureSampleCount.Count1:
-                    return VkSampleCountFlags.Count1;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_1_BIT;
                 case TextureSampleCount.Count2:
-                    return VkSampleCountFlags.Count2;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_2_BIT;
                 case TextureSampleCount.Count4:
-                    return VkSampleCountFlags.Count4;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_4_BIT;
                 case TextureSampleCount.Count8:
-                    return VkSampleCountFlags.Count8;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_8_BIT;
                 case TextureSampleCount.Count16:
-                    return VkSampleCountFlags.Count16;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_16_BIT;
                 case TextureSampleCount.Count32:
-                    return VkSampleCountFlags.Count32;
+                    return VkSampleCountFlags.VK_SAMPLE_COUNT_32_BIT;
                 default:
                     Runtime.IllegalValue<TextureSampleCount>();
             }
@@ -168,21 +168,21 @@ namespace Sedulous.GAL.VK
             switch (op)
             {
                 case StencilOperation.Keep:
-                    return VkStencilOp.Keep;
+                    return VkStencilOp.VK_STENCIL_OP_KEEP;
                 case StencilOperation.Zero:
-                    return VkStencilOp.Zero;
+                    return VkStencilOp.VK_STENCIL_OP_ZERO;
                 case StencilOperation.Replace:
-                    return VkStencilOp.Replace;
+                    return VkStencilOp.VK_STENCIL_OP_REPLACE;
                 case StencilOperation.IncrementAndClamp:
-                    return VkStencilOp.IncrementAndClamp;
+                    return VkStencilOp.VK_STENCIL_OP_INCREMENT_AND_CLAMP;
                 case StencilOperation.DecrementAndClamp:
-                    return VkStencilOp.DecrementAndClamp;
+                    return VkStencilOp.VK_STENCIL_OP_DECREMENT_AND_CLAMP;
                 case StencilOperation.Invert:
-                    return VkStencilOp.Invert;
+                    return VkStencilOp.VK_STENCIL_OP_INVERT;
                 case StencilOperation.IncrementAndWrap:
-                    return VkStencilOp.IncrementAndWrap;
+                    return VkStencilOp.VK_STENCIL_OP_INCREMENT_AND_WRAP;
                 case StencilOperation.DecrementAndWrap:
-                    return VkStencilOp.DecrementAndWrap;
+                    return VkStencilOp.VK_STENCIL_OP_DECREMENT_AND_WRAP;
                 default:
                     Runtime.IllegalValue<StencilOperation>();
             }
@@ -193,9 +193,9 @@ namespace Sedulous.GAL.VK
             switch (fillMode)
             {
                 case PolygonFillMode.Solid:
-                    return VkPolygonMode.Fill;
+                    return VkPolygonMode.VK_POLYGON_MODE_FILL;
                 case PolygonFillMode.Wireframe:
-                    return VkPolygonMode.Line;
+                    return VkPolygonMode.VK_POLYGON_MODE_LINE;
                 default:
                     Runtime.IllegalValue<PolygonFillMode>();
             }
@@ -206,11 +206,11 @@ namespace Sedulous.GAL.VK
             switch (cullMode)
             {
                 case FaceCullMode.Back:
-                    return VkCullModeFlags.Back;
+                    return VkCullModeFlags.VK_CULL_MODE_BACK_BIT;
                 case FaceCullMode.Front:
-                    return VkCullModeFlags.Front;
+                    return VkCullModeFlags.VK_CULL_MODE_FRONT_BIT;
                 case FaceCullMode.None:
-                    return VkCullModeFlags.None;
+                    return VkCullModeFlags.VK_CULL_MODE_NONE;
                 default:
                     Runtime.IllegalValue<FaceCullMode>();
             }
@@ -221,15 +221,15 @@ namespace Sedulous.GAL.VK
             switch (func)
             {
                 case BlendFunction.Add:
-                    return VkBlendOp.Add;
+                    return VkBlendOp.VK_BLEND_OP_ADD;
                 case BlendFunction.Subtract:
-                    return VkBlendOp.Subtract;
+                    return VkBlendOp.VK_BLEND_OP_SUBTRACT;
                 case BlendFunction.ReverseSubtract:
-                    return VkBlendOp.ReverseSubtract;
+                    return VkBlendOp.VK_BLEND_OP_REVERSE_SUBTRACT;
                 case BlendFunction.Minimum:
-                    return VkBlendOp.Min;
+                    return VkBlendOp.VK_BLEND_OP_MIN;
                 case BlendFunction.Maximum:
-                    return VkBlendOp.Max;
+                    return VkBlendOp.VK_BLEND_OP_MAX;
                 default:
                     Runtime.IllegalValue<BlendFunction>();
             }
@@ -240,13 +240,13 @@ namespace Sedulous.GAL.VK
             VkColorComponentFlags flags = VkColorComponentFlags.None;
 
             if ((mask & ColorWriteMask.Red) == ColorWriteMask.Red)
-                flags |= VkColorComponentFlags.R;
+                flags |= VkColorComponentFlags.VK_COLOR_COMPONENT_R_BIT;
             if ((mask & ColorWriteMask.Green) == ColorWriteMask.Green)
-                flags |= VkColorComponentFlags.G;
+                flags |= VkColorComponentFlags.VK_COLOR_COMPONENT_G_BIT;
             if ((mask & ColorWriteMask.Blue) == ColorWriteMask.Blue)
-                flags |= VkColorComponentFlags.B;
+                flags |= VkColorComponentFlags.VK_COLOR_COMPONENT_B_BIT;
             if ((mask & ColorWriteMask.Alpha) == ColorWriteMask.Alpha)
-                flags |= VkColorComponentFlags.A;
+                flags |= VkColorComponentFlags.VK_COLOR_COMPONENT_A_BIT;
 
             return flags;
         }
@@ -256,15 +256,15 @@ namespace Sedulous.GAL.VK
             switch (topology)
             {
                 case PrimitiveTopology.TriangleList:
-                    return VkPrimitiveTopology.TriangleList;
+                    return VkPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
                 case PrimitiveTopology.TriangleStrip:
-                    return VkPrimitiveTopology.TriangleStrip;
+                    return VkPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP;
                 case PrimitiveTopology.LineList:
-                    return VkPrimitiveTopology.LineList;
+                    return VkPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_LINE_LIST;
                 case PrimitiveTopology.LineStrip:
-                    return VkPrimitiveTopology.LineStrip;
+                    return VkPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_LINE_STRIP;
                 case PrimitiveTopology.PointList:
-                    return VkPrimitiveTopology.PointList;
+                    return VkPrimitiveTopology.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
                 default:
                     Runtime.IllegalValue<PrimitiveTopology>();
             }
@@ -302,15 +302,15 @@ namespace Sedulous.GAL.VK
             switch (factor)
             {
                 case BlendFactor.Zero:
-                    return VkBlendFactor.Zero;
+                    return VkBlendFactor.VK_BLEND_FACTOR_ZERO;
                 case BlendFactor.One:
-                    return VkBlendFactor.One;
+                    return VkBlendFactor.VK_BLEND_FACTOR_ONE;
                 case BlendFactor.SourceAlpha:
-                    return VkBlendFactor.SrcAlpha;
+                    return VkBlendFactor.VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
                 case BlendFactor.InverseSourceAlpha:
-                    return VkBlendFactor.OneMinusSrcAlpha;
+                    return VkBlendFactor.VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
                 case BlendFactor.DestinationAlpha:
-                    return VkBlendFactor.DstAlpha;
+                    return VkBlendFactor.VK_BLEND_FACTOR_DST_ALPHA;
                 case BlendFactor.InverseDestinationAlpha:
                     return VkBlendFactor.OneMinusDstAlpha;
                 case BlendFactor.SourceColor:
@@ -322,9 +322,9 @@ namespace Sedulous.GAL.VK
                 case BlendFactor.InverseDestinationColor:
                     return VkBlendFactor.OneMinusDstColor;
                 case BlendFactor.BlendFactor:
-                    return VkBlendFactor.ConstantColor;
+                    return VkBlendFactor.VK_BLEND_FACTOR_CONSTANT_COLOR;
                 case BlendFactor.InverseBlendFactor:
-                    return VkBlendFactor.OneMinusConstantColor;
+                    return VkBlendFactor.VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR;
                 default:
                     Runtime.IllegalValue<BlendFactor>();
             }
@@ -406,22 +406,22 @@ namespace Sedulous.GAL.VK
             VkShaderStageFlags ret = VkShaderStageFlags.None;
 
             if ((stage & ShaderStages.Vertex) == ShaderStages.Vertex)
-                ret |= VkShaderStageFlags.Vertex;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_VERTEX_BIT;
 
             if ((stage & ShaderStages.Geometry) == ShaderStages.Geometry)
-                ret |= VkShaderStageFlags.Geometry;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_GEOMETRY_BIT;
 
             if ((stage & ShaderStages.TessellationControl) == ShaderStages.TessellationControl)
-                ret |= VkShaderStageFlags.TessellationControl;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
 
             if ((stage & ShaderStages.TessellationEvaluation) == ShaderStages.TessellationEvaluation)
-                ret |= VkShaderStageFlags.TessellationEvaluation;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_TESSELLATION_EVALUATION_BIT;
 
             if ((stage & ShaderStages.Fragment) == ShaderStages.Fragment)
-                ret |= VkShaderStageFlags.Fragment;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_FRAGMENT_BIT;
 
             if ((stage & ShaderStages.Compute) == ShaderStages.Compute)
-                ret |= VkShaderStageFlags.Compute;
+                ret |= VkShaderStageFlags.VK_SHADER_STAGE_COMPUTE_BIT;
 
             return ret;
         }
@@ -431,11 +431,11 @@ namespace Sedulous.GAL.VK
             switch (borderColor)
             {
                 case SamplerBorderColor.TransparentBlack:
-                    return VkBorderColor.FloatTransparentBlack;
+                    return VkBorderColor.VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
                 case SamplerBorderColor.OpaqueBlack:
-                    return VkBorderColor.FloatOpaqueBlack;
+                    return VkBorderColor.VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
                 case SamplerBorderColor.OpaqueWhite:
-                    return VkBorderColor.FloatOpaqueWhite;
+                    return VkBorderColor.VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
                 default:
                     Runtime.IllegalValue<SamplerBorderColor>();
             }
@@ -446,9 +446,9 @@ namespace Sedulous.GAL.VK
             switch (format)
             {
                 case IndexFormat.UInt16:
-                    return VkIndexType.Uint16;
+                    return VkIndexType.VK_INDEX_TYPE_UINT16;
                 case IndexFormat.UInt32:
-                    return VkIndexType.Uint32;
+                    return VkIndexType.VK_INDEX_TYPE_UINT32;
                 default:
                     Runtime.IllegalValue<IndexFormat>();
             }
@@ -459,21 +459,21 @@ namespace Sedulous.GAL.VK
             switch (comparisonKind)
             {
                 case ComparisonKind.Never:
-                    return VkCompareOp.Never;
+                    return VkCompareOp.VK_COMPARE_OP_NEVER;
                 case ComparisonKind.Less:
-                    return VkCompareOp.Less;
+                    return VkCompareOp.VK_COMPARE_OP_LESS;
                 case ComparisonKind.Equal:
-                    return VkCompareOp.Equal;
+                    return VkCompareOp.VK_COMPARE_OP_EQUAL;
                 case ComparisonKind.LessEqual:
-                    return VkCompareOp.LessOrEqual;
+                    return VkCompareOp.VK_COMPARE_OP_LESS_OR_EQUAL;
                 case ComparisonKind.Greater:
-                    return VkCompareOp.Greater;
+                    return VkCompareOp.VK_COMPARE_OP_GREATER;
                 case ComparisonKind.NotEqual:
-                    return VkCompareOp.NotEqual;
+                    return VkCompareOp.VK_COMPARE_OP_NOT_EQUAL;
                 case ComparisonKind.GreaterEqual:
-                    return VkCompareOp.GreaterOrEqual;
+                    return VkCompareOp.VK_COMPARE_OP_GREATER_OR_EQUAL;
                 case ComparisonKind.Always:
-                    return VkCompareOp.Always;
+                    return VkCompareOp.VK_COMPARE_OP_ALWAYS;
                 default:
                     Runtime.IllegalValue<ComparisonKind>();
             }

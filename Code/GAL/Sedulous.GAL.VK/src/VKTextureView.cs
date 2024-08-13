@@ -27,7 +27,7 @@ namespace Sedulous.GAL.VK
             : base(description)
         {
             _gd = gd;
-            VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo.New();
+            VkImageViewCreateInfo imageViewCI = VkImageViewCreateInfo(){sType = .VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO};
             VKTexture tex = Util.AssertSubtype<Texture, VKTexture>(description.Target);
             imageViewCI.image = tex.OptimalDeviceImage;
             imageViewCI.format = VKFormats.VdToVkPixelFormat(Format, (Target.Usage & TextureUsage.DepthStencil) != 0);
@@ -35,23 +35,23 @@ namespace Sedulous.GAL.VK
             VkImageAspectFlags aspectFlags;
             if ((description.Target.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
             {
-                aspectFlags = VkImageAspectFlags.Depth;
+                aspectFlags = VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT;
             }
             else
             {
-                aspectFlags = VkImageAspectFlags.Color;
+                aspectFlags = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
             }
 
-            imageViewCI.subresourceRange = new VkImageSubresourceRange(
-                aspectFlags,
-                description.BaseMipLevel,
-                description.MipLevels,
-                description.BaseArrayLayer,
-                description.ArrayLayers);
+            imageViewCI.subresourceRange = VkImageSubresourceRange(){
+                aspectMask = aspectFlags,
+                baseMipLevel = description.BaseMipLevel,
+                levelCount = description.MipLevels,
+                baseArrayLayer = description.BaseArrayLayer,
+                layerCount = description.ArrayLayers};
 
             if ((tex.Usage & TextureUsage.Cubemap) == TextureUsage.Cubemap)
             {
-                imageViewCI.viewType = description.ArrayLayers == 1 ? VkImageViewType.ImageCube : VkImageViewType.ImageCubeArray;
+                imageViewCI.viewType = description.ArrayLayers == 1 ? VkImageViewType.VK_IMAGE_VIEW_TYPE_CUBE : VkImageViewType.VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
                 imageViewCI.subresourceRange.layerCount *= 6;
             }
             else
@@ -60,16 +60,16 @@ namespace Sedulous.GAL.VK
                 {
                     case TextureType.Texture1D:
                         imageViewCI.viewType = description.ArrayLayers == 1
-                            ? VkImageViewType.Image1D
-                            : VkImageViewType.Image1DArray;
+                            ? VkImageViewType.VK_IMAGE_VIEW_TYPE_1D
+                            : VkImageViewType.VK_IMAGE_VIEW_TYPE_1D_ARRAY;
                         break;
                     case TextureType.Texture2D:
                         imageViewCI.viewType = description.ArrayLayers == 1
-                            ? VkImageViewType.Image2D
-                            : VkImageViewType.Image2DArray;
+                            ? VkImageViewType.VK_IMAGE_VIEW_TYPE_2D
+                            : VkImageViewType.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
                         break;
                     case TextureType.Texture3D:
-                        imageViewCI.viewType = VkImageViewType.Image3D;
+                        imageViewCI.viewType = VkImageViewType.VK_IMAGE_VIEW_TYPE_3D;
                         break;
                 }
             }

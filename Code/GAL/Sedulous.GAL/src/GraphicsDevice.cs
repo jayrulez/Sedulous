@@ -60,7 +60,7 @@ namespace Sedulous.GAL
         /// <summary>
         /// Gets the <see cref="ResourceFactory"/> controlled by this instance.
         /// </summary>
-        public abstract ResourceFactory ResourceFactory { get; }
+        public abstract ResourceFactory ResourceFactory { get; protected set; }
 
         /// <summary>
         /// Retrieves the main Swapchain for this device. This property is only valid if the device was created with a main
@@ -71,7 +71,7 @@ namespace Sedulous.GAL
         /// <summary>
         /// Gets a <see cref="GraphicsDeviceFeatures"/> which enumerates the optional features supported by this instance.
         /// </summary>
-        public abstract GraphicsDeviceFeatures Features { get; }
+        public abstract GraphicsDeviceFeatures Features { get; protected set; }
 
         /// <summary>
         /// Gets or sets whether the main Swapchain's <see cref="SwapBuffers()"/> should be synchronized to the window system's

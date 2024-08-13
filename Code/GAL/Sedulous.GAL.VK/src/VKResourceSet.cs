@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
-using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using System.Collections;
+using System;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     internal class VKResourceSet : ResourceSet
     {
         private readonly VKGraphicsDevice _gd;
@@ -12,7 +16,7 @@ namespace Sedulous.GAL.VK
         private readonly DescriptorAllocationToken _descriptorAllocationToken;
         private readonly List<ResourceRefCount> _refCounts = new List<ResourceRefCount>();
         private bool _destroyed;
-        private string _name;
+        private String _name;
 
         public VkDescriptorSet DescriptorSet => _descriptorAllocationToken.Set;
 
@@ -26,11 +30,11 @@ namespace Sedulous.GAL.VK
 
         public override bool IsDisposed => _destroyed;
 
-        public VKResourceSet(VKGraphicsDevice gd, ref ResourceSetDescription description)
-            : base(ref description)
+        public this(VKGraphicsDevice gd, in ResourceSetDescription description)
+            : base(description)
         {
             _gd = gd;
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
             VKResourceLayout vkLayout = Util.AssertSubtype<ResourceLayout, VKResourceLayout>(description.Layout);
 
             VkDescriptorSetLayout dsl = vkLayout.DescriptorSetLayout;
@@ -38,23 +42,23 @@ namespace Sedulous.GAL.VK
             _descriptorAllocationToken = _gd.DescriptorPoolManager.Allocate(_descriptorCounts, dsl);
 
             BindableResource[] boundResources = description.BoundResources;
-            uint32 descriptorWriteCount = (uint32)boundResources.Length;
-            VkWriteDescriptorSet* descriptorWrites = stackalloc VkWriteDescriptorSet[(int32)descriptorWriteCount];
-            VkDescriptorBufferInfo* bufferInfos = stackalloc VkDescriptorBufferInfo[(int32)descriptorWriteCount];
-            VkDescriptorImageInfo* imageInfos = stackalloc VkDescriptorImageInfo[(int32)descriptorWriteCount];
+            uint32 descriptorWriteCount = (uint32)boundResources.Count;
+            VkWriteDescriptorSet* descriptorWrites = scope VkWriteDescriptorSet[(int32)descriptorWriteCount]*;
+            VkDescriptorBufferInfo* bufferInfos = scope VkDescriptorBufferInfo[(int32)descriptorWriteCount]*;
+            VkDescriptorImageInfo* imageInfos = scope VkDescriptorImageInfo[(int32)descriptorWriteCount]*;
 
-            for (int32 i = 0; i < descriptorWriteCount; i++)
+            for (int i = 0; i < descriptorWriteCount; i++)
             {
                 VkDescriptorType type = vkLayout.DescriptorTypes[i];
 
-                descriptorWrites[i].sType = VkStructureType.WriteDescriptorSet;
+                descriptorWrites[i].sType = VkStructureType.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
                 descriptorWrites[i].descriptorCount = 1;
                 descriptorWrites[i].descriptorType = type;
                 descriptorWrites[i].dstBinding = (uint32)i;
                 descriptorWrites[i].dstSet = _descriptorAllocationToken.Set;
 
-                if (type == VkDescriptorType.UniformBuffer || type == VkDescriptorType.UniformBufferDynamic
-                    || type == VkDescriptorType.StorageBuffer || type == VkDescriptorType.StorageBufferDynamic)
+                if (type == VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER || type == VkDescriptorType.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC
+                    || type == VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER || type == VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC)
                 {
                     DeviceBufferRange range = Util.GetBufferRange(boundResources[i], 0);
                     VKBuffer rangedVkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(range.Buffer);
@@ -64,27 +68,27 @@ namespace Sedulous.GAL.VK
                     descriptorWrites[i].pBufferInfo = &bufferInfos[i];
                     _refCounts.Add(rangedVkBuffer.RefCount);
                 }
-                else if (type == VkDescriptorType.SampledImage)
+                else if (type == VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE)
                 {
                     TextureView texView = Util.GetTextureView(_gd, boundResources[i]);
                     VKTextureView vkTexView = Util.AssertSubtype<TextureView, VKTextureView>(texView);
                     imageInfos[i].imageView = vkTexView.ImageView;
-                    imageInfos[i].imageLayout = VkImageLayout.ShaderReadOnlyOptimal;
+                    imageInfos[i].imageLayout = VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
                     descriptorWrites[i].pImageInfo = &imageInfos[i];
                     _sampledTextures.Add(Util.AssertSubtype<Texture, VKTexture>(texView.Target));
                     _refCounts.Add(vkTexView.RefCount);
                 }
-                else if (type == VkDescriptorType.StorageImage)
+                else if (type == VkDescriptorType.VK_DESCRIPTOR_TYPE_STORAGE_IMAGE)
                 {
                     TextureView texView = Util.GetTextureView(_gd, boundResources[i]);
                     VKTextureView vkTexView = Util.AssertSubtype<TextureView, VKTextureView>(texView);
                     imageInfos[i].imageView = vkTexView.ImageView;
-                    imageInfos[i].imageLayout = VkImageLayout.General;
+                    imageInfos[i].imageLayout = VkImageLayout.VK_IMAGE_LAYOUT_GENERAL;
                     descriptorWrites[i].pImageInfo = &imageInfos[i];
                     _storageImages.Add(Util.AssertSubtype<Texture, VKTexture>(texView.Target));
                     _refCounts.Add(vkTexView.RefCount);
                 }
-                else if (type == VkDescriptorType.Sampler)
+                else if (type == VkDescriptorType.VK_DESCRIPTOR_TYPE_SAMPLER)
                 {
                     VKSampler sampler = Util.AssertSubtype<BindableResource, VKSampler>(boundResources[i]);
                     imageInfos[i].sampler = sampler.DeviceSampler;
@@ -96,7 +100,7 @@ namespace Sedulous.GAL.VK
             vkUpdateDescriptorSets(_gd.Device, descriptorWriteCount, descriptorWrites, 0, null);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

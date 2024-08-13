@@ -17,7 +17,7 @@ namespace Sedulous.GAL.VK
         private uint32 _currentImageIndex;
 
         private VKFramebuffer[] _scFramebuffers;
-        private VkImage[] _scImages = {};
+        private VkImage[] _scImages = new .[0];
         private VkFormat _scImageFormat;
         private VkExtent2D _scExtent;
         private FramebufferAttachmentList[] _scColorTextures;
@@ -49,7 +49,7 @@ namespace Sedulous.GAL.VK
 
         public override ref OutputDescription OutputDescription => ref _outputDescription;
 
-        public override uint32 AttachmentCount { get; }
+        public override uint32 AttachmentCount { get; protected set; }
 
         public VKSwapchain Swapchain => _swapchain;
 
@@ -93,6 +93,7 @@ namespace Sedulous.GAL.VK
             CheckResult(result);
             if (_scImages.Count < scImageCount)
             {
+				delete _scImages;
                 _scImages = new VkImage[(int32)scImageCount];
             }
             result = vkGetSwapchainImagesKHR(_gd.Device, deviceSwapchain, &scImageCount, _scImages.Ptr);
@@ -163,7 +164,7 @@ namespace Sedulous.GAL.VK
                     TextureSampleCount.Count1,
                     _scImages[i]);
                 FramebufferDescription desc = FramebufferDescription(_depthAttachment?.Target, colorTex);
-                VKFramebuffer fb = new VKFramebuffer(_gd, ref desc, true);
+                VKFramebuffer fb = new VKFramebuffer(_gd, desc, true);
                 _scFramebuffers[i] = fb;
                 _scColorTextures[i] = .(FramebufferAttachmentDescription(colorTex, 0));
             }

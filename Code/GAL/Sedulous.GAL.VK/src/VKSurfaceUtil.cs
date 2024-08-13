@@ -1,13 +1,13 @@
-﻿using Vulkan;
-using Vulkan.Xlib;
-using Vulkan.Wayland;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using Sedulous.GAL.Android;
 using System;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+
     internal static class VKSurfaceUtil
     {
         internal static VkSurfaceKHR CreateSurface(VKGraphicsDevice gd, VkInstance instance, SwapchainSource swapchainSource)
@@ -17,32 +17,32 @@ namespace Sedulous.GAL.VK
             var doCheck = gd != null;
 
             if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME))
-                Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME}");
+                Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_SURFACE_EXTENSION_NAME}");
 
             switch (swapchainSource)
             {
                 case XlibSwapchainSource xlibSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME))
                     {
-                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_XLIB_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateXlib(instance, xlibSource);
                 case WaylandSwapchainSource waylandSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME))
                     {
-                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_WAYLAND_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWayland(instance, waylandSource);
                 case Win32SwapchainSource win32Source:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME))
                     {
-                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_WIN32_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateWin32(instance, win32Source);
                 case AndroidSurfaceSwapchainSource androidSource:
                     if (doCheck && !gd.HasSurfaceExtension(CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME))
                     {
-                        Runtime.GALError($"The required instance extension was not available: {CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME}");
+                        Runtime.GALError(scope $"The required instance extension was not available: {CommonStrings.VK_KHR_ANDROID_SURFACE_EXTENSION_NAME}");
                     }
                     return CreateAndroidSurface(instance, androidSource);
                 case NSWindowSwapchainSource nsWindowSource:
@@ -55,8 +55,7 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            Runtime.GALError($"Neither macOS surface extension was available: " +
-                                $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
+                            Runtime.GALError(scope $"Neither macOS surface extension was available: {CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
                         }
                     }
 
@@ -71,8 +70,7 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            Runtime.GALError($"Neither macOS surface extension was available: " +
-                                $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
+                            Runtime.GALError(scope $"Neither macOS surface extension was available: {CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_EXT_METAL_SURFACE_EXTENSION_NAME}");
                         }
                     }
 
@@ -87,8 +85,7 @@ namespace Sedulous.GAL.VK
                         }
                         else
                         {
-                            Runtime.GALError($"Neither macOS surface extension was available: " +
-                                $"{CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_MVK_IOS_SURFACE_EXTENSION_NAME}");
+                            Runtime.GALError(scope $"Neither macOS surface extension was available: {CommonStrings.VK_MVK_MACOS_SURFACE_EXTENSION_NAME}, {CommonStrings.VK_MVK_IOS_SURFACE_EXTENSION_NAME}");
                         }
                     }
 
@@ -100,41 +97,45 @@ namespace Sedulous.GAL.VK
 
         private static VkSurfaceKHR CreateWin32(VkInstance instance, Win32SwapchainSource win32Source)
         {
-            VkWin32SurfaceCreateInfoKHR surfaceCI = VkWin32SurfaceCreateInfoKHR.New();
+            VkWin32SurfaceCreateInfoKHR surfaceCI = VkWin32SurfaceCreateInfoKHR() {sType = .VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR};
             surfaceCI.hwnd = win32Source.Hwnd;
             surfaceCI.hinstance = win32Source.Hinstance;
-            VkResult result = vkCreateWin32SurfaceKHR(instance, ref surfaceCI, null, out VkSurfaceKHR surface);
+			VkSurfaceKHR surface = .Null;
+            VkResult result = vkCreateWin32SurfaceKHR(instance, &surfaceCI, null, &surface);
             CheckResult(result);
             return surface;
         }
 
         private static VkSurfaceKHR CreateXlib(VkInstance instance, XlibSwapchainSource xlibSource)
         {
-            VkXlibSurfaceCreateInfoKHR xsci = VkXlibSurfaceCreateInfoKHR.New();
-            xsci.dpy = (Display*)xlibSource.Display;
-            xsci.window = new Window { Value = xlibSource.Window };
-            VkResult result = vkCreateXlibSurfaceKHR(instance, ref xsci, null, out VkSurfaceKHR surface);
+            VkXlibSurfaceCreateInfoKHR xsci = VkXlibSurfaceCreateInfoKHR(){sType = .VK_STRUCTURE_TYPE_XLIB_SURFACE_CREATE_INFO_KHR};
+            xsci.dpy = xlibSource.Display;
+            xsci.window = xlibSource.Window;
+			VkSurfaceKHR surface = .Null;
+            VkResult result = vkCreateXlibSurfaceKHR(instance, &xsci, null, &surface);
             CheckResult(result);
             return surface;
         }
 
         private static VkSurfaceKHR CreateWayland(VkInstance instance, WaylandSwapchainSource waylandSource)
         {
-            VkWaylandSurfaceCreateInfoKHR wsci = VkWaylandSurfaceCreateInfoKHR.New();
-            wsci.display = (wl_display*)waylandSource.Display;
-            wsci.surface = (wl_surface*)waylandSource.Surface;
-            VkResult result = vkCreateWaylandSurfaceKHR(instance, ref wsci, null, out VkSurfaceKHR surface);
+            VkWaylandSurfaceCreateInfoKHR wsci = VkWaylandSurfaceCreateInfoKHR() {sType = .VK_STRUCTURE_TYPE_WAYLAND_SURFACE_CREATE_INFO_KHR};
+            wsci.display = waylandSource.Display;
+            wsci.surface = waylandSource.Surface;
+			VkSurfaceKHR surface = .Null;
+            VkResult result = vkCreateWaylandSurfaceKHR(instance, &wsci, null, &surface);
             CheckResult(result);
             return surface;
         }
 
         private static VkSurfaceKHR CreateAndroidSurface(VkInstance instance, AndroidSurfaceSwapchainSource androidSource)
         {
-            IntPtr aNativeWindow = AndroidRuntime.ANativeWindow_fromSurface(androidSource.JniEnv, androidSource.Surface);
+            void* aNativeWindow = AndroidRuntime.ANativeWindow_fromSurface(androidSource.JniEnv, androidSource.Surface);
 
-            VkAndroidSurfaceCreateInfoKHR androidSurfaceCI = VkAndroidSurfaceCreateInfoKHR.New();
-            androidSurfaceCI.window = (Vulkan.Android.ANativeWindow*)aNativeWindow;
-            VkResult result = vkCreateAndroidSurfaceKHR(instance, ref androidSurfaceCI, null, out VkSurfaceKHR surface);
+            VkAndroidSurfaceCreateInfoKHR androidSurfaceCI = VkAndroidSurfaceCreateInfoKHR(){sType = .VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR};
+            androidSurfaceCI.window = aNativeWindow;
+			VkSurfaceKHR surface = .Null;
+            VkResult result = vkCreateAndroidSurfaceKHR(instance, &androidSurfaceCI, null, &surface);
             CheckResult(result);
             return surface;
         }
@@ -190,10 +191,9 @@ namespace Sedulous.GAL.VK
 
             if (hasExtMetalSurface)
             {
-                VkMetalSurfaceCreateInfoEXT surfaceCI = new VkMetalSurfaceCreateInfoEXT();
-                surfaceCI.sType = VkMetalSurfaceCreateInfoEXT.VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT;
+                VkMetalSurfaceCreateInfoEXT surfaceCI = VkMetalSurfaceCreateInfoEXT() {sType = .VK_STRUCTURE_TYPE_METAL_SURFACE_CREATE_INFO_EXT};
                 surfaceCI.pLayer = metalLayer.NativePtr.ToPointer();
-                VkSurfaceKHR surface;
+                VkSurfaceKHR surface = .Null;
                 VkResult result = gd.CreateMetalSurfaceEXT(instance, &surfaceCI, null, &surface);
                 CheckResult(result);
                 return surface;
@@ -202,7 +202,9 @@ namespace Sedulous.GAL.VK
             {
                 VkIOSSurfaceCreateInfoMVK surfaceCI = VkIOSSurfaceCreateInfoMVK.New();
                 surfaceCI.pView = uiView.NativePtr.ToPointer();
-                VkResult result = vkCreateIOSSurfaceMVK(instance, ref surfaceCI, null, out VkSurfaceKHR surface);
+				VkSurfaceKHR surface = .Null;
+                VkResult result = vkCreateIOSSurfaceMVK(instance, &surfaceCI, null, &surface);
+				CheckResult(result);
                 return surface;
             }
         }

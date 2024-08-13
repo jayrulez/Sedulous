@@ -1,71 +1,73 @@
-﻿using System;
-using Vulkan;
+using System;
+using Bulkan;
 using static Sedulous.GAL.VK.VulkanUtil;
-using static Vulkan.VulkanNative;
+using static Bulkan.VulkanNative;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL.VK;
+
     internal class VKBuffer : DeviceBuffer
     {
         private readonly VKGraphicsDevice _gd;
-        private readonly Vulkan.VkBuffer _deviceBuffer;
+        private readonly VkBuffer _deviceBuffer;
         private readonly VkMemoryBlock _memory;
         private readonly VkMemoryRequirements _bufferMemoryRequirements;
         public ResourceRefCount RefCount { get; }
         private bool _destroyed;
-        private string _name;
+        private String _name;
         public override bool IsDisposed => _destroyed;
 
         public override uint32 SizeInBytes { get; }
         public override BufferUsage Usage { get; }
 
-        public Vulkan.VkBuffer DeviceBuffer => _deviceBuffer;
+        public VkBuffer DeviceBuffer => _deviceBuffer;
         public VkMemoryBlock Memory => _memory;
 
         public VkMemoryRequirements BufferMemoryRequirements => _bufferMemoryRequirements;
 
-        public VKBuffer(VKGraphicsDevice gd, uint32 sizeInBytes, BufferUsage usage, string callerMember = null)
+        public this(VKGraphicsDevice gd, uint32 sizeInBytes, BufferUsage usage, String callerMember = null)
         {
             _gd = gd;
             SizeInBytes = sizeInBytes;
             Usage = usage;
 
-            VkBufferUsageFlags vkUsage = VkBufferUsageFlags.TransferSrc | VkBufferUsageFlags.TransferDst;
+            VkBufferUsageFlags vkUsage = VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_SRC_BIT | VkBufferUsageFlags.VK_BUFFER_USAGE_TRANSFER_DST_BIT;
             if ((usage & BufferUsage.VertexBuffer) == BufferUsage.VertexBuffer)
             {
-                vkUsage |= VkBufferUsageFlags.VertexBuffer;
+                vkUsage |= VkBufferUsageFlags.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
             }
             if ((usage & BufferUsage.IndexBuffer) == BufferUsage.IndexBuffer)
             {
-                vkUsage |= VkBufferUsageFlags.IndexBuffer;
+                vkUsage |= VkBufferUsageFlags.VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
             }
             if ((usage & BufferUsage.UniformBuffer) == BufferUsage.UniformBuffer)
             {
-                vkUsage |= VkBufferUsageFlags.UniformBuffer;
+                vkUsage |= VkBufferUsageFlags.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
             }
             if ((usage & BufferUsage.StructuredBufferReadWrite) == BufferUsage.StructuredBufferReadWrite
                 || (usage & BufferUsage.StructuredBufferReadOnly) == BufferUsage.StructuredBufferReadOnly)
             {
-                vkUsage |= VkBufferUsageFlags.StorageBuffer;
+                vkUsage |= VkBufferUsageFlags.VK_BUFFER_USAGE_STORAGE_BUFFER_BIT;
             }
             if ((usage & BufferUsage.IndirectBuffer) == BufferUsage.IndirectBuffer)
             {
-                vkUsage |= VkBufferUsageFlags.IndirectBuffer;
+                vkUsage |= VkBufferUsageFlags.VK_BUFFER_USAGE_INDIRECT_BUFFER_BIT;
             }
 
-            VkBufferCreateInfo bufferCI = VkBufferCreateInfo.New();
+            VkBufferCreateInfo bufferCI = VkBufferCreateInfo() {sType = .VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
             bufferCI.size = sizeInBytes;
             bufferCI.usage = vkUsage;
-            VkResult result = vkCreateBuffer(gd.Device, ref bufferCI, null, out _deviceBuffer);
+            VkResult result = vkCreateBuffer(gd.Device, &bufferCI, null, &_deviceBuffer);
             CheckResult(result);
 
             bool prefersDedicatedAllocation;
             if (_gd.GetBufferMemoryRequirements2 != null)
             {
-                VkBufferMemoryRequirementsInfo2KHR memReqInfo2 = VkBufferMemoryRequirementsInfo2KHR.New();
+                VkBufferMemoryRequirementsInfo2 memReqInfo2 = VkBufferMemoryRequirementsInfo2() {sType = .VK_STRUCTURE_TYPE_BUFFER_MEMORY_REQUIREMENTS_INFO_2};
                 memReqInfo2.buffer = _deviceBuffer;
-                VkMemoryRequirements2KHR memReqs2 = VkMemoryRequirements2KHR.New();
-                VkMemoryDedicatedRequirementsKHR dedicatedReqs = VkMemoryDedicatedRequirementsKHR.New();
+                VkMemoryRequirements2 memReqs2 = VkMemoryRequirements2() {sType = .VK_STRUCTURE_TYPE_MEMORY_REQUIREMENTS_2};
+                VkMemoryDedicatedRequirements dedicatedReqs = VkMemoryDedicatedRequirements(){sType = .VK_STRUCTURE_TYPE_MEMORY_DEDICATED_REQUIREMENTS};
                 memReqs2.pNext = &dedicatedReqs;
                 _gd.GetBufferMemoryRequirements2(_gd.Device, &memReqInfo2, &memReqs2);
                 _bufferMemoryRequirements = memReqs2.memoryRequirements;
@@ -73,7 +75,7 @@ namespace Sedulous.GAL.VK
             }
             else
             {
-                vkGetBufferMemoryRequirements(gd.Device, _deviceBuffer, out _bufferMemoryRequirements);
+                vkGetBufferMemoryRequirements(gd.Device, _deviceBuffer, &_bufferMemoryRequirements);
                 prefersDedicatedAllocation = false;
             }
 
@@ -82,19 +84,19 @@ namespace Sedulous.GAL.VK
 
             VkMemoryPropertyFlags memoryPropertyFlags =
                 hostVisible
-                ? VkMemoryPropertyFlags.HostVisible | VkMemoryPropertyFlags.HostCoherent
-                : VkMemoryPropertyFlags.DeviceLocal;
+                ? VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT
+                : VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
             if (isStaging)
             {
                 // Use "host cached" memory for staging when available, for better performance of GPU -> CPU transfers
                 var hostCachedAvailable = TryFindMemoryType(
                     gd.PhysicalDeviceMemProperties,
                     _bufferMemoryRequirements.memoryTypeBits,
-                    memoryPropertyFlags | VkMemoryPropertyFlags.HostCached,
-                    out _);
+                    memoryPropertyFlags | VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT,
+                    ?);
                 if (hostCachedAvailable)
                 {
-                    memoryPropertyFlags |= VkMemoryPropertyFlags.HostCached;
+                    memoryPropertyFlags |= VkMemoryPropertyFlags.VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
                 }
             }
 
@@ -112,10 +114,10 @@ namespace Sedulous.GAL.VK
             result = vkBindBufferMemory(gd.Device, _deviceBuffer, _memory.DeviceMemory, _memory.Offset);
             CheckResult(result);
 
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set

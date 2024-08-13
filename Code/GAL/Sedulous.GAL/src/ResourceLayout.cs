@@ -14,7 +14,7 @@ namespace Sedulous.GAL
         internal readonly uint32 DynamicBufferCount;
 #endif
 
-        internal this(ref ResourceLayoutDescription description)
+        internal this(in ResourceLayoutDescription description)
         {
 #if VALIDATE_USAGE
             Description = description;

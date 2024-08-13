@@ -1,16 +1,17 @@
-﻿using System;
-using Vulkan;
-using static Vulkan.VulkanNative;
+using System;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Text;
-
-using static Vulkan.RawConstants;
+using System.Collections;
+using System.Threading;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     internal class VKCommandList : CommandList
     {
         private readonly VKGraphicsDevice _gd;
@@ -20,38 +21,38 @@ namespace Sedulous.GAL.VK
 
         private bool _commandBufferBegun;
         private bool _commandBufferEnded;
-        private VkRect2D[] _scissorRects = Array.Empty<VkRect2D>();
+        private VkRect2D[] _scissorRects = new .[0];
 
-        private VkClearValue[] _clearValues = Array.Empty<VkClearValue>();
-        private bool[] _validColorClearValues = Array.Empty<bool>();
+        private VkClearValue[] _clearValues = new .[0];
+        private bool[] _validColorClearValues = new .[0];
         private VkClearValue? _depthClearValue;
-        private readonly List<VKTexture> _preDrawSampledImages = new List<VKTexture>();
+        private readonly List<VKTexture> _preDrawSampledImages = new .();
 
         // Graphics State
         private VKFramebufferBase _currentFramebuffer;
         private bool _currentFramebufferEverActive;
         private VkRenderPass _activeRenderPass;
         private VKPipeline _currentGraphicsPipeline;
-        private BoundResourceSetInfo[] _currentGraphicsResourceSets = Array.Empty<BoundResourceSetInfo>();
+        private BoundResourceSetInfo[] _currentGraphicsResourceSets = new .[0];
         private bool[] _graphicsResourceSetsChanged;
 
         private bool _newFramebuffer; // Render pass cycle state
 
         // Compute State
         private VKPipeline _currentComputePipeline;
-        private BoundResourceSetInfo[] _currentComputeResourceSets = Array.Empty<BoundResourceSetInfo>();
+        private BoundResourceSetInfo[] _currentComputeResourceSets = new .[0];
         private bool[] _computeResourceSetsChanged;
-        private string _name;
+        private String _name;
 
-        private readonly object _commandBufferListLock = new object();
-        private readonly Queue<VkCommandBuffer> _availableCommandBuffers = new Queue<VkCommandBuffer>();
-        private readonly List<VkCommandBuffer> _submittedCommandBuffers = new List<VkCommandBuffer>();
+        private readonly Monitor _commandBufferListLock = new .() ~ delete _;
+        private readonly Queue<VkCommandBuffer> _availableCommandBuffers = new .();
+        private readonly List<VkCommandBuffer> _submittedCommandBuffers = new .();
 
         private StagingResourceInfo _currentStagingInfo;
-        private readonly object _stagingLock = new object();
-        private readonly Dictionary<VkCommandBuffer, StagingResourceInfo> _submittedStagingInfos = new Dictionary<VkCommandBuffer, StagingResourceInfo>();
-        private readonly List<StagingResourceInfo> _availableStagingInfos = new List<StagingResourceInfo>();
-        private readonly List<VKBuffer> _availableStagingBuffers = new List<VKBuffer>();
+        private readonly Monitor _stagingLock = new .() ~ delete _;
+        private readonly Dictionary<VkCommandBuffer, StagingResourceInfo> _submittedStagingInfos = new .();
+        private readonly List<StagingResourceInfo> _availableStagingInfos = new .();
+        private readonly List<VKBuffer> _availableStagingBuffers = new .();
 
         public VkCommandPool CommandPool => _pool;
         public VkCommandBuffer CommandBuffer => _cb;
@@ -60,38 +61,39 @@ namespace Sedulous.GAL.VK
 
         public override bool IsDisposed => _destroyed;
 
-        public VKCommandList(VKGraphicsDevice gd, ref CommandListDescription description)
-            : base(ref description, gd.Features, gd.UniformBufferMinOffsetAlignment, gd.StructuredBufferMinOffsetAlignment)
+        public this(VKGraphicsDevice gd, in CommandListDescription description)
+            : base(description, gd.Features, gd.UniformBufferMinOffsetAlignment, gd.StructuredBufferMinOffsetAlignment)
         {
             _gd = gd;
-            VkCommandPoolCreateInfo poolCI = VkCommandPoolCreateInfo.New();
-            poolCI.flags = VkCommandPoolCreateFlags.ResetCommandBuffer;
+            VkCommandPoolCreateInfo poolCI = VkCommandPoolCreateInfo(){sType = .VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
+            poolCI.flags = VkCommandPoolCreateFlags.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
             poolCI.queueFamilyIndex = gd.GraphicsQueueIndex;
-            VkResult result = vkCreateCommandPool(_gd.Device, ref poolCI, null, out _pool);
+            VkResult result = vkCreateCommandPool(_gd.Device, &poolCI, null, &_pool);
             CheckResult(result);
 
             _cb = GetNextCommandBuffer();
-            RefCount = new ResourceRefCount(DisposeCore);
+            RefCount = new ResourceRefCount(new => DisposeCore);
         }
 
         private VkCommandBuffer GetNextCommandBuffer()
         {
-            lock (_commandBufferListLock)
+            using (_commandBufferListLock.Enter())
             {
                 if (_availableCommandBuffers.Count > 0)
                 {
-                    VkCommandBuffer cachedCB = _availableCommandBuffers.Dequeue();
+                    VkCommandBuffer cachedCB = _availableCommandBuffers.PopFront();
                     VkResult resetResult = vkResetCommandBuffer(cachedCB, VkCommandBufferResetFlags.None);
                     CheckResult(resetResult);
                     return cachedCB;
                 }
             }
 
-            VkCommandBufferAllocateInfo cbAI = VkCommandBufferAllocateInfo.New();
+            VkCommandBufferAllocateInfo cbAI = VkCommandBufferAllocateInfo(){sType = .VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
             cbAI.commandPool = _pool;
             cbAI.commandBufferCount = 1;
-            cbAI.level = VkCommandBufferLevel.Primary;
-            VkResult result = vkAllocateCommandBuffers(_gd.Device, ref cbAI, out VkCommandBuffer cb);
+            cbAI.level = VkCommandBufferLevel.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+			VkCommandBuffer cb = .Null;
+            VkResult result = vkAllocateCommandBuffers(_gd.Device, &cbAI, &cb);
             CheckResult(result);
             return cb;
         }
@@ -111,23 +113,23 @@ namespace Sedulous.GAL.VK
         public void CommandBufferCompleted(VkCommandBuffer completedCB)
         {
 
-            lock (_commandBufferListLock)
+            using (_commandBufferListLock.Enter())
             {
-                for (int32 i = 0; i < _submittedCommandBuffers.Count; i++)
+                for (int i = 0; i < _submittedCommandBuffers.Count; i++)
                 {
                     VkCommandBuffer submittedCB = _submittedCommandBuffers[i];
                     if (submittedCB == completedCB)
                     {
-                        _availableCommandBuffers.Enqueue(completedCB);
+                        _availableCommandBuffers.Add(completedCB);
                         _submittedCommandBuffers.RemoveAt(i);
                         i -= 1;
                     }
                 }
             }
 
-            lock (_stagingLock)
+            using (_stagingLock.Enter())
             {
-                if (_submittedStagingInfos.TryGetValue(completedCB, out StagingResourceInfo info))
+                if (_submittedStagingInfos.TryGetValue(completedCB, var info))
                 {
                     RecycleStagingInfo(info);
                     _submittedStagingInfos.Remove(completedCB);
@@ -156,9 +158,9 @@ namespace Sedulous.GAL.VK
 
             _currentStagingInfo = GetStagingResourceInfo();
 
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.New();
-            beginInfo.flags = VkCommandBufferUsageFlags.OneTimeSubmit;
-            vkBeginCommandBuffer(_cb, ref beginInfo);
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo() {sType = .VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO};
+            beginInfo.flags = VkCommandBufferUsageFlags.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+            vkBeginCommandBuffer(_cb, &beginInfo);
             _commandBufferBegun = true;
 
             ClearCachedState();
@@ -171,31 +173,31 @@ namespace Sedulous.GAL.VK
             ClearSets(_currentComputeResourceSets);
         }
 
-        private protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
+        protected override void ClearColorTargetCore(uint32 index, RgbaFloat clearColor)
         {
-            VkClearValue clearValue = new VkClearValue
+            VkClearValue clearValue = VkClearValue()
             {
-                color = new VkClearColorValue(clearColor.R, clearColor.G, clearColor.B, clearColor.A)
+                color = VkClearColorValue(clearColor.R, clearColor.G, clearColor.B, clearColor.A)
             };
 
             if (_activeRenderPass != VkRenderPass.Null)
             {
-                VkClearAttachment clearAttachment = new VkClearAttachment
+                VkClearAttachment clearAttachment = VkClearAttachment()
                 {
                     colorAttachment = index,
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     clearValue = clearValue
                 };
 
                 Texture colorTex = _currentFramebuffer.ColorTargets[(int32)index].Target;
-                VkClearRect clearRect = new VkClearRect
+                VkClearRect clearRect = VkClearRect()
                 {
                     baseArrayLayer = 0,
                     layerCount = 1,
-                    rect = new VkRect2D(0, 0, colorTex.Width, colorTex.Height)
+                    rect = VkRect2D(0, 0, colorTex.Width, colorTex.Height)
                 };
 
-                vkCmdClearAttachments(_cb, 1, ref clearAttachment, 1, ref clearRect);
+                vkCmdClearAttachments(_cb, 1, &clearAttachment, 1, &clearRect);
             }
             else
             {
@@ -205,16 +207,16 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void ClearDepthStencilCore(float depth, uint8 stencil)
+        protected override void ClearDepthStencilCore(float depth, uint8 stencil)
         {
-            VkClearValue clearValue = new VkClearValue { depthStencil = new VkClearDepthStencilValue(depth, stencil) };
+            VkClearValue clearValue = VkClearValue { depthStencil = VkClearDepthStencilValue(depth, stencil) };
 
             if (_activeRenderPass != VkRenderPass.Null)
             {
                 VkImageAspectFlags aspect = FormatHelpers.IsStencilFormat(_currentFramebuffer.DepthTarget.Value.Target.Format)
-                    ? VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil
-                    : VkImageAspectFlags.Depth;
-                VkClearAttachment clearAttachment = new VkClearAttachment
+                    ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT
+                    : VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT;
+                VkClearAttachment clearAttachment = VkClearAttachment()
                 {
                     aspectMask = aspect,
                     clearValue = clearValue
@@ -224,14 +226,14 @@ namespace Sedulous.GAL.VK
                 uint32 renderableHeight = _currentFramebuffer.RenderableHeight;
                 if (renderableWidth > 0 && renderableHeight > 0)
                 {
-                    VkClearRect clearRect = new VkClearRect
+                    VkClearRect clearRect = VkClearRect()
                     {
                         baseArrayLayer = 0,
                         layerCount = 1,
-                        rect = new VkRect2D(0, 0, renderableWidth, renderableHeight)
+                        rect = VkRect2D(0, 0, renderableWidth, renderableHeight)
                     };
 
-                    vkCmdClearAttachments(_cb, 1, ref clearAttachment, 1, ref clearRect);
+                    vkCmdClearAttachments(_cb, 1, &clearAttachment, 1, &clearRect);
                 }
             }
             else
@@ -241,13 +243,13 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
+        protected override void DrawCore(uint32 vertexCount, uint32 instanceCount, uint32 vertexStart, uint32 instanceStart)
         {
             PreDrawCommand();
             vkCmdDraw(_cb, vertexCount, instanceCount, vertexStart, instanceStart);
         }
 
-        private protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
+        protected override void DrawIndexedCore(uint32 indexCount, uint32 instanceCount, uint32 indexStart, int32 vertexOffset, uint32 instanceStart)
         {
             PreDrawCommand();
             vkCmdDrawIndexed(_cb, indexCount, instanceCount, indexStart, vertexOffset, instanceStart);
@@ -271,7 +273,7 @@ namespace Sedulous.GAL.VK
 
         private void PreDrawCommand()
         {
-            TransitionImages(_preDrawSampledImages, VkImageLayout.ShaderReadOnlyOptimal);
+            TransitionImages(_preDrawSampledImages, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             _preDrawSampledImages.Clear();
 
             EnsureRenderPassActive();
@@ -280,7 +282,7 @@ namespace Sedulous.GAL.VK
                 _currentGraphicsResourceSets,
                 _graphicsResourceSetsChanged,
                 _currentGraphicsPipeline.ResourceSetCount,
-                VkPipelineBindPoint.Graphics,
+                VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS,
                 _currentGraphicsPipeline.PipelineLayout);
         }
 
@@ -291,10 +293,10 @@ namespace Sedulous.GAL.VK
             VkPipelineBindPoint bindPoint,
             VkPipelineLayout pipelineLayout)
         {
-            VKPipeline pipeline = bindPoint == VkPipelineBindPoint.Graphics ? _currentGraphicsPipeline : _currentComputePipeline;
+            VKPipeline pipeline = bindPoint == VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS ? _currentGraphicsPipeline : _currentComputePipeline;
 
-            VkDescriptorSet* descriptorSets = stackalloc VkDescriptorSet[(int32)resourceSetCount];
-            uint32* dynamicOffsets = stackalloc uint32[pipeline.DynamicOffsetsCount];
+            VkDescriptorSet* descriptorSets = scope VkDescriptorSet[(int32)resourceSetCount]*;
+            uint32* dynamicOffsets = scope uint32[pipeline.DynamicOffsetsCount]*;
             uint32 currentBatchCount = 0;
             uint32 currentBatchFirstSet = 0;
             uint32 currentBatchDynamicOffsetCount = 0;
@@ -319,7 +321,7 @@ namespace Sedulous.GAL.VK
 
                     // Increment ref count on first use of a set.
                     _currentStagingInfo.Resources.Add(vkSet.RefCount);
-                    for (int32 i = 0; i < vkSet.RefCounts.Count; i++)
+                    for (int i = 0; i < vkSet.RefCounts.Count; i++)
                     {
                         _currentStagingInfo.Resources.Add(vkSet.RefCounts[i]);
                     }
@@ -372,8 +374,8 @@ namespace Sedulous.GAL.VK
                 VKResourceSet vkSet = Util.AssertSubtype<ResourceSet, VKResourceSet>(
                     _currentComputeResourceSets[currentSlot].Set);
 
-                TransitionImages(vkSet.SampledTextures, VkImageLayout.ShaderReadOnlyOptimal);
-                TransitionImages(vkSet.StorageTextures, VkImageLayout.General);
+                TransitionImages(vkSet.SampledTextures, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+                TransitionImages(vkSet.StorageTextures, VkImageLayout.VK_IMAGE_LAYOUT_GENERAL);
                 for (int32 texIdx = 0; texIdx < vkSet.StorageTextures.Count; texIdx++)
                 {
                     VKTexture storageTex = vkSet.StorageTextures[texIdx];
@@ -388,7 +390,7 @@ namespace Sedulous.GAL.VK
                 _currentComputeResourceSets,
                 _computeResourceSetsChanged,
                 _currentComputePipeline.ResourceSetCount,
-                VkPipelineBindPoint.Compute,
+                VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE,
                 _currentComputePipeline.PipelineLayout);
         }
 
@@ -413,30 +415,30 @@ namespace Sedulous.GAL.VK
             VKTexture vkDestination = Util.AssertSubtype<Texture, VKTexture>(destination);
             _currentStagingInfo.Resources.Add(vkDestination.RefCount);
             VkImageAspectFlags aspectFlags = ((source.Usage & TextureUsage.DepthStencil) == TextureUsage.DepthStencil)
-                ? VkImageAspectFlags.Depth | VkImageAspectFlags.Stencil
-                : VkImageAspectFlags.Color;
-            VkImageResolve region = new VkImageResolve
+                ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT | VkImageAspectFlags.VK_IMAGE_ASPECT_STENCIL_BIT
+                : VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
+            VkImageResolve region = VkImageResolve()
             {
-                extent = new VkExtent3D { width = source.Width, height = source.Height, depth = source.Depth },
-                srcSubresource = new VkImageSubresourceLayers { layerCount = 1, aspectMask = aspectFlags },
-                dstSubresource = new VkImageSubresourceLayers { layerCount = 1, aspectMask = aspectFlags }
+                extent = VkExtent3D() { width = source.Width, height = source.Height, depth = source.Depth },
+                srcSubresource = VkImageSubresourceLayers() { layerCount = 1, aspectMask = aspectFlags },
+                dstSubresource = VkImageSubresourceLayers() { layerCount = 1, aspectMask = aspectFlags }
             };
 
-            vkSource.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.TransferSrcOptimal);
-            vkDestination.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.TransferDstOptimal);
+            vkSource.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+            vkDestination.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
             vkCmdResolveImage(
                 _cb,
                 vkSource.OptimalDeviceImage,
-                 VkImageLayout.TransferSrcOptimal,
+                 VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                 vkDestination.OptimalDeviceImage,
-                VkImageLayout.TransferDstOptimal,
+                VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                 1,
-                ref region);
+                &region);
 
             if ((vkDestination.Usage & TextureUsage.Sampled) != 0)
             {
-                vkDestination.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.ShaderReadOnlyOptimal);
+                vkDestination.TransitionImageLayout(_cb, 0, 1, 0, 1, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             }
         }
 
@@ -493,7 +495,7 @@ namespace Sedulous.GAL.VK
             Util.EnsureArrayMinimumSize(ref _validColorClearValues, clearValueCount);
             _currentStagingInfo.Resources.Add(vkFB.RefCount);
 
-            if (fb is VKSwapchainFramebuffer scFB)
+            if (let scFB = fb as VKSwapchainFramebuffer)
             {
                 _currentStagingInfo.Resources.Add(scFB.Swapchain.RefCount);
             }
@@ -525,7 +527,7 @@ namespace Sedulous.GAL.VK
             bool haveAnyAttachments = _currentFramebuffer.ColorTargets.Count > 0 || _currentFramebuffer.DepthTarget != null;
             bool haveAllClearValues = _depthClearValue.HasValue || _currentFramebuffer.DepthTarget == null;
             bool haveAnyClearValues = _depthClearValue.HasValue;
-            for (int32 i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
+            for (int i = 0; i < _currentFramebuffer.ColorTargets.Count; i++)
             {
                 if (!_validColorClearValues[i])
                 {
@@ -537,8 +539,8 @@ namespace Sedulous.GAL.VK
                 }
             }
 
-            VkRenderPassBeginInfo renderPassBI = VkRenderPassBeginInfo.New();
-            renderPassBI.renderArea = new VkRect2D(_currentFramebuffer.RenderableWidth, _currentFramebuffer.RenderableHeight);
+            VkRenderPassBeginInfo renderPassBI = VkRenderPassBeginInfo() {sType = .VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO};
+            renderPassBI.renderArea = VkRect2D(_currentFramebuffer.RenderableWidth, _currentFramebuffer.RenderableHeight);
             renderPassBI.framebuffer = _currentFramebuffer.CurrentFramebuffer;
 
             if (!haveAnyAttachments || !haveAllClearValues)
@@ -546,7 +548,7 @@ namespace Sedulous.GAL.VK
                 renderPassBI.renderPass = _newFramebuffer
                     ? _currentFramebuffer.RenderPassNoClear_Init
                     : _currentFramebuffer.RenderPassNoClear_Load;
-                vkCmdBeginRenderPass(_cb, ref renderPassBI, VkSubpassContents.Inline);
+                vkCmdBeginRenderPass(_cb, &renderPassBI, VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE);
                 _activeRenderPass = renderPassBI.renderPass;
 
                 if (haveAnyClearValues)
@@ -563,11 +565,11 @@ namespace Sedulous.GAL.VK
                         {
                             _validColorClearValues[i] = false;
                             VkClearValue vkClearValue = _clearValues[i];
-                            RgbaFloat clearColor = new RgbaFloat(
-                                vkClearValue.color.float32_0,
-                                vkClearValue.color.float32_1,
-                                vkClearValue.color.float32_2,
-                                vkClearValue.color.float32_3);
+                            RgbaFloat clearColor = RgbaFloat(
+                                vkClearValue.color.float32[0],
+                                vkClearValue.color.float32[1],
+                                vkClearValue.color.float32[2],
+                                vkClearValue.color.float32[3]);
                             ClearColorTarget(i, clearColor);
                         }
                     }
@@ -577,16 +579,16 @@ namespace Sedulous.GAL.VK
             {
                 // We have clear values for every attachment.
                 renderPassBI.renderPass = _currentFramebuffer.RenderPassClear;
-                fixed (VkClearValue* clearValuesPtr = &_clearValues[0])
+                //fixed (VkClearValue* clearValuesPtr = &_clearValues[0])
                 {
                     renderPassBI.clearValueCount = attachmentCount;
-                    renderPassBI.pClearValues = clearValuesPtr;
+                    renderPassBI.pClearValues = _clearValues.Ptr;
                     if (_depthClearValue.HasValue)
                     {
                         _clearValues[_currentFramebuffer.ColorTargets.Count] = _depthClearValue.Value;
                         _depthClearValue = null;
                     }
-                    vkCmdBeginRenderPass(_cb, ref renderPassBI, VkSubpassContents.Inline);
+                    vkCmdBeginRenderPass(_cb, &renderPassBI, VkSubpassContents.VK_SUBPASS_CONTENTS_INLINE);
                     _activeRenderPass = _currentFramebuffer.RenderPassClear;
                     Util.ClearArray(_validColorClearValues);
                 }
@@ -606,8 +608,8 @@ namespace Sedulous.GAL.VK
             // can be read in subsequent passes.
             vkCmdPipelineBarrier(
                 _cb,
-                VkPipelineStageFlags.BottomOfPipe,
-                VkPipelineStageFlags.TopOfPipe,
+                VkPipelineStageFlags.VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                VkPipelineStageFlags.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                 VkDependencyFlags.None,
                 0,
                 null,
@@ -617,23 +619,23 @@ namespace Sedulous.GAL.VK
                 null);
         }
 
-        private protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
+        protected override void SetVertexBufferCore(uint32 index, DeviceBuffer buffer, uint32 offset)
         {
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(buffer);
-            Vulkan.VkBuffer deviceBuffer = vkBuffer.DeviceBuffer;
+            VkBuffer deviceBuffer = vkBuffer.DeviceBuffer;
             uint64 offset64 = offset;
-            vkCmdBindVertexBuffers(_cb, index, 1, ref deviceBuffer, ref offset64);
+            vkCmdBindVertexBuffers(_cb, index, 1, &deviceBuffer, &offset64);
             _currentStagingInfo.Resources.Add(vkBuffer.RefCount);
         }
 
-        private protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
+        protected override void SetIndexBufferCore(DeviceBuffer buffer, IndexFormat format, uint32 offset)
         {
             VKBuffer vkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(buffer);
             vkCmdBindIndexBuffer(_cb, vkBuffer.DeviceBuffer, offset, VKFormats.VdToVkIndexFormat(format));
             _currentStagingInfo.Resources.Add(vkBuffer.RefCount);
         }
 
-        private protected override void SetPipelineCore(Pipeline pipeline)
+        protected override void SetPipelineCore(Pipeline pipeline)
         {
             VKPipeline vkPipeline = Util.AssertSubtype<Pipeline, VKPipeline>(pipeline);
             if (!pipeline.IsComputePipeline && _currentGraphicsPipeline != pipeline)
@@ -641,7 +643,7 @@ namespace Sedulous.GAL.VK
                 Util.EnsureArrayMinimumSize(ref _currentGraphicsResourceSets, vkPipeline.ResourceSetCount);
                 ClearSets(_currentGraphicsResourceSets);
                 Util.EnsureArrayMinimumSize(ref _graphicsResourceSetsChanged, vkPipeline.ResourceSetCount);
-                vkCmdBindPipeline(_cb, VkPipelineBindPoint.Graphics, vkPipeline.DevicePipeline);
+                vkCmdBindPipeline(_cb, VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_GRAPHICS, vkPipeline.DevicePipeline);
                 _currentGraphicsPipeline = vkPipeline;
             }
             else if (pipeline.IsComputePipeline && _currentComputePipeline != pipeline)
@@ -649,7 +651,7 @@ namespace Sedulous.GAL.VK
                 Util.EnsureArrayMinimumSize(ref _currentComputeResourceSets, vkPipeline.ResourceSetCount);
                 ClearSets(_currentComputeResourceSets);
                 Util.EnsureArrayMinimumSize(ref _computeResourceSetsChanged, vkPipeline.ResourceSetCount);
-                vkCmdBindPipeline(_cb, VkPipelineBindPoint.Compute, vkPipeline.DevicePipeline);
+                vkCmdBindPipeline(_cb, VkPipelineBindPoint.VK_PIPELINE_BIND_POINT_COMPUTE, vkPipeline.DevicePipeline);
                 _currentComputePipeline = vkPipeline;
             }
 
@@ -665,23 +667,23 @@ namespace Sedulous.GAL.VK
             Util.ClearArray(boundSets);
         }
 
-        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
+        protected override void SetGraphicsResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, uint32* dynamicOffsets)
         {
-            if (!_currentGraphicsResourceSets[slot].Equals(rs, dynamicOffsetsCount, ref dynamicOffsets))
+            if (!_currentGraphicsResourceSets[slot].Equals(rs, dynamicOffsetsCount, dynamicOffsets))
             {
                 _currentGraphicsResourceSets[slot].Offsets.Dispose();
-                _currentGraphicsResourceSets[slot] = new BoundResourceSetInfo(rs, dynamicOffsetsCount, ref dynamicOffsets);
+                _currentGraphicsResourceSets[slot] = BoundResourceSetInfo(rs, dynamicOffsetsCount, dynamicOffsets);
                 _graphicsResourceSetsChanged[slot] = true;
                 VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
             }
         }
 
-        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, ref uint32 dynamicOffsets)
+        protected override void SetComputeResourceSetCore(uint32 slot, ResourceSet rs, uint32 dynamicOffsetsCount, uint32* dynamicOffsets)
         {
-            if (!_currentComputeResourceSets[slot].Equals(rs, dynamicOffsetsCount, ref dynamicOffsets))
+            if (!_currentComputeResourceSets[slot].Equals(rs, dynamicOffsetsCount, dynamicOffsets))
             {
                 _currentComputeResourceSets[slot].Offsets.Dispose();
-                _currentComputeResourceSets[slot] = new BoundResourceSetInfo(rs, dynamicOffsetsCount, ref dynamicOffsets);
+                _currentComputeResourceSets[slot] = BoundResourceSetInfo(rs, dynamicOffsetsCount, dynamicOffsets);
                 _computeResourceSetsChanged[slot] = true;
                 VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
             }
@@ -691,16 +693,16 @@ namespace Sedulous.GAL.VK
         {
             if (index == 0 || _gd.Features.MultipleViewports)
             {
-                VkRect2D scissor = new VkRect2D((int32)x, (int32)y, (int32)width, (int32)height);
+                VkRect2D scissor = VkRect2D((int32)x, (int32)y, (int32)width, (int32)height);
                 if (_scissorRects[index] != scissor)
                 {
                     _scissorRects[index] = scissor;
-                    vkCmdSetScissor(_cb, index, 1, ref scissor);
+                    vkCmdSetScissor(_cb, index, 1, &scissor);
                 }
             }
         }
 
-        public override void SetViewport(uint32 index, ref Viewport viewport)
+        public override void SetViewport(uint32 index, in Viewport viewport)
         {
             if (index == 0 || _gd.Features.MultipleViewports)
             {
@@ -711,7 +713,7 @@ namespace Sedulous.GAL.VK
                     ? viewport.Height
                     : -viewport.Height;
 
-                VkViewport vkViewport = new VkViewport
+                VkViewport vkViewport = VkViewport()
                 {
                     x = viewport.X,
                     y = vpY,
@@ -721,11 +723,11 @@ namespace Sedulous.GAL.VK
                     maxDepth = viewport.MaxDepth
                 };
 
-                vkCmdSetViewport(_cb, index, 1, ref vkViewport);
+                vkCmdSetViewport(_cb, index, 1, &vkViewport);
             }
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
+        protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, void* source, uint32 sizeInBytes)
         {
             VKBuffer stagingBuffer = GetStagingBuffer(sizeInBytes);
             _gd.UpdateBuffer(stagingBuffer, 0, source, sizeInBytes);
@@ -746,31 +748,31 @@ namespace Sedulous.GAL.VK
             VKBuffer dstVkBuffer = Util.AssertSubtype<DeviceBuffer, VKBuffer>(destination);
             _currentStagingInfo.Resources.Add(dstVkBuffer.RefCount);
 
-            VkBufferCopy region = new VkBufferCopy
+            VkBufferCopy region = VkBufferCopy()
             {
                 srcOffset = sourceOffset,
                 dstOffset = destinationOffset,
                 size = sizeInBytes
             };
 
-            vkCmdCopyBuffer(_cb, srcVkBuffer.DeviceBuffer, dstVkBuffer.DeviceBuffer, 1, ref region);
+            vkCmdCopyBuffer(_cb, srcVkBuffer.DeviceBuffer, dstVkBuffer.DeviceBuffer, 1, &region);
 
             bool needToProtectUniform = destination.Usage.HasFlag(BufferUsage.UniformBuffer);
 
-            VkMemoryBarrier barrier;
-            barrier.sType = VkStructureType.MemoryBarrier;
-            barrier.srcAccessMask = VkAccessFlags.TransferWrite;
-            barrier.dstAccessMask = needToProtectUniform ? VkAccessFlags.UniformRead : VkAccessFlags.VertexAttributeRead;
+            VkMemoryBarrier barrier = .();
+            barrier.sType = VkStructureType.VK_STRUCTURE_TYPE_MEMORY_BARRIER;
+            barrier.srcAccessMask = VkAccessFlags.VK_ACCESS_TRANSFER_WRITE_BIT;
+            barrier.dstAccessMask = needToProtectUniform ? VkAccessFlags.VK_ACCESS_UNIFORM_READ_BIT : VkAccessFlags.VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT;
             barrier.pNext = null;
             vkCmdPipelineBarrier(
                 _cb,
-                VkPipelineStageFlags.Transfer, needToProtectUniform ?
-                    VkPipelineStageFlags.VertexShader | VkPipelineStageFlags.ComputeShader |
-                    VkPipelineStageFlags.FragmentShader | VkPipelineStageFlags.GeometryShader |
-                    VkPipelineStageFlags.TessellationControlShader | VkPipelineStageFlags.TessellationEvaluationShader
-                    : VkPipelineStageFlags.VertexInput,
+                VkPipelineStageFlags.VK_PIPELINE_STAGE_TRANSFER_BIT, needToProtectUniform ?
+                    VkPipelineStageFlags.VK_PIPELINE_STAGE_VERTEX_SHADER_BIT | VkPipelineStageFlags.VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT |
+                    VkPipelineStageFlags.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VkPipelineStageFlags.VK_PIPELINE_STAGE_GEOMETRY_SHADER_BIT |
+                    VkPipelineStageFlags.VK_PIPELINE_STAGE_TESSELLATION_CONTROL_SHADER_BIT | VkPipelineStageFlags.VK_PIPELINE_STAGE_TESSELLATION_EVALUATION_SHADER_BIT
+                    : VkPipelineStageFlags.VK_PIPELINE_STAGE_VERTEX_INPUT_BIT,
                 VkDependencyFlags.None,
-                1, ref barrier,
+                1, &barrier,
                 0, null,
                 0, null);
         }
@@ -821,29 +823,29 @@ namespace Sedulous.GAL.VK
 
             if (!sourceIsStaging && !destIsStaging)
             {
-                VkImageSubresourceLayers srcSubresource = new VkImageSubresourceLayers
+                VkImageSubresourceLayers srcSubresource = VkImageSubresourceLayers()
                 {
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     layerCount = layerCount,
                     mipLevel = srcMipLevel,
                     baseArrayLayer = srcBaseArrayLayer
                 };
 
-                VkImageSubresourceLayers dstSubresource = new VkImageSubresourceLayers
+                VkImageSubresourceLayers dstSubresource = VkImageSubresourceLayers()
                 {
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     layerCount = layerCount,
                     mipLevel = dstMipLevel,
                     baseArrayLayer = dstBaseArrayLayer
                 };
 
-                VkImageCopy region = new VkImageCopy
+                VkImageCopy region = VkImageCopy()
                 {
-                    srcOffset = new VkOffset3D { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
-                    dstOffset = new VkOffset3D { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
+                    srcOffset = VkOffset3D() { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
+                    dstOffset = VkOffset3D() { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
                     srcSubresource = srcSubresource,
                     dstSubresource = dstSubresource,
-                    extent = new VkExtent3D { width = width, height = height, depth = depth }
+                    extent = VkExtent3D() { width = width, height = height, depth = depth }
                 };
 
                 srcVkTexture.TransitionImageLayout(
@@ -852,7 +854,7 @@ namespace Sedulous.GAL.VK
                     1,
                     srcBaseArrayLayer,
                     layerCount,
-                    VkImageLayout.TransferSrcOptimal);
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
                 dstVkTexture.TransitionImageLayout(
                     cb,
@@ -860,16 +862,16 @@ namespace Sedulous.GAL.VK
                     1,
                     dstBaseArrayLayer,
                     layerCount,
-                    VkImageLayout.TransferDstOptimal);
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
                 vkCmdCopyImage(
                     cb,
                     srcVkTexture.OptimalDeviceImage,
-                    VkImageLayout.TransferSrcOptimal,
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                     dstVkTexture.OptimalDeviceImage,
-                    VkImageLayout.TransferDstOptimal,
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                     1,
-                    ref region);
+                    &region);
 
                 if ((srcVkTexture.Usage & TextureUsage.Sampled) != 0)
                 {
@@ -879,7 +881,7 @@ namespace Sedulous.GAL.VK
                         1,
                         srcBaseArrayLayer,
                         layerCount,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
 
                 if ((dstVkTexture.Usage & TextureUsage.Sampled) != 0)
@@ -890,12 +892,12 @@ namespace Sedulous.GAL.VK
                         1,
                         dstBaseArrayLayer,
                         layerCount,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
             }
             else if (sourceIsStaging && !destIsStaging)
             {
-                Vulkan.VkBuffer srcBuffer = srcVkTexture.StagingBuffer;
+                VkBuffer srcBuffer = srcVkTexture.StagingBuffer;
                 VkSubresourceLayout srcLayout = srcVkTexture.GetSubresourceLayout(
                     srcVkTexture.CalculateSubresource(srcMipLevel, srcBaseArrayLayer));
                 VkImage dstImage = dstVkTexture.OptimalDeviceImage;
@@ -905,18 +907,18 @@ namespace Sedulous.GAL.VK
                     1,
                     dstBaseArrayLayer,
                     layerCount,
-                    VkImageLayout.TransferDstOptimal);
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-                VkImageSubresourceLayers dstSubresource = new VkImageSubresourceLayers
+                VkImageSubresourceLayers dstSubresource = VkImageSubresourceLayers()
                 {
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     layerCount = layerCount,
                     mipLevel = dstMipLevel,
                     baseArrayLayer = dstBaseArrayLayer
                 };
 
-                Util.GetMipDimensions(srcVkTexture, srcMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
-                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
+                Util.GetMipDimensions(srcVkTexture, srcMipLevel, var mipWidth, var mipHeight, var mipDepth);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4 : 1;
                 uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
                 uint32 bufferImageHeight = Math.Max(mipHeight, blockSize);
                 uint32 compressedX = srcX / blockSize;
@@ -930,7 +932,7 @@ namespace Sedulous.GAL.VK
                 uint32 copyWidth = Math.Min(width, mipWidth);
                 uint32 copyheight = Math.Min(height, mipHeight);
 
-                VkBufferImageCopy regions = new VkBufferImageCopy
+                VkBufferImageCopy regions = VkBufferImageCopy()
                 {
                     bufferOffset = srcLayout.offset
                         + (srcZ * depthPitch)
@@ -938,12 +940,12 @@ namespace Sedulous.GAL.VK
                         + (compressedX * blockSizeInBytes),
                     bufferRowLength = bufferRowLength,
                     bufferImageHeight = bufferImageHeight,
-                    imageExtent = new VkExtent3D { width = copyWidth, height = copyheight, depth = depth },
-                    imageOffset = new VkOffset3D { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
+                    imageExtent = VkExtent3D() { width = copyWidth, height = copyheight, depth = depth },
+                    imageOffset = VkOffset3D() { x = (int32)dstX, y = (int32)dstY, z = (int32)dstZ },
                     imageSubresource = dstSubresource
                 };
 
-                vkCmdCopyBufferToImage(cb, srcBuffer, dstImage, VkImageLayout.TransferDstOptimal, 1, ref regions);
+                vkCmdCopyBufferToImage(cb, srcBuffer, dstImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &regions);
 
                 if ((dstVkTexture.Usage & TextureUsage.Sampled) != 0)
                 {
@@ -953,7 +955,7 @@ namespace Sedulous.GAL.VK
                         1,
                         dstBaseArrayLayer,
                         layerCount,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
             }
             else if (!sourceIsStaging && destIsStaging)
@@ -965,16 +967,16 @@ namespace Sedulous.GAL.VK
                     1,
                     srcBaseArrayLayer,
                     layerCount,
-                    VkImageLayout.TransferSrcOptimal);
+                    VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
 
-                Vulkan.VkBuffer dstBuffer = dstVkTexture.StagingBuffer;
+                VkBuffer dstBuffer = dstVkTexture.StagingBuffer;
 
                 VkImageAspectFlags aspect = (srcVkTexture.Usage & TextureUsage.DepthStencil) != 0
-                    ? VkImageAspectFlags.Depth
-                    : VkImageAspectFlags.Color;
+                    ? VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT
+                    : VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
 
-                Util.GetMipDimensions(dstVkTexture, dstMipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
-                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4u : 1u;
+                Util.GetMipDimensions(dstVkTexture, dstMipLevel, var mipWidth, var mipHeight, var mipDepth);
+                uint32 blockSize = FormatHelpers.IsCompressedFormat(srcVkTexture.Format) ? 4 : 1;
                 uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
                 uint32 bufferImageHeight = Math.Max(mipHeight, blockSize);
                 uint32 compressedDstX = dstX / blockSize;
@@ -985,13 +987,13 @@ namespace Sedulous.GAL.VK
                 uint32 rowPitch = FormatHelpers.GetRowPitch(bufferRowLength, dstVkTexture.Format);
                 uint32 depthPitch = FormatHelpers.GetDepthPitch(rowPitch, bufferImageHeight, dstVkTexture.Format);
 
-                var layers = stackalloc VkBufferImageCopy[(int32)layerCount];
+                var layers = scope VkBufferImageCopy[(int32)layerCount]*;
                 for(uint32 layer = 0; layer < layerCount; layer++)
                 {
                     VkSubresourceLayout dstLayout = dstVkTexture.GetSubresourceLayout(
                         dstVkTexture.CalculateSubresource(dstMipLevel, dstBaseArrayLayer + layer));
 
-                    VkImageSubresourceLayers srcSubresource = new VkImageSubresourceLayers
+                    VkImageSubresourceLayers srcSubresource = VkImageSubresourceLayers()
                     {
                         aspectMask = aspect,
                         layerCount = 1,
@@ -999,7 +1001,7 @@ namespace Sedulous.GAL.VK
                         baseArrayLayer = srcBaseArrayLayer + layer
                     };
 
-                    VkBufferImageCopy region = new VkBufferImageCopy
+                    VkBufferImageCopy region = VkBufferImageCopy()
                     {
                         bufferRowLength = bufferRowLength,
                         bufferImageHeight = bufferImageHeight,
@@ -1007,15 +1009,15 @@ namespace Sedulous.GAL.VK
                             + (dstZ * depthPitch)
                             + (compressedDstY * rowPitch)
                             + (compressedDstX * blockSizeInBytes),
-                        imageExtent = new VkExtent3D { width = width, height = height, depth = depth },
-                        imageOffset = new VkOffset3D { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
+                        imageExtent = VkExtent3D() { width = width, height = height, depth = depth },
+                        imageOffset = VkOffset3D() { x = (int32)srcX, y = (int32)srcY, z = (int32)srcZ },
                         imageSubresource = srcSubresource
                     };
 
                     layers[layer] = region;
                 }
 
-                vkCmdCopyImageToBuffer(cb, srcImage, VkImageLayout.TransferSrcOptimal, dstBuffer, layerCount, layers);
+                vkCmdCopyImageToBuffer(cb, srcImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, dstBuffer, layerCount, layers);
 
                 if ((srcVkTexture.Usage & TextureUsage.Sampled) != 0)
                 {
@@ -1025,16 +1027,16 @@ namespace Sedulous.GAL.VK
                         1,
                         srcBaseArrayLayer,
                         layerCount,
-                        VkImageLayout.ShaderReadOnlyOptimal);
+                        VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
                 }
             }
             else
             {
                 Debug.Assert(sourceIsStaging && destIsStaging);
-                Vulkan.VkBuffer srcBuffer = srcVkTexture.StagingBuffer;
+                VkBuffer srcBuffer = srcVkTexture.StagingBuffer;
                 VkSubresourceLayout srcLayout = srcVkTexture.GetSubresourceLayout(
                     srcVkTexture.CalculateSubresource(srcMipLevel, srcBaseArrayLayer));
-                Vulkan.VkBuffer dstBuffer = dstVkTexture.StagingBuffer;
+                VkBuffer dstBuffer = dstVkTexture.StagingBuffer;
                 VkSubresourceLayout dstLayout = dstVkTexture.GetSubresourceLayout(
                     dstVkTexture.CalculateSubresource(dstMipLevel, dstBaseArrayLayer));
 
@@ -1046,7 +1048,7 @@ namespace Sedulous.GAL.VK
                     {
                         for (uint32 yy = 0; yy < height; yy++)
                         {
-                            VkBufferCopy region = new VkBufferCopy
+                            VkBufferCopy region = VkBufferCopy()
                             {
                                 srcOffset = srcLayout.offset
                                     + srcLayout.depthPitch * (zz + srcZ)
@@ -1059,7 +1061,7 @@ namespace Sedulous.GAL.VK
                                 size = width * pixelSize,
                             };
 
-                            vkCmdCopyBuffer(cb, srcBuffer, dstBuffer, 1, ref region);
+                            vkCmdCopyBuffer(cb, srcBuffer, dstBuffer, 1, &region);
                         }
                     }
                 }
@@ -1077,7 +1079,7 @@ namespace Sedulous.GAL.VK
                     {
                         for (uint32 row = 0; row < numRows; row++)
                         {
-                            VkBufferCopy region = new VkBufferCopy
+                            VkBufferCopy region = VkBufferCopy()
                             {
                                 srcOffset = srcLayout.offset
                                     + srcLayout.depthPitch * (zz + srcZ)
@@ -1090,7 +1092,7 @@ namespace Sedulous.GAL.VK
                                 size = denseRowSize,
                             };
 
-                            vkCmdCopyBuffer(cb, srcBuffer, dstBuffer, 1, ref region);
+                            vkCmdCopyBuffer(cb, srcBuffer, dstBuffer, 1, &region);
                         }
                     }
 
@@ -1098,7 +1100,7 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void GenerateMipmapsCore(Texture texture)
+        protected override void GenerateMipmapsCore(Texture texture)
         {
             EnsureNoRenderPass();
             VKTexture vkTex = Util.AssertSubtype<Texture, VKTexture>(texture);
@@ -1117,38 +1119,38 @@ namespace Sedulous.GAL.VK
             uint32 depth = vkTex.Depth;
             for (uint32 level = 1; level < vkTex.MipLevels; level++)
             {
-                vkTex.TransitionImageLayoutNonmatching(_cb, level - 1, 1, 0, layerCount, VkImageLayout.TransferSrcOptimal);
-                vkTex.TransitionImageLayoutNonmatching(_cb, level, 1, 0, layerCount, VkImageLayout.TransferDstOptimal);
+                vkTex.TransitionImageLayoutNonmatching(_cb, level - 1, 1, 0, layerCount, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+                vkTex.TransitionImageLayoutNonmatching(_cb, level, 1, 0, layerCount, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
                 VkImage deviceImage = vkTex.OptimalDeviceImage;
                 uint32 mipWidth = Math.Max(width >> 1, 1);
                 uint32 mipHeight = Math.Max(height >> 1, 1);
                 uint32 mipDepth = Math.Max(depth >> 1, 1);
 
-                region.srcSubresource = new VkImageSubresourceLayers
+                region.srcSubresource = VkImageSubresourceLayers()
                 {
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     baseArrayLayer = 0,
                     layerCount = layerCount,
                     mipLevel = level - 1
                 };
-                region.srcOffsets_0 = new VkOffset3D();
-                region.srcOffsets_1 = new VkOffset3D { x = (int32)width, y = (int32)height, z = (int32)depth };
-                region.dstOffsets_0 = new VkOffset3D();
+                region.srcOffsets[0] = VkOffset3D();
+                region.srcOffsets[1] = VkOffset3D() { x = (int32)width, y = (int32)height, z = (int32)depth };
+                region.dstOffsets[0] = VkOffset3D();
 
-                region.dstSubresource = new VkImageSubresourceLayers
+                region.dstSubresource = VkImageSubresourceLayers()
                 {
-                    aspectMask = VkImageAspectFlags.Color,
+                    aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT,
                     baseArrayLayer = 0,
                     layerCount = layerCount,
                     mipLevel = level
                 };
 
-                region.dstOffsets_1 = new VkOffset3D { x = (int32)mipWidth, y = (int32)mipHeight, z = (int32)mipDepth };
+                region.dstOffsets[1] = VkOffset3D() { x = (int32)mipWidth, y = (int32)mipHeight, z = (int32)mipDepth };
                 vkCmdBlitImage(
                     _cb,
-                    deviceImage, VkImageLayout.TransferSrcOptimal,
-                    deviceImage, VkImageLayout.TransferDstOptimal,
+                    deviceImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                    deviceImage, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                     1, &region,
                     _gd.GetFormatFilter(vkTex.VkFormat));
 
@@ -1159,7 +1161,7 @@ namespace Sedulous.GAL.VK
 
             if ((vkTex.Usage & TextureUsage.Sampled) != 0)
             {
-                vkTex.TransitionImageLayoutNonmatching(_cb, 0, vkTex.MipLevels, 0, layerCount, VkImageLayout.ShaderReadOnlyOptimal);
+                vkTex.TransitionImageLayoutNonmatching(_cb, 0, vkTex.MipLevels, 0, layerCount, VkImageLayout.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             }
         }
 
@@ -1168,42 +1170,42 @@ namespace Sedulous.GAL.VK
 #endif
         private void DebugFullPipelineBarrier()
         {
-            VkMemoryBarrier memoryBarrier = VkMemoryBarrier.New();
-            memoryBarrier.srcAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT |
-                   VK_ACCESS_INDEX_READ_BIT |
-                   VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT |
-                   VK_ACCESS_UNIFORM_READ_BIT |
-                   VK_ACCESS_INPUT_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_SHADER_READ_BIT |
-                   VK_ACCESS_SHADER_WRITE_BIT |
-                   VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
-                   VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
-                   VK_ACCESS_TRANSFER_READ_BIT |
-                   VK_ACCESS_TRANSFER_WRITE_BIT |
-                   VK_ACCESS_HOST_READ_BIT |
-                   VK_ACCESS_HOST_WRITE_BIT;
-            memoryBarrier.dstAccessMask = VK_ACCESS_INDIRECT_COMMAND_READ_BIT |
-                   VK_ACCESS_INDEX_READ_BIT |
-                   VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT |
-                   VK_ACCESS_UNIFORM_READ_BIT |
-                   VK_ACCESS_INPUT_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_SHADER_READ_BIT |
-                   VK_ACCESS_SHADER_WRITE_BIT |
-                   VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
-                   VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
-                   VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
-                   VK_ACCESS_TRANSFER_READ_BIT |
-                   VK_ACCESS_TRANSFER_WRITE_BIT |
-                   VK_ACCESS_HOST_READ_BIT |
-                   VK_ACCESS_HOST_WRITE_BIT;
+            VkMemoryBarrier memoryBarrier = VkMemoryBarrier() {sType = .VK_STRUCTURE_TYPE_MEMORY_BARRIER};
+            memoryBarrier.srcAccessMask = .VK_ACCESS_INDIRECT_COMMAND_READ_BIT |
+                   .VK_ACCESS_INDEX_READ_BIT |
+                   .VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT |
+                   .VK_ACCESS_UNIFORM_READ_BIT |
+                   .VK_ACCESS_INPUT_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_SHADER_READ_BIT |
+                   .VK_ACCESS_SHADER_WRITE_BIT |
+                   .VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+                   .VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
+                   .VK_ACCESS_TRANSFER_READ_BIT |
+                   .VK_ACCESS_TRANSFER_WRITE_BIT |
+                   .VK_ACCESS_HOST_READ_BIT |
+                   .VK_ACCESS_HOST_WRITE_BIT;
+            memoryBarrier.dstAccessMask = .VK_ACCESS_INDIRECT_COMMAND_READ_BIT |
+                   .VK_ACCESS_INDEX_READ_BIT |
+                   .VK_ACCESS_VERTEX_ATTRIBUTE_READ_BIT |
+                   .VK_ACCESS_UNIFORM_READ_BIT |
+                   .VK_ACCESS_INPUT_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_SHADER_READ_BIT |
+                   .VK_ACCESS_SHADER_WRITE_BIT |
+                   .VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT |
+                   .VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT |
+                   .VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT |
+                   .VK_ACCESS_TRANSFER_READ_BIT |
+                   .VK_ACCESS_TRANSFER_WRITE_BIT |
+                   .VK_ACCESS_HOST_READ_BIT |
+                   .VK_ACCESS_HOST_WRITE_BIT;
 
             vkCmdPipelineBarrier(
                 _cb,
-                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, // srcStageMask
-                VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, // dstStageMask
+                .VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, // srcStageMask
+                .VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, // dstStageMask
                 VkDependencyFlags.None,
                 1,                                  // memoryBarrierCount
                 &memoryBarrier,                     // pMemoryBarriers
@@ -1211,7 +1213,7 @@ namespace Sedulous.GAL.VK
                 0, null);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
@@ -1223,7 +1225,7 @@ namespace Sedulous.GAL.VK
 
         private VKBuffer GetStagingBuffer(uint32 size)
         {
-            lock (_stagingLock)
+            using (_stagingLock.Enter())
             {
                 VKBuffer ret = null;
                 for (VKBuffer buffer in _availableStagingBuffers)
@@ -1237,8 +1239,8 @@ namespace Sedulous.GAL.VK
                 }
                 if (ret == null)
                 {
-                    ret = (VKBuffer)_gd.ResourceFactory.CreateBuffer(new BufferDescription(size, BufferUsage.Staging));
-                    ret.Name = $"Staging Buffer (CommandList {_name})";
+                    ret = (VKBuffer)_gd.ResourceFactory.CreateBuffer(BufferDescription(size, BufferUsage.Staging));
+                    ret.Name = scope $"Staging Buffer (CommandList {_name})";
                 }
 
                 _currentStagingInfo.BuffersUsed.Add(ret);
@@ -1246,27 +1248,19 @@ namespace Sedulous.GAL.VK
             }
         }
 
-        private protected override void PushDebugGroupCore(string name)
+        protected override void PushDebugGroupCore(String name)
         {
             vkCmdDebugMarkerBeginEXT_t func = _gd.MarkerBegin;
             if (func == null) { return; }
 
-            VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT.New();
+            VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT() {sType = .VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT};
 
-            int32 byteCount = Encoding.UTF8.GetByteCount(name);
-            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
-            fixed (char* namePtr = name)
-            {
-                Encoding.UTF8.GetBytes(namePtr, name.Length, utf8Ptr, byteCount);
-            }
-            utf8Ptr[byteCount] = 0;
-
-            markerInfo.pMarkerName = utf8Ptr;
+            markerInfo.pMarkerName = scope String(name).CStr();
 
             func(_cb, &markerInfo);
         }
 
-        private protected override void PopDebugGroupCore()
+        protected override void PopDebugGroupCore()
         {
             vkCmdDebugMarkerEndEXT_t func = _gd.MarkerEnd;
             if (func == null) { return; }
@@ -1274,22 +1268,14 @@ namespace Sedulous.GAL.VK
             func(_cb);
         }
 
-        private protected override void InsertDebugMarkerCore(string name)
+        protected override void InsertDebugMarkerCore(String name)
         {
             vkCmdDebugMarkerInsertEXT_t func = _gd.MarkerInsert;
             if (func == null) { return; }
 
-            VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT.New();
+            VkDebugMarkerMarkerInfoEXT markerInfo = VkDebugMarkerMarkerInfoEXT() {sType = .VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT};
 
-            int32 byteCount = Encoding.UTF8.GetByteCount(name);
-            uint8* utf8Ptr = stackalloc uint8[byteCount + 1];
-            fixed (char* namePtr = name)
-            {
-                Encoding.UTF8.GetBytes(namePtr, name.Length, utf8Ptr, byteCount);
-            }
-            utf8Ptr[byteCount] = 0;
-
-            markerInfo.pMarkerName = utf8Ptr;
+            markerInfo.pMarkerName = scope String(name).CStr();
 
             func(_cb, &markerInfo);
         }
@@ -1328,10 +1314,10 @@ namespace Sedulous.GAL.VK
 
         private StagingResourceInfo GetStagingResourceInfo()
         {
-            lock (_stagingLock)
+            using (_stagingLock.Enter())
             {
                 StagingResourceInfo ret;
-                int32 availableCount = _availableStagingInfos.Count;
+                int availableCount = _availableStagingInfos.Count;
                 if (availableCount > 0)
                 {
                     ret = _availableStagingInfos[availableCount - 1];
@@ -1348,7 +1334,7 @@ namespace Sedulous.GAL.VK
 
         private void RecycleStagingInfo(StagingResourceInfo info)
         {
-            lock (_stagingLock)
+            using (_stagingLock.Enter())
             {
                 for (VKBuffer buffer in info.BuffersUsed)
                 {

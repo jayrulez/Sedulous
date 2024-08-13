@@ -35,7 +35,7 @@ namespace Sedulous.GAL.VK
         public abstract VkRenderPass RenderPassNoClear_Init { get; }
         public abstract VkRenderPass RenderPassNoClear_Load { get; }
         public abstract VkRenderPass RenderPassClear { get; }
-        public abstract uint32 AttachmentCount { get; }
+        public abstract uint32 AttachmentCount { get; protected set; }
         public abstract void TransitionToIntermediateLayout(VkCommandBuffer cb);
         public abstract void TransitionToFinalLayout(VkCommandBuffer cb);
     }

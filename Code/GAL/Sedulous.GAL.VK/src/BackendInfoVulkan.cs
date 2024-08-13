@@ -3,8 +3,11 @@ using System;
 using Sedulous.GAL.VK;
 using Bulkan;
 
-namespace Sedulous.GAL
+namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.VK;
+
     /// <summary>
     /// Exposes Vulkan-specific functionality,
     /// useful for interoperating with native components which interface directly with Vulkan.
@@ -96,8 +99,7 @@ namespace Sedulous.GAL
             if ((vkTexture.Usage & TextureUsage.Staging) != 0)
             {
                 Runtime.GALError(
-                    $"{nameof(GetVkImage)} cannot be used if the {nameof(Texture)} " +
-                    $"has {nameof(TextureUsage)}.{nameof(TextureUsage.Staging)}.");
+                    scope $"{nameof(GetVkImage)} cannot be used if the {nameof(Texture)} has {nameof(TextureUsage)}.{nameof(TextureUsage.Staging)}.");
             }
 
             return vkTexture.OptimalDeviceImage.Handle;
@@ -121,7 +123,7 @@ namespace Sedulous.GAL
             for (int32 i = 0; i < vkProps.Length; i++)
             {
                 VkExtensionProperties prop = vkProps[i];
-                galProps[i] = new ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
+                galProps[i] = ExtensionProperties(Util.GetString(prop.extensionName), prop.specVersion);
             }
 
             return new ReadOnlyCollection<ExtensionProperties>(galProps);
@@ -129,18 +131,18 @@ namespace Sedulous.GAL
 
         public struct ExtensionProperties
         {
-            public readonly string Name;
+            public readonly String Name;
             public readonly uint32 SpecVersion;
 
-            public ExtensionProperties(string name, uint32 specVersion)
+            public this(String name, uint32 specVersion)
             {
                 Name = name ?? throw new ArgumentNullException(nameof(name));
                 SpecVersion = specVersion;
             }
 
-            public override string ToString()
+            public override void ToString(String str)
             {
-                return Name;
+                str.Append(Name);
             }
         }
     }

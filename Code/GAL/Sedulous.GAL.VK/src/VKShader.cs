@@ -1,37 +1,37 @@
-﻿using Vulkan;
-using static Vulkan.VulkanNative;
+using Bulkan;
+using static Bulkan.VulkanNative;
 using static Sedulous.GAL.VK.VulkanUtil;
 using System;
 
 namespace Sedulous.GAL.VK
 {
+	using internal Sedulous.GAL.VK;
+
     internal class VKShader : Shader
     {
         private readonly VKGraphicsDevice _gd;
         private readonly VkShaderModule _shaderModule;
         private bool _disposed;
-        private string _name;
+        private String _name;
 
         public VkShaderModule ShaderModule => _shaderModule;
 
         public override bool IsDisposed => _disposed;
 
-        public VKShader(VKGraphicsDevice gd, ref ShaderDescription description)
+        public this(VKGraphicsDevice gd, in ShaderDescription description)
             : base(description.Stage, description.EntryPoint)
         {
             _gd = gd;
 
-            VkShaderModuleCreateInfo shaderModuleCI = VkShaderModuleCreateInfo.New();
-            fixed (uint8* codePtr = description.ShaderBytes)
-            {
-                shaderModuleCI.codeSize = (UIntPtr)description.ShaderBytes.Length;
-                shaderModuleCI.pCode = (uint32*)codePtr;
-                VkResult result = vkCreateShaderModule(gd.Device, ref shaderModuleCI, null, out _shaderModule);
-                CheckResult(result);
-            }
+            VkShaderModuleCreateInfo shaderModuleCI = VkShaderModuleCreateInfo(){sType = .VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO};
+
+            shaderModuleCI.codeSize = (uint)description.ShaderBytes.Count;
+            shaderModuleCI.pCode = (uint32*)description.ShaderBytes.Ptr;
+            VkResult result = vkCreateShaderModule(gd.Device, &shaderModuleCI, null, &_shaderModule);
+            CheckResult(result);
         }
 
-        public override string Name
+        public override String Name
         {
             get => _name;
             set
