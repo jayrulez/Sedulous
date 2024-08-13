@@ -240,6 +240,7 @@ namespace Sedulous.GAL.VK
 			VkSemaphore* signalSemaphoresPtr,
 			Fence fence)
 		{
+			var vkCB;
 			CheckSubmittedFences();
 
 			bool useExtraFence = fence != null;
@@ -1471,6 +1472,7 @@ scope $"The following Vulkan device extensions were not available: {missingList}
 
 		internal void ClearColorTexture(VKTexture texture, VkClearColorValue color)
 		{
+			var color;
 			uint32 effectiveLayers = texture.ArrayLayers;
 			if ((texture.Usage & TextureUsage.Cubemap) != 0)
 			{
@@ -1495,6 +1497,7 @@ scope $"The following Vulkan device extensions were not available: {missingList}
 
 		internal void ClearDepthTexture(VKTexture texture, VkClearDepthStencilValue clearValue)
 		{
+			var clearValue;
 			uint32 effectiveLayers = texture.ArrayLayers;
 			if ((texture.Usage & TextureUsage.Cubemap) != 0)
 			{

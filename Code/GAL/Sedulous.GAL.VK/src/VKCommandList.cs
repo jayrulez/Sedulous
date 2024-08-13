@@ -674,7 +674,7 @@ namespace Sedulous.GAL.VK
                 _currentGraphicsResourceSets[slot].Offsets.Dispose();
                 _currentGraphicsResourceSets[slot] = BoundResourceSetInfo(rs, dynamicOffsetsCount, dynamicOffsets);
                 _graphicsResourceSetsChanged[slot] = true;
-                VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
+                //VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
             }
         }
 
@@ -685,7 +685,7 @@ namespace Sedulous.GAL.VK
                 _currentComputeResourceSets[slot].Offsets.Dispose();
                 _currentComputeResourceSets[slot] = BoundResourceSetInfo(rs, dynamicOffsetsCount, dynamicOffsets);
                 _computeResourceSetsChanged[slot] = true;
-                VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
+                //VKResourceSet vkRS = Util.AssertSubtype<ResourceSet, VKResourceSet>(rs);
             }
         }
 

@@ -23,6 +23,7 @@ namespace Sedulous.GAL.VK
 
         public DescriptorAllocationToken Allocate(DescriptorResourceCounts counts, VkDescriptorSetLayout setLayout)
         {
+			var setLayout;
             using (_lock.Enter())
             {
                 VkDescriptorPool pool = GetPool(counts);
