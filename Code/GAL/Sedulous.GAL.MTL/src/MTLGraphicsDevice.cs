@@ -135,7 +135,7 @@ namespace Sedulous.GAL.MTL
             if (swapchainDesc != null)
             {
                 SwapchainDescription desc = swapchainDesc.Value;
-                _mainSwapchain = new MTLSwapchain(this, ref desc);
+                _mainSwapchain = new MTLSwapchain(this, desc);
             }
 
             _metalInfo = new BackendInfoMetal(this);
@@ -472,7 +472,7 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                msTimeout = (int32)Math.Min(nanosecondTimeout / 1000000, int32.MaxValue);
+                msTimeout = (int32)Math.Min(nanosecondTimeout / 1000000, uint32.MaxValue);
             }
 
             ManualResetEvent[] events = GetResetEventArray(fences.Count);
@@ -500,10 +500,10 @@ namespace Sedulous.GAL.MTL
         {
             using (_resetEventsLock.Enter())
             {
-                for (int32 i = _resetEvents.Count - 1; i > 0; i--)
+                for (int i = _resetEvents.Count - 1; i > 0; i--)
                 {
                     ManualResetEvent[] array = _resetEvents[i];
-                    if (array.Length == length)
+                    if (array.Count == length)
                     {
                         _resetEvents.RemoveAt(i);
                         return array;

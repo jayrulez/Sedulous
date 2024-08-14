@@ -32,8 +32,8 @@ namespace Sedulous.GAL.MTL
 
         internal bool Wait(uint64 nanosecondTimeout)
         {
-            uint64 timeout = Math.Min(int32.MaxValue, nanosecondTimeout / 1_000_000);
-            return _mre.WaitOne((int32)timeout);
+            uint64 timeout = Math.Min(uint32.MaxValue, nanosecondTimeout / 1000000);
+            return _mre.WaitOne((uint32)timeout);
         }
     }
 }
