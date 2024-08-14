@@ -9,7 +9,7 @@ namespace Sedulous.MetalBindings
         public double znear;
         public double zfar;
 
-        public MTLViewport(double originX, double originY, double width, double height, double znear, double zfar)
+        public this(double originX, double originY, double width, double height, double znear, double zfar)
         {
             this.originX = originX;
             this.originY = originY;

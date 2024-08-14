@@ -5,9 +5,9 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLVertexAttributeDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLVertexAttributeDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLVertexFormat format
         {
@@ -15,13 +15,13 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setFormat, (uint32)value);
         }
 
-        public UIntPtr offset
+        public uint offset
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_offset);
             set => objc_msgSend(NativePtr, sel_setOffset, value);
         }
 
-        public UIntPtr bufferIndex
+        public uint bufferIndex
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_bufferIndex);
             set => objc_msgSend(NativePtr, sel_setBufferIndex, value);

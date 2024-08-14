@@ -4,8 +4,8 @@ namespace Sedulous.MetalBindings
 {
     public struct NSDictionary
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public UIntPtr count => ObjectiveCRuntime.UIntPtr_objc_msgSend(NativePtr, "count");
+        public uint count => ObjectiveCRuntime.UIntPtr_objc_msgSend(NativePtr, "count");
     }
 }

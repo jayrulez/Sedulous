@@ -1,14 +1,15 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+	using internal Sedulous.MetalBindings;
+
+    [CRepr]
     public struct CAMetalDrawable
     {
-        public readonly IntPtr NativePtr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public bool IsNull => NativePtr == null;
         public MTLTexture texture => objc_msgSend<MTLTexture>(NativePtr, Selectors.texture);
     }
 }

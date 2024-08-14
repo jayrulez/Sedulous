@@ -3,9 +3,11 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLRenderPassStencilAttachmentDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLTexture texture
         {
@@ -31,7 +33,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setClearStencil, value);
         }
 
-        public UIntPtr slice
+        public uint slice
         {
             get => UIntPtr_objc_msgSend(NativePtr, Selectors.slice);
             set => objc_msgSend(NativePtr, Selectors.setSlice, value);

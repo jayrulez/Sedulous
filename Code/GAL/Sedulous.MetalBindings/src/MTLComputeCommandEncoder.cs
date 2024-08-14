@@ -3,10 +3,12 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLComputeCommandEncoder
     {
-        public readonly IntPtr NativePtr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public bool IsNull => NativePtr == null;
 
         private static readonly Selector sel_setComputePipelineState = "setComputePipelineState:";
         private static readonly Selector sel_setBuffer = "setBuffer:offset:atIndex:";
@@ -20,13 +22,13 @@ namespace Sedulous.MetalBindings
         public void setComputePipelineState(MTLComputePipelineState state)
             => objc_msgSend(NativePtr, sel_setComputePipelineState, state.NativePtr);
 
-        public void setBuffer(MTLBuffer buffer, UIntPtr offset, UIntPtr index)
+        public void setBuffer(MTLBuffer buffer, uint offset, uint index)
             => objc_msgSend(NativePtr, sel_setBuffer,
                 buffer.NativePtr,
                 offset,
                 index);
 
-        public void setBytes(void* bytes, UIntPtr length, UIntPtr index)
+        public void setBytes(void* bytes, uint length, uint index)
             => objc_msgSend(NativePtr, sel_setBytes, bytes, length, index);
 
         public void dispatchThreadGroups(MTLSize threadgroupsPerGrid, MTLSize threadsPerThreadgroup)
@@ -34,7 +36,7 @@ namespace Sedulous.MetalBindings
 
         public void dispatchThreadgroupsWithIndirectBuffer(
             MTLBuffer indirectBuffer,
-            UIntPtr indirectBufferOffset,
+            uint indirectBufferOffset,
             MTLSize threadsPerThreadgroup)
             => objc_msgSend(NativePtr, sel_dispatchThreadgroups1,
                 indirectBuffer.NativePtr,
@@ -43,10 +45,10 @@ namespace Sedulous.MetalBindings
 
         public void endEncoding() => objc_msgSend(NativePtr, sel_endEncoding);
 
-        public void setTexture(MTLTexture texture, UIntPtr index)
+        public void setTexture(MTLTexture texture, uint index)
             => objc_msgSend(NativePtr, sel_setTexture, texture.NativePtr, index);
 
-        public void setSamplerState(MTLSamplerState sampler, UIntPtr index)
+        public void setSamplerState(MTLSamplerState sampler, uint index)
             => objc_msgSend(NativePtr, sel_setSamplerState, sampler.NativePtr, index);
 
         public void pushDebugGroup(NSString @string)

@@ -4,12 +4,12 @@ namespace Sedulous.MetalBindings
 {
     public struct BlockLiteral
     {
-        public IntPtr isa;
+        public void* isa;
         public int32 flags;
         public int32 reserved;
-        public IntPtr invoke;
+        public void* invoke;
         public BlockDescriptor* descriptor;
-    };
+    }
 
     public struct BlockDescriptor
     {

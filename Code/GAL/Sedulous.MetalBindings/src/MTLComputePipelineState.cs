@@ -4,8 +4,8 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLComputePipelineState
     {
-        public readonly IntPtr NativePtr;
-        public MTLComputePipelineState(IntPtr ptr) => NativePtr = ptr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
+        public bool IsNull => NativePtr == null;
     }
 }

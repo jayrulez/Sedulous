@@ -4,7 +4,7 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLRenderPipelineState
     {
-        public readonly IntPtr NativePtr;
-        public MTLRenderPipelineState(IntPtr ptr) => NativePtr = ptr;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
     }
 }

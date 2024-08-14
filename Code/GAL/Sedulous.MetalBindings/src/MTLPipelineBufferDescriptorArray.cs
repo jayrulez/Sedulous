@@ -3,20 +3,22 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLPipelineBufferDescriptorArray
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLPipelineBufferDescriptor this[uint32 index]
         {
             get
             {
-                IntPtr value = IntPtr_objc_msgSend(NativePtr, Selectors.objectAtIndexedSubscript, (UIntPtr)index);
-                return new MTLPipelineBufferDescriptor(value);
+                void* value = IntPtr_objc_msgSend(NativePtr, Selectors.objectAtIndexedSubscript, (uint)index);
+                return MTLPipelineBufferDescriptor(value);
             }
             set
             {
-                objc_msgSend(NativePtr, Selectors.setObjectAtIndexedSubscript, value.NativePtr, (UIntPtr)index);
+                objc_msgSend(NativePtr, Selectors.setObjectAtIndexedSubscript, value.NativePtr, (uint)index);
             }
         }
     }

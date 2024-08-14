@@ -1,30 +1,29 @@
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLTexture
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLTexture(IntPtr ptr) => NativePtr = ptr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public this(void* ptr) => NativePtr = ptr;
+        public bool IsNull => NativePtr == null;
 
         public void replaceRegion(
             MTLRegion region,
-            UIntPtr mipmapLevel,
-            UIntPtr slice,
+            uint mipmapLevel,
+            uint slice,
             void* pixelBytes,
-            UIntPtr bytesPerRow,
-            UIntPtr bytesPerImage)
+            uint bytesPerRow,
+            uint bytesPerImage)
         {
             objc_msgSend(NativePtr, sel_replaceRegion,
                 region,
                 mipmapLevel,
                 slice,
-                (IntPtr)pixelBytes,
+                (void*)pixelBytes,
                 bytesPerRow,
                 bytesPerImage);
         }
@@ -35,9 +34,9 @@ namespace Sedulous.MetalBindings
             NSRange levelRange,
             NSRange sliceRange)
         {
-            IntPtr ret = IntPtr_objc_msgSend(NativePtr, sel_newTextureView,
+            void* ret = IntPtr_objc_msgSend(NativePtr, sel_newTextureView,
                 (uint32)pixelFormat, (uint32)textureType, levelRange, sliceRange);
-            return new MTLTexture(ret);
+            return MTLTexture(ret);
         }
 
         private static readonly Selector sel_replaceRegion = "replaceRegion:mipmapLevel:slice:withBytes:bytesPerRow:bytesPerImage:";

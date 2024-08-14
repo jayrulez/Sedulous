@@ -1,21 +1,20 @@
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLCommandBuffer
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLRenderCommandEncoder renderCommandEncoderWithDescriptor(MTLRenderPassDescriptor desc)
         {
-            return new MTLRenderCommandEncoder(
+            return MTLRenderCommandEncoder(
                 IntPtr_objc_msgSend(NativePtr, sel_renderCommandEncoderWithDescriptor, desc.NativePtr));
         }
 
-        public void presentDrawable(IntPtr drawable) => objc_msgSend(NativePtr, sel_presentDrawable, drawable);
+        public void presentDrawable(void* drawable) => objc_msgSend(NativePtr, sel_presentDrawable, drawable);
 
         public void commit() => objc_msgSend(NativePtr, sel_commit);
 
@@ -29,7 +28,7 @@ namespace Sedulous.MetalBindings
 
         public void addCompletedHandler(MTLCommandBufferHandler block)
             => objc_msgSend(NativePtr, sel_addCompletedHandler, block);
-        public void addCompletedHandler(IntPtr block)
+        public void addCompletedHandler(void* block)
             => objc_msgSend(NativePtr, sel_addCompletedHandler, block);
 
         public MTLCommandBufferStatus status => (MTLCommandBufferStatus)uint_objc_msgSend(NativePtr, sel_status);

@@ -5,8 +5,8 @@ namespace Sedulous.MetalBindings
 {
     public struct NSWindow
     {
-        public readonly IntPtr NativePtr;
-        public NSWindow(IntPtr ptr)
+        public readonly void* NativePtr;
+        public this(void* ptr)
         {
             NativePtr = ptr;
         }

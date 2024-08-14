@@ -1,8 +1,8 @@
-using System.Runtime.InteropServices;
+using System;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLClearColor
     {
         public double red;
@@ -10,7 +10,7 @@ namespace Sedulous.MetalBindings
         public double blue;
         public double alpha;
 
-        public MTLClearColor(double r, double g, double b, double a)
+        public this(double r, double g, double b, double a)
         {
             red = r;
             green = g;

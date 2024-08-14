@@ -1,15 +1,16 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+	using internal Sedulous.MetalBindings;
+
+    [CRepr]
     public struct MTLRenderPipelineColorAttachmentDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLRenderPipelineColorAttachmentDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLPixelFormat pixelFormat
         {

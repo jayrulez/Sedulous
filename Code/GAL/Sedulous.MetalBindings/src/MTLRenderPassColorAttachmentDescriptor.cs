@@ -3,10 +3,12 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLRenderPassColorAttachmentDescriptor
     {
-        public readonly IntPtr NativePtr;
-        public MTLRenderPassColorAttachmentDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLTexture texture
         {
@@ -48,13 +50,13 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setClearColor, value);
         }
 
-        public UIntPtr slice
+        public uint slice
         {
             get => UIntPtr_objc_msgSend(NativePtr, Selectors.slice);
             set => objc_msgSend(NativePtr, Selectors.setSlice, value);
         }
 
-        public UIntPtr level
+        public uint level
         {
             get => UIntPtr_objc_msgSend(NativePtr, Selectors.level);
             set => objc_msgSend(NativePtr, Selectors.setLevel, value);

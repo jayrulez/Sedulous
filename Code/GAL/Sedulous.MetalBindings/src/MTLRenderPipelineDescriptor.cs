@@ -1,15 +1,14 @@
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLRenderPipelineDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLRenderPipelineDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public static MTLRenderPipelineDescriptor New()
         {
@@ -45,7 +44,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setStencilAttachmentPixelFormat, (uint32)value);
         }
 
-        public UIntPtr sampleCount
+        public uint sampleCount
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_sampleCount);
             set => objc_msgSend(NativePtr, sel_setSampleCount, value);

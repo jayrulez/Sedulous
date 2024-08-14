@@ -1,3 +1,4 @@
+using System;
 namespace Sedulous.MetalBindings
 {
     public struct CGRect
@@ -5,12 +6,12 @@ namespace Sedulous.MetalBindings
         public CGPoint origin;
         public CGSize size;
 
-        public CGRect(CGPoint origin, CGSize size)
+        public this(CGPoint origin, CGSize size)
         {
             this.origin = origin;
             this.size = size;
         }
 
-        public override string ToString() => string.Format("{0}, {1}", origin, size);
+        public override void ToString(String str) => str.AppendF("{0}, {1}", origin, size);
     }
 }

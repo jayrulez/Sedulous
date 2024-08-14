@@ -1,18 +1,17 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
     public struct MTLDevice
     {
-        private const string MetalFramework = "/System/Library/Frameworks/Metal.framework/Metal";
+        private const String MetalFramework = "/System/Library/Frameworks/Metal.framework/Metal";
 
-        public readonly IntPtr NativePtr;
-        public static implicit operator IntPtr(MTLDevice device) => device.NativePtr;
-        public MTLDevice(IntPtr nativePtr) => NativePtr = nativePtr;
+        public readonly void* NativePtr;
+        public static implicit operator void*(MTLDevice device) => device.NativePtr;
+        public this(void* nativePtr) => NativePtr = nativePtr;
 
-        public string name => string_objc_msgSend(NativePtr, sel_name);
+        public String name => string_objc_msgSend(NativePtr, sel_name);
         public MTLSize maxThreadsPerThreadgroup
         {
             get
@@ -28,83 +27,83 @@ namespace Sedulous.MetalBindings
             }
         }
 
-        public MTLLibrary newLibraryWithSource(string source, MTLCompileOptions options)
+        public MTLLibrary newLibraryWithSource(String source, MTLCompileOptions options)
         {
             NSString sourceNSS = NSString.New(source);
 
-            IntPtr library = IntPtr_objc_msgSend(NativePtr, sel_newLibraryWithSource,
+            void* library = IntPtr_objc_msgSend(NativePtr, sel_newLibraryWithSource,
                 sourceNSS,
                 options,
-                out NSError error);
+                var error);
 
             release(sourceNSS.NativePtr);
 
-            if (library == IntPtr.Zero)
+            if (library == null)
             {
-                throw new Exception("Shader compilation failed: " + error.localizedDescription);
+                Runtime.FatalError(scope $"Shader compilation failed: {error.localizedDescription}");
             }
 
-            return new MTLLibrary(library);
+            return MTLLibrary(library);
         }
 
         public MTLLibrary newLibraryWithData(DispatchData data)
         {
-            IntPtr library = IntPtr_objc_msgSend(NativePtr, sel_newLibraryWithData, data.NativePtr, out NSError error);
+            void* library = IntPtr_objc_msgSend(NativePtr, sel_newLibraryWithData, data.NativePtr, var error);
 
-            if (library == IntPtr.Zero)
+            if (library == null)
             {
-                throw new Exception("Unable to load Metal library: " + error.localizedDescription);
+                Runtime.FatalError(scope $"Unable to load Metal library: {error.localizedDescription}");
             }
 
-            return new MTLLibrary(library);
+            return MTLLibrary(library);
         }
 
         public MTLRenderPipelineState newRenderPipelineStateWithDescriptor(MTLRenderPipelineDescriptor desc)
         {
-            IntPtr ret = IntPtr_objc_msgSend(NativePtr, sel_newRenderPipelineStateWithDescriptor,
+            void* ret = IntPtr_objc_msgSend(NativePtr, sel_newRenderPipelineStateWithDescriptor,
                 desc.NativePtr,
-                out NSError error);
+                var error);
 
-            if (error.NativePtr != IntPtr.Zero)
+            if (error.NativePtr != null)
             {
-                throw new Exception("Failed to create new MTLRenderPipelineState: " + error.localizedDescription);
+                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription}");
             }
 
-            return new MTLRenderPipelineState(ret);
+            return MTLRenderPipelineState(ret);
         }
 
         public MTLComputePipelineState newComputePipelineStateWithDescriptor(
             MTLComputePipelineDescriptor descriptor)
         {
-            IntPtr ret = IntPtr_objc_msgSend(NativePtr, sel_newComputePipelineStateWithDescriptor,
+            void* ret = IntPtr_objc_msgSend(NativePtr, sel_newComputePipelineStateWithDescriptor,
                 descriptor,
                 0,
-                IntPtr.Zero,
-                out NSError error);
+                null,
+                var error);
 
-            if (error.NativePtr != IntPtr.Zero)
+            if (error.NativePtr != null)
             {
-                throw new Exception("Failed to create new MTLRenderPipelineState: " + error.localizedDescription);
+                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription}");
             }
 
-            return new MTLComputePipelineState(ret);
+            return MTLComputePipelineState(ret);
         }
 
         public MTLCommandQueue newCommandQueue() => objc_msgSend<MTLCommandQueue>(NativePtr, sel_newCommandQueue);
 
-        public MTLBuffer newBuffer(void* pointer, UIntPtr length, MTLResourceOptions options)
+        public MTLBuffer newBuffer(void* pointer, uint length, MTLResourceOptions options)
         {
-            IntPtr buffer = IntPtr_objc_msgSend(NativePtr, sel_newBufferWithBytes,
+            void* buffer = IntPtr_objc_msgSend(NativePtr, sel_newBufferWithBytes,
                 pointer,
                 length,
                 options);
-            return new MTLBuffer(buffer);
+            return MTLBuffer(buffer);
         }
 
-        public MTLBuffer newBufferWithLengthOptions(UIntPtr length, MTLResourceOptions options)
+        public MTLBuffer newBufferWithLengthOptions(uint length, MTLResourceOptions options)
         {
-            IntPtr buffer = IntPtr_objc_msgSend(NativePtr, sel_newBufferWithLength, length, options);
-            return new MTLBuffer(buffer);
+            void* buffer = IntPtr_objc_msgSend(NativePtr, sel_newBufferWithLength, length, options);
+            return MTLBuffer(buffer);
         }
 
         public MTLTexture newTextureWithDescriptor(MTLTextureDescriptor descriptor)
@@ -116,7 +115,7 @@ namespace Sedulous.MetalBindings
         public MTLDepthStencilState newDepthStencilStateWithDescriptor(MTLDepthStencilDescriptor descriptor)
             => objc_msgSend<MTLDepthStencilState>(NativePtr, sel_newDepthStencilStateWithDescriptor, descriptor.NativePtr);
 
-        public Bool8 supportsTextureSampleCount(UIntPtr sampleCount)
+        public Bool8 supportsTextureSampleCount(uint sampleCount)
             => bool8_objc_msgSend(NativePtr, sel_supportsTextureSampleCount, sampleCount);
 
         public Bool8 supportsFeatureSet(MTLFeatureSet featureSet)
@@ -125,10 +124,10 @@ namespace Sedulous.MetalBindings
         public Bool8 isDepth24Stencil8PixelFormatSupported
             => bool8_objc_msgSend(NativePtr, sel_isDepth24Stencil8PixelFormatSupported);
 
-        [DllImport(MetalFramework)]
+        [Import(MetalFramework)]
         public static extern MTLDevice MTLCreateSystemDefaultDevice();
 
-        [DllImport(MetalFramework)]
+        [Import(MetalFramework)]
         public static extern NSArray MTLCopyAllDevices();
 
         private static readonly Selector sel_name = "name";

@@ -5,8 +5,8 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLFunction
     {
-        public readonly IntPtr NativePtr;
-        public MTLFunction(IntPtr ptr) => NativePtr = ptr;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public NSDictionary functionConstantsDictionary => objc_msgSend<NSDictionary>(NativePtr, sel_functionConstantsDictionary);
 

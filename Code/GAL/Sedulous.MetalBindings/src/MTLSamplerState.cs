@@ -5,6 +5,6 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLSamplerState
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
     }
 }

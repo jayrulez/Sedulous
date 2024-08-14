@@ -1,13 +1,12 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLCommandQueue
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLCommandBuffer commandBuffer() => objc_msgSend<MTLCommandBuffer>(NativePtr, sel_commandBuffer);
 

@@ -5,7 +5,7 @@ namespace Sedulous.MetalBindings
         public MTLOrigin origin;
         public MTLSize size;
 
-        public MTLRegion(MTLOrigin origin, MTLSize size)
+        public this(MTLOrigin origin, MTLSize size)
         {
             this.origin = origin;
             this.size = size;

@@ -5,19 +5,19 @@ namespace Sedulous.MetalBindings
 {
     public struct CAMetalLayer
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public CAMetalLayer(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public static CAMetalLayer New() => s_class.AllocInit<CAMetalLayer>();
 
-        public static bool TryCast(IntPtr layerPointer, out CAMetalLayer metalLayer)
+        public static bool TryCast(void* layerPointer, out CAMetalLayer metalLayer)
         {
-            var layerObject = new NSObject(layerPointer);
+            var layerObject = NSObject(layerPointer);
 
             if (layerObject.IsKindOfClass(s_class))
             {
-                metalLayer = new CAMetalLayer(layerPointer);
+                metalLayer = CAMetalLayer(layerPointer);
                 return true;
             }
 
@@ -69,7 +69,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, "setDisplaySyncEnabled:", value);
         }
 
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(CAMetalLayer));
+        private static readonly ObjCClass s_class = ObjCClass(nameof(CAMetalLayer));
         private static readonly Selector sel_device = "device";
         private static readonly Selector sel_setDevice = "setDevice:";
         private static readonly Selector sel_pixelFormat = "pixelFormat";

@@ -5,26 +5,19 @@ namespace Sedulous.MetalBindings
 {
     public struct Selector
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public Selector(IntPtr ptr)
+        public this(void* ptr)
         {
             NativePtr = ptr;
         }
 
-        public Selector(string name)
+        public this(String name)
         {
-            int32 byteCount = Encoding.UTF8.GetMaxByteCount(name.Length);
-            uint8* utf8BytesPtr = stackalloc uint8[byteCount];
-            fixed (char* namePtr = name)
-            {
-                Encoding.UTF8.GetBytes(namePtr, name.Length, utf8BytesPtr, byteCount);
-            }
-
-            NativePtr = ObjectiveCRuntime.sel_registerName(utf8BytesPtr);
+            NativePtr = ObjectiveCRuntime.sel_registerName((uint8*)name.Ptr);
         }
 
-        public string Name
+        public String Name
         {
             get
             {
@@ -33,6 +26,6 @@ namespace Sedulous.MetalBindings
             }
         }
 
-        public static implicit operator Selector(string s) => new Selector(s);
+        public static implicit operator Selector(String s) => Selector(s);
     }
 }

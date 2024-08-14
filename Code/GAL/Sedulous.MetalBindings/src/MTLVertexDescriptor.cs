@@ -5,7 +5,7 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLVertexDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLVertexBufferLayoutDescriptorArray layouts
             => objc_msgSend<MTLVertexBufferLayoutDescriptorArray>(NativePtr, sel_layouts);

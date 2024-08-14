@@ -5,8 +5,8 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLDepthStencilDescriptor
     {
-        public readonly IntPtr NativePtr;
-        public MTLDepthStencilDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLCompareFunction depthCompareFunction
         {

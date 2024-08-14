@@ -5,7 +5,7 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLStencilDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLStencilOperation stencilFailureOperation
         {

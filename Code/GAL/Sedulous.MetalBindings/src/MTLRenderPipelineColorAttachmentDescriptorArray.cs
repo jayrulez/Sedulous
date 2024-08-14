@@ -1,20 +1,21 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+	using internal Sedulous.MetalBindings;
+
+    [CRepr]
     public struct MTLRenderPipelineColorAttachmentDescriptorArray
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLRenderPipelineColorAttachmentDescriptor this[uint32 index]
         {
             get
             {
-                IntPtr ptr = IntPtr_objc_msgSend(NativePtr, Selectors.objectAtIndexedSubscript, index);
-                return new MTLRenderPipelineColorAttachmentDescriptor(ptr);
+                void* ptr = IntPtr_objc_msgSend(NativePtr, Selectors.objectAtIndexedSubscript, index);
+                return MTLRenderPipelineColorAttachmentDescriptor(ptr);
             }
             set
             {

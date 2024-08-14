@@ -3,10 +3,12 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLTextureDescriptor
     {
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLTextureDescriptor));
-        public readonly IntPtr NativePtr;
+        private static readonly ObjCClass s_class = ObjCClass(nameof(MTLTextureDescriptor));
+        public readonly void* NativePtr;
         public static MTLTextureDescriptor New() => s_class.AllocInit<MTLTextureDescriptor>();
 
         public MTLTextureType textureType
@@ -21,37 +23,37 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, Selectors.setPixelFormat, (uint32)value);
         }
 
-        public UIntPtr width
+        public uint width
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_width);
             set => objc_msgSend(NativePtr, sel_setWidth, value);
         }
 
-        public UIntPtr height
+        public uint height
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_height);
             set => objc_msgSend(NativePtr, sel_setHeight, value);
         }
 
-        public UIntPtr depth
+        public uint depth
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_depth);
             set => objc_msgSend(NativePtr, sel_setDepth, value);
         }
 
-        public UIntPtr mipmapLevelCount
+        public uint mipmapLevelCount
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_mipmapLevelCount);
             set => objc_msgSend(NativePtr, sel_setMipmapLevelCount, value);
         }
 
-        public UIntPtr sampleCount
+        public uint sampleCount
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_sampleCount);
             set => objc_msgSend(NativePtr, sel_setSampleCount, value);
         }
 
-        public UIntPtr arrayLength
+        public uint arrayLength
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_arrayLength);
             set => objc_msgSend(NativePtr, sel_setArrayLength, value);

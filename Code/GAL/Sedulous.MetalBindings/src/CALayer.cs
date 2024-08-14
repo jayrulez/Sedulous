@@ -5,12 +5,12 @@ namespace Sedulous.MetalBindings
 {
     public struct CALayer
     {
-        public readonly IntPtr NativePtr;
-        public static implicit operator IntPtr(CALayer c) => c.NativePtr;
+        public readonly void* NativePtr;
+        public static implicit operator void*(CALayer c) => c.NativePtr;
 
-        public CALayer(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
-        public void addSublayer(IntPtr layer)
+        public void addSublayer(void* layer)
         {
             objc_msgSend(NativePtr, "addSublayer:", layer);
         }

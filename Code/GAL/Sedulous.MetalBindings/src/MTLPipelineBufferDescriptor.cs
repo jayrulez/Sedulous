@@ -5,9 +5,9 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLPipelineBufferDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLPipelineBufferDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLMutability mutability
         {

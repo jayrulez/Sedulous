@@ -1,15 +1,14 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
     public struct NSView
     {
-        public readonly IntPtr NativePtr;
-        public static implicit operator IntPtr(NSView nsView) => nsView.NativePtr;
+        public readonly void* NativePtr;
+        public static implicit operator void*(NSView nsView) => nsView.NativePtr;
 
-        public NSView(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public Bool8 wantsLayer
         {
@@ -17,7 +16,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, "setWantsLayer:", value);
         }
 
-        public IntPtr layer
+        public void* layer
         {
             get => IntPtr_objc_msgSend(NativePtr, "layer");
             set => objc_msgSend(NativePtr, "setLayer:", value);
@@ -27,9 +26,11 @@ namespace Sedulous.MetalBindings
         {
             get
             {
-                return RuntimeInformation.ProcessArchitecture == Architecture.Arm64
+                /*return RuntimeInformation.ProcessArchitecture == Architecture.Arm64
                     ? CGRect_objc_msgSend(NativePtr, "frame")
-                    : objc_msgSend_stret<CGRect>(NativePtr, "frame");
+                    : objc_msgSend_stret<CGRect>(NativePtr, "frame");*/
+				// todo: Fix check above
+				return CGRect_objc_msgSend(NativePtr, "frame");
             }
         }
     }

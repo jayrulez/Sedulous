@@ -1,8 +1,8 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void MTLCommandBufferHandler(IntPtr block, MTLCommandBuffer buffer);
+    //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	[CallingConvention(.Cdecl)]
+    public function void MTLCommandBufferHandler(void* block, MTLCommandBuffer buffer);
 }

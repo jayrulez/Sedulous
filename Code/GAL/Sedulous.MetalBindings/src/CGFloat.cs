@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Sedulous.MetalBindings
 {
@@ -9,7 +8,7 @@ namespace Sedulous.MetalBindings
     {
         private readonly double _value;
 
-        public CGFloat(double value)
+        public this(double value)
         {
             _value = value;
         }
@@ -19,9 +18,9 @@ namespace Sedulous.MetalBindings
             get => _value;
         }
 
-        public static implicit operator CGFloat(double value) => new CGFloat(value);
+        public static implicit operator CGFloat(double value) => CGFloat(value);
         public static implicit operator double(CGFloat cgf) => cgf.Value;
 
-        public override string ToString() => _value.ToString();
+        public override void ToString(String str) => _value.ToString(str);
     }
 }

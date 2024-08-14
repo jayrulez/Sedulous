@@ -4,9 +4,9 @@ namespace Sedulous.MetalBindings
 {
     public struct NSAutoreleasePool : IDisposable
     {
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(NSAutoreleasePool));
-        public readonly IntPtr NativePtr;
-        public NSAutoreleasePool(IntPtr ptr) => NativePtr = ptr;
+        private static readonly ObjCClass s_class = ObjCClass(nameof(NSAutoreleasePool));
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public static NSAutoreleasePool Begin()
         {

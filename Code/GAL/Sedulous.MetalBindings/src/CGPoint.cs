@@ -1,3 +1,4 @@
+using System;
 namespace Sedulous.MetalBindings
 {
     public struct CGPoint
@@ -5,12 +6,12 @@ namespace Sedulous.MetalBindings
         public CGFloat x;
         public CGFloat y;
 
-        public CGPoint(double x, double y)
+        public this(double x, double y)
         {
             this.x = x;
             this.y = y;
         }
 
-        public override string ToString() => string.Format("({0},{1})", x, y);
+        public override void ToString(String str) => str.AppendF("({0},{1})", x, y);
     }
 }

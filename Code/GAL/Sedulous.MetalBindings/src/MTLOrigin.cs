@@ -4,15 +4,15 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLOrigin
     {
-        public UIntPtr x;
-        public UIntPtr y;
-        public UIntPtr z;
+        public uint x;
+        public uint y;
+        public uint z;
 
-        public MTLOrigin(uint32 x, uint32 y, uint32 z)
+        public this(uint32 x, uint32 y, uint32 z)
         {
-            this.x = (UIntPtr)x;
-            this.y = (UIntPtr)y;
-            this.z = (UIntPtr)z;
+            this.x = (uint)x;
+            this.y = (uint)y;
+            this.z = (uint)z;
         }
     }
 }

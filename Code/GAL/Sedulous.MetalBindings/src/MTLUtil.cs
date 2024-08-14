@@ -1,10 +1,11 @@
 using System.Text;
+using System;
 
 namespace Sedulous.MetalBindings
 {
     public static class MTLUtil
     {
-        public static string GetUtf8String(uint8* stringStart)
+        public static String GetUtf8String(uint8* stringStart)
         {
             int32 characters = 0;
             while (stringStart[characters] != 0)
@@ -15,9 +16,9 @@ namespace Sedulous.MetalBindings
             return Encoding.UTF8.GetString(stringStart, characters);
         }
 
-        public static T AllocInit<T>(string typeName) where T : struct
+        public static T AllocInit<T>(String typeName) where T : struct
         {
-            var cls = new ObjCClass(typeName);
+            var cls = ObjCClass(typeName);
             return cls.AllocInit<T>();
         }
     }

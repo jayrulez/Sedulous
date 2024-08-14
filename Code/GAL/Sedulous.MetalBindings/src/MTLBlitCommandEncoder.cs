@@ -3,17 +3,19 @@ using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
+	using internal Sedulous.MetalBindings;
+
     public struct MTLBlitCommandEncoder
     {
-        public readonly IntPtr NativePtr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public bool IsNull => NativePtr == null;
 
         public void copy(
             MTLBuffer sourceBuffer,
-            UIntPtr sourceOffset,
+            uint sourceOffset,
             MTLBuffer destinationBuffer,
-            UIntPtr destinationOffset,
-            UIntPtr size)
+            uint destinationOffset,
+            uint size)
             => objc_msgSend(
                 NativePtr,
                 sel_copyFromBuffer0,
@@ -21,13 +23,13 @@ namespace Sedulous.MetalBindings
 
         public void copyFromBuffer(
             MTLBuffer sourceBuffer,
-            UIntPtr sourceOffset,
-            UIntPtr sourceBytesPerRow,
-            UIntPtr sourceBytesPerImage,
+            uint sourceOffset,
+            uint sourceBytesPerRow,
+            uint sourceBytesPerImage,
             MTLSize sourceSize,
             MTLTexture destinationTexture,
-            UIntPtr destinationSlice,
-            UIntPtr destinationLevel,
+            uint destinationSlice,
+            uint destinationLevel,
             MTLOrigin destinationOrigin)
             => objc_msgSend(
                 NativePtr,
@@ -44,14 +46,14 @@ namespace Sedulous.MetalBindings
 
         public void copyTextureToBuffer(
             MTLTexture sourceTexture,
-            UIntPtr sourceSlice,
-            UIntPtr sourceLevel,
+            uint sourceSlice,
+            uint sourceLevel,
             MTLOrigin sourceOrigin,
             MTLSize sourceSize,
             MTLBuffer destinationBuffer,
-            UIntPtr destinationOffset,
-            UIntPtr destinationBytesPerRow,
-            UIntPtr destinationBytesPerImage)
+            uint destinationOffset,
+            uint destinationBytesPerRow,
+            uint destinationBytesPerImage)
             => objc_msgSend(NativePtr, sel_copyFromTexture0,
                 sourceTexture,
                 sourceSlice,
@@ -66,7 +68,7 @@ namespace Sedulous.MetalBindings
         public void generateMipmapsForTexture(MTLTexture texture)
             => objc_msgSend(NativePtr, sel_generateMipmapsForTexture, texture.NativePtr);
 
-        public void synchronizeResource(IntPtr resource) => objc_msgSend(NativePtr, sel_synchronizeResource, resource);
+        public void synchronizeResource(void* resource) => objc_msgSend(NativePtr, sel_synchronizeResource, resource);
 
         public void endEncoding() => objc_msgSend(NativePtr, sel_endEncoding);
 
@@ -79,13 +81,13 @@ namespace Sedulous.MetalBindings
 
         public void copyFromTexture(
             MTLTexture sourceTexture,
-            UIntPtr sourceSlice,
-            UIntPtr sourceLevel,
+            uint sourceSlice,
+            uint sourceLevel,
             MTLOrigin sourceOrigin,
             MTLSize sourceSize,
             MTLTexture destinationTexture,
-            UIntPtr destinationSlice,
-            UIntPtr destinationLevel,
+            uint destinationSlice,
+            uint destinationLevel,
             MTLOrigin destinationOrigin)
             => objc_msgSend(NativePtr, sel_copyFromTexture1,
                 sourceTexture,

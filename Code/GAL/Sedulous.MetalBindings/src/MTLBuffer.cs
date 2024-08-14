@@ -1,18 +1,17 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLBuffer
     {
-        public readonly IntPtr NativePtr;
-        public MTLBuffer(IntPtr ptr) => NativePtr = ptr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
+        public bool IsNull => NativePtr == null;
 
-        public void* contents() => ObjectiveCRuntime.IntPtr_objc_msgSend(NativePtr, sel_contents).ToPointer();
+        public void* contents() => ObjectiveCRuntime.IntPtr_objc_msgSend(NativePtr, sel_contents);
 
-        public UIntPtr length => ObjectiveCRuntime.UIntPtr_objc_msgSend(NativePtr, sel_length);
+        public uint length => ObjectiveCRuntime.UIntPtr_objc_msgSend(NativePtr, sel_length);
 
         public void didModifyRange(NSRange range)
             => ObjectiveCRuntime.objc_msgSend(NativePtr, sel_didModifyRange, range);

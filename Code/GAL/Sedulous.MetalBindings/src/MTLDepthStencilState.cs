@@ -4,6 +4,6 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLDepthStencilState
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
     }
 }

@@ -5,8 +5,8 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLSamplerDescriptor
     {
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLSamplerDescriptor));
-        public readonly IntPtr NativePtr;
+        private static readonly ObjCClass s_class = ObjCClass(nameof(MTLSamplerDescriptor));
+        public readonly void* NativePtr;
         public static MTLSamplerDescriptor New() => s_class.AllocInit<MTLSamplerDescriptor>();
 
         public MTLSamplerAddressMode rAddressMode
@@ -63,7 +63,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setLodAverage, value);
         }
 
-        public UIntPtr maxAnisotropy
+        public uint maxAnisotropy
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_maxAnisotropy);
             set => objc_msgSend(NativePtr, sel_setMaAnisotropy, value);

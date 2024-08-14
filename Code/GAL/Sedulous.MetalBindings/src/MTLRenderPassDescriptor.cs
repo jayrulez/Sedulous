@@ -1,14 +1,13 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLRenderPassDescriptor
     {
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLRenderPassDescriptor));
-        public readonly IntPtr NativePtr;
+        private static readonly ObjCClass s_class = ObjCClass(nameof(MTLRenderPassDescriptor));
+        public readonly void* NativePtr;
         public static MTLRenderPassDescriptor New() => s_class.AllocInit<MTLRenderPassDescriptor>();
 
         public MTLRenderPassColorAttachmentDescriptorArray colorAttachments

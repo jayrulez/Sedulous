@@ -5,8 +5,8 @@ namespace Sedulous.MetalBindings
 {
     public struct UIScreen
     {
-        public readonly IntPtr NativePtr;
-        public UIScreen(IntPtr ptr)
+        public readonly void* NativePtr;
+        public this(void* ptr)
         {
             NativePtr = ptr;
         }

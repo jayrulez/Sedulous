@@ -1,82 +1,83 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+	using internal Sedulous.MetalBindings;
+
+    [CRepr]
     public struct MTLRenderCommandEncoder
     {
-        public readonly IntPtr NativePtr;
-        public MTLRenderCommandEncoder(IntPtr ptr) => NativePtr = ptr;
-        public bool IsNull => NativePtr == IntPtr.Zero;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
+        public bool IsNull => NativePtr == null;
 
         public void setRenderPipelineState(MTLRenderPipelineState pipelineState)
             => objc_msgSend(NativePtr, sel_setRenderPipelineState, pipelineState.NativePtr);
 
-        public void setVertexBuffer(MTLBuffer buffer, UIntPtr offset, UIntPtr index)
+        public void setVertexBuffer(MTLBuffer buffer, uint offset, uint index)
             => objc_msgSend(NativePtr, sel_setVertexBuffer,
                 buffer.NativePtr,
                 offset,
                 index);
 
-        public void setFragmentBuffer(MTLBuffer buffer, UIntPtr offset, UIntPtr index)
+        public void setFragmentBuffer(MTLBuffer buffer, uint offset, uint index)
             => objc_msgSend(NativePtr, sel_setFragmentBuffer,
                 buffer.NativePtr,
                 offset,
                 index);
 
-        public void setVertexTexture(MTLTexture texture, UIntPtr index)
+        public void setVertexTexture(MTLTexture texture, uint index)
             => objc_msgSend(NativePtr, sel_setVertexTexture, texture.NativePtr, index);
-        public void setFragmentTexture(MTLTexture texture, UIntPtr index)
+        public void setFragmentTexture(MTLTexture texture, uint index)
             => objc_msgSend(NativePtr, sel_setFragmentTexture, texture.NativePtr, index);
 
-        public void setVertexSamplerState(MTLSamplerState sampler, UIntPtr index)
+        public void setVertexSamplerState(MTLSamplerState sampler, uint index)
             => objc_msgSend(NativePtr, sel_setVertexSamplerState, sampler.NativePtr, index);
 
-        public void setFragmentSamplerState(MTLSamplerState sampler, UIntPtr index)
+        public void setFragmentSamplerState(MTLSamplerState sampler, uint index)
             => objc_msgSend(NativePtr, sel_setFragmentSamplerState, sampler.NativePtr, index);
 
         public void drawPrimitives(
             MTLPrimitiveType primitiveType,
-            UIntPtr vertexStart,
-            UIntPtr vertexCount,
-            UIntPtr instanceCount,
-            UIntPtr baseInstance)
+            uint vertexStart,
+            uint vertexCount,
+            uint instanceCount,
+            uint baseInstance)
             => objc_msgSend(NativePtr, sel_drawPrimitives0,
                 primitiveType, vertexStart, vertexCount, instanceCount, baseInstance);
 
         public void drawPrimitives(
             MTLPrimitiveType primitiveType,
-            UIntPtr vertexStart,
-            UIntPtr vertexCount,
-            UIntPtr instanceCount)
+            uint vertexStart,
+            uint vertexCount,
+            uint instanceCount)
             => objc_msgSend(NativePtr, sel_drawPrimitives2,
                 primitiveType, vertexStart, vertexCount, instanceCount);
 
-        public void drawPrimitives(MTLPrimitiveType primitiveType, MTLBuffer indirectBuffer, UIntPtr indirectBufferOffset)
+        public void drawPrimitives(MTLPrimitiveType primitiveType, MTLBuffer indirectBuffer, uint indirectBufferOffset)
             => objc_msgSend(NativePtr, sel_drawPrimitives1,
                 primitiveType, indirectBuffer, indirectBufferOffset);
 
         public void drawIndexedPrimitives(
             MTLPrimitiveType primitiveType,
-            UIntPtr indexCount,
+            uint indexCount,
             MTLIndexType indexType,
             MTLBuffer indexBuffer,
-            UIntPtr indexBufferOffset,
-            UIntPtr instanceCount)
+            uint indexBufferOffset,
+            uint instanceCount)
             => objc_msgSend(NativePtr, sel_drawIndexedPrimitives0,
                 primitiveType, indexCount, indexType, indexBuffer.NativePtr, indexBufferOffset, instanceCount);
 
         public void drawIndexedPrimitives(
             MTLPrimitiveType primitiveType,
-            UIntPtr indexCount,
+            uint indexCount,
             MTLIndexType indexType,
             MTLBuffer indexBuffer,
-            UIntPtr indexBufferOffset,
-            UIntPtr instanceCount,
-            IntPtr baseVertex,
-            UIntPtr baseInstance)
+            uint indexBufferOffset,
+            uint instanceCount,
+            void* baseVertex,
+            uint baseInstance)
             => objc_msgSend(
                 NativePtr,
                 sel_drawIndexedPrimitives1,
@@ -86,9 +87,9 @@ namespace Sedulous.MetalBindings
             MTLPrimitiveType primitiveType,
             MTLIndexType indexType,
             MTLBuffer indexBuffer,
-            UIntPtr indexBufferOffset,
+            uint indexBufferOffset,
             MTLBuffer indirectBuffer,
-            UIntPtr indirectBufferOffset)
+            uint indirectBufferOffset)
             => objc_msgSend(NativePtr, sel_drawIndexedPrimitives2,
                 primitiveType,
                 indexType,
@@ -100,13 +101,13 @@ namespace Sedulous.MetalBindings
         public void setViewport(MTLViewport viewport)
             => objc_msgSend(NativePtr, sel_setViewport, viewport);
 
-        public void setViewports(MTLViewport* viewports, UIntPtr count)
+        public void setViewports(MTLViewport* viewports, uint count)
             => objc_msgSend(NativePtr, sel_setViewports, viewports, count);
 
         public void setScissorRect(MTLScissorRect scissorRect)
             => objc_msgSend(NativePtr, sel_setScissorRect, scissorRect);
 
-        public void setScissorRects(MTLScissorRect* scissorRects, UIntPtr count)
+        public void setScissorRects(MTLScissorRect* scissorRects, uint count)
             => objc_msgSend(NativePtr, sel_setScissorRects, scissorRects, count);
 
         public void setCullMode(MTLCullMode cullMode)

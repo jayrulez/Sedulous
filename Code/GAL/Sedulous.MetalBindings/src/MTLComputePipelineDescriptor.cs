@@ -5,7 +5,7 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLComputePipelineDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
         public MTLFunction computeFunction
         {

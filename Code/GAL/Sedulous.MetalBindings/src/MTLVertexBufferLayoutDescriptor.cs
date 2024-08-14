@@ -5,9 +5,9 @@ namespace Sedulous.MetalBindings
 {
     public struct MTLVertexBufferLayoutDescriptor
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public MTLVertexBufferLayoutDescriptor(IntPtr ptr) => NativePtr = ptr;
+        public this(void* ptr) => NativePtr = ptr;
 
         public MTLVertexStepFunction stepFunction
         {
@@ -15,13 +15,13 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setStepFunction, (uint32)value);
         }
 
-        public UIntPtr stride
+        public uint stride
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_stride);
             set => objc_msgSend(NativePtr, sel_setStride, value);
         }
 
-        public UIntPtr stepRate
+        public uint stepRate
         {
             get => UIntPtr_objc_msgSend(NativePtr, sel_stepRate);
             set => objc_msgSend(NativePtr, sel_setStepRate, value);

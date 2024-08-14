@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.CompilerServices;
 
 namespace Sedulous.MetalBindings
 {
@@ -8,12 +7,12 @@ namespace Sedulous.MetalBindings
         public double width;
         public double height;
 
-        public CGSize(double width, double height)
+        public this(double width, double height)
         {
             this.width = width;
             this.height = height;
         }
 
-        public override string ToString() => string.Format("{0} x {1}", width, height);
+        public override void ToString(String str) => str.AppendF("{0} x {1}", width, height);
     }
 }

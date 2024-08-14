@@ -1,40 +1,39 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLLibrary
     {
-        public readonly IntPtr NativePtr;
-        public MTLLibrary(IntPtr ptr) => NativePtr = ptr;
+        public readonly void* NativePtr;
+        public this(void* ptr) => NativePtr = ptr;
 
-        public MTLFunction newFunctionWithName(string name)
+        public MTLFunction newFunctionWithName(String name)
         {
             NSString nameNSS = NSString.New(name);
-            IntPtr function = IntPtr_objc_msgSend(NativePtr, sel_newFunctionWithName, nameNSS);
+            void* @function = IntPtr_objc_msgSend(NativePtr, sel_newFunctionWithName, nameNSS);
             release(nameNSS.NativePtr);
-            return new MTLFunction(function);
+            return MTLFunction(@function);
         }
 
-        public MTLFunction newFunctionWithNameConstantValues(string name, MTLFunctionConstantValues constantValues)
+        public MTLFunction newFunctionWithNameConstantValues(String name, MTLFunctionConstantValues constantValues)
         {
             NSString nameNSS = NSString.New(name);
-            IntPtr function = IntPtr_objc_msgSend(
+            void* @function = IntPtr_objc_msgSend(
                 NativePtr,
                 sel_newFunctionWithNameConstantValues,
                 nameNSS.NativePtr,
                 constantValues.NativePtr,
-                out NSError error);
+                var error);
             release(nameNSS.NativePtr);
 
-            if (function == IntPtr.Zero)
+            if (@function == null)
             {
-                throw new Exception($"Failed to create MTLFunction: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Failed to create MTLFunction: {error.localizedDescription}");
             }
 
-            return new MTLFunction(function);
+            return MTLFunction(@function);
         }
 
         private static readonly Selector sel_newFunctionWithName = "newFunctionWithName:";

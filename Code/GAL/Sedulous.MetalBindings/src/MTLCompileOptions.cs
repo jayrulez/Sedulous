@@ -1,15 +1,14 @@
 using System;
-using System.Runtime.InteropServices;
 using static Sedulous.MetalBindings.ObjectiveCRuntime;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLCompileOptions
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
 
-        public static implicit operator IntPtr(MTLCompileOptions mco) => mco.NativePtr;
+        public static implicit operator void*(MTLCompileOptions mco) => mco.NativePtr;
 
         public static MTLCompileOptions New()
         {
@@ -28,7 +27,7 @@ namespace Sedulous.MetalBindings
             set => objc_msgSend(NativePtr, sel_setLanguageVersion, (uint32)value);
         }
 
-        private static readonly ObjCClass s_class = new ObjCClass(nameof(MTLCompileOptions));
+        private static readonly ObjCClass s_class = ObjCClass(nameof(MTLCompileOptions));
         private static readonly Selector sel_fastMathEnabled = "fastMathEnabled";
         private static readonly Selector sel_setFastMathEnabled = "setFastMathEnabled:";
         private static readonly Selector sel_languageVersion = "languageVersion";

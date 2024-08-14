@@ -1,24 +1,23 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
     public static class Dispatch
     {
-        private const string LibdispatchLocation = @"/usr/lib/system/libdispatch.dylib";
+        private const String LibdispatchLocation = @"/usr/lib/system/libdispatch.dylib";
 
-        [DllImport(LibdispatchLocation)]
+        [Import(LibdispatchLocation)]
         public static extern DispatchQueue dispatch_get_global_queue(QualityOfServiceLevel identifier, uint64 flags);
 
-        [DllImport(LibdispatchLocation)]
+        [Import(LibdispatchLocation)]
         public static extern DispatchData dispatch_data_create(
             void* buffer,
-            UIntPtr size,
+            uint size,
             DispatchQueue queue,
-            IntPtr destructorBlock);
+            void* destructorBlock);
 
-        [DllImport(LibdispatchLocation)]
-        public static extern void dispatch_release(IntPtr nativePtr);
+        [Import(LibdispatchLocation)]
+        public static extern void dispatch_release(void* nativePtr);
     }
 
     public enum QualityOfServiceLevel : int64
@@ -33,11 +32,11 @@ namespace Sedulous.MetalBindings
 
     public struct DispatchQueue
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
     }
 
     public struct DispatchData
     {
-        public readonly IntPtr NativePtr;
+        public readonly void* NativePtr;
     }
 }

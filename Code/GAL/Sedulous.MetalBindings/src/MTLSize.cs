@@ -1,20 +1,19 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace Sedulous.MetalBindings
 {
-    [StructLayout(LayoutKind.Sequential)]
+    [CRepr]
     public struct MTLSize
     {
-        public UIntPtr Width;
-        public UIntPtr Height;
-        public UIntPtr Depth;
+        public uint Width;
+        public uint Height;
+        public uint Depth;
 
-        public MTLSize(uint32 width, uint32 height, uint32 depth)
+        public this(uint32 width, uint32 height, uint32 depth)
         {
-            Width = (UIntPtr)width;
-            Height = (UIntPtr)height;
-            Depth = (UIntPtr)depth;
+            Width = (uint)width;
+            Height = (uint)height;
+            Depth = (uint)depth;
         }
     }
 }
