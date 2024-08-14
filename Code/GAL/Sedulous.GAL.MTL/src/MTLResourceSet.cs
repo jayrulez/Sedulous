@@ -1,18 +1,22 @@
+using System;
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLResourceSet : ResourceSet
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
+    public class MTLResourceSet : ResourceSet
     {
         private bool _disposed;
         public new BindableResource[] Resources { get; }
         public new MTLResourceLayout Layout { get; }
 
-        public MTLResourceSet(ref ResourceSetDescription description, MTLGraphicsDevice gd) : base(ref description)
+        public this(in ResourceSetDescription description, MTLGraphicsDevice gd) : base(description)
         {
             Resources = Util.ShallowClone(description.BoundResources);
             Layout = Util.AssertSubtype<ResourceLayout, MTLResourceLayout>(description.Layout);
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
         public override bool IsDisposed => _disposed;
 

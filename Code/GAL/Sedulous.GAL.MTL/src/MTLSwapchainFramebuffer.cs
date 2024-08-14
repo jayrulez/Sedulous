@@ -1,33 +1,35 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
     internal class MTLSwapchainFramebuffer : MTLFramebufferBase
     {
         private readonly MTLGraphicsDevice _gd;
         private readonly MTLPlaceholderTexture _placeholderTexture;
-        private MTLTexture _depthTexture;
+        private Sedulous.GAL.MTL.MTLTexture _depthTexture;
         private readonly MTLSwapchain _parentSwapchain;
         private bool _disposed;
 
         public override uint32 Width => _placeholderTexture.Width;
         public override uint32 Height => _placeholderTexture.Height;
 
-        public override OutputDescription OutputDescription { get; }
+        public new override ref OutputDescription OutputDescription { get; }
 
-        private readonly FramebufferAttachment[] _colorTargets;
-        private readonly FramebufferAttachment? _depthTarget;
+        private /*readonly*/ FramebufferAttachmentList _colorTargets;
+        private /*readonly*/ FramebufferAttachmentDescription? _depthTarget;
         private readonly PixelFormat? _depthFormat;
 
-        public override IReadOnlyList<FramebufferAttachment> ColorTargets => _colorTargets;
-        public override FramebufferAttachment? DepthTarget => _depthTarget;
+        public override ref FramebufferAttachmentList ColorTargets => ref _colorTargets;
+        public override ref FramebufferAttachmentDescription? DepthTarget => ref _depthTarget;
 
         public override bool IsDisposed => _disposed;
 
-        public MTLSwapchainFramebuffer(
+        public this(
             MTLGraphicsDevice gd,
             MTLSwapchain parent,
             uint32 width,
@@ -43,16 +45,16 @@ namespace Sedulous.GAL.MTL
             if (depthFormat != null)
             {
                 _depthFormat = depthFormat;
-                depthAttachment = new OutputAttachmentDescription(depthFormat.Value);
+                depthAttachment = OutputAttachmentDescription(depthFormat.Value);
                 RecreateDepthTexture(width, height);
-                _depthTarget = new FramebufferAttachment(_depthTexture, 0);
+                _depthTarget = FramebufferAttachmentDescription(_depthTexture, 0);
             }
-            OutputAttachmentDescription colorAttachment = new OutputAttachmentDescription(colorFormat);
+            OutputAttachmentDescription colorAttachment = OutputAttachmentDescription(colorFormat);
 
-            OutputDescription = new OutputDescription(depthAttachment, colorAttachment);
+            OutputDescription = OutputDescription(depthAttachment, colorAttachment);
             _placeholderTexture = new MTLPlaceholderTexture(colorFormat);
             _placeholderTexture.Resize(width, height);
-            _colorTargets = new[] { new FramebufferAttachment(_placeholderTexture, 0) };
+            _colorTargets = .(FramebufferAttachmentDescription(_placeholderTexture, 0));
         }
 
         private void RecreateDepthTexture(uint32 width, uint32 height)
@@ -63,7 +65,7 @@ namespace Sedulous.GAL.MTL
                 _depthTexture.Dispose();
             }
 
-            _depthTexture = Util.AssertSubtype<Texture, MTLTexture>(
+            _depthTexture = Util.AssertSubtype<Texture, Sedulous.GAL.MTL.MTLTexture>(
                 _gd.ResourceFactory.CreateTexture(TextureDescription.Texture2D(
                     width, height, 1, 1, _depthFormat.Value, TextureUsage.DepthStencil)));
         }

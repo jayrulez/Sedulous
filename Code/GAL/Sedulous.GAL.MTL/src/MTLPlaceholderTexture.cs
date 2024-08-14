@@ -1,3 +1,4 @@
+using System;
 namespace Sedulous.GAL.MTL
 {
     // A fake Texture object representing swapchain Textures.
@@ -7,7 +8,7 @@ namespace Sedulous.GAL.MTL
         private uint32 _height;
         private bool _disposed;
 
-        public override PixelFormat Format { get; }
+        public override PixelFormat Format { get; protected set; }
 
         public override uint32 Width => _width;
 
@@ -25,11 +26,11 @@ namespace Sedulous.GAL.MTL
 
         public override TextureSampleCount SampleCount => TextureSampleCount.Count1;
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
         public override bool IsDisposed => _disposed;
 
-        public MTLPlaceholderTexture(PixelFormat format)
+        public this(PixelFormat format)
         {
             Format = format;
         }
@@ -40,7 +41,7 @@ namespace Sedulous.GAL.MTL
             _height = height;
         }
 
-        private protected override void DisposeCore()
+        protected override void DisposeCore()
         {
             _disposed = true;
         }

@@ -3,6 +3,9 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
     internal class MTLTexture : Texture
     {
         private bool _disposed;
@@ -10,35 +13,35 @@ namespace Sedulous.GAL.MTL
         /// <summary>
         /// The native MTLTexture object. This property is only valid for non-staging Textures.
         /// </summary>
-        public MetalBindings.MTLTexture DeviceTexture { get; }
+        public Sedulous.MetalBindings.MTLTexture DeviceTexture { get; }
         /// <summary>
         /// The staging MTLBuffer object. This property is only valid for staging Textures.
         /// </summary>
-        public MetalBindings.MTLBuffer StagingBuffer { get; }
+        public Sedulous.MetalBindings.MTLBuffer StagingBuffer { get; }
 
-        public override PixelFormat Format { get; }
+        public override PixelFormat Format { get; protected set; }
 
-        public override uint32 Width { get; }
+        public override uint32 Width { get; protected set; }
 
-        public override uint32 Height { get; }
+        public override uint32 Height { get; protected set; }
 
-        public override uint32 Depth { get; }
+        public override uint32 Depth { get; protected set; }
 
-        public override uint32 MipLevels { get; }
+        public override uint32 MipLevels { get; protected set; }
 
-        public override uint32 ArrayLayers { get; }
+        public override uint32 ArrayLayers { get; protected set; }
 
-        public override TextureUsage Usage { get; }
+        public override TextureUsage Usage { get; protected set; }
 
-        public override TextureType Type { get; }
+        public override TextureType Type { get; protected set; }
 
-        public override TextureSampleCount SampleCount { get; }
-        public override string Name { get; set; }
+        public override TextureSampleCount SampleCount { get; protected set; }
+        public override String Name { get; set; }
         public override bool IsDisposed => _disposed;
         public MTLPixelFormat MTLPixelFormat { get; }
         public MTLTextureType MTLTextureType { get; }
 
-        public MTLTexture(ref TextureDescription description, MTLGraphicsDevice _gd)
+        public this(in TextureDescription description, MTLGraphicsDevice _gd)
         {
             Width = description.Width;
             Height = description.Height;
@@ -60,12 +63,12 @@ namespace Sedulous.GAL.MTL
             if (Usage != TextureUsage.Staging)
             {
                 MTLTextureDescriptor texDescriptor = MTLTextureDescriptor.New();
-                texDescriptor.width = (UIntPtr)Width;
-                texDescriptor.height = (UIntPtr)Height;
-                texDescriptor.depth = (UIntPtr)Depth;
-                texDescriptor.mipmapLevelCount = (UIntPtr)MipLevels;
-                texDescriptor.arrayLength = (UIntPtr)ArrayLayers;
-                texDescriptor.sampleCount = (UIntPtr)FormatHelpers.GetSampleCountUInt32(SampleCount);
+                texDescriptor.width = (uint)Width;
+                texDescriptor.height = (uint)Height;
+                texDescriptor.depth = (uint)Depth;
+                texDescriptor.mipmapLevelCount = (uint)MipLevels;
+                texDescriptor.arrayLength = (uint)ArrayLayers;
+                texDescriptor.sampleCount = (uint)FormatHelpers.GetSampleCountUInt32(SampleCount);
                 texDescriptor.textureType = MTLTextureType;
                 texDescriptor.pixelFormat = MTLPixelFormat;
                 texDescriptor.textureUsage = MTLFormats.VdToMTLTextureUsage(Usage);
@@ -80,7 +83,7 @@ namespace Sedulous.GAL.MTL
                 uint32 totalStorageSize = 0;
                 for (uint32 level = 0; level < MipLevels; level++)
                 {
-                    Util.GetMipDimensions(this, level, out uint32 levelWidth, out uint32 levelHeight, out uint32 levelDepth);
+                    Util.GetMipDimensions(this, level, var levelWidth, var levelHeight, var levelDepth);
                     uint32 storageWidth = Math.Max(levelWidth, blockSize);
                     uint32 storageHeight = Math.Max(levelHeight, blockSize);
                     totalStorageSize += levelDepth * FormatHelpers.GetDepthPitch(
@@ -91,14 +94,14 @@ namespace Sedulous.GAL.MTL
                 totalStorageSize *= ArrayLayers;
 
                 StagingBuffer = _gd.Device.newBufferWithLengthOptions(
-                    (UIntPtr)totalStorageSize,
+                    (uint)totalStorageSize,
                     MTLResourceOptions.StorageModeShared);
             }
         }
 
-        public MTLTexture(uint64 nativeTexture, ref TextureDescription description)
+        public this(uint64 nativeTexture, in TextureDescription description)
         {
-            DeviceTexture = new MetalBindings.MTLTexture((IntPtr)nativeTexture);
+            DeviceTexture = Sedulous.MetalBindings.MTLTexture((void*)(int)nativeTexture);
             Width = description.Width;
             Height = description.Height;
             Depth = description.Depth;
@@ -120,8 +123,8 @@ namespace Sedulous.GAL.MTL
 
         internal uint32 GetSubresourceSize(uint32 mipLevel, uint32 arrayLayer)
         {
-            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-            Util.GetMipDimensions(this, mipLevel, out uint32 width, out uint32 height, out uint32 depth);
+            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4 : 1;
+            Util.GetMipDimensions(this, mipLevel, var width, var height, var depth);
             uint32 storageWidth = Math.Max(blockSize, width);
             uint32 storageHeight = Math.Max(blockSize, height);
             return depth * FormatHelpers.GetDepthPitch(
@@ -132,15 +135,15 @@ namespace Sedulous.GAL.MTL
 
         internal void GetSubresourceLayout(uint32 mipLevel, uint32 arrayLayer, out uint32 rowPitch, out uint32 depthPitch)
         {
-            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4u : 1u;
-            Util.GetMipDimensions(this, mipLevel, out uint32 mipWidth, out uint32 mipHeight, out uint32 mipDepth);
+            uint32 blockSize = FormatHelpers.IsCompressedFormat(Format) ? 4 : 1;
+            Util.GetMipDimensions(this, mipLevel, var mipWidth, var mipHeight, var mipDepth);
             uint32 storageWidth = Math.Max(blockSize, mipWidth);
             uint32 storageHeight = Math.Max(blockSize, mipHeight);
             rowPitch = FormatHelpers.GetRowPitch(storageWidth, Format);
             depthPitch = FormatHelpers.GetDepthPitch(rowPitch, storageHeight, Format);
         }
 
-        private protected override void DisposeCore()
+        protected override void DisposeCore()
         {
             if (!_disposed)
             {

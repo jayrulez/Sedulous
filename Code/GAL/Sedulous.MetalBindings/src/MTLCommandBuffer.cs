@@ -4,7 +4,7 @@ using System;
 namespace Sedulous.MetalBindings
 {
     [CRepr]
-    public struct MTLCommandBuffer
+    public struct MTLCommandBuffer : IHashable
     {
         public readonly void* NativePtr;
 
@@ -41,5 +41,10 @@ namespace Sedulous.MetalBindings
         private static readonly Selector sel_waitUntilCompleted = "waitUntilCompleted";
         private static readonly Selector sel_addCompletedHandler = "addCompletedHandler:";
         private static readonly Selector sel_status = "status";
+
+		public int GetHashCode()
+		{
+			return (int)NativePtr;
+		}
     }
 }

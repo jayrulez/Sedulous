@@ -8,12 +8,12 @@ namespace Sedulous.GAL.MTL
         private readonly ManualResetEvent _mre;
         private bool _disposed;
 
-        public MTLFence(bool signaled)
+        public this(bool signaled)
         {
             _mre = new ManualResetEvent(signaled);
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
         public ManualResetEvent ResetEvent => _mre;
 
         public void Set() => _mre.Set();

@@ -1,64 +1,64 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading;
-using NativeLibrary = NativeLibraryLoader.NativeLibrary;
 using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLGraphicsDevice : GraphicsDevice
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
+    public class MTLGraphicsDevice : GraphicsDevice
     {
         private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(GetIsSupported);
-        private static readonly Dictionary<IntPtr, MTLGraphicsDevice> s_aotRegisteredBlocks
-            = new Dictionary<IntPtr, MTLGraphicsDevice>();
+		private static readonly Monitor s_aotRegisteredBlocksLock = new .() ~ delete _;
+        private static readonly Dictionary<void*, MTLGraphicsDevice> s_aotRegisteredBlocks = new .();
 
         private readonly MTLDevice _device;
-        private readonly string _deviceName;
+        private readonly String _deviceName;
         private readonly GraphicsApiVersion _apiVersion;
         private readonly MTLCommandQueue _commandQueue;
         private readonly MTLSwapchain _mainSwapchain;
         private readonly bool[] _supportedSampleCounts;
         private BackendInfoMetal _metalInfo;
 
-        private readonly object _submittedCommandsLock = new object();
-        private readonly Dictionary<MTLCommandBuffer, MTLFence> _submittedCBs = new Dictionary<MTLCommandBuffer, MTLFence>();
+        private readonly Monitor _submittedCommandsLock = new .() ~ delete _;
+        private readonly Dictionary<MTLCommandBuffer, MTLFence> _submittedCBs = new .() ~ delete _;
         private MTLCommandBuffer _latestSubmittedCB;
 
-        private readonly object _resetEventsLock = new object();
+        private readonly Monitor _resetEventsLock = new .() ~ delete _;
         private readonly List<ManualResetEvent[]> _resetEvents = new List<ManualResetEvent[]>();
 
-        private const string UnalignedBufferCopyPipelineMacOSName = "MTL_UnalignedBufferCopy_macOS";
-        private const string UnalignedBufferCopyPipelineiOSName = "MTL_UnalignedBufferCopy_iOS";
-        private readonly object _unalignedBufferCopyPipelineLock = new object();
+        private const String UnalignedBufferCopyPipelineMacOSName = "MTL_UnalignedBufferCopy_macOS";
+        private const String UnalignedBufferCopyPipelineiOSName = "MTL_UnalignedBufferCopy_iOS";
+        private readonly Monitor _unalignedBufferCopyPipelineLock = new .() ~ delete _;
         private readonly NativeLibrary _libSystem;
-        private readonly IntPtr _concreteGlobalBlock;
+        private readonly void* _concreteGlobalBlock;
         private MTLShader _unalignedBufferCopyShader;
         private MTLComputePipelineState _unalignedBufferCopyPipeline;
         private MTLCommandBufferHandler _completionHandler;
-        private readonly IntPtr _completionHandlerFuncPtr;
-        private readonly IntPtr _completionBlockDescriptor;
-        private readonly IntPtr _completionBlockLiteral;
+        private readonly void* _completionHandlerFuncPtr;
+        private readonly void* _completionBlockDescriptor;
+        private readonly void* _completionBlockLiteral;
 
         public MTLDevice Device => _device;
         public MTLCommandQueue CommandQueue => _commandQueue;
-        public MTLFeatureSupport MetalFeatures { get; }
+        internal MTLFeatureSupport MetalFeatures { get; }
         public ResourceBindingModel ResourceBindingModel { get; }
 
-        public MTLGraphicsDevice(
+        public this(
             GraphicsDeviceOptions options,
             SwapchainDescription? swapchainDesc)
         {
             _device = MTLDevice.MTLCreateSystemDefaultDevice();
-            _deviceName = _device.name;
+            _deviceName = _device.name(.. new .());
             MetalFeatures = new MTLFeatureSupport(_device);
 
             int32 major = (int32)MetalFeatures.MaxFeatureSet / 10000;
             int32 minor = (int32)MetalFeatures.MaxFeatureSet % 10000;
-            _apiVersion = new GraphicsApiVersion(major, minor, 0, 0);
+            _apiVersion = GraphicsApiVersion(major, minor, 0, 0);
 
             Features = new GraphicsDeviceFeatures(
                 computeShader: true,
@@ -86,28 +86,32 @@ namespace Sedulous.GAL.MTL
             _concreteGlobalBlock = _libSystem.LoadFunction("_NSConcreteGlobalBlock");
             if (MetalFeatures.IsMacOS)
             {
-                _completionHandler = OnCommandBufferCompleted;
+				static void completionHandler(void* block, MTLCommandBuffer buffer)
+				{
+					OnCommandBufferCompleted(block, buffer);
+				}
+                _completionHandler = => completionHandler;
             }
             else
             {
-                _completionHandler = OnCommandBufferCompleted_Static;
+                _completionHandler = => OnCommandBufferCompleted_Static;
             }
-            _completionHandlerFuncPtr = Marshal.GetFunctionPointerForDelegate<MTLCommandBufferHandler>(_completionHandler);
-            _completionBlockDescriptor = Marshal.AllocHGlobal(Unsafe.SizeOf<BlockDescriptor>());
+            _completionHandlerFuncPtr = (MTLCommandBufferHandler)_completionHandler;
+            _completionBlockDescriptor = new uint8[sizeof(BlockDescriptor)]*;
             BlockDescriptor* descriptorPtr = (BlockDescriptor*)_completionBlockDescriptor;
-            descriptorPtr->reserved = 0;
-            descriptorPtr->Block_size = (uint64)Unsafe.SizeOf<BlockDescriptor>();
+            descriptorPtr.reserved = 0;
+            descriptorPtr.Block_size = (uint64)sizeof(BlockDescriptor);
 
-            _completionBlockLiteral = Marshal.AllocHGlobal(Unsafe.SizeOf<BlockLiteral>());
+            _completionBlockLiteral = new uint8[sizeof(BlockLiteral)]*;
             BlockLiteral* blockPtr = (BlockLiteral*)_completionBlockLiteral;
-            blockPtr->isa = _concreteGlobalBlock;
-            blockPtr->flags = 1 << 28 | 1 << 29;
-            blockPtr->invoke = _completionHandlerFuncPtr;
-            blockPtr->descriptor = descriptorPtr;
+            blockPtr.isa = _concreteGlobalBlock;
+            blockPtr.flags = 1 << 28 | 1 << 29;
+            blockPtr.invoke = _completionHandlerFuncPtr;
+            blockPtr.descriptor = descriptorPtr;
 
             if (!MetalFeatures.IsMacOS)
             {
-                lock (s_aotRegisteredBlocks)
+                using (s_aotRegisteredBlocksLock.Enter())
                 {
                     s_aotRegisteredBlocks.Add(_completionBlockLiteral, this);
                 }
@@ -116,13 +120,13 @@ namespace Sedulous.GAL.MTL
             ResourceFactory = new MTLResourceFactory(this);
             _commandQueue = _device.newCommandQueue();
 
-            TextureSampleCount[] allSampleCounts = (TextureSampleCount[])Enum.GetValues(typeof(TextureSampleCount));
-            _supportedSampleCounts = new bool[allSampleCounts.Length];
-            for (int32 i = 0; i < allSampleCounts.Length; i++)
+            List<TextureSampleCount> allSampleCounts = scope .(Enum.GetValues<TextureSampleCount>());
+            _supportedSampleCounts = new bool[allSampleCounts.Count];
+            for (int i = 0; i < allSampleCounts.Count; i++)
             {
                 TextureSampleCount count = allSampleCounts[i];
                 uint32 uintValue = FormatHelpers.GetSampleCountUInt32(count);
-                if (_device.supportsTextureSampleCount((UIntPtr)uintValue))
+                if (_device.supportsTextureSampleCount((uint)uintValue))
                 {
                     _supportedSampleCounts[i] = true;
                 }
@@ -139,9 +143,9 @@ namespace Sedulous.GAL.MTL
             PostDeviceCreated();
         }
 
-        public override string DeviceName => _deviceName;
+        public override String DeviceName => _deviceName;
 
-        public override string VendorName => "Apple";
+        public override String VendorName => "Apple";
 
         public override GraphicsApiVersion ApiVersion => _apiVersion;
 
@@ -159,11 +163,11 @@ namespace Sedulous.GAL.MTL
 
         public override GraphicsDeviceFeatures Features { get; }
 
-        private void OnCommandBufferCompleted(IntPtr block, MTLCommandBuffer cb)
+        private void OnCommandBufferCompleted(void* block, MTLCommandBuffer cb)
         {
-            lock (_submittedCommandsLock)
+            using (_submittedCommandsLock.Enter())
             {
-                if (_submittedCBs.TryGetValue(cb, out MTLFence fence))
+                if (_submittedCBs.TryGetValue(cb, var fence))
                 {
                     fence.Set();
                     _submittedCBs.Remove(cb);
@@ -179,24 +183,24 @@ namespace Sedulous.GAL.MTL
         }
 
         // Xamarin AOT requires native callbacks be static.
-        [MonoPInvokeCallback(typeof(MTLCommandBufferHandler))]
-        private static void OnCommandBufferCompleted_Static(IntPtr block, MTLCommandBuffer cb)
+        //[MonoPInvokeCallback(typeof(MTLCommandBufferHandler))]
+        private static void OnCommandBufferCompleted_Static(void* block, MTLCommandBuffer cb)
         {
-            lock (s_aotRegisteredBlocks)
+            using (s_aotRegisteredBlocksLock.Enter())
             {
-                if (s_aotRegisteredBlocks.TryGetValue(block, out MTLGraphicsDevice gd))
+                if (s_aotRegisteredBlocks.TryGetValue(block, var gd))
                 {
                     gd.OnCommandBufferCompleted(block, cb);
                 }
             }
         }
 
-        private protected override void SubmitCommandsCore(CommandList commandList, Fence fence)
+        protected override void SubmitCommandsCore(CommandList commandList, Fence fence)
         {
             MTLCommandList mtlCL = Util.AssertSubtype<CommandList, MTLCommandList>(commandList);
 
             mtlCL.CommandBuffer.addCompletedHandler(_completionBlockLiteral);
-            lock (_submittedCommandsLock)
+            using (_submittedCommandsLock.Enter())
             {
                 if (fence != null)
                 {
@@ -210,7 +214,7 @@ namespace Sedulous.GAL.MTL
 
         public override TextureSampleCount GetSampleCountLimit(PixelFormat format, bool depthFormat)
         {
-            for (int32 i = _supportedSampleCounts.Length - 1; i >= 0; i--)
+            for (int i = _supportedSampleCounts.Count - 1; i >= 0; i--)
             {
                 if (_supportedSampleCounts[i])
                 {
@@ -221,7 +225,7 @@ namespace Sedulous.GAL.MTL
             return TextureSampleCount.Count1;
         }
 
-        private protected override bool GetPixelFormatSupportCore(
+        protected override bool GetPixelFormatSupportCore(
             PixelFormat format,
             TextureType type,
             TextureUsage usage,
@@ -235,7 +239,7 @@ namespace Sedulous.GAL.MTL
 
             uint32 sampleCounts = 0;
 
-            for (int32 i = 0; i < _supportedSampleCounts.Length; i++)
+            for (int32 i = 0; i < _supportedSampleCounts.Count; i++)
             {
                 if (_supportedSampleCounts[i])
                 {
@@ -282,7 +286,7 @@ namespace Sedulous.GAL.MTL
                 Runtime.IllegalValue<TextureType>();
             }
 
-            properties = new PixelFormatProperties(
+            properties = PixelFormatProperties(
                 maxWidth,
                 maxHeight,
                 maxDepth,
@@ -292,11 +296,11 @@ namespace Sedulous.GAL.MTL
             return true;
         }
 
-        private protected override void SwapBuffersCore(Swapchain swapchain)
+        protected override void SwapBuffersCore(Swapchain swapchain)
         {
             MTLSwapchain mtlSC = Util.AssertSubtype<Swapchain, MTLSwapchain>(swapchain);
-            IntPtr currentDrawablePtr = mtlSC.CurrentDrawable.NativePtr;
-            if (currentDrawablePtr != IntPtr.Zero)
+            void* currentDrawablePtr = mtlSC.CurrentDrawable.NativePtr;
+            if (currentDrawablePtr != null)
             {
                 using (NSAutoreleasePool.Begin())
                 {
@@ -309,17 +313,17 @@ namespace Sedulous.GAL.MTL
             mtlSC.GetNextDrawable();
         }
 
-        private protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, IntPtr source, uint32 sizeInBytes)
+        protected override void UpdateBufferCore(DeviceBuffer buffer, uint32 bufferOffsetInBytes, void* source, uint32 sizeInBytes)
         {
-            var mtlBuffer = Util.AssertSubtype<DeviceBuffer, MTLBuffer>(buffer);
+            var mtlBuffer = Util.AssertSubtype<DeviceBuffer, Sedulous.GAL.MTL.MTLBuffer>(buffer);
             void* destPtr = mtlBuffer.DeviceBuffer.contents();
             uint8* destOffsetPtr = (uint8*)destPtr + bufferOffsetInBytes;
-            Unsafe.CopyBlock(destOffsetPtr, source.ToPointer(), sizeInBytes);
+            Internal.MemCpy(destOffsetPtr, source, sizeInBytes);
         }
 
-        private protected override void UpdateTextureCore(
+        protected override void UpdateTextureCore(
             Texture texture,
-            IntPtr source,
+            void* source,
             uint32 sizeInBytes,
             uint32 x,
             uint32 y,
@@ -330,10 +334,10 @@ namespace Sedulous.GAL.MTL
             uint32 mipLevel,
             uint32 arrayLayer)
         {
-            MTLTexture mtlTex = Util.AssertSubtype<Texture, MTLTexture>(texture);
+            Sedulous.GAL.MTL.MTLTexture mtlTex = Util.AssertSubtype<Texture, Sedulous.GAL.MTL.MTLTexture>(texture);
             if (mtlTex.StagingBuffer.IsNull)
             {
-                Texture stagingTex = ResourceFactory.CreateTexture(new TextureDescription(
+                Texture stagingTex = ResourceFactory.CreateTexture(TextureDescription(
                     width, height, depth, 1, 1, texture.Format, TextureUsage.Staging, texture.Type));
                 UpdateTexture(stagingTex, source, sizeInBytes, 0, 0, 0, width, height, depth, 0, 0);
                 CommandList cl = ResourceFactory.CreateCommandList();
@@ -350,12 +354,12 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                mtlTex.GetSubresourceLayout(mipLevel, arrayLayer, out uint32 dstRowPitch, out uint32 dstDepthPitch);
+                mtlTex.GetSubresourceLayout(mipLevel, arrayLayer, var dstRowPitch, var dstDepthPitch);
                 uint64 dstOffset = Util.ComputeSubresourceOffset(mtlTex, mipLevel, arrayLayer);
                 uint32 srcRowPitch = FormatHelpers.GetRowPitch(width, texture.Format);
                 uint32 srcDepthPitch = FormatHelpers.GetDepthPitch(srcRowPitch, height, texture.Format);
                 Util.CopyTextureRegion(
-                    source.ToPointer(),
+                    source,
                     0, 0, 0,
                     srcRowPitch, srcDepthPitch,
                     (uint8*)mtlTex.StagingBuffer.contents() + dstOffset,
@@ -366,16 +370,16 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        private protected override void WaitForIdleCore()
+        protected override void WaitForIdleCore()
         {
             MTLCommandBuffer lastCB = default(MTLCommandBuffer);
-            lock (_submittedCommandsLock)
+            using (_submittedCommandsLock.Enter())
             {
                 lastCB = _latestSubmittedCB;
                 ObjectiveCRuntime.retain(lastCB.NativePtr);
             }
 
-            if (lastCB.NativePtr != IntPtr.Zero && lastCB.status != MTLCommandBufferStatus.Completed)
+            if (lastCB.NativePtr != null && lastCB.status != MTLCommandBufferStatus.Completed)
             {
                 lastCB.waitUntilCompleted();
             }
@@ -385,41 +389,41 @@ namespace Sedulous.GAL.MTL
 
         protected override MappedResource MapCore(MappableResource resource, MapMode mode, uint32 subresource)
         {
-            if (resource is MTLBuffer buffer)
+            if (let buffer = resource as Sedulous.GAL.MTL.MTLBuffer)
             {
                 return MapBuffer(buffer, mode);
             }
             else
             {
-                MTLTexture texture = Util.AssertSubtype<MappableResource, MTLTexture>(resource);
+                Sedulous.GAL.MTL.MTLTexture texture = Util.AssertSubtype<MappableResource, Sedulous.GAL.MTL.MTLTexture>(resource);
                 return MapTexture(texture, mode, subresource);
             }
         }
 
-        private MappedResource MapBuffer(MTLBuffer buffer, MapMode mode)
+        private MappedResource MapBuffer(Sedulous.GAL.MTL.MTLBuffer buffer, MapMode mode)
         {
             void* data = buffer.DeviceBuffer.contents();
-            return new MappedResource(
+            return MappedResource(
                 buffer,
                 mode,
-                (IntPtr)data,
+                data,
                 buffer.SizeInBytes,
                 0,
                 buffer.SizeInBytes,
                 buffer.SizeInBytes);
         }
 
-        private MappedResource MapTexture(MTLTexture texture, MapMode mode, uint32 subresource)
+        private MappedResource MapTexture(Sedulous.GAL.MTL.MTLTexture texture, MapMode mode, uint32 subresource)
         {
             Debug.Assert(!texture.StagingBuffer.IsNull);
             void* data = texture.StagingBuffer.contents();
-            Util.GetMipLevelAndArrayLayer(texture, subresource, out uint32 mipLevel, out uint32 arrayLayer);
-            Util.GetMipDimensions(texture, mipLevel, out uint32 width, out uint32 height, out uint32 depth);
+            Util.GetMipLevelAndArrayLayer(texture, subresource, var mipLevel, var arrayLayer);
+            Util.GetMipDimensions(texture, mipLevel, var width, var height, var depth);
             uint32 subresourceSize = texture.GetSubresourceSize(mipLevel, arrayLayer);
-            texture.GetSubresourceLayout(mipLevel, arrayLayer, out uint32 rowPitch, out uint32 depthPitch);
+            texture.GetSubresourceLayout(mipLevel, arrayLayer, var rowPitch, var depthPitch);
             uint64 offset = Util.ComputeSubresourceOffset(texture, mipLevel, arrayLayer);
             uint8* offsetPtr = (uint8*)data + offset;
-            return new MappedResource(texture, mode, (IntPtr)offsetPtr, subresourceSize, subresource, rowPitch, depthPitch);
+            return MappedResource(texture, mode, offsetPtr, subresourceSize, subresource, rowPitch, depthPitch);
         }
 
         protected override void PlatformDispose()
@@ -434,17 +438,17 @@ namespace Sedulous.GAL.MTL
             ObjectiveCRuntime.release(_commandQueue.NativePtr);
             ObjectiveCRuntime.release(_device.NativePtr);
 
-            lock (s_aotRegisteredBlocks)
+            using (s_aotRegisteredBlocksLock.Enter())
             {
                 s_aotRegisteredBlocks.Remove(_completionBlockLiteral);
             }
 
             _libSystem.Dispose();
-            Marshal.FreeHGlobal(_completionBlockDescriptor);
-            Marshal.FreeHGlobal(_completionBlockLiteral);
+            delete _completionBlockDescriptor;
+            delete _completionBlockLiteral;
         }
 
-        public override bool GetMetalInfo(out BackendInfoMetal info)
+        public bool GetMetalInfo(out BackendInfoMetal info)
         {
             info = _metalInfo;
             return true;
@@ -468,11 +472,11 @@ namespace Sedulous.GAL.MTL
             }
             else
             {
-                msTimeout = (int32)Math.Min(nanosecondTimeout / 1_000_000, int32.MaxValue);
+                msTimeout = (int32)Math.Min(nanosecondTimeout / 1000000, int32.MaxValue);
             }
 
-            ManualResetEvent[] events = GetResetEventArray(fences.Length);
-            for (int32 i = 0; i < fences.Length; i++)
+            ManualResetEvent[] events = GetResetEventArray(fences.Count);
+            for (int i = 0; i < fences.Count; i++)
             {
                 events[i] = Util.AssertSubtype<Fence, MTLFence>(fences[i]).ResetEvent;
             }
@@ -492,9 +496,9 @@ namespace Sedulous.GAL.MTL
             return result;
         }
 
-        private ManualResetEvent[] GetResetEventArray(int32 length)
+        private ManualResetEvent[] GetResetEventArray(int length)
         {
-            lock (_resetEventsLock)
+            using (_resetEventsLock.Enter())
             {
                 for (int32 i = _resetEvents.Count - 1; i > 0; i--)
                 {
@@ -513,7 +517,7 @@ namespace Sedulous.GAL.MTL
 
         private void ReturnResetEventArray(ManualResetEvent[] array)
         {
-            lock (_resetEventsLock)
+            using (_resetEventsLock.Enter())
             {
                 _resetEvents.Add(array);
             }
@@ -542,7 +546,7 @@ namespace Sedulous.GAL.MTL
                     else
                     {
                         MTLDevice defaultDevice = MTLDevice.MTLCreateSystemDefaultDevice();
-                        if (defaultDevice.NativePtr != IntPtr.Zero)
+                        if (defaultDevice.NativePtr != null)
                         {
                             result = true;
                             ObjectiveCRuntime.release(defaultDevice.NativePtr);
@@ -560,7 +564,7 @@ namespace Sedulous.GAL.MTL
 
         internal MTLComputePipelineState GetUnalignedBufferCopyPipeline()
         {
-            lock (_unalignedBufferCopyPipelineLock)
+            using (_unalignedBufferCopyPipelineLock.Enter())
             {
                 if (_unalignedBufferCopyPipeline.IsNull)
                 {
@@ -572,15 +576,15 @@ namespace Sedulous.GAL.MTL
                     buffer0.mutability = MTLMutability.Mutable;
 
                     Debug.Assert(_unalignedBufferCopyShader == null);
-                    string name = MetalFeatures.IsMacOS ? UnalignedBufferCopyPipelineMacOSName : UnalignedBufferCopyPipelineiOSName;
+                    String name = MetalFeatures.IsMacOS ? UnalignedBufferCopyPipelineMacOSName : UnalignedBufferCopyPipelineiOSName;
                     using (Stream resourceStream = typeof(MTLGraphicsDevice).Assembly.GetManifestResourceStream(name))
                     {
                         uint8[] data = new uint8[resourceStream.Length];
                         using (MemoryStream ms = new MemoryStream(data))
                         {
                             resourceStream.CopyTo(ms);
-                            ShaderDescription shaderDesc = new ShaderDescription(ShaderStages.Compute, data, "copy_bytes");
-                            _unalignedBufferCopyShader = new MTLShader(ref shaderDesc, this);
+                            ShaderDescription shaderDesc = ShaderDescription(ShaderStages.Compute, data, "copy_bytes");
+                            _unalignedBufferCopyShader = new MTLShader(shaderDesc, this);
                         }
                     }
 
@@ -593,12 +597,7 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        internal override uint32 GetUniformBufferMinOffsetAlignmentCore() => MetalFeatures.IsMacOS ? 16u : 256u;
-        internal override uint32 GetStructuredBufferMinOffsetAlignmentCore() => 16u;
-    }
-
-    internal sealed class MonoPInvokeCallbackAttribute : Attribute
-    {
-        public MonoPInvokeCallbackAttribute(Type t) { }
+        protected override uint32 GetUniformBufferMinOffsetAlignmentCore() => MetalFeatures.IsMacOS ? 16 : 256;
+        protected override uint32 GetStructuredBufferMinOffsetAlignmentCore() => 16;
     }
 }

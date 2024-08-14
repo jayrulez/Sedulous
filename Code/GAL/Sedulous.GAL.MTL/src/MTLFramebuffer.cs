@@ -3,13 +3,16 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
     internal class MTLFramebuffer : MTLFramebufferBase
     {
         public override bool IsRenderable => true;
         private bool _disposed;
 
-        public MTLFramebuffer(MTLGraphicsDevice gd, ref FramebufferDescription description)
-            : base(gd, ref description)
+        public this(MTLGraphicsDevice gd, in FramebufferDescription description)
+            : base(gd, description)
         {
         }
 
@@ -18,24 +21,24 @@ namespace Sedulous.GAL.MTL
             MTLRenderPassDescriptor ret = MTLRenderPassDescriptor.New();
             for (int32 i = 0; i < ColorTargets.Count; i++)
             {
-                FramebufferAttachment colorTarget = ColorTargets[i];
-                MTLTexture mtlTarget = Util.AssertSubtype<Texture, MTLTexture>(colorTarget.Target);
+                FramebufferAttachmentDescription colorTarget = ColorTargets[i];
+                Sedulous.GAL.MTL.MTLTexture mtlTarget = Util.AssertSubtype<Texture, Sedulous.GAL.MTL.MTLTexture>(colorTarget.Target);
                 MTLRenderPassColorAttachmentDescriptor colorDescriptor = ret.colorAttachments[(uint32)i];
                 colorDescriptor.texture = mtlTarget.DeviceTexture;
                 colorDescriptor.loadAction = MTLLoadAction.Load;
-                colorDescriptor.slice = (UIntPtr)colorTarget.ArrayLayer;
-                colorDescriptor.level = (UIntPtr)colorTarget.MipLevel;
+                colorDescriptor.slice = (uint)colorTarget.ArrayLayer;
+                colorDescriptor.level = (uint)colorTarget.MipLevel;
             }
 
             if (DepthTarget != null)
             {
-                MTLTexture mtlDepthTarget = Util.AssertSubtype<Texture, MTLTexture>(DepthTarget.Value.Target);
+                Sedulous.GAL.MTL.MTLTexture mtlDepthTarget = Util.AssertSubtype<Texture, Sedulous.GAL.MTL.MTLTexture>(DepthTarget.Value.Target);
                 MTLRenderPassDepthAttachmentDescriptor depthDescriptor = ret.depthAttachment;
                 depthDescriptor.loadAction = MTLLoadAction.Load;
                 depthDescriptor.storeAction = MTLStoreAction.Store;
                 depthDescriptor.texture = mtlDepthTarget.DeviceTexture;
-                depthDescriptor.slice = (UIntPtr)DepthTarget.Value.ArrayLayer;
-                depthDescriptor.level = (UIntPtr)DepthTarget.Value.MipLevel;
+                depthDescriptor.slice = (uint)DepthTarget.Value.ArrayLayer;
+                depthDescriptor.level = (uint)DepthTarget.Value.MipLevel;
 
                 if (FormatHelpers.IsStencilFormat(mtlDepthTarget.Format))
                 {
@@ -43,7 +46,7 @@ namespace Sedulous.GAL.MTL
                     stencilDescriptor.loadAction = MTLLoadAction.Load;
                     stencilDescriptor.storeAction = MTLStoreAction.Store;
                     stencilDescriptor.texture = mtlDepthTarget.DeviceTexture;
-                    stencilDescriptor.slice = (UIntPtr)DepthTarget.Value.ArrayLayer;
+                    stencilDescriptor.slice = (uint)DepthTarget.Value.ArrayLayer;
                 }
             }
 

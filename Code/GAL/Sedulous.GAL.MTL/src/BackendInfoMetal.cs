@@ -1,11 +1,13 @@
-﻿#if !EXCLUDE_METAL_BACKEND
-using System.Collections.ObjectModel;
-using System.Linq;
+#if !EXCLUDE_METAL_BACKEND
 using Sedulous.MetalBindings;
 using Sedulous.GAL.MTL;
+using System;
+using System.Collections;
 
-namespace Sedulous.GAL
+namespace Sedulous.GAL.MTL
 {
+	using internal Sedulous.GAL.MTL;
+
     /// <summary>
     /// Exposes Metal-specific functionality,
     /// useful for interoperating with native components which interface directly with Metal.
@@ -14,15 +16,15 @@ namespace Sedulous.GAL
     public class BackendInfoMetal
     {
         private readonly MTLGraphicsDevice _gd;
-        private ReadOnlyCollection<MTLFeatureSet> _featureSet;
+        private List<MTLFeatureSet> _featureSet;
 
-        internal BackendInfoMetal(MTLGraphicsDevice gd)
+        internal this(MTLGraphicsDevice gd)
         {
             _gd = gd;
-            _featureSet = new ReadOnlyCollection<MTLFeatureSet>(_gd.MetalFeatures.ToArray());
+            _featureSet = new List<MTLFeatureSet>(_gd.MetalFeatures);
         }
 
-        public ReadOnlyCollection<MTLFeatureSet> FeatureSet => _featureSet;
+        public Span<MTLFeatureSet> FeatureSet => _featureSet;
 
         public MTLFeatureSet MaxFeatureSet => _gd.MetalFeatures.MaxFeatureSet;
     }

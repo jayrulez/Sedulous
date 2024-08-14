@@ -1,4 +1,5 @@
 using Sedulous.MetalBindings;
+using System;
 
 namespace Sedulous.GAL.MTL
 {
@@ -7,14 +8,14 @@ namespace Sedulous.GAL.MTL
         public abstract MTLRenderPassDescriptor CreateRenderPassDescriptor();
         public abstract bool IsRenderable { get; }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
-        public MTLFramebufferBase(MTLGraphicsDevice gd, ref FramebufferDescription description)
+        public this(MTLGraphicsDevice gd, in FramebufferDescription description)
             : base(description.DepthTarget, description.ColorTargets)
         {
         }
 
-        public MTLFramebufferBase()
+        public this()
         {
         }
     }

@@ -3,19 +3,21 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLSampler : Sampler
+	using internal Sedulous.GAL.MTL;
+
+    public class MTLSampler : Sampler
     {
         private bool _disposed;
 
         public MTLSamplerState DeviceSampler { get; }
 
-        public MTLSampler(ref SamplerDescription description, MTLGraphicsDevice gd)
+        public this(in SamplerDescription description, MTLGraphicsDevice gd)
         {
             MTLFormats.GetMinMagMipFilter(
                 description.Filter,
-                out MTLSamplerMinMagFilter min,
-                out MTLSamplerMinMagFilter mag,
-                out MTLSamplerMipFilter mip);
+                var min,
+                var mag,
+                var mip);
 
             MTLSamplerDescriptor mtlDesc = MTLSamplerDescriptor.New();
             mtlDesc.sAddressMode = MTLFormats.VdToMTLAddressMode(description.AddressModeU);
@@ -34,12 +36,12 @@ namespace Sedulous.GAL.MTL
             }
             mtlDesc.lodMinClamp = description.MinimumLod;
             mtlDesc.lodMaxClamp = description.MaximumLod;
-            mtlDesc.maxAnisotropy = (UIntPtr)(Math.Max(1, description.MaximumAnisotropy));
+            mtlDesc.maxAnisotropy = (uint)(Math.Max(1, description.MaximumAnisotropy));
             DeviceSampler = gd.Device.newSamplerStateWithDescriptor(mtlDesc);
             ObjectiveCRuntime.release(mtlDesc.NativePtr);
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
         public override bool IsDisposed => _disposed;
 

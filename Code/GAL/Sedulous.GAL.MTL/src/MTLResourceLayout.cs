@@ -1,6 +1,7 @@
+using System;
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLResourceLayout : ResourceLayout
+    public class MTLResourceLayout : ResourceLayout
     {
         private readonly ResourceBindingInfo[] _bindingInfosByVdIndex;
         private bool _disposed;
@@ -10,14 +11,14 @@ namespace Sedulous.GAL.MTL
 #if !VALIDATE_USAGE
         public ResourceKind[] ResourceKinds { get; }
 #endif
-        public ResourceBindingInfo GetBindingInfo(int32 index) => _bindingInfosByVdIndex[index];
+        internal ResourceBindingInfo GetBindingInfo(int32 index) => _bindingInfosByVdIndex[index];
 
 #if !VALIDATE_USAGE
         public ResourceLayoutDescription Description { get; }
 #endif
 
-        public MTLResourceLayout(ref ResourceLayoutDescription description, MTLGraphicsDevice gd)
-            : base(ref description)
+        public this(in ResourceLayoutDescription description, MTLGraphicsDevice gd)
+            : base(description)
         {
 #if !VALIDATE_USAGE
             Description = description;
@@ -25,20 +26,20 @@ namespace Sedulous.GAL.MTL
 
             ResourceLayoutElementDescription[] elements = description.Elements;
 #if !VALIDATE_USAGE
-            ResourceKinds = new ResourceKind[elements.Length];
-            for (int32 i = 0; i < elements.Length; i++)
+            ResourceKinds = new ResourceKind[elements.Count];
+            for (int32 i = 0; i < elements.Count; i++)
             {
                 ResourceKinds[i] = elements[i].Kind;
             }
 #endif
 
-            _bindingInfosByVdIndex = new ResourceBindingInfo[elements.Length];
+            _bindingInfosByVdIndex = new ResourceBindingInfo[elements.Count];
 
             uint32 bufferIndex = 0;
             uint32 texIndex = 0;
             uint32 samplerIndex = 0;
 
-            for (int32 i = 0; i < _bindingInfosByVdIndex.Length; i++)
+            for (int32 i = 0; i < _bindingInfosByVdIndex.Count; i++)
             {
                 uint32 slot;
                 switch (elements[i].Kind)
@@ -64,7 +65,7 @@ namespace Sedulous.GAL.MTL
                     default: Runtime.IllegalValue<ResourceKind>();
                 }
 
-                _bindingInfosByVdIndex[i] = new ResourceBindingInfo(
+                _bindingInfosByVdIndex[i] = ResourceBindingInfo(
                     slot,
                     elements[i].Stages,
                     elements[i].Kind,
@@ -76,7 +77,7 @@ namespace Sedulous.GAL.MTL
             SamplerCount = samplerIndex;
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
         public override bool IsDisposed => _disposed;
 
@@ -92,7 +93,7 @@ namespace Sedulous.GAL.MTL
             public ResourceKind Kind;
             public bool DynamicBuffer;
 
-            public ResourceBindingInfo(uint32 slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
+            public this(uint32 slot, ShaderStages stages, ResourceKind kind, bool dynamicBuffer)
             {
                 Slot = slot;
                 Stages = stages;

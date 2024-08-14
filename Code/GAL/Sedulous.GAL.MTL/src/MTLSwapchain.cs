@@ -1,9 +1,12 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
+	using internal Sedulous.GAL;
+	using internal Sedulous.GAL.MTL;
+
     internal class MTLSwapchain : Swapchain
     {
         private readonly MTLSwapchainFramebuffer _framebuffer;
@@ -28,13 +31,13 @@ namespace Sedulous.GAL.MTL
             }
         }
 
-        public override string Name { get; set; }
+        public override String Name { get; set; }
 
         public override bool IsDisposed => _disposed;
 
         public CAMetalDrawable CurrentDrawable => _drawable;
 
-        public MTLSwapchain(MTLGraphicsDevice gd, ref SwapchainDescription description)
+        public this(MTLGraphicsDevice gd, in SwapchainDescription description)
         {
             _gd = gd;
             _syncToVerticalBlank = description.SyncToVerticalBlank;
@@ -43,9 +46,9 @@ namespace Sedulous.GAL.MTL
             uint32 height;
 
             SwapchainSource source = description.Source;
-            if (source is NSWindowSwapchainSource nsWindowSource)
+            if (let nsWindowSource = source as NSWindowSwapchainSource)
             {
-                NSWindow nswindow = new NSWindow(nsWindowSource.NSWindow);
+                NSWindow nswindow = NSWindow(nsWindowSource.NSWindow);
                 NSView contentView = nswindow.contentView;
                 CGSize windowContentSize = contentView.frame.size;
                 width = (uint32)windowContentSize.width;
@@ -58,9 +61,9 @@ namespace Sedulous.GAL.MTL
                     contentView.layer = _metalLayer.NativePtr;
                 }
             }
-            else if (source is NSViewSwapchainSource nsViewSource)
+            else if (let nsViewSource = source as NSViewSwapchainSource)
             {
-                NSView contentView = new NSView(nsViewSource.NSView);
+                NSView contentView = NSView(nsViewSource.NSView);
                 CGSize windowContentSize = contentView.frame.size;
                 width = (uint32)windowContentSize.width;
                 height = (uint32)windowContentSize.height;
@@ -72,12 +75,12 @@ namespace Sedulous.GAL.MTL
                     contentView.layer = _metalLayer.NativePtr;
                 }
             }
-            else if (source is UIViewSwapchainSource uiViewSource)
+            else if (let uiViewSource = source as UIViewSwapchainSource)
             {
                 UIScreen mainScreen = UIScreen.mainScreen;
                 CGFloat nativeScale = mainScreen.nativeScale;
 
-                _uiView = new UIView(uiViewSource.UIView);
+                _uiView = UIView(uiViewSource.UIView);
                 CGSize viewSize = _uiView.frame.size;
                 width = (uint32)(viewSize.width * nativeScale);
                 height = (uint32)(viewSize.height * nativeScale);
@@ -102,7 +105,7 @@ namespace Sedulous.GAL.MTL
             _metalLayer.device = _gd.Device;
             _metalLayer.pixelFormat = MTLFormats.VdToMTLPixelFormat(format, false);
             _metalLayer.framebufferOnly = true;
-            _metalLayer.drawableSize = new CGSize(width, height);
+            _metalLayer.drawableSize = CGSize(width, height);
 
             SetSyncToVerticalBlank(_syncToVerticalBlank);
 
@@ -133,19 +136,21 @@ namespace Sedulous.GAL.MTL
 
         public override void Resize(uint32 width, uint32 height)
         {
-            if (_uiView.NativePtr != IntPtr.Zero)
+			var width;
+			var height;
+            if (_uiView.NativePtr != null)
             {
                 UIScreen mainScreen = UIScreen.mainScreen;
                 CGFloat nativeScale = mainScreen.nativeScale;
-                width = (uint32)(width * nativeScale);
-                height = (uint32)(height * nativeScale);
+                width = (uint32)(width * nativeScale.Value);
+                height = (uint32)(height * nativeScale.Value);
 
                 _metalLayer.frame = _uiView.frame;
             }
 
             _framebuffer.Resize(width, height);
-            _metalLayer.drawableSize = new CGSize(width, height);
-            if (_uiView.NativePtr != IntPtr.Zero)
+            _metalLayer.drawableSize = CGSize(width, height);
+            if (_uiView.NativePtr != null)
             {
                 _metalLayer.frame = _uiView.frame;
             }
@@ -166,7 +171,7 @@ namespace Sedulous.GAL.MTL
 
         public override void Dispose()
         {
-            if (_drawable.NativePtr != IntPtr.Zero)
+            if (_drawable.NativePtr != null)
             {
                 ObjectiveCRuntime.objc_msgSend(_drawable.NativePtr, "release");
             }

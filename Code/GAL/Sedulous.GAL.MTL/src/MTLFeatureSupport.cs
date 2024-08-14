@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLFeatureSupport : IReadOnlyCollection<MTLFeatureSet>
+    internal class MTLFeatureSupport : IEnumerable<MTLFeatureSet>
     {
         private readonly HashSet<MTLFeatureSet> _supportedFeatureSets = new HashSet<MTLFeatureSet>();
 
@@ -13,9 +12,9 @@ namespace Sedulous.GAL.MTL
 
         public MTLFeatureSet MaxFeatureSet { get; }
 
-        public int32 Count => _supportedFeatureSets.Count;
+        public int Count => _supportedFeatureSets.Count;
 
-        public MTLFeatureSupport(MTLDevice device)
+        public this(MTLDevice device)
         {
             for (MTLFeatureSet set in Enum.GetValues(typeof(MTLFeatureSet)))
             {
@@ -46,11 +45,6 @@ namespace Sedulous.GAL.MTL
         public IEnumerator<MTLFeatureSet> GetEnumerator()
         {
             return _supportedFeatureSets.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }
