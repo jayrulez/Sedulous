@@ -4,6 +4,7 @@ using System.Text;
 using Bulkan;
 using System.Threading;
 using System.Collections;
+using Sedulous.Foundation.Utilities;
 using static Sedulous.GAL.VK.VulkanUtil;
 using static Bulkan.VulkanNative;
 
@@ -148,7 +149,16 @@ namespace Sedulous.GAL.VK
 			VulkanNative.LoadPreInstanceFunctions();
 			CreateInstance(options.Debug, vkOptions, scope (instance) =>
 				{
-					VulkanNative.LoadInstanceFunctions(instance);
+				InstanceFunctionFlags flags = .Agnostic;
+				switch(OperatingSystemHelper.GetCurrentPlatfom())
+				{
+				case .Windows:
+					flags |= .Win32;
+					break;
+
+				default: break;
+				}
+					VulkanNative.LoadInstanceFunctions(instance, flags);
 					VulkanNative.LoadPostInstanceFunctions();
 				});
 
