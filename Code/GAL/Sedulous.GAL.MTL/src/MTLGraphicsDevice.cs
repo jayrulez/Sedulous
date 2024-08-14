@@ -82,8 +82,8 @@ namespace Sedulous.GAL.MTL
                 shaderFloat64: false);
             ResourceBindingModel = options.ResourceBindingModel;
 
-            _libSystem = new NativeLibrary("libSystem.dylib");
-            _concreteGlobalBlock = _libSystem.LoadFunction("_NSConcreteGlobalBlock");
+            NativeLibrary.Load("libSystem.dylib", out _libSystem);
+            _libSystem.LoadFunction("_NSConcreteGlobalBlock", out _concreteGlobalBlock);
             if (MetalFeatures.IsMacOS)
             {
 				static void completionHandler(void* block, MTLCommandBuffer buffer)
