@@ -159,7 +159,7 @@ namespace Sedulous.GAL.D3D11
             };
 
             ID3D11RasterizerState* rs = null;
-			HRESULT hr= _device.CreateRasterizerState(&rssDesc, &rs);
+			HRESULT hr = _device.CreateRasterizerState(&rssDesc, &rs);
 			return rs;
         }
 
@@ -251,6 +251,7 @@ namespace Sedulous.GAL.D3D11
             }
             for ((InputLayoutCacheKey Key, ID3D11InputLayout* Value) kvp in _inputLayouts)
             {
+				kvp.Key.Dispose();
                 kvp.Value.Release();
             }
         }
@@ -280,8 +281,9 @@ namespace Sedulous.GAL.D3D11
             }
         }
 
-        private struct InputLayoutCacheKey : IEquatable<InputLayoutCacheKey>, IHashable
+        private struct InputLayoutCacheKey : IEquatable<InputLayoutCacheKey>, IHashable, IDisposable
         {
+			private bool mDispose = false;
             public VertexLayoutDescription[] VertexLayouts;
 
             public static InputLayoutCacheKey CreateTempKey(VertexLayoutDescription[] original)
@@ -294,7 +296,12 @@ namespace Sedulous.GAL.D3D11
                 {
                     vertexLayouts[i].Stride = original[i].Stride;
                     vertexLayouts[i].InstanceStepRate = original[i].InstanceStepRate;
-                    vertexLayouts[i].Elements = (VertexElementDescription[])original[i].Elements.Clone();
+					//vertexLayouts[i].Elements = (VertexElementDescription[])original[i].Elements.Clone();
+                    vertexLayouts[i].Elements = new .[original[i].Elements.Count];
+					for(int j = 0; j < original[i].Elements.Count; j++)
+					{
+						vertexLayouts[i].Elements[j] = original[i].Elements[j];
+					}
                 }
 
                 return InputLayoutCacheKey() { VertexLayouts = vertexLayouts };
@@ -309,6 +316,15 @@ namespace Sedulous.GAL.D3D11
             {
                 return HashHelper.Array(VertexLayouts);
             }
+
+			public void Dispose()
+			{
+				for (int i = 0; i < VertexLayouts.Count; i++)
+				{
+				    delete VertexLayouts[i].Elements;
+				}
+				delete VertexLayouts;
+			}
         }
 
         private struct D3D11RasterizerStateCacheKey : IEquatable<D3D11RasterizerStateCacheKey>, IHashable
