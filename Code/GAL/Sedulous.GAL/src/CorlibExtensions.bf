@@ -1,5 +1,13 @@
 namespace System;
 
+extension Int32 : IEquatable<int32>
+{
+	public bool Equals(int32 val2)
+	{
+		return (int32)this == val2;
+	}
+}
+
 extension Runtime
 {
 	[NoReturn]
