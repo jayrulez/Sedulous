@@ -30,7 +30,7 @@ namespace Sedulous.MetalBindings
 
             if (@function == null)
             {
-                Runtime.FatalError(scope $"Failed to create MTLFunction: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Failed to create MTLFunction: {error.localizedDescription(.. scope .())}");
             }
 
             return MTLFunction(@function);

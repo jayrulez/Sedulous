@@ -20,7 +20,11 @@ namespace Sedulous.MetalBindings
             return ObjectiveCRuntime.class_getProperty(this, (uint8*)propertyName.Ptr);
         }
 
-        public String Name => MTLUtil.GetUtf8String(ObjectiveCRuntime.class_getName(this));
+		//public String Name => MTLUtil.GetUtf8String(ObjectiveCRuntime.class_getName(this));
+        public void GetName(String str) {
+			uint8* utf8Ptr = ObjectiveCRuntime.class_getName(this);
+			str.Append(scope String((char8*)utf8Ptr));
+		}
 
         public T Alloc<T>() where T : struct
         {

@@ -11,7 +11,8 @@ namespace Sedulous.MetalBindings
         public static implicit operator void*(MTLDevice device) => device.NativePtr;
         public this(void* nativePtr) => NativePtr = nativePtr;
 
-        public String name => string_objc_msgSend(NativePtr, sel_name);
+		//public String name => string_objc_msgSend(NativePtr, sel_name);
+        public void name(String str) => string_objc_msgSend(NativePtr, sel_name, str);
         public MTLSize maxThreadsPerThreadgroup
         {
             get
@@ -40,7 +41,7 @@ namespace Sedulous.MetalBindings
 
             if (library == null)
             {
-                Runtime.FatalError(scope $"Shader compilation failed: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Shader compilation failed: {error.localizedDescription(.. scope .())}");
             }
 
             return MTLLibrary(library);
@@ -52,7 +53,7 @@ namespace Sedulous.MetalBindings
 
             if (library == null)
             {
-                Runtime.FatalError(scope $"Unable to load Metal library: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Unable to load Metal library: {error.localizedDescription(.. scope .())}");
             }
 
             return MTLLibrary(library);
@@ -66,7 +67,7 @@ namespace Sedulous.MetalBindings
 
             if (error.NativePtr != null)
             {
-                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription(.. scope .())}");
             }
 
             return MTLRenderPipelineState(ret);
@@ -83,7 +84,7 @@ namespace Sedulous.MetalBindings
 
             if (error.NativePtr != null)
             {
-                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription}");
+                Runtime.FatalError(scope $"Failed to create new MTLRenderPipelineState: {error.localizedDescription(.. scope .())}");
             }
 
             return MTLComputePipelineState(ret);

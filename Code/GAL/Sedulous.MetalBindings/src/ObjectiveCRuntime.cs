@@ -205,10 +205,14 @@ namespace Sedulous.MetalBindings
             void* value = IntPtr_objc_msgSend(receiver, selector, a);
 			return *(T*)value;
         }
-        public static String string_objc_msgSend(void* receiver, Selector selector)
+        /*public static String string_objc_msgSend(void* receiver, Selector selector)
         {
             return objc_msgSend<NSString>(receiver, selector).GetValue();
-        }
+        }*/
+		public static void string_objc_msgSend(void* receiver, Selector selector, String name)
+		{
+		    objc_msgSend<NSString>(receiver, selector).GetValue(name);
+		}
 
         [Import(ObjCLibrary), LinkName("objc_msgSend")]
         public static extern void objc_msgSend(void* receiver, Selector selector, uint8 b);

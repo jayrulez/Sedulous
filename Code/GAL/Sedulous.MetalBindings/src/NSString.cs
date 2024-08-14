@@ -18,11 +18,16 @@ namespace Sedulous.MetalBindings
             return NSString(newString);
         }
 
-        public String GetValue()
+        /*public String GetValue()
         {
             uint8* utf8Ptr = bytePtr_objc_msgSend(NativePtr, sel_utf8String);
             return MTLUtil.GetUtf8String(utf8Ptr);
-        }
+        }*/
+		public void GetValue(String str)
+		{
+		    uint8* utf8Ptr = bytePtr_objc_msgSend(NativePtr, sel_utf8String);
+		    str.Append(scope String((char8*)utf8Ptr));
+		}
 
         private static readonly ObjCClass s_class = ObjCClass(nameof(NSString));
         private static readonly Selector sel_initWithCharacters = "initWithCharacters:length:";
