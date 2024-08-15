@@ -10,9 +10,11 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 
 	public T* Ptr mut => &mData;
 
-	public int Count {
+	public int Count
+	{
 		get => mCurrentSize;
-		set mut {
+		set mut
+		{
 			Runtime.Assert(value <= TCapacity);
 			mCurrentSize = value;
 		}
@@ -30,7 +32,8 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 	public ref T this[int index]
 	{
 		get mut { return ref mData[index]; }
-		set mut {
+		set mut
+		{
 			Runtime.Assert(index < mCurrentSize);
 			mData[index] = value;
 		}
@@ -79,7 +82,6 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 	{
 		return .(this);
 	}
-
 
 	public struct Enumerator : IRefEnumerator<T*>, IEnumerator<T>, IResettable
 	{
@@ -163,5 +165,42 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 				return .Err;
 			return &CurrentRef;
 		}
+	}
+}
+
+extension FixedList<T, TCapacity>
+	where TCapacity : const int
+	where T : IEquatable<T>
+{
+	[Commutable]
+	public static bool operator ==(Self lhs, Self rhs)
+	{
+		if (lhs.Count != rhs.Count)
+			return false;
+
+		for (int i = 0; i < lhs.Count; i++)
+		{
+			if (!lhs[i].Equals(rhs[i]))
+				return false;
+		}
+		return true;
+	}
+}
+
+extension FixedList<T, TCapacity>
+	where TCapacity : const int
+	where T : IHashable
+{
+
+	public int GetHashCode()
+	{
+		int hash = 0;
+
+		for (int i = 0; i < Count; i++)
+		{
+			hash = HashCode.Mix(hash, mData[i].GetHashCode());
+		}
+
+		return hash;
 	}
 }

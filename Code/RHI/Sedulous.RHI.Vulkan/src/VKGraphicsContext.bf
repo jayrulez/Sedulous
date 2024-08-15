@@ -202,7 +202,16 @@ public class VKGraphicsContext : GraphicsContext
 
 		CreateInstance(scope (instance) =>
 			{
-				VulkanNative.LoadInstanceFunctions(instance);
+				InstanceFunctionFlags flags = .Agnostic;
+				switch(OperatingSystemHelper.GetCurrentPlatfom())
+				{
+				case .Windows:
+					flags |= .Win32;
+					break;
+
+				default: break;
+				}
+				VulkanNative.LoadInstanceFunctions(instance, flags);
 				VulkanNative.LoadPostInstanceFunctions();
 			});
 

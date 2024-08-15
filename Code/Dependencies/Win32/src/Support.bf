@@ -41,48 +41,6 @@ namespace Win32
 			return (uint32)(uint8)(str[0]) | (uint32)(uint8)(str[1]) << 8 | (uint32)(uint8)(str[2]) << 16 | (uint32)(uint8)(str[3]) << 24;
 		}
 	}
-
-	class AutoResetEvent
-	{
-		private HANDLE mEvent;
-
-		public HANDLE Handle => mEvent;
-
-		public static implicit operator int(Self self) => self.mEvent;
-
-		public this(bool initialState)
-		{
-			mEvent = Win32.System.Threading.CreateEvent(null, FALSE, (.)(initialState ? TRUE : FALSE), null);
-			if (mEvent == 0)
-			{
-				Runtime.FatalError("Unable to create event.");
-			}
-		}
-
-		public ~this()
-		{
-			if (mEvent != 0)
-			{
-				CloseHandle(mEvent);
-				mEvent = 0;
-			}
-		}
-
-		public void WaitOne()
-		{
-			Win32.System.Threading.WaitForSingleObject(mEvent, INFINITE);
-		}
-
-		public void WaitOne(uint32 milliseconds)
-		{
-			Win32.System.Threading.WaitForSingleObject(mEvent, milliseconds);
-		}
-
-		public void Signal()
-		{
-			Win32.System.Threading.SetEvent(mEvent);
-		}
-	}
 }
 
 namespace Win32.Foundation
@@ -226,6 +184,51 @@ namespace Win32.Graphics.Direct3D11
 			this.AlignedByteOffset = alignedByteOffset;
 			this.InputSlotClass = inputSlotClass;
 			this.InstanceDataStepRate = instanceDataStepRate;
+		}
+	}
+
+	extension ID3D11Texture1D
+	{
+		public uint32 CalculateSubResourceIndex(uint32 mipSlice, uint32 arraySlice, uint32* mipSize) mut
+		{
+			var desc = this.GetDesc(..scope .());
+			*mipSize = Helper.CalculateMipSize(mipSlice, desc.Width);
+			return Helper.CalculateSubResourceIndex(mipSlice, arraySlice, desc.MipLevels);
+		}
+	}
+
+	extension ID3D11Texture2D
+	{
+		public uint32 CalculateSubResourceIndex(uint32 mipSlice, uint32 arraySlice, uint32* mipSize) mut
+		{
+			var desc = this.GetDesc(..scope .());
+		    *mipSize = Helper.CalculateMipSize(mipSlice, desc.Height);
+		    return Helper.CalculateSubResourceIndex(mipSlice, arraySlice, desc.MipLevels);
+		}
+	}
+
+	extension ID3D11Texture3D
+	{
+		public uint32 CalculateSubResourceIndex(uint32 mipSlice, uint32 arraySlice, uint32* mipSize) mut
+		{
+			var desc = this.GetDesc(..scope .());
+			*mipSize = Helper.CalculateMipSize(mipSlice, desc.Depth);
+			return Helper.CalculateSubResourceIndex(mipSlice, arraySlice, desc.MipLevels);
+		}
+	}
+
+	static class Helper
+	{
+		public static uint32 CalculateSubResourceIndex(uint32 mipSlice, uint32 arraySlice, uint32 mipLevels)
+		{
+		    return (mipLevels * arraySlice) + mipSlice;
+		}
+
+		public static uint32 CalculateMipSize(uint32 mipLevel, uint32 baseSize)
+		{
+			var baseSize;
+		    baseSize >>= mipLevel;
+		    return baseSize > 0 ? baseSize : 1;
 		}
 	}
 }
