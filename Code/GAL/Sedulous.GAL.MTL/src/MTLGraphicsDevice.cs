@@ -12,7 +12,7 @@ namespace Sedulous.GAL.MTL
 
     public class MTLGraphicsDevice : GraphicsDevice
     {
-        private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(GetIsSupported);
+        private static readonly Lazy<bool> s_isSupported = new Lazy<bool>(.Lockless, new => GetIsSupported);
 		private static readonly Monitor s_aotRegisteredBlocksLock = new .() ~ delete _;
         private static readonly Dictionary<void*, MTLGraphicsDevice> s_aotRegisteredBlocks = new .();
 
@@ -157,11 +157,11 @@ namespace Sedulous.GAL.MTL
 
         public override bool IsClipSpaceYInverted => false;
 
-        public override ResourceFactory ResourceFactory { get; }
+        public override ResourceFactory ResourceFactory { get; protected set; }
 
         public override Swapchain MainSwapchain => _mainSwapchain;
 
-        public override GraphicsDeviceFeatures Features { get; }
+        public override GraphicsDeviceFeatures Features { get; protected set; }
 
         private void OnCommandBufferCompleted(void* block, MTLCommandBuffer cb)
         {
@@ -533,31 +533,23 @@ namespace Sedulous.GAL.MTL
         private static bool GetIsSupported()
         {
             bool result = false;
-            try
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    if (RuntimeInformation.OSDescription.Contains("Darwin"))
-                    {
-                        NSArray allDevices = MTLDevice.MTLCopyAllDevices();
-                        result |= (uint64)allDevices.count > 0;
-                        ObjectiveCRuntime.release(allDevices.NativePtr);
-                    }
-                    else
-                    {
-                        MTLDevice defaultDevice = MTLDevice.MTLCreateSystemDefaultDevice();
-                        if (defaultDevice.NativePtr != null)
-                        {
-                            result = true;
-                            ObjectiveCRuntime.release(defaultDevice.NativePtr);
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                result = false;
-            }
+			if (OperatingSystem.IsMacOS())
+			{
+			    NSArray allDevices = MTLDevice.MTLCopyAllDevices();
+			    result |= (uint64)allDevices.count > 0;
+			    ObjectiveCRuntime.release(allDevices.NativePtr);
+			}
+			else if(OperatingSystem.IsIOS())
+			{
+			    MTLDevice defaultDevice = MTLDevice.MTLCreateSystemDefaultDevice();
+			    if (defaultDevice.NativePtr != null)
+			    {
+			        result = true;
+			        ObjectiveCRuntime.release(defaultDevice.NativePtr);
+			    }
+			}else{
+				result = false;
+			}
 
             return result;
         }
@@ -573,11 +565,31 @@ namespace Sedulous.GAL.MTL
                     MTLPipelineBufferDescriptor buffer0 = descriptor.buffers[0];
                     buffer0.mutability = MTLMutability.Mutable;
                     MTLPipelineBufferDescriptor buffer1 = descriptor.buffers[1];
-                    buffer0.mutability = MTLMutability.Mutable;
+                    buffer1.mutability = MTLMutability.Mutable;
 
                     Debug.Assert(_unalignedBufferCopyShader == null);
                     String name = MetalFeatures.IsMacOS ? UnalignedBufferCopyPipelineMacOSName : UnalignedBufferCopyPipelineiOSName;
-                    using (Stream resourceStream = typeof(MTLGraphicsDevice).Assembly.GetManifestResourceStream(name))
+
+
+
+					var stream = scope UnbufferedFileStream();
+
+					var fileOpenResult = stream.Open(scope $"EmbeddedShaders/{name}", .Read);
+					if (fileOpenResult case .Err(let error))
+					{
+						Runtime.FatalError(scope $"{error}");
+					}
+
+					uint8[] data = scope uint8[stream.Length];
+
+					var readResult = stream.TryRead(data);
+					if (readResult case .Err)
+						Runtime.FatalError(scope $"Failed to load file: {name}.");
+
+					ShaderDescription shaderDesc = ShaderDescription(ShaderStages.Compute, data, "copy_bytes");
+					_unalignedBufferCopyShader = new MTLShader(shaderDesc, this);
+
+                    /*using (Stream resourceStream = typeof(MTLGraphicsDevice).Assembly.GetManifestResourceStream(name))
                     {
                         uint8[] data = new uint8[resourceStream.Length];
                         using (MemoryStream ms = new MemoryStream(data))
@@ -586,7 +598,7 @@ namespace Sedulous.GAL.MTL
                             ShaderDescription shaderDesc = ShaderDescription(ShaderStages.Compute, data, "copy_bytes");
                             _unalignedBufferCopyShader = new MTLShader(shaderDesc, this);
                         }
-                    }
+                    }*/
 
                     descriptor.computeFunction = _unalignedBufferCopyShader.Function;
                     _unalignedBufferCopyPipeline = _device.newComputePipelineStateWithDescriptor(descriptor);

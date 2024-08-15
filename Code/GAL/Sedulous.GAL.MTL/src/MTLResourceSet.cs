@@ -12,7 +12,12 @@ namespace Sedulous.GAL.MTL
 
         public this(in ResourceSetDescription description, MTLGraphicsDevice gd) : base(description)
         {
-            Resources = Util.ShallowClone(description.BoundResources);
+			//Resources = Util.ShallowClone(description.BoundResources);
+            Resources = new .() {Count = description.BoundResources.Count};
+			for(int i = 0; i < description.BoundResources.Count; i++)
+			{
+				Resources[i] = description.BoundResources[i];
+			}
             Layout = Util.AssertSubtype<ResourceLayout, MTLResourceLayout>(description.Layout);
         }
 

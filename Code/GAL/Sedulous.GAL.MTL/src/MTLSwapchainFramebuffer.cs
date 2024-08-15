@@ -10,13 +10,13 @@ namespace Sedulous.GAL.MTL
     internal class MTLSwapchainFramebuffer : MTLFramebufferBase
     {
         private readonly MTLGraphicsDevice _gd;
-        private readonly MTLPlaceholderTexture _placeholderTexture;
+        private /*readonly*/ MTLPlaceholderTexture _placeholderTexture;
         private Sedulous.GAL.MTL.MTLTexture _depthTexture;
         private readonly MTLSwapchain _parentSwapchain;
         private bool _disposed;
 
-        public override uint32 Width => _placeholderTexture.Width;
-        public override uint32 Height => _placeholderTexture.Height;
+        public override uint32 Width { get => _placeholderTexture.Width; };
+        public override uint32 Height { get => _placeholderTexture.Height; };
 
         public new override ref OutputDescription OutputDescription { get; }
 

@@ -30,12 +30,12 @@ namespace Sedulous.GAL
         /// <summary>
         /// Gets the width of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual ref uint32 Width { get; }
+        public virtual uint32 Width { get; protected set; }
 
         /// <summary>
         /// Gets the height of the <see cref="Framebuffer"/>.
         /// </summary>
-        public virtual ref uint32 Height { get; }
+        public virtual uint32 Height { get; protected set; }
 
         internal this() { }
 

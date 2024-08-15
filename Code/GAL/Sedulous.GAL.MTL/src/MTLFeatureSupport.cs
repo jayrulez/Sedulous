@@ -4,9 +4,9 @@ using Sedulous.MetalBindings;
 
 namespace Sedulous.GAL.MTL
 {
-    internal class MTLFeatureSupport : IEnumerable<MTLFeatureSet>
+    internal class MTLFeatureSupport
     {
-        private readonly HashSet<MTLFeatureSet> _supportedFeatureSets = new HashSet<MTLFeatureSet>();
+        internal readonly HashSet<MTLFeatureSet> _supportedFeatureSets = new HashSet<MTLFeatureSet>();
 
         public bool IsMacOS { get; }
 
@@ -40,11 +40,6 @@ namespace Sedulous.GAL.MTL
                 || IsSupported(MTLFeatureSet.iOS_GPUFamily4_v1)
                 || IsSupported(MTLFeatureSet.tvOS_GPUFamily2_v1)
                 || IsMacOS;
-        }
-
-        public IEnumerator<MTLFeatureSet> GetEnumerator()
-        {
-            return _supportedFeatureSets.GetEnumerator();
         }
     }
 }

@@ -42,8 +42,8 @@ namespace Sedulous.GAL.VK
         public override uint32 RenderableWidth => _scExtent.width;
         public override uint32 RenderableHeight => _scExtent.height;
 
-        public override ref uint32 Width => ref _desiredWidth;
-        public override ref uint32 Height => ref _desiredHeight;
+        public override uint32 Width => _desiredWidth;
+        public override uint32 Height => _desiredHeight;
 
         public uint32 ImageIndex => _currentImageIndex;
 

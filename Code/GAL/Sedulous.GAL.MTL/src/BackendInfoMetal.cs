@@ -21,7 +21,7 @@ namespace Sedulous.GAL.MTL
         internal this(MTLGraphicsDevice gd)
         {
             _gd = gd;
-            _featureSet = new List<MTLFeatureSet>(_gd.MetalFeatures);
+            _featureSet = new List<MTLFeatureSet>(_gd.MetalFeatures._supportedFeatureSets.GetEnumerator());
         }
 
         public Span<MTLFeatureSet> FeatureSet => _featureSet;
