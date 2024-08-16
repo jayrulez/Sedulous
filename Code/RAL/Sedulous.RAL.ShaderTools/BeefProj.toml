@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.RAL" = "*", Dxc-Beef = "*", SPIRV-Cross = "*"}
+
+[Project]
+Name = "Sedulous.RAL.ShaderTools"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.RAL.ShaderTools.Program"
