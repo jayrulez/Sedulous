@@ -3,7 +3,7 @@ namespace Sedulous.RAL;
 
 abstract class Adapter : QueryInterface
 {
-	public abstract void GetName(String name);
+	public abstract readonly ref String GetName();
 
 	public abstract Result<void> CreateDevice(out Device device);
 

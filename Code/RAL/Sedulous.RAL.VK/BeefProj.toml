@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.RAL" = "*"}
+
+[Project]
+Name = "Sedulous.RAL.VK"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.RAL.VK.Program"

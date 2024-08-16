@@ -47,12 +47,12 @@ public class ShaderBase : Shader
 	private Dictionary<String, uint32> m_slot_remapping = new .() ~ delete _;
 	private String m_msl_source = new .() ~ delete _;
 
-	public this(in ShaderDesc desc, ShaderBlobType blob_type, bool is_msl)
+	public this(in ShaderDesc desc, ShaderBlobType blob_type, bool is_msl = false)
 		: this(Shader.Compile(desc, blob_type, .. scope .()), blob_type, desc.type, is_msl)
 	{
 	}
 
-	public this(Span<uint8> blob, ShaderBlobType blob_type, ShaderType shader_type, bool is_msl)
+	public this(Span<uint8> blob, ShaderBlobType blob_type, ShaderType shader_type, bool is_msl = false)
 	{
 		m_blob.AddRange(blob);
 		m_blob_type = blob_type;
