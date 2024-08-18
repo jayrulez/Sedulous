@@ -31,6 +31,7 @@ enum NativeSurfaceType
 	UWP,
 	WinUI,
 	X11,
+	Xcb,
 	Wayland,
 	Android,
 	MetalIOS,
@@ -43,6 +44,7 @@ struct NativeSurface
 	public Win32NativeSurface Win32;
 	public UWPNativeSurface UWP;
 	public X11NativeSurface X11;
+	public XcbNativeSurface Xcb;
 	public WaylandNativeSurface Wayland;
 	public AndroidNativeSurface Android;
 	public MetalIOSNativeSurface MetalIOS;
@@ -62,6 +64,12 @@ struct UWPNativeSurface
 struct X11NativeSurface
 {
 	public void* Display;
+	public uint64 Window;
+}
+
+struct XcbNativeSurface
+{
+	public void* connection;
 	public uint64 Window;
 }
 

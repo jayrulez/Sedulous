@@ -41,6 +41,15 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 
 	public bool IsEmpty => mCurrentSize == 0;
 
+	public ref T Back
+	{
+		get mut
+		{
+			Runtime.Assert(mCurrentSize > 0);
+			return ref mData[mCurrentSize - 1];
+		}
+	}
+
 	public this(T data)
 	{
 		Runtime.Assert(TCapacity > 0);
@@ -76,6 +85,12 @@ struct FixedList<T, TCapacity> where TCapacity : const int
 	{
 		mData = .();
 		mCurrentSize = 0;
+	}
+
+	public T PopBack() mut
+	{
+		Runtime.Assert(mCurrentSize > 0);
+		return mData[mCurrentSize--];
 	}
 
 	public Enumerator GetEnumerator()
@@ -172,18 +187,47 @@ extension FixedList<T, TCapacity>
 	where TCapacity : const int
 	where T : IEquatable<T>
 {
-	[Commutable]
-	public static bool operator ==(Self lhs, Self rhs)
+	public bool Equals(Self other)
 	{
-		if (lhs.Count != rhs.Count)
+		if (this.Count != other.Count)
 			return false;
 
-		for (int i = 0; i < lhs.Count; i++)
+		for (int i = 0; i < this.Count; i++)
 		{
-			if (!lhs[i].Equals(rhs[i]))
+			if (!this[i].Equals(other[i]))
 				return false;
 		}
 		return true;
+	}
+
+	[Commutable]
+	public static bool operator ==(Self lhs, Self rhs)
+	{
+		return lhs.Equals(rhs);
+	}
+}
+
+extension FixedList<T, TCapacity>
+	where TCapacity : const int
+	where T : class
+{
+	public bool Equals(Self other)
+	{
+		if (this.Count != other.Count)
+			return false;
+
+		for (int i = 0; i < this.Count; i++)
+		{
+			if (!(this[i] == other[i]))
+				return false;
+		}
+		return true;
+	}
+
+	[Commutable]
+	public static bool operator ==(Self lhs, Self rhs)
+	{
+		return lhs.Equals(rhs);
 	}
 }
 
@@ -191,7 +235,6 @@ extension FixedList<T, TCapacity>
 	where TCapacity : const int
 	where T : IHashable
 {
-
 	public int GetHashCode()
 	{
 		int hash = 0;
