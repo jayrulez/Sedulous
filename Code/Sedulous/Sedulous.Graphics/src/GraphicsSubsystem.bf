@@ -51,6 +51,13 @@ class GraphicsSubsystem : Subsystem
 			mUpdateFunctionRegistration = null;
 		}
 
+		if(mRenderFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mRenderFunctionRegistration.Value);
+			delete mRenderFunctionRegistration.Value.Function;
+			mRenderFunctionRegistration = null;
+		}
+
 		base.OnUnitializing(context);
 	}
 

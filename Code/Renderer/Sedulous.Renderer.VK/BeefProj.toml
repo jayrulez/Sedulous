@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", Bulkan = "*", "Sedulous.Renderer" = "*"}
+
+[Project]
+Name = "Sedulous.Renderer.VK"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Renderer.VK.Program"
