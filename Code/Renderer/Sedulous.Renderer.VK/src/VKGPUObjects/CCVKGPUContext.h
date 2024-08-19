@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		static
 		{
 			constexpr uint32_t FORCE_MINOR_VERSION = 0; // 0 for default version, otherwise minorVersion = (FORCE_MINOR_VERSION - 1)

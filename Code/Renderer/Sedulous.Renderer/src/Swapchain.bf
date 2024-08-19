@@ -23,9 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer;
 
-namespace cc {
-	namespace gfx {
 
 		struct SwapchainTextureInfo {
 			public Swapchain swapchain =  null ;
@@ -112,6 +111,3 @@ namespace cc {
 			protected Texture _colorTexture;
 			protected Texture _depthStencilTexture;
 		}
-
-	} // namespace gfx
-} // namespace cc

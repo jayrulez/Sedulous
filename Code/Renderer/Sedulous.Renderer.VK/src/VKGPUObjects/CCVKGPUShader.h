@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUShader : public CCVKGPUDeviceObject {
 			void shutdown() {
 				cmdFuncCCVKDestroyShader(CCVKDevice::getInstance()->gpuDevice(), this);

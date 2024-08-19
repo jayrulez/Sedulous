@@ -1,10 +1,7 @@
 using System;
 namespace Sedulous.Renderer;
 
-namespace cc
-{
-	namespace gfx
-	{
+
 		static{
 			public const TextureUsage TEXTURE_USAGE_TRANSIENT = (TextureUsage)(
 				(uint32)(TextureUsageBit.COLOR_ATTACHMENT) |
@@ -425,6 +422,3 @@ namespace cc
 			return a * b / gcd(a, b);
 		}
 		}
-
-	}
-}

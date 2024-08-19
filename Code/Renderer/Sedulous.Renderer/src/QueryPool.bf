@@ -25,10 +25,8 @@ using System.Threading;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 
 		/**
 		 * QueryPool usage:
@@ -81,5 +79,3 @@ namespace cc
 			protected Monitor _mutex;
 			protected Dictionary<uint32, uint64> _results;
 		}
-	} // namespace gfx
-} // namespace cc

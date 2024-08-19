@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class PipelineLayout : GFXObject
 		{
 			public this()
@@ -54,6 +52,3 @@ namespace cc
 
 			protected DescriptorSetLayoutList _setLayouts;
 		}
-
-	} // namespace gfx
-} // namespace cc

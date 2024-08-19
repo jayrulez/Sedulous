@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class RenderPass : GFXObject
 		{
 			public this()
@@ -98,6 +96,3 @@ namespace cc
 			protected SubpassDependencyList _dependencies;
 			protected HashType _hash = 0;
 		}
-
-	} // namespace gfx
-} // namespace cc

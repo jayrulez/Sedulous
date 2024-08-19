@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUDescriptorSet : public CCVKGPUDeviceObject {
 			void shutdown() {
 				CCVKDevice* device = CCVKDevice::getInstance();

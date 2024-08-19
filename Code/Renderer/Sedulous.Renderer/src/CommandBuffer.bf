@@ -24,10 +24,8 @@ using System.Collections;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class CommandBuffer : GFXObject
 		{
 			public this()
@@ -179,5 +177,3 @@ namespace cc
 			protected uint32 _numInstances = 0;
 			protected uint32 _numTriangles = 0;
 		}
-	} // namespace gfx
-} // namespace cc

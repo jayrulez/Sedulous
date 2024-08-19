@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKDeviceObjectDeleter {
 			template <typename T>
 			void operator()(T* ptr) const;

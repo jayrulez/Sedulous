@@ -24,9 +24,8 @@ using System.Collections;
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer;
 
-namespace cc {
-	namespace gfx {
 
 		abstract class DescriptorSet : GFXObject {
 			public this()
@@ -156,6 +155,3 @@ namespace cc {
 
 			protected bool _isDirty = false;
 		}
-
-	} // namespace gfx
-} // namespace cc

@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUBuffer : public CCVKGPUDeviceObject {
 			void shutdown() {
 				CCVKDevice::getInstance()->gpuBarrierManager()->cancel(this);

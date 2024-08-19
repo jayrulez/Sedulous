@@ -24,10 +24,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class DescriptorSetLayout : GFXObject
 		{
 			public this()
@@ -97,6 +95,3 @@ namespace cc
 			protected List<uint32> _descriptorIndices;
 			protected List<uint32> _dynamicBindings;
 		}
-
-	} // namespace gfx
-} // namespace cc

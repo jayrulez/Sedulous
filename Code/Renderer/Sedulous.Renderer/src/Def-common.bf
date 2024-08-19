@@ -24,6 +24,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer;
+
 
 //#define CC_USE_PIPELINE_CACHE 0
 
@@ -52,8 +54,6 @@ using System;
 
 typealias HashType = int;
 
-namespace cc {
-	namespace gfx {
 		typealias BufferBarrierList = List<BufferBarrier>;
 		typealias TextureBarrierList = List<TextureBarrier>;
 		typealias BufferDataList = List<uint8*>;
@@ -1919,6 +1919,3 @@ static{
 		}
 
 //#undef //EXPOSE_COPY_FN
-
-	} // namespace gfx
-} // namespace cc

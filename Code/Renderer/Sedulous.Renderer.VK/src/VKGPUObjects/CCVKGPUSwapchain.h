@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUSwapchain : public CCVKGPUDeviceObject {
 			VkSurfaceKHR vkSurface = VK_NULL_HANDLE;
 			VkSwapchainCreateInfoKHR createInfo{ VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR };

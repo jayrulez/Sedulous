@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class CommandQueue : GFXObject
 		{
 			public this()
@@ -60,5 +58,3 @@ namespace cc
 
 			QueueType _type = QueueType.GRAPHICS;
 		}
-	} // namespace gfx
-} // namespace cc

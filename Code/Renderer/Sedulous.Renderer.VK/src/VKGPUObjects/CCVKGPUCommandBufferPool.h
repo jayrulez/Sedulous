@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Command buffer pool based on VkCommandPools, always try to reuse previous allocations first.
 		 */

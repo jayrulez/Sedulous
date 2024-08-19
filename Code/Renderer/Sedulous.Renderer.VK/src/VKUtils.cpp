@@ -22,6 +22,8 @@
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer.VK;
+
 #include "VKUtils.h"
 #include "VKGPUObjects.h"
 

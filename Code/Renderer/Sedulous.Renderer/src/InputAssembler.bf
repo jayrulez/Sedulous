@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class InputAssembler : GFXObject
 		{
 			public this()
@@ -122,5 +120,3 @@ namespace cc
 
 			protected DrawInfo _drawInfo;
 		}
-	} // namespace gfx
-} // namespace cc

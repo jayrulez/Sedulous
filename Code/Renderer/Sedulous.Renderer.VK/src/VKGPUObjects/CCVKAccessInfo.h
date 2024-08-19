@@ -1,3 +1,5 @@
+namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKAccessInfo {
 			VkPipelineStageFlags stageMask{ 0 };
 			VkAccessFlags accessMask{ 0 };

@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUDescriptorSetLayout : public CCVKGPUDeviceObject {
 			void shutdown() {
 				if (defaultDescriptorSet != VK_NULL_HANDLE) {

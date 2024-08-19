@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUTexture : public CCVKGPUDeviceObject {
 			void shutdown() {
 				if (memoryAllocated) {

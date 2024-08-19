@@ -23,8 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc {
-	namespace gfx {
+namespace Sedulous.Renderer;
+
 
 		class TextureBarrier : GFXObject {
 			public this(in TextureBarrierInfo info)
@@ -43,6 +43,3 @@ namespace cc {
 			protected TextureBarrierInfo _info;
 			protected HashType _hash =  0 ;
 		}
-
-	} // namespace gfx
-} // namespace cc

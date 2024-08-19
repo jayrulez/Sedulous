@@ -23,11 +23,9 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer;
 
-namespace cc
-{
-	namespace gfx
-	{
+
 		abstract class Framebuffer : GFXObject
 		{
 			public this()
@@ -75,5 +73,3 @@ namespace cc
 			Texture _depthStencilTexture =  null;
 			Texture _depthStencilResolveTexture =  null;
 		}
-	} // namespace gfx
-} // namespace cc

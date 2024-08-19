@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUFramebuffer : public CCVKGPUDeviceObject {
 			void shutdown() {
 				CCVKDevice::getInstance()->gpuRecycleBin()->collect(this);

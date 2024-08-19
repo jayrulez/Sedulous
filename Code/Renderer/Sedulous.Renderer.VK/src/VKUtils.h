@@ -22,6 +22,8 @@
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer.VK;
+
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN

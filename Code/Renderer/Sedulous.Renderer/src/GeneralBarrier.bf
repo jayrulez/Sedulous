@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		class GeneralBarrier : GFXObject
 		{
 			public this(in GeneralBarrierInfo info)
@@ -47,5 +45,3 @@ namespace cc
 			protected GeneralBarrierInfo _info;
 			protected HashType _hash =  0;
 		}
-	} // namespace gfx
-} // namespace cc

@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class Texture : GFXObject
 		{
 			private static uint32 getLevelCount(uint32 width, uint32 height)
@@ -171,7 +169,7 @@ namespace cc
 				@out._viewInfo.baseLevel = 0;
 				@out._viewInfo.levelCount = @out._info.levelCount;
 				@out._viewInfo.basePlane = 0;
-				@out._viewInfo.planeCount = info.format == gfx.Format.DEPTH_STENCIL ? 2 : 1;
+				@out._viewInfo.planeCount = info.format == Format.DEPTH_STENCIL ? 2 : 1;
 			}
 			protected abstract void doInit(in SwapchainTextureInfo info);
 
@@ -183,5 +181,3 @@ namespace cc
 			protected uint32 _size =  0;
 			protected HashType _hash =  0;
 		}
-	} // namespace gfx
-} // namespace cc

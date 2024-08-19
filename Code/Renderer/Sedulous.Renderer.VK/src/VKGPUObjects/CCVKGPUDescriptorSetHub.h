@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Manages descriptor set update events, across all back buffer instances.
 		 */

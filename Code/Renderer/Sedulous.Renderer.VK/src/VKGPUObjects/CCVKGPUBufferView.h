@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUBufferView : public CCVKGPUDeviceObject {
 			void shutdown() {
 				CCVKDevice::getInstance()->gpuDescriptorHub()->disengage(this);

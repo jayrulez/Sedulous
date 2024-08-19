@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUQueue {
 			QueueType type = QueueType::GRAPHICS;
 			VkQueue vkQueue = VK_NULL_HANDLE;

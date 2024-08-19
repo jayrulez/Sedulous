@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Descriptor data maintenance hub, events like buffer/texture resizing,
 		 * descriptor set binding change, etc. should all request an update operation here.

@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class Shader : GFXObject
 		{
 			public this()
@@ -90,5 +88,3 @@ namespace cc
 			protected UniformInputAttachmentList _subpassInputs;
 			protected HashType _hash = 0;
 		}
-	} // namespace gfx
-} // namespace cc

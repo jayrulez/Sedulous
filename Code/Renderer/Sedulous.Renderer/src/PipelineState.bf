@@ -23,11 +23,9 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer;
 
-namespace cc
-{
-	namespace gfx
-	{
+
 		abstract class PipelineState : GFXObject
 		{
 			public this()
@@ -86,5 +84,3 @@ namespace cc
 			protected uint32 _subpass = 0;
 			protected PipelineLayout _pipelineLayout = null;
 		}
-	} // namespace gfx
-} // namespace cc

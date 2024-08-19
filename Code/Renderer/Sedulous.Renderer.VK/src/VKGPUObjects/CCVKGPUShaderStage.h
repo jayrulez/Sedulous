@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUShaderStage {
 			CCVKGPUShaderStage(ShaderStageFlagBit t, ccstd::string s)
 				: type(t),

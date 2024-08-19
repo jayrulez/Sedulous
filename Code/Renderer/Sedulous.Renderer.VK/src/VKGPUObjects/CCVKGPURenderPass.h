@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		class CCVKGPURenderPass final : public CCVKGPUDeviceObject {
 		public:
 			void shutdown() {

@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Transport hub for data traveling between host and devices.
 		 * Record all transfer commands until batched submission.

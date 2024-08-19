@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class Buffer : GFXObject
 		{
 			public this() : base(ObjectType.BUFFER)
@@ -145,5 +143,3 @@ namespace cc
 			protected uint8[3] _rsv = .();
 			protected uint8[] _data;
 		}
-	} // namespace gfx
-} // namespace cc

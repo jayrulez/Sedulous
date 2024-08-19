@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUGeneralBarrier {
 			VkPipelineStageFlags srcStageMask = 0U;
 			VkPipelineStageFlags dstStageMask = 0U;

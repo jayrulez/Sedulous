@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		abstract class GFXObject
 		{
 			public this(ObjectType type)
@@ -56,5 +54,3 @@ namespace cc
 
 			protected uint32 _typedID = 0; // inited by sub-classes
 		}
-	} // namespace gfx
-} // namespace cc

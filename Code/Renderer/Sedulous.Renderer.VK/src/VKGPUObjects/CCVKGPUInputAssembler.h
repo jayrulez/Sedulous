@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		struct CCVKGPUInputAssembler : public CCVKGPUDeviceObject {
 			void shutdown() {
 				auto* hub = CCVKDevice::getInstance()->gpuIAHub();

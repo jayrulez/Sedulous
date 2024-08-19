@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		class CCVKGPUDevice final {
 		public:
 			VkDevice vkDevice{ VK_NULL_HANDLE };

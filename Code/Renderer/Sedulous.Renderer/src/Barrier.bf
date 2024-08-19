@@ -23,10 +23,8 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc
-{
-	namespace gfx
-	{
+namespace Sedulous.Renderer;
+
 		static
 		{
 			enum ResourceType : uint32
@@ -517,8 +515,8 @@ namespace cc
 			    AccessFlags flags = AccessFlags.NONE;
 			    CommonUsage cmnUsage = textureUsageToCommonUsage(usage);
 			    if (validateAccess(ResourceType.TEXTURE, cmnUsage, access, visibility)) {
-			        if (usage == gfx.TextureUsageBit.NONE) {
-			            return gfx.AccessFlagBit.PRESENT;
+			        if (usage == TextureUsageBit.NONE) {
+			            return AccessFlagBit.PRESENT;
 			        }
 			        uint32 info = 0xFFFFFFFF;
 			        info &= ((OPERABLE(access) << ACCESS_TYPE_BIT_POS) | IGNORE_MEMACCESS);
@@ -1037,5 +1035,3 @@ namespace cc
 				        ShaderStageFlags.FRAGMENT));
 			}
 		}
-	} // namespace gfx
-} // namespace cc

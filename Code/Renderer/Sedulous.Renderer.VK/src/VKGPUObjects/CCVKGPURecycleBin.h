@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Recycle bin for GPU resources, clears after vkDeviceWaitIdle every frame.
 		 * All the destroy events will be postponed to that time.

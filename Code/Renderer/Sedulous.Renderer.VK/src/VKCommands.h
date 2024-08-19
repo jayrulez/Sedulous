@@ -22,6 +22,8 @@
  THE SOFTWARE.
 ****************************************************************************/
 
+namespace Sedulous.Renderer.VK;
+
 #pragma once
 
 #include "VKGPUObjects.h"

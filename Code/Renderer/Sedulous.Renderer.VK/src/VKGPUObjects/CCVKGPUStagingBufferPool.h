@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Staging buffer pool, based on multiple fix-sized VkBuffer blocks.
 		 */

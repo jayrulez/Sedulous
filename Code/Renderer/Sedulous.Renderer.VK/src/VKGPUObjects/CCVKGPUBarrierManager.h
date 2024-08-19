@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		class CCVKGPUBarrierManager final {
 		public:
 			explicit CCVKGPUBarrierManager(CCVKGPUDevice* device)

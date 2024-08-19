@@ -24,8 +24,7 @@ using System.Collections;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace cc {
-	namespace gfx {
+namespace Sedulous.Renderer;
 
 		abstract class Device {
 			public static Device getInstance() {
@@ -305,6 +304,3 @@ namespace cc {
 
 			private List<Swapchain> _swapchains; // weak reference
 		}
-
-	} // namespace gfx
-} // namespace cc

@@ -1,3 +1,5 @@
+		namespace Sedulous.Renderer.VK.Internal;
+
 		/**
 		 * Unlimited descriptor set pool, based on multiple fix-sized VkDescriptorPools.
 		 */
