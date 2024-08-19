@@ -29,28 +29,28 @@
 #include "gfx-base/states/GFXGeneralBarrier.h"
 
 namespace cc {
-namespace gfx {
+	namespace gfx {
 
-struct CCVKGPUGeneralBarrier;
+		struct CCVKGPUGeneralBarrier;
 
-class CC_VULKAN_API CCVKGeneralBarrier : public GeneralBarrier {
-public:
-    explicit CCVKGeneralBarrier(const GeneralBarrierInfo &info){
-    _typedID = generateObjectID<decltype(this)>();
+		class CC_VULKAN_API CCVKGeneralBarrier : public GeneralBarrier {
+		public:
+			explicit CCVKGeneralBarrier(const GeneralBarrierInfo& info) {
+				_typedID = generateObjectID<decltype(this)>();
 
-    _gpuBarrier = std::make_unique<CCVKGPUGeneralBarrier>();
-    getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
-    getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
+				_gpuBarrier = std::make_unique<CCVKGPUGeneralBarrier>();
+				getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
+				getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
 
-    cmdFuncCCVKCreateGeneralBarrier(CCVKDevice::getInstance(), _gpuBarrier.get());
-}
-    ~CCVKGeneralBarrier() override = default;
+				cmdFuncCCVKCreateGeneralBarrier(CCVKDevice::getInstance(), _gpuBarrier.get());
+			}
+			~CCVKGeneralBarrier() override = default;
 
-    inline const CCVKGPUGeneralBarrier *gpuBarrier() const { return _gpuBarrier.get(); }
+			inline const CCVKGPUGeneralBarrier* gpuBarrier() const { return _gpuBarrier.get(); }
 
-protected:
-    std::unique_ptr<CCVKGPUGeneralBarrier> _gpuBarrier;
-};
+		protected:
+			std::unique_ptr<CCVKGPUGeneralBarrier> _gpuBarrier;
+		};
 
-} // namespace gfx
+	} // namespace gfx
 } // namespace cc

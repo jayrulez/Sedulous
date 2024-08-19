@@ -29,63 +29,64 @@
 #include "gfx-vulkan/VKGPUObjects.h"
 
 namespace cc {
-namespace gfx {
+	namespace gfx {
 
-class CC_VULKAN_API CCVKRenderPass final : public RenderPass {
-public:
-    CCVKRenderPass(){
-    _typedID = generateObjectID<decltype(this)>();
-}
-    ~CCVKRenderPass() {
-    destroy();
-}
+		class CC_VULKAN_API CCVKRenderPass final : public RenderPass {
+		public:
+			CCVKRenderPass() {
+				_typedID = generateObjectID<decltype(this)>();
+			}
+			~CCVKRenderPass() {
+				destroy();
+			}
 
-    inline CCVKGPURenderPass *gpuRenderPass() const { return _gpuRenderPass; }
+			inline CCVKGPURenderPass* gpuRenderPass() const { return _gpuRenderPass; }
 
-protected:
-    void doInit(const RenderPassInfo &info) {
-    _gpuRenderPass = ccnew CCVKGPURenderPass;
-    _gpuRenderPass->colorAttachments = _colorAttachments;
-    _gpuRenderPass->depthStencilAttachment = _depthStencilAttachment;
-    _gpuRenderPass->depthStencilResolveAttachment = _depthStencilResolveAttachment;
-    _gpuRenderPass->subpasses = _subpasses;
-    _gpuRenderPass->dependencies = _dependencies;
+		protected:
+			void doInit(const RenderPassInfo& info) {
+				_gpuRenderPass = ccnew CCVKGPURenderPass;
+				_gpuRenderPass->colorAttachments = _colorAttachments;
+				_gpuRenderPass->depthStencilAttachment = _depthStencilAttachment;
+				_gpuRenderPass->depthStencilResolveAttachment = _depthStencilResolveAttachment;
+				_gpuRenderPass->subpasses = _subpasses;
+				_gpuRenderPass->dependencies = _dependencies;
 
-    // assign a dummy subpass if not specified
-    uint32_t colorCount = utils::toUint(_gpuRenderPass->colorAttachments.size());
-    if (_gpuRenderPass->subpasses.empty()) {
-        _gpuRenderPass->subpasses.emplace_back();
-        auto &subpass = _gpuRenderPass->subpasses.back();
-        subpass.colors.resize(_colorAttachments.size());
-        for (uint32_t i = 0U; i < _colorAttachments.size(); ++i) {
-            subpass.colors[i] = i;
-        }
-        if (_depthStencilAttachment.format != Format::UNKNOWN) {
-            subpass.depthStencil = colorCount;
-        }
-        if (_depthStencilResolveAttachment.format != Format::UNKNOWN) {
-            subpass.depthStencilResolve = colorCount + 1;
-        }
-    } else {
-        // unify depth stencil index
-        for (auto &subpass : _gpuRenderPass->subpasses) {
-            if (subpass.depthStencil != INVALID_BINDING && subpass.depthStencil >= colorCount) {
-                subpass.depthStencil = colorCount;
-            }
-            if (subpass.depthStencilResolve != INVALID_BINDING && subpass.depthStencilResolve >= colorCount) {
-                subpass.depthStencilResolve = colorCount + 1;
-            }
-        }
-    }
+				// assign a dummy subpass if not specified
+				uint32_t colorCount = utils::toUint(_gpuRenderPass->colorAttachments.size());
+				if (_gpuRenderPass->subpasses.empty()) {
+					_gpuRenderPass->subpasses.emplace_back();
+					auto& subpass = _gpuRenderPass->subpasses.back();
+					subpass.colors.resize(_colorAttachments.size());
+					for (uint32_t i = 0U; i < _colorAttachments.size(); ++i) {
+						subpass.colors[i] = i;
+					}
+					if (_depthStencilAttachment.format != Format::UNKNOWN) {
+						subpass.depthStencil = colorCount;
+					}
+					if (_depthStencilResolveAttachment.format != Format::UNKNOWN) {
+						subpass.depthStencilResolve = colorCount + 1;
+					}
+				}
+				else {
+					// unify depth stencil index
+					for (auto& subpass : _gpuRenderPass->subpasses) {
+						if (subpass.depthStencil != INVALID_BINDING && subpass.depthStencil >= colorCount) {
+							subpass.depthStencil = colorCount;
+						}
+						if (subpass.depthStencilResolve != INVALID_BINDING && subpass.depthStencilResolve >= colorCount) {
+							subpass.depthStencilResolve = colorCount + 1;
+						}
+					}
+				}
 
-    cmdFuncCCVKCreateRenderPass(CCVKDevice::getInstance(), _gpuRenderPass);
-}
-    void doDestroy() {
-    _gpuRenderPass = nullptr;
-}
+				cmdFuncCCVKCreateRenderPass(CCVKDevice::getInstance(), _gpuRenderPass);
+			}
+			void doDestroy() {
+				_gpuRenderPass = nullptr;
+			}
 
-    IntrusivePtr<CCVKGPURenderPass> _gpuRenderPass;
-};
+			IntrusivePtr<CCVKGPURenderPass> _gpuRenderPass;
+		};
 
-} // namespace gfx
+	} // namespace gfx
 } // namespace cc

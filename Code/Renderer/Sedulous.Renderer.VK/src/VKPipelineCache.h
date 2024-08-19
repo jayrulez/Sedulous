@@ -33,23 +33,23 @@
 
 namespace cc::gfx {
 
-class CCVKPipelineCache : public RefCounted {
-public:
-    CCVKPipelineCache();
-    ~CCVKPipelineCache() override;
+	class CCVKPipelineCache : public RefCounted {
+	public:
+		CCVKPipelineCache();
+		~CCVKPipelineCache() override;
 
-    void init(VkDevice dev);
-    void loadCache();
-    void saveCache();
+		void init(VkDevice dev);
+		void loadCache();
+		void saveCache();
 
-    void setDirty();
-    VkPipelineCache getHandle() const;
+		void setDirty();
+		VkPipelineCache getHandle() const;
 
-private:
-    VkDevice _device = VK_NULL_HANDLE;
-    VkPipelineCache _pipelineCache = VK_NULL_HANDLE;
-    ccstd::string _savePath;
-    bool _dirty = false;
-};
+	private:
+		VkDevice _device = VK_NULL_HANDLE;
+		VkPipelineCache _pipelineCache = VK_NULL_HANDLE;
+		ccstd::string _savePath;
+		bool _dirty = false;
+	};
 
 } // namespace cc::gfx

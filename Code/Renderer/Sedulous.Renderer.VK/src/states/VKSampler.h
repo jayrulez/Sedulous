@@ -29,31 +29,31 @@
 #include "gfx-vulkan/VKGPUObjects.h"
 
 namespace cc {
-namespace gfx {
+	namespace gfx {
 
-class CC_VULKAN_API CCVKSampler final : public Sampler {
-public:
-    explicit CCVKSampler(const SamplerInfo &info){
-    _typedID = generateObjectID<decltype(this)>();
+		class CC_VULKAN_API CCVKSampler final : public Sampler {
+		public:
+			explicit CCVKSampler(const SamplerInfo& info) {
+				_typedID = generateObjectID<decltype(this)>();
 
-    _gpuSampler = ccnew CCVKGPUSampler;
-    _gpuSampler->minFilter = _info.minFilter;
-    _gpuSampler->magFilter = _info.magFilter;
-    _gpuSampler->mipFilter = _info.mipFilter;
-    _gpuSampler->addressU = _info.addressU;
-    _gpuSampler->addressV = _info.addressV;
-    _gpuSampler->addressW = _info.addressW;
-    _gpuSampler->maxAnisotropy = _info.maxAnisotropy;
-    _gpuSampler->cmpFunc = _info.cmpFunc;
-    _gpuSampler->init();
-}
-    ~CCVKSampler() override = default;
+				_gpuSampler = ccnew CCVKGPUSampler;
+				_gpuSampler->minFilter = _info.minFilter;
+				_gpuSampler->magFilter = _info.magFilter;
+				_gpuSampler->mipFilter = _info.mipFilter;
+				_gpuSampler->addressU = _info.addressU;
+				_gpuSampler->addressV = _info.addressV;
+				_gpuSampler->addressW = _info.addressW;
+				_gpuSampler->maxAnisotropy = _info.maxAnisotropy;
+				_gpuSampler->cmpFunc = _info.cmpFunc;
+				_gpuSampler->init();
+			}
+			~CCVKSampler() override = default;
 
-    inline CCVKGPUSampler *gpuSampler() const { return _gpuSampler; }
+			inline CCVKGPUSampler* gpuSampler() const { return _gpuSampler; }
 
-protected:
-    IntrusivePtr<CCVKGPUSampler> _gpuSampler;
-};
+		protected:
+			IntrusivePtr<CCVKGPUSampler> _gpuSampler;
+		};
 
-} // namespace gfx
+	} // namespace gfx
 } // namespace cc

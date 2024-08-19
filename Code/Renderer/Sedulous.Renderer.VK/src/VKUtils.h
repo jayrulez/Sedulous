@@ -43,58 +43,58 @@
 #define BARRIER_DEDUCTION_LEVEL_FULL  2
 
 #ifndef BARRIER_DEDUCTION_LEVEL
-    #define BARRIER_DEDUCTION_LEVEL BARRIER_DEDUCTION_LEVEL_BASIC
+#define BARRIER_DEDUCTION_LEVEL BARRIER_DEDUCTION_LEVEL_BASIC
 #endif
 
 namespace cc {
-namespace gfx {
+	namespace gfx {
 
-class CCVKGPUDevice;
+		class CCVKGPUDevice;
 
-VkQueryType mapVkQueryType(QueryType type);
-VkFormat mapVkFormat(Format format, const CCVKGPUDevice *gpuDevice);
-VkAttachmentLoadOp mapVkLoadOp(LoadOp loadOp);
-VkAttachmentStoreOp mapVkStoreOp(StoreOp storeOp);
-VkBufferUsageFlagBits mapVkBufferUsageFlagBits(BufferUsage usage);
-VkImageType mapVkImageType(TextureType type);
-VkFormatFeatureFlags mapVkFormatFeatureFlags(TextureUsage usage);
-VkImageUsageFlags mapVkImageUsageFlags(TextureUsage usage, TextureFlags textureFlags);
-VkImageAspectFlags mapVkImageAspectFlags(Format format);
-VkImageCreateFlags mapVkImageCreateFlags(TextureType type);
-VkImageViewType mapVkImageViewType(TextureType viewType);
-VkCommandBufferLevel mapVkCommandBufferLevel(CommandBufferType type);
-VkDescriptorType mapVkDescriptorType(DescriptorType type);
-VkColorComponentFlags mapVkColorComponentFlags(ColorMask colorMask);
-VkShaderStageFlagBits mapVkShaderStageFlagBits(ShaderStageFlagBit stage);
-VkShaderStageFlags mapVkShaderStageFlags(ShaderStageFlagBit stages);
-SurfaceTransform mapSurfaceTransform(VkSurfaceTransformFlagBitsKHR transform);
-ccstd::string mapVendorName(uint32_t vendorID);
+		VkQueryType mapVkQueryType(QueryType type);
+		VkFormat mapVkFormat(Format format, const CCVKGPUDevice* gpuDevice);
+		VkAttachmentLoadOp mapVkLoadOp(LoadOp loadOp);
+		VkAttachmentStoreOp mapVkStoreOp(StoreOp storeOp);
+		VkBufferUsageFlagBits mapVkBufferUsageFlagBits(BufferUsage usage);
+		VkImageType mapVkImageType(TextureType type);
+		VkFormatFeatureFlags mapVkFormatFeatureFlags(TextureUsage usage);
+		VkImageUsageFlags mapVkImageUsageFlags(TextureUsage usage, TextureFlags textureFlags);
+		VkImageAspectFlags mapVkImageAspectFlags(Format format);
+		VkImageCreateFlags mapVkImageCreateFlags(TextureType type);
+		VkImageViewType mapVkImageViewType(TextureType viewType);
+		VkCommandBufferLevel mapVkCommandBufferLevel(CommandBufferType type);
+		VkDescriptorType mapVkDescriptorType(DescriptorType type);
+		VkColorComponentFlags mapVkColorComponentFlags(ColorMask colorMask);
+		VkShaderStageFlagBits mapVkShaderStageFlagBits(ShaderStageFlagBit stage);
+		VkShaderStageFlags mapVkShaderStageFlags(ShaderStageFlagBit stages);
+		SurfaceTransform mapSurfaceTransform(VkSurfaceTransformFlagBitsKHR transform);
+		ccstd::string mapVendorName(uint32_t vendorID);
 
-void fullPipelineBarrier(VkCommandBuffer cmdBuff);
-const ThsvsAccessType *getAccessType(AccessFlagBit flag);
-ThsvsImageLayout getAccessLayout(AccessFlags flag);
-void getAccessTypes(AccessFlags flag, ccstd::vector<ThsvsAccessType> &v);
-VkDeviceSize roundUp(VkDeviceSize numToRound, uint32_t multiple);
-bool isLayerSupported(const char *required, const ccstd::vector<VkLayerProperties> &available);
-bool isExtensionSupported(const char *required, const ccstd::vector<VkExtensionProperties> &available);
-bool isFormatSupported(VkPhysicalDevice device, VkFormat format);
+		void fullPipelineBarrier(VkCommandBuffer cmdBuff);
+		const ThsvsAccessType* getAccessType(AccessFlagBit flag);
+		ThsvsImageLayout getAccessLayout(AccessFlags flag);
+		void getAccessTypes(AccessFlags flag, ccstd::vector<ThsvsAccessType>& v);
+		VkDeviceSize roundUp(VkDeviceSize numToRound, uint32_t multiple);
+		bool isLayerSupported(const char* required, const ccstd::vector<VkLayerProperties>& available);
+		bool isExtensionSupported(const char* required, const ccstd::vector<VkExtensionProperties>& available);
+		bool isFormatSupported(VkPhysicalDevice device, VkFormat format);
 
-extern const VkSurfaceTransformFlagsKHR TRANSFORMS_THAT_REQUIRE_FLIPPING;
-extern const VkPrimitiveTopology VK_PRIMITIVE_MODES[];
-extern const VkCullModeFlags VK_CULL_MODES[];
-extern const VkPolygonMode VK_POLYGON_MODES[];
-extern const VkCompareOp VK_CMP_FUNCS[];
-extern const VkStencilOp VK_STENCIL_OPS[];
-extern const VkBlendOp VK_BLEND_OPS[];
-extern const VkBlendFactor VK_BLEND_FACTORS[];
-extern const VkFilter VK_FILTERS[];
-extern const VkSamplerMipmapMode VK_SAMPLER_MIPMAP_MODES[];
-extern const VkSamplerAddressMode VK_SAMPLER_ADDRESS_MODES[];
-extern const VkPipelineBindPoint VK_PIPELINE_BIND_POINTS[];
-extern const VkResolveModeFlagBits VK_RESOLVE_MODES[];
-extern const VkImageLayout VK_IMAGE_LAYOUTS[];
-extern const VkStencilFaceFlags VK_STENCIL_FACE_FLAGS[];
-extern const VkAccessFlags FULL_ACCESS_FLAGS;
+		extern const VkSurfaceTransformFlagsKHR TRANSFORMS_THAT_REQUIRE_FLIPPING;
+		extern const VkPrimitiveTopology VK_PRIMITIVE_MODES[];
+		extern const VkCullModeFlags VK_CULL_MODES[];
+		extern const VkPolygonMode VK_POLYGON_MODES[];
+		extern const VkCompareOp VK_CMP_FUNCS[];
+		extern const VkStencilOp VK_STENCIL_OPS[];
+		extern const VkBlendOp VK_BLEND_OPS[];
+		extern const VkBlendFactor VK_BLEND_FACTORS[];
+		extern const VkFilter VK_FILTERS[];
+		extern const VkSamplerMipmapMode VK_SAMPLER_MIPMAP_MODES[];
+		extern const VkSamplerAddressMode VK_SAMPLER_ADDRESS_MODES[];
+		extern const VkPipelineBindPoint VK_PIPELINE_BIND_POINTS[];
+		extern const VkResolveModeFlagBits VK_RESOLVE_MODES[];
+		extern const VkImageLayout VK_IMAGE_LAYOUTS[];
+		extern const VkStencilFaceFlags VK_STENCIL_FACE_FLAGS[];
+		extern const VkAccessFlags FULL_ACCESS_FLAGS;
 
-} // namespace gfx
+	} // namespace gfx
 } // namespace cc

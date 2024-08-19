@@ -31,99 +31,99 @@
 #include "gfx-base/GFXUtil.h"
 
 namespace {
-const char *fileName = "/pipeline_cache_vk.bin";
-const uint32_t MAGIC = 0x4343564B; // "CCVK"
-const uint32_t VERSION = 1;
+	const char* fileName = "/pipeline_cache_vk.bin";
+	const uint32_t MAGIC = 0x4343564B; // "CCVK"
+	const uint32_t VERSION = 1;
 
-void loadData(const ccstd::string &path, ccstd::vector<char> &data) {
-    std::ifstream stream(path, std::ios::binary);
-    if (!stream.is_open()) {
-        CC_LOG_INFO("Load program cache, no cached files.");
-        return;
-    }
+	void loadData(const ccstd::string& path, ccstd::vector<char>& data) {
+		std::ifstream stream(path, std::ios::binary);
+		if (!stream.is_open()) {
+			CC_LOG_INFO("Load program cache, no cached files.");
+			return;
+		}
 
-    uint32_t magic = 0;
-    uint32_t version = 0;
+		uint32_t magic = 0;
+		uint32_t version = 0;
 
-    cc::BinaryInputArchive archive(stream);
-    auto loadResult = archive.load(magic);
-    loadResult &= archive.load(version);
+		cc::BinaryInputArchive archive(stream);
+		auto loadResult = archive.load(magic);
+		loadResult &= archive.load(version);
 
-    uint32_t size = 0;
-    if (loadResult && magic == MAGIC && version >= VERSION) {
-        loadResult &= archive.load(size);
-        data.resize(size);
-        loadResult &= archive.load(data.data(), size);
-    }
-    if (loadResult) {
-        CC_LOG_INFO("Load pipeline cache success.");
-    }
-}
+		uint32_t size = 0;
+		if (loadResult && magic == MAGIC && version >= VERSION) {
+			loadResult &= archive.load(size);
+			data.resize(size);
+			loadResult &= archive.load(data.data(), size);
+		}
+		if (loadResult) {
+			CC_LOG_INFO("Load pipeline cache success.");
+		}
+	}
 } // namespace
 
 namespace cc::gfx {
 
-CCVKPipelineCache::CCVKPipelineCache() {
-    _savePath = getPipelineCacheFolder() + fileName;
-}
+	CCVKPipelineCache::CCVKPipelineCache() {
+		_savePath = getPipelineCacheFolder() + fileName;
+	}
 
-CCVKPipelineCache::~CCVKPipelineCache() {
-    if (_pipelineCache != VK_NULL_HANDLE) {
+	CCVKPipelineCache::~CCVKPipelineCache() {
+		if (_pipelineCache != VK_NULL_HANDLE) {
 #if CC_USE_PIPELINE_CACHE
-        saveCache();
+			saveCache();
 #endif
-        vkDestroyPipelineCache(_device, _pipelineCache, nullptr);
-    }
-}
+			vkDestroyPipelineCache(_device, _pipelineCache, nullptr);
+		}
+	}
 
-void CCVKPipelineCache::init(VkDevice dev) {
-    _device = dev;
-    loadCache();
-}
+	void CCVKPipelineCache::init(VkDevice dev) {
+		_device = dev;
+		loadCache();
+	}
 
-void CCVKPipelineCache::loadCache() {
-    ccstd::vector<char> data;
+	void CCVKPipelineCache::loadCache() {
+		ccstd::vector<char> data;
 #if CC_USE_PIPELINE_CACHE
-    loadData(_savePath, data);
+		loadData(_savePath, data);
 #endif
 
-    VkPipelineCacheCreateInfo cacheInfo = {};
-    cacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-    cacheInfo.pNext = nullptr;
-    cacheInfo.initialDataSize = static_cast<uint32_t>(data.size());
-    cacheInfo.pInitialData = data.data();
-    VK_CHECK(vkCreatePipelineCache(_device, &cacheInfo, nullptr, &_pipelineCache));
-}
+		VkPipelineCacheCreateInfo cacheInfo = {};
+		cacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+		cacheInfo.pNext = nullptr;
+		cacheInfo.initialDataSize = static_cast<uint32_t>(data.size());
+		cacheInfo.pInitialData = data.data();
+		VK_CHECK(vkCreatePipelineCache(_device, &cacheInfo, nullptr, &_pipelineCache));
+	}
 
-void CCVKPipelineCache::saveCache() {
-    if (!_dirty) {
-        return;
-    }
-    std::ofstream stream(_savePath, std::ios::binary);
-    if (!stream.is_open()) {
-        CC_LOG_INFO("Save program cache failed.");
-        return;
-    }
-    BinaryOutputArchive archive(stream);
-    archive.save(MAGIC);
-    archive.save(VERSION);
+	void CCVKPipelineCache::saveCache() {
+		if (!_dirty) {
+			return;
+		}
+		std::ofstream stream(_savePath, std::ios::binary);
+		if (!stream.is_open()) {
+			CC_LOG_INFO("Save program cache failed.");
+			return;
+		}
+		BinaryOutputArchive archive(stream);
+		archive.save(MAGIC);
+		archive.save(VERSION);
 
-    size_t size = 0;
-    vkGetPipelineCacheData(_device, _pipelineCache, &size, nullptr);
-    ccstd::vector<char> data(size);
-    vkGetPipelineCacheData(_device, _pipelineCache, &size, data.data());
+		size_t size = 0;
+		vkGetPipelineCacheData(_device, _pipelineCache, &size, nullptr);
+		ccstd::vector<char> data(size);
+		vkGetPipelineCacheData(_device, _pipelineCache, &size, data.data());
 
-    archive.save(static_cast<uint32_t>(size));
-    archive.save(data.data(), static_cast<uint32_t>(size));
-    _dirty = false;
-}
+		archive.save(static_cast<uint32_t>(size));
+		archive.save(data.data(), static_cast<uint32_t>(size));
+		_dirty = false;
+	}
 
-void CCVKPipelineCache::setDirty() {
-    _dirty = true;
-}
+	void CCVKPipelineCache::setDirty() {
+		_dirty = true;
+	}
 
-VkPipelineCache CCVKPipelineCache::getHandle() const {
-    return _pipelineCache;
-}
+	VkPipelineCache CCVKPipelineCache::getHandle() const {
+		return _pipelineCache;
+	}
 
 } // namespace cc::gfx

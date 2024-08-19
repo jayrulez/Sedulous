@@ -29,48 +29,48 @@
 #include "gfx-vulkan/VKGPUObjects.h"
 
 namespace cc {
-namespace gfx {
+	namespace gfx {
 
-class CC_VULKAN_API CCVKFramebuffer final : public Framebuffer {
-public:
-    CCVKFramebuffer(){
-    _typedID = generateObjectID<decltype(this)>();
-}
-    ~CCVKFramebuffer() {
-    destroy();
-}
+		class CC_VULKAN_API CCVKFramebuffer final : public Framebuffer {
+		public:
+			CCVKFramebuffer() {
+				_typedID = generateObjectID<decltype(this)>();
+			}
+			~CCVKFramebuffer() {
+				destroy();
+			}
 
-    inline CCVKGPUFramebuffer *gpuFBO() const { return _gpuFBO; }
+			inline CCVKGPUFramebuffer* gpuFBO() const { return _gpuFBO; }
 
-protected:
-    void doInit(const FramebufferInfo &info)  {
-    _gpuFBO = ccnew CCVKGPUFramebuffer;
-    _gpuFBO->gpuRenderPass = static_cast<CCVKRenderPass *>(_renderPass)->gpuRenderPass();
+		protected:
+			void doInit(const FramebufferInfo& info) {
+				_gpuFBO = ccnew CCVKGPUFramebuffer;
+				_gpuFBO->gpuRenderPass = static_cast<CCVKRenderPass*>(_renderPass)->gpuRenderPass();
 
-    _gpuFBO->gpuColorViews.resize(_colorTextures.size());
-    for (size_t i = 0; i < _colorTextures.size(); ++i) {
-        auto *colorTex = static_cast<CCVKTexture *>(_colorTextures.at(i));
-        _gpuFBO->gpuColorViews[i] = colorTex->gpuTextureView();
-    }
+				_gpuFBO->gpuColorViews.resize(_colorTextures.size());
+				for (size_t i = 0; i < _colorTextures.size(); ++i) {
+					auto* colorTex = static_cast<CCVKTexture*>(_colorTextures.at(i));
+					_gpuFBO->gpuColorViews[i] = colorTex->gpuTextureView();
+				}
 
-    if (_depthStencilTexture) {
-        auto *depthTex = static_cast<CCVKTexture *>(_depthStencilTexture);
-        _gpuFBO->gpuDepthStencilView = depthTex->gpuTextureView();
-    }
+				if (_depthStencilTexture) {
+					auto* depthTex = static_cast<CCVKTexture*>(_depthStencilTexture);
+					_gpuFBO->gpuDepthStencilView = depthTex->gpuTextureView();
+				}
 
-    if (_depthStencilResolveTexture) {
-        auto *depthTex = static_cast<CCVKTexture *>(_depthStencilResolveTexture);
-        _gpuFBO->gpuDepthStencilResolveView = depthTex->gpuTextureView();
-    }
+				if (_depthStencilResolveTexture) {
+					auto* depthTex = static_cast<CCVKTexture*>(_depthStencilResolveTexture);
+					_gpuFBO->gpuDepthStencilResolveView = depthTex->gpuTextureView();
+				}
 
-    cmdFuncCCVKCreateFramebuffer(CCVKDevice::getInstance(), _gpuFBO);
-}
-    void doDestroy() {
-    _gpuFBO = nullptr;
-}
+				cmdFuncCCVKCreateFramebuffer(CCVKDevice::getInstance(), _gpuFBO);
+			}
+			void doDestroy() {
+				_gpuFBO = nullptr;
+			}
 
-    IntrusivePtr<CCVKGPUFramebuffer> _gpuFBO;
-};
+			IntrusivePtr<CCVKGPUFramebuffer> _gpuFBO;
+		};
 
-} // namespace gfx
+	} // namespace gfx
 } // namespace cc
