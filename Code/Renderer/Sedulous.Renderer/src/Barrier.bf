@@ -397,6 +397,7 @@ namespace cc
 				return getAccessFlagsImpl(usage, memUsage, access, visibility);
 			}
 
+			[Comptime]
 			public static AccessFlags getAccessFlags(
 				TextureUsage usage,
 				MemoryAccess access,
@@ -507,6 +508,8 @@ namespace cc
 			    }
 			    return flags;
 			}
+
+			[Comptime]
 			 static AccessFlags getAccessFlagsImpl(
 			    TextureUsage usage,
 			    MemoryAccess access,
@@ -724,6 +727,314 @@ namespace cc
 				}
 
 				return flags;
+			}
+		}
+
+		static
+		{
+			[Comptime]
+			static void Asserts()
+			{
+				Compiler.Assert(
+				    (AccessFlags.VERTEX_SHADER_WRITE | AccessFlags.VERTEX_SHADER_READ_OTHER) ==
+				    getAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.VERTEX));
+
+				Compiler.Assert(
+				    (AccessFlags.FRAGMENT_SHADER_WRITE | AccessFlags.FRAGMENT_SHADER_READ_OTHER) ==
+				    getAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COMPUTE_SHADER_WRITE | AccessFlags.COMPUTE_SHADER_READ_OTHER) ==
+				    getAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.COMPUTE));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.STORAGE,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.SAMPLED | TextureUsage.STORAGE,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.TRANSFER_WRITE | AccessFlags.COLOR_ATTACHMENT_WRITE) ==
+				    getAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST | TextureUsage.COLOR_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.ALL));
+
+				////////////////////////////////////
+
+				// VERTEX_SHADER_WRITE
+				Compiler.Assert(
+				    AccessFlags.VERTEX_SHADER_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.VERTEX));
+
+				Compiler.Assert(
+				    (AccessFlags.VERTEX_SHADER_WRITE | AccessFlags.VERTEX_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.VERTEX));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE | TextureUsage.SAMPLED, // both storage write and sampling
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.VERTEX));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.SAMPLED, // Sampled cannot be write
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.VERTEX));
+
+				// FRAGMENT_SHADER_WRITE
+				Compiler.Assert(
+				    AccessFlags.FRAGMENT_SHADER_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.FRAGMENT_SHADER_WRITE | AccessFlags.FRAGMENT_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				// COLOR_ATTACHMENT_WRITE
+				Compiler.Assert(
+				    AccessFlags.COLOR_ATTACHMENT_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.VERTEX)); // not fragment stage
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.SAMPLED, // both color attachment and sampled texture
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_WRITE | AccessFlags.COLOR_ATTACHMENT_READ) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    AccessFlags.COLOR_ATTACHMENT_READ ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_WRITE | AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY, // INPUT_ATTACHMENT needs read access
+				        ShaderStageFlags.FRAGMENT));
+
+				// DEPTH_STENCIL_ATTACHMENT_WRITE
+				Compiler.Assert(
+				    AccessFlags.DEPTH_STENCIL_ATTACHMENT_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.VERTEX)); // not fragment stage
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT | TextureUsage.SAMPLED, // both color attachment and sampled texture
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.DEPTH_STENCIL_ATTACHMENT_WRITE | AccessFlags.DEPTH_STENCIL_ATTACHMENT_READ) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    AccessFlags.DEPTH_STENCIL_ATTACHMENT_READ ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.DEPTH_STENCIL_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.DEPTH_STENCIL_ATTACHMENT_WRITE | AccessFlags.DEPTH_STENCIL_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.DEPTH_STENCIL_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT,
+				        MemoryAccess.WRITE_ONLY, // INPUT_ATTACHMENT needs read access
+				        ShaderStageFlags.FRAGMENT));
+
+				// COMPUTE_SHADER_WRITE
+				Compiler.Assert(
+				    AccessFlags.COMPUTE_SHADER_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.COMPUTE));
+				Compiler.Assert(
+				    (AccessFlags.COMPUTE_SHADER_WRITE | AccessFlags.COMPUTE_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.COMPUTE));
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE | TextureUsage.SAMPLED, // cannot be sampled
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.COMPUTE));
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.STORAGE | TextureUsage.SAMPLED, // cannot be sampled
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.COMPUTE));
+
+				// TRANSFER_WRITE
+				Compiler.Assert(
+				    AccessFlags.TRANSFER_WRITE ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST,
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.ALL)); // ShaderStageFlags not used
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST,
+				        MemoryAccess.READ_WRITE,
+				        ShaderStageFlags.ALL)); // ShaderStageFlags not used
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST | TextureUsage.TRANSFER_SRC, // both source and target
+				        MemoryAccess.READ_WRITE,                                // both read and write
+				        ShaderStageFlags.ALL));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST | TextureUsage.TRANSFER_SRC, // both source and target
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.ALL));
+
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.TRANSFER_DST | TextureUsage.COLOR_ATTACHMENT, // cannot be sampled
+				        MemoryAccess.WRITE_ONLY,
+				        ShaderStageFlags.ALL));
+
+				// Read
+				// COLOR_ATTACHMENT_READ
+				Compiler.Assert(
+				    INVALID_ACCESS_FLAGS ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.INPUT_ATTACHMENT, // INPUT_ATTACHMENT needs COLOR_ATTACHMENT or DEPTH_STENCIL_ATTACHMENT
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT | AccessFlags.FRAGMENT_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.SAMPLED,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT | AccessFlags.FRAGMENT_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.STORAGE,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT | AccessFlags.FRAGMENT_SHADER_READ_TEXTURE) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.SAMPLED | TextureUsage.STORAGE,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
+
+				Compiler.Assert(
+				    (AccessFlags.COLOR_ATTACHMENT_READ | AccessFlags.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT | AccessFlags.TRANSFER_READ) ==
+				    getDeviceAccessFlagsImpl(
+				        TextureUsage.COLOR_ATTACHMENT | TextureUsage.INPUT_ATTACHMENT | TextureUsage.TRANSFER_SRC,
+				        MemoryAccess.READ_ONLY,
+				        ShaderStageFlags.FRAGMENT));
 			}
 		}
 	} // namespace gfx
