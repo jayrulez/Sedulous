@@ -41,25 +41,28 @@ namespace cc {
 			void initialize(const QueueInfo& info) {
 				_type = info.type;
 
+				doInit(info);
+			}
 
-				void destroy() {
-					doDestroy();
 
-					_type = QueueType::GRAPHICS;
-				}
+			void destroy() {
+				doDestroy();
 
-				virtual void submit(CommandBuffer* const* cmdBuffs, uint32_t count) = 0;
+				_type = QueueType::GRAPHICS;
+			}
 
-				inline void submit(const CommandBufferList & cmdBuffs) { submit(cmdBuffs.data(), utils::toUint(cmdBuffs.size())); }
+			virtual void submit(CommandBuffer* const* cmdBuffs, uint32_t count) = 0;
 
-				inline QueueType getType() const { return _type; }
+			inline void submit(const CommandBufferList& cmdBuffs) { submit(cmdBuffs.data(), utils::toUint(cmdBuffs.size())); }
+
+			inline QueueType getType() const { return _type; }
 
 		protected:
-			virtual void doInit(const QueueInfo & info) = 0;
+			virtual void doInit(const QueueInfo& info) = 0;
 			virtual void doDestroy() = 0;
 
 			QueueType _type = QueueType::GRAPHICS;
-			};
+		};
 
-		} // namespace gfx
-	} // namespace cc
+	} // namespace gfx
+} // namespace cc
