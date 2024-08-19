@@ -72,12 +72,19 @@ namespace cc
 				HashType seed = (uint32)(_colorAttachments.Count) * 2 + 3;
 				for (ColorAttachment ca in _colorAttachments)
 				{
-					HashCode.Mix(seed, ca.GetHashCode());
+					seed = HashCode.Mix(seed, ca.GetHashCode());
 				}
-				HashCode.Mix(seed, _depthStencilAttachment.GetHashCode());
-				HashCode.Mix(seed, _depthStencilResolveAttachment.GetHashCode());
-
-				HashCode.Mix(seed, _subpasses);
+				seed = HashCode.Mix(seed, _depthStencilAttachment.GetHashCode());
+				seed = HashCode.Mix(seed, _depthStencilResolveAttachment.GetHashCode());
+				
+				//seed = HashCode.Mix(seed, _subpasses);
+				if(_subpasses != null)
+				{
+					for(int i = 0; i < _subpasses.Count; i++)
+					{
+						seed = HashCode.Mix(seed, _subpasses[i].GetHashCode());
+					}
+				}
 				return seed;
 			}
 

@@ -940,10 +940,10 @@ static {
 			public int GetHashCode()
 			{
 				HashType seed = 0;
-				HashCode.Mix(seed, x.GetHashCode());
-				HashCode.Mix(seed, y.GetHashCode());
-				HashCode.Mix(seed, z.GetHashCode());
-				HashCode.Mix(seed, w.GetHashCode());
+				seed = HashCode.Mix(seed, x.GetHashCode());
+				seed = HashCode.Mix(seed, y.GetHashCode());
+				seed = HashCode.Mix(seed, z.GetHashCode());
+				seed = HashCode.Mix(seed, w.GetHashCode());
 				return seed;
 			}
 		}
@@ -1408,14 +1408,14 @@ static{
 			public int GetHashCode()
 			{
 				HashType seed = 8;
-				HashCode.Mix(seed, inputs);
-				HashCode.Mix(seed, colors);
-				HashCode.Mix(seed, resolves);
-				HashCode.Mix(seed, preserves);
-				HashCode.Mix(seed, depthStencil);
-				HashCode.Mix(seed, depthStencilResolve);
-				HashCode.Mix(seed, depthResolveMode.Underlying.GetHashCode());
-				HashCode.Mix(seed, stencilResolveMode.Underlying.GetHashCode());
+				seed = HashCode.Mix(seed, HashCode.Generate(inputs));
+				seed = HashCode.Mix(seed, HashCode.Generate(colors));
+				seed = HashCode.Mix(seed, HashCode.Generate(resolves));
+				seed = HashCode.Mix(seed, HashCode.Generate(preserves));
+				seed = HashCode.Mix(seed, depthStencil);
+				seed = HashCode.Mix(seed, depthStencilResolve);
+				seed = HashCode.Mix(seed, depthResolveMode.Underlying.GetHashCode());
+				seed = HashCode.Mix(seed, stencilResolveMode.Underlying.GetHashCode());
 				return seed;
 			}
 
@@ -1446,11 +1446,11 @@ static{
 			public int GetHashCode()
 			{
 				HashType seed = 8;
-				HashCode.Mix(seed, dstSubpass);
-				HashCode.Mix(seed, srcSubpass);
-				HashCode.Mix(seed, HashCode.Generate(generalBarrier));
-				HashCode.Mix(seed, prevAccesses.Underlying.GetHashCode());
-				HashCode.Mix(seed, nextAccesses.Underlying.GetHashCode());
+				seed = HashCode.Mix(seed, dstSubpass);
+				seed = HashCode.Mix(seed, srcSubpass);
+				seed = HashCode.Mix(seed, HashCode.Generate(generalBarrier));
+				seed = HashCode.Mix(seed, prevAccesses.Underlying.GetHashCode());
+				seed = HashCode.Mix(seed, nextAccesses.Underlying.GetHashCode());
 				return seed;
 			}
 
@@ -1477,11 +1477,32 @@ static{
 			public int GetHashCode()
 			{
 				HashType seed = 4;
-				HashCode.Mix(seed, colorAttachments);
-				HashCode.Mix(seed, depthStencilAttachment.GetHashCode());
-				HashCode.Mix(seed, depthStencilResolveAttachment.GetHashCode());
-				HashCode.Mix(seed, subpasses);
-				HashCode.Mix(seed, dependencies);
+				//seed = HashCode.Mix(seed, colorAttachments);
+				if(colorAttachments != null)
+				{
+					for(int i = 0; i < colorAttachments.Count; i++)
+					{
+						seed = HashCode.Mix(seed, colorAttachments[i].GetHashCode());
+					}
+				}
+				seed = HashCode.Mix(seed, depthStencilAttachment.GetHashCode());
+				seed = HashCode.Mix(seed, depthStencilResolveAttachment.GetHashCode());
+				//seed = HashCode.Mix(seed, subpasses);
+				if(subpasses != null)
+				{
+					for(int i = 0; i < subpasses.Count; i++)
+					{
+						seed = HashCode.Mix(seed, subpasses[i].GetHashCode());
+					}
+				}
+				//seed = HashCode.Mix(seed, dependencies);
+				if(dependencies != null)
+				{
+					for(int i = 0; i < dependencies.Count; i++)
+					{
+						seed = HashCode.Mix(seed, dependencies[i].GetHashCode());
+					}
+				}
 				return seed;
 			}
 
@@ -1626,18 +1647,18 @@ static{
 					(HashType)(depthStencilTexture != null ? 1 : 0) +
 					(HashType)(depthStencilResolveTexture != null ? 1 : 0);
 				if (depthStencilTexture != null) {
-					HashCode.Mix(seed, depthStencilTexture.getObjectID());
-					HashCode.Mix(seed, depthStencilTexture.getHash());
+					seed = HashCode.Mix(seed, depthStencilTexture.getObjectID());
+					seed = HashCode.Mix(seed, depthStencilTexture.getHash());
 				}
 				if (depthStencilResolveTexture != null) {
-					HashCode.Mix(seed, depthStencilResolveTexture.getObjectID());
-					HashCode.Mix(seed, depthStencilResolveTexture.getHash());
+					seed = HashCode.Mix(seed, depthStencilResolveTexture.getObjectID());
+					seed = HashCode.Mix(seed, depthStencilResolveTexture.getHash());
 				}
 				for (var colorTexture in colorTextures) {
-					HashCode.Mix(seed, colorTexture.getObjectID());
-					HashCode.Mix(seed, colorTexture.getHash());
+					seed = HashCode.Mix(seed, colorTexture.getObjectID());
+					seed = HashCode.Mix(seed, colorTexture.getHash());
 				}
-				HashCode.Mix(seed, renderPass.getHash());
+				seed = HashCode.Mix(seed, renderPass.getHash());
 				return seed;
 			}
 

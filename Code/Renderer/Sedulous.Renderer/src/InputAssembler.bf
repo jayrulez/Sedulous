@@ -103,12 +103,12 @@ namespace cc
 				HashType seed = (uint32)(_attributes.Count) * 6;
 				for (var attribute in _attributes)
 				{
-					HashCode.Mix(seed, attribute.name.GetHashCode());
-					HashCode.Mix(seed, attribute.format.Underlying.GetHashCode());
-					HashCode.Mix(seed, attribute.isNormalized.GetHashCode());
-					HashCode.Mix(seed, attribute.stream);
-					HashCode.Mix(seed, attribute.isInstanced.GetHashCode());
-					HashCode.Mix(seed, attribute.location);
+					seed = HashCode.Mix(seed, attribute.name.GetHashCode());
+					seed = HashCode.Mix(seed, attribute.format.Underlying.GetHashCode());
+					seed = HashCode.Mix(seed, attribute.isNormalized.GetHashCode());
+					seed = HashCode.Mix(seed, attribute.stream);
+					seed = HashCode.Mix(seed, attribute.isInstanced.GetHashCode());
+					seed = HashCode.Mix(seed, attribute.location);
 				}
 				return seed;
 			}

@@ -134,8 +134,8 @@ namespace cc
 				HashType hash = texture.isTextureView() ? computeHash(texture.getViewInfo()) : computeHash(texture.getInfo());
 				if (texture._swapchain != null)
 				{
-					HashCode.Mix(hash, texture._swapchain.getObjectID());
-					HashCode.Mix(hash, texture._swapchain.getGeneration());
+					hash = HashCode.Mix(hash, texture._swapchain.getObjectID());
+					hash = HashCode.Mix(hash, texture._swapchain.getGeneration());
 				}
 				return hash;
 			}

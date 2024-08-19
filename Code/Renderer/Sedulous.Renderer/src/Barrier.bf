@@ -53,7 +53,7 @@ namespace cc
 			}
 			// CC_ENUM_BITWISE_OPERATORS(CommonUsage);
 
-			[Comptime]
+			//[Comptime]
 			private static CommonUsage textureUsageToCommonUsage(TextureUsage usage)
 			{
 				CommonUsage res = 0;
@@ -92,7 +92,7 @@ namespace cc
 				return res;
 			}
 
-			[Comptime]
+			//[Comptime]
 			private static CommonUsage bufferUsageToCommonUsage(BufferUsage usage)
 			{
 				CommonUsage res = 0;
@@ -131,6 +131,23 @@ namespace cc
 				return res;
 			}
 
+
+			struct AccessElem
+			{
+				public uint32 mask = 0xFFFFFFFF;
+				public uint32 key = 0xFFFFFFFF;
+				public AccessFlags access = /*AccessFlags*/.NONE;
+				public uint32 mutex = 0x0; // optional mutually exclusive flag
+
+				public this(uint32 mask = 0xFFFFFFFF, uint32 key = 0xFFFFFFFF, AccessFlags access = /*AccessFlags*/.NONE, uint32 mutex = 0x0)
+				{
+					this.mask = mask;
+					this.key = key;
+					this.access = access;
+					this.mutex = mutex;
+				}
+			}
+
 			/*
 			template <unsigned char... indices>
 			constexpr uint64 setbit() {
@@ -155,20 +172,17 @@ namespace cc
 			}
 
 			*/
+			
 
-			static uint64 setbits<T>(params T[] indices) where T : uint8
-			{
+			static uint32 setbitBetween2<TFirst, TEnd>(TFirst first, TEnd end) where TFirst : var where TEnd : var {
+				Runtime.Assert(first >= end);
 				uint64 result = 0;
-				/*for(var index in indices)
+				for(int i = end; i < first; i++)
 				{
-					result |= 1UL << index;
-				}*/
-				//return result;
-			}
+					result = result | (1UL << i);
+				}
 
-			static uint64 setbitBetween<first, end>() where first : uint8 where end : uint8 {
-			    //static_assert(first >= end);
-			    return setbits<first>() ^ setbits<end>();
+				return (.)result;
 			}
 
 			static uint8 highestBitPosOffset<N>() where N : const uint32 {
@@ -178,23 +192,6 @@ namespace cc
 			        return highestBitPosOffset<const N/2>() + 1;
 					// N>> 1
 			    }
-			}
-
-
-			struct AccessElem
-			{
-				public uint32 mask = 0xFFFFFFFF;
-				public uint32 key = 0xFFFFFFFF;
-				public AccessFlags access = /*AccessFlags*/.NONE;
-				public uint32 mutex = 0x0; // optional mutually exclusive flag
-
-				public this(uint32 mask = 0xFFFFFFFF, uint32 key = 0xFFFFFFFF, AccessFlags access = /*AccessFlags*/.NONE, uint32 mutex = 0x0)
-				{
-					this.mask = mask;
-					this.key = key;
-					this.access = access;
-					this.mutex = mutex;
-				}
 			}
 
 
@@ -210,34 +207,34 @@ namespace cc
 			const uint8 MEM_TYPE_COUNT = 2;
 			const uint8 ACCESS_TYPE_COUNT = 2;
 
-			const var CMN_NONE = OPERABLE(CommonUsage.NONE);
-			const var CMN_COPY_SRC = OPERABLE(CommonUsage.COPY_SRC);
-			const var CMN_COPY_DST = OPERABLE(CommonUsage.COPY_DST);
-			const var CMN_ROM = OPERABLE(CommonUsage.ROM);
-			const var CMN_STORAGE = OPERABLE(CommonUsage.STORAGE);
-			const var CMN_IB_OR_CA = OPERABLE(CommonUsage.IB_OR_CA);
-			const var CMN_VB_OR_DS = OPERABLE(CommonUsage.VB_OR_DS);
-			const var CMN_INDIRECT_OR_INPUT = OPERABLE(CommonUsage.INDIRECT_OR_INPUT);
-			const var CMN_SHADING_RATE = OPERABLE(CommonUsage.SHADING_RATE);
+			const uint32 CMN_NONE = OPERABLE(CommonUsage.NONE);
+			const uint32 CMN_COPY_SRC = OPERABLE(CommonUsage.COPY_SRC);
+			const uint32 CMN_COPY_DST = OPERABLE(CommonUsage.COPY_DST);
+			const uint32 CMN_ROM = OPERABLE(CommonUsage.ROM);
+			const uint32 CMN_STORAGE = OPERABLE(CommonUsage.STORAGE);
+			const uint32 CMN_IB_OR_CA = OPERABLE(CommonUsage.IB_OR_CA);
+			const uint32 CMN_VB_OR_DS = OPERABLE(CommonUsage.VB_OR_DS);
+			const uint32 CMN_INDIRECT_OR_INPUT = OPERABLE(CommonUsage.INDIRECT_OR_INPUT);
+			const uint32 CMN_SHADING_RATE = OPERABLE(CommonUsage.SHADING_RATE);
 
-			const uint32 SHADER_STAGE_BIT_POPS = COMMON_USAGE_COUNT;
-			const var SHADERSTAGE_NONE = 0;
-			const var SHADERSTAGE_VERT = 1 << (0 + SHADER_STAGE_BIT_POPS);
-			const var SHADERSTAGE_CTRL = 1 << (1 + SHADER_STAGE_BIT_POPS);
-			const var SHADERSTAGE_EVAL = 1 << (2 + SHADER_STAGE_BIT_POPS);
-			const var SHADERSTAGE_GEOM = 1 << (3 + SHADER_STAGE_BIT_POPS);
-			const var SHADERSTAGE_FRAG = 1 << (4 + SHADER_STAGE_BIT_POPS);
-			const var SHADERSTAGE_COMP = 1 << (5 + SHADER_STAGE_BIT_POPS);
+			const uint8 SHADER_STAGE_BIT_POPS = COMMON_USAGE_COUNT;
+			const int32 SHADERSTAGE_NONE = 0;
+			const int32 SHADERSTAGE_VERT = 1 << (0 + SHADER_STAGE_BIT_POPS);
+			const int32 SHADERSTAGE_CTRL = 1 << (1 + SHADER_STAGE_BIT_POPS);
+			const int32 SHADERSTAGE_EVAL = 1 << (2 + SHADER_STAGE_BIT_POPS);
+			const int32 SHADERSTAGE_GEOM = 1 << (3 + SHADER_STAGE_BIT_POPS);
+			const int32 SHADERSTAGE_FRAG = 1 << (4 + SHADER_STAGE_BIT_POPS);
+			const int32 SHADERSTAGE_COMP = 1 << (5 + SHADER_STAGE_BIT_POPS);
 
-			const var RESOURCE_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT;
-			const var RES_TEXTURE = OPERABLE(ResourceType.TEXTURE) << RESOURCE_TYPE_BIT_POS;
-			const var RES_BUFFER = OPERABLE(ResourceType.BUFFER) << RESOURCE_TYPE_BIT_POS;
+			const int32 RESOURCE_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT;
+			const uint32 RES_TEXTURE = OPERABLE(ResourceType.TEXTURE) << RESOURCE_TYPE_BIT_POS;
+			const uint32 RES_BUFFER = OPERABLE(ResourceType.BUFFER) << RESOURCE_TYPE_BIT_POS;
 
-			const var MEM_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT + RESOURCE_TYPE_COUNT;
+			const int32 MEM_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT + RESOURCE_TYPE_COUNT;
 			const var MEM_HOST = OPERABLE(MemoryUsage.HOST) << MEM_TYPE_BIT_POS;
 			const var MEM_DEVICE = OPERABLE(MemoryUsage.DEVICE) << MEM_TYPE_BIT_POS;
 
-			const var ACCESS_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT + RESOURCE_TYPE_COUNT + MEM_TYPE_COUNT;
+			const int32 ACCESS_TYPE_BIT_POS = COMMON_USAGE_COUNT + SHADER_STAGE_RESERVE_COUNT + RESOURCE_TYPE_COUNT + MEM_TYPE_COUNT;
 			const var ACCESS_WRITE = OPERABLE(MemoryAccess.WRITE_ONLY) << ACCESS_TYPE_BIT_POS;
 			const var ACCESS_READ = OPERABLE(MemoryAccess.READ_ONLY) << ACCESS_TYPE_BIT_POS;
 
@@ -250,11 +247,17 @@ namespace cc
 			// 0 ~ 7: CommonUsage
 
 			const uint32 CARE_NONE = 0x0;
-			const uint32 CARE_CMNUSAGE = setbitBetween<SHADER_STAGE_BIT_POPS, 0>();
-			const uint32 CARE_SHADERSTAGE = setbitBetween<RESOURCE_TYPE_BIT_POS, SHADER_STAGE_BIT_POPS>();
-			const uint32 CARE_RESTYPE = setbitBetween<MEM_TYPE_BIT_POS, RESOURCE_TYPE_BIT_POS>();
-			const uint32 CARE_MEMUSAGE = setbitBetween<ACCESS_TYPE_BIT_POS, MEM_TYPE_BIT_POS>();
-			const uint32 CARE_MEMACCESS = setbitBetween<USED_BIT_COUNT, ACCESS_TYPE_BIT_POS>();
+			/*const uint32 CARE_CMNUSAGE = setbitBetween2<const SHADER_STAGE_BIT_POPS, const 0>();
+			const uint32 CARE_SHADERSTAGE = setbitBetween2<const RESOURCE_TYPE_BIT_POS, const SHADER_STAGE_BIT_POPS>();
+			const uint32 CARE_RESTYPE = setbitBetween2<const MEM_TYPE_BIT_POS, const RESOURCE_TYPE_BIT_POS>();
+			const uint32 CARE_MEMUSAGE = setbitBetween2<const ACCESS_TYPE_BIT_POS, const MEM_TYPE_BIT_POS>();
+			const uint32 CARE_MEMACCESS = setbitBetween2<const USED_BIT_COUNT, const ACCESS_TYPE_BIT_POS>();*/
+			
+			const uint32 CARE_CMNUSAGE = setbitBetween2( SHADER_STAGE_BIT_POPS, 0);
+			const uint32 CARE_SHADERSTAGE = setbitBetween2( RESOURCE_TYPE_BIT_POS, SHADER_STAGE_BIT_POPS);
+			const uint32 CARE_RESTYPE = setbitBetween2( MEM_TYPE_BIT_POS, RESOURCE_TYPE_BIT_POS);
+			const uint32 CARE_MEMUSAGE = setbitBetween2( ACCESS_TYPE_BIT_POS, MEM_TYPE_BIT_POS);
+			const uint32 CARE_MEMACCESS = setbitBetween2( USED_BIT_COUNT, ACCESS_TYPE_BIT_POS);
 
 			const uint32 IGNORE_NONE = 0xFFFFFFFF;
 			const uint32 IGNORE_CMNUSAGE = ~CARE_CMNUSAGE;
@@ -416,11 +419,124 @@ namespace cc
 
 		static
 		{
+			static bool hasFlag<T>(T flags, T flagToTest)
+				where T : enum
+				where T : operator T & T
+			{
+				return flags & flagToTest != 0;
+			}
+
 			static bool hasAnyFlags<T>(T flags, T flagsToTest)
 				where T : enum
 				where T : operator T & T
 			{
 				return flags & flagsToTest != 0;
+			}
+
+			static bool hasAllFlags<T>(T flags, T flagsToTest)
+				where T : enum
+				where T : operator T & T
+			{
+				return flags & flagsToTest == flagsToTest;
+			}
+
+			static bool validateAccess(ResourceType type, CommonUsage usage, MemoryAccess access, ShaderStageFlags visibility) {
+				/*delegate uint32(uint32* elements, int count) getMaxElement = scope(elements, count) =>
+					{
+						uint32 max = elements[0];
+						for(int i = 1; i < count; i++)
+						{
+							if(elements[i] > max)
+								max = elements[i];
+						}
+						return max;
+					};*/
+			    bool res = true;
+			    if (type == ResourceType.BUFFER) {
+			        uint32[?] conflicts = .(
+			            hasFlag(usage, CommonUsage.ROM) && hasFlag(access, MemoryAccess.WRITE_ONLY) ? 1 : 0,                                       // uniform has write access.
+			            hasAnyFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.VB_OR_DS) && !hasFlag(visibility, ShaderStageFlags.VERTEX) ? 1 : 0, // color/ds/input not in fragment
+			            hasAllFlags(usage, CommonUsage.ROM | CommonUsage.STORAGE) ? 1 : 0,                                                         // storage ^ sampled
+			            hasFlag(usage, CommonUsage.COPY_SRC) && hasAllFlags(MemoryAccess.READ_ONLY, access) ? 1 : 0,                               // transfer src ==> read_only
+			            hasFlag(usage, CommonUsage.COPY_DST) && hasAllFlags(MemoryAccess.WRITE_ONLY, access) ? 1 : 0,                              // transfer dst ==> write_only
+			            hasAllFlags(usage, CommonUsage.COPY_SRC | CommonUsage.COPY_DST) ? 1 : 0,                                                   // both src and dst
+			            hasFlag(usage, CommonUsage.VB_OR_DS) && hasAnyFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.INDIRECT_OR_INPUT) ? 1 : 0,
+			            hasFlag(usage, CommonUsage.IB_OR_CA) && hasAnyFlags(usage, CommonUsage.VB_OR_DS | CommonUsage.INDIRECT_OR_INPUT) ? 1 : 0,
+			            hasFlag(usage, CommonUsage.INDIRECT_OR_INPUT) && hasAnyFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.VB_OR_DS) ? 1 : 0,
+			            // exlusive
+			        );
+			        res = !conflicts.Contains(1);//!(*std.max_element(std.begin(conflicts), std.end(conflicts)));
+			    } else if (type == ResourceType.TEXTURE) {
+			        uint32[?] conflicts = .(
+			            // hasAnyFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.VB_OR_DS | CommonUsage.INDIRECT_OR_INPUT) && !hasFlag(visibility, ShaderStageFlags.FRAGMENT), // color/ds/input not in fragment
+			            hasFlag(usage, CommonUsage.INDIRECT_OR_INPUT) && !hasFlag(access, MemoryAccess.READ_ONLY) ? 1 : 0, // input needs read
+			            hasAllFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.STORAGE) ? 1 : 0,                            // storage ^ sampled
+			            hasFlag(usage, CommonUsage.COPY_SRC) && !hasAllFlags(MemoryAccess.READ_ONLY, access) ? 1 : 0,      // transfer src ==> read_only
+			            hasFlag(usage, CommonUsage.COPY_DST) && !hasAllFlags(MemoryAccess.WRITE_ONLY, access) ? 1 : 0,
+			            hasFlag(usage, CommonUsage.INDIRECT_OR_INPUT) && !hasAnyFlags(usage, CommonUsage.IB_OR_CA | CommonUsage.VB_OR_DS) ? 1 : 0, // input needs to specify color or ds                                                                    // transfer dst ==> write_only
+			            hasAllFlags(usage, CommonUsage.COPY_SRC | CommonUsage.COPY_DST) ? 1 : 0,                                                    // both src and dst
+			        );
+			        res = !conflicts.Contains(1);//!(*std.max_element(std.begin(conflicts), std.end(conflicts)));
+			    }
+			    return res;
+			}
+			 static AccessFlags getAccessFlagsImpl(
+			    BufferUsage usage, MemoryUsage memUsage,
+			    MemoryAccess access,
+			    ShaderStageFlags visibility) {
+			    AccessFlags flags = AccessFlags.NONE;
+			    CommonUsage cmnUsage = bufferUsageToCommonUsage(usage);
+			    if (validateAccess(ResourceType.BUFFER, cmnUsage, access, visibility)) {
+			        uint32 info = 0xFFFFFFFF;
+			        info &= ((OPERABLE(access) << ACCESS_TYPE_BIT_POS) | IGNORE_MEMACCESS);
+			        info &= ((OPERABLE(memUsage) << MEM_TYPE_BIT_POS) | IGNORE_MEMUSAGE);
+			        info &= ((OPERABLE(ResourceType.TEXTURE) << RESOURCE_TYPE_BIT_POS) | IGNORE_RESTYPE);
+			        info &= ((OPERABLE(visibility) << SHADER_STAGE_BIT_POPS) | IGNORE_SHADERSTAGE);
+			        info &= OPERABLE(cmnUsage) | IGNORE_CMNUSAGE;
+
+			        for (var elem in ACCESS_MAP) {
+			            uint32 testFlag = info & elem.mask;
+			            // hasKey
+			            if ((testFlag & elem.key) == elem.key) {
+			                flags |= elem.access;
+			            }
+			        }
+
+			    } else {
+			        flags = INVALID_ACCESS_FLAGS;
+			    }
+			    return flags;
+			}
+			 static AccessFlags getAccessFlagsImpl(
+			    TextureUsage usage,
+			    MemoryAccess access,
+			    ShaderStageFlags visibility) {
+			    AccessFlags flags = AccessFlags.NONE;
+			    CommonUsage cmnUsage = textureUsageToCommonUsage(usage);
+			    if (validateAccess(ResourceType.TEXTURE, cmnUsage, access, visibility)) {
+			        if (usage == gfx.TextureUsageBit.NONE) {
+			            return gfx.AccessFlagBit.PRESENT;
+			        }
+			        uint32 info = 0xFFFFFFFF;
+			        info &= ((OPERABLE(access) << ACCESS_TYPE_BIT_POS) | IGNORE_MEMACCESS);
+			        info &= ((OPERABLE(MemoryUsage.DEVICE) << MEM_TYPE_BIT_POS) | IGNORE_MEMUSAGE);
+			        info &= ((OPERABLE(ResourceType.TEXTURE) << RESOURCE_TYPE_BIT_POS) | IGNORE_RESTYPE);
+			        info &= ((OPERABLE(visibility) << (SHADER_STAGE_BIT_POPS)) | IGNORE_SHADERSTAGE);
+			        info &= OPERABLE(cmnUsage) | IGNORE_CMNUSAGE;
+
+			        for (var elem in ACCESS_MAP) {
+			            uint32 testFlag = info & elem.mask;
+			            // hasKey && no mutex flag
+			            if (((testFlag & elem.key) == elem.key) && ((testFlag & elem.mutex) == 0)) {
+			                flags |= elem.access;
+			            }
+			        }
+			    } else {
+			        flags = INVALID_ACCESS_FLAGS;
+			    }
+
+			    // Runtime.Assert(flags != INVALID_ACCESS_FLAGS);
+			    return flags;
 			}
 
 			static AccessFlags getDeviceAccessFlagsImpl(
