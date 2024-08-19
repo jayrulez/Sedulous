@@ -33,14 +33,35 @@ namespace gfx {
 
 class CC_VULKAN_API CCVKPipelineLayout final : public PipelineLayout {
 public:
-    CCVKPipelineLayout();
-    ~CCVKPipelineLayout() override;
+    CCVKPipelineLayout(){
+    _typedID = generateObjectID<decltype(this)>();
+}
+    ~CCVKPipelineLayout() {
+    destroy();
+}
 
     inline CCVKGPUPipelineLayout *gpuPipelineLayout() const { return _gpuPipelineLayout; }
 
 protected:
-    void doInit(const PipelineLayoutInfo &info) override;
-    void doDestroy() override;
+    void doInit(const PipelineLayoutInfo &info) {
+    _gpuPipelineLayout = ccnew CCVKGPUPipelineLayout;
+
+    uint32_t offset = 0U;
+    for (auto *setLayout : _setLayouts) {
+        CCVKGPUDescriptorSetLayout *gpuSetLayout = static_cast<CCVKDescriptorSetLayout *>(setLayout)->gpuDescriptorSetLayout();
+        uint32_t dynamicCount = utils::toUint(gpuSetLayout->dynamicBindings.size());
+        _gpuPipelineLayout->dynamicOffsetOffsets.push_back(offset);
+        _gpuPipelineLayout->setLayouts.emplace_back(gpuSetLayout);
+        offset += dynamicCount;
+    }
+    _gpuPipelineLayout->dynamicOffsetOffsets.push_back(offset);
+    _gpuPipelineLayout->dynamicOffsetCount = offset;
+
+    cmdFuncCCVKCreatePipelineLayout(CCVKDevice::getInstance(), _gpuPipelineLayout);
+}
+    void doDestroy() {
+    _gpuPipelineLayout = nullptr;
+}
 
     IntrusivePtr<CCVKGPUPipelineLayout> _gpuPipelineLayout;
 };

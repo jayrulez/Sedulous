@@ -35,18 +35,74 @@ struct CCVKGPUQueue;
 
 class CC_VULKAN_API CCVKQueue final : public Queue {
 public:
-    CCVKQueue();
-    ~CCVKQueue() override;
+    CCVKQueue(){
+    _typedID = generateObjectID<decltype(this)>();
+}
+    ~CCVKQueue() {
+    destroy();
+}
 
-    void submit(CommandBuffer *const *cmdBuffs, uint32_t count) override;
+    void submit(CommandBuffer *const *cmdBuffs, uint32_t count) {
+    CCVKDevice *device = CCVKDevice::getInstance();
+    _gpuQueue->commandBuffers.clear();
+
+#if BARRIER_DEDUCTION_LEVEL >= BARRIER_DEDUCTION_LEVEL_BASIC
+    device->gpuBarrierManager()->update(device->gpuTransportHub());
+#endif
+    device->gpuBufferHub()->flush(device->gpuTransportHub());
+
+    if (!device->gpuTransportHub()->empty(false)) {
+        _gpuQueue->commandBuffers.push_back(device->gpuTransportHub()->packageForFlight(false));
+    }
+
+    for (uint32_t i = 0U; i < count; ++i) {
+        auto *cmdBuff = static_cast<CCVKCommandBuffer *>(cmdBuffs[i]);
+        if (!cmdBuff->_pendingQueue.empty()) {
+            _gpuQueue->commandBuffers.push_back(cmdBuff->_pendingQueue.front());
+            cmdBuff->_pendingQueue.pop();
+
+            _numDrawCalls += cmdBuff->_numDrawCalls;
+            _numInstances += cmdBuff->_numInstances;
+            _numTriangles += cmdBuff->_numTriangles;
+        }
+    }
+
+    if (!device->gpuTransportHub()->empty(true)) {
+        _gpuQueue->commandBuffers.push_back(device->gpuTransportHub()->packageForFlight(true));
+    }
+
+    size_t waitSemaphoreCount = _gpuQueue->lastSignaledSemaphores.size();
+    VkSemaphore signal = waitSemaphoreCount ? device->gpuSemaphorePool()->alloc() : VK_NULL_HANDLE;
+    _gpuQueue->submitStageMasks.resize(waitSemaphoreCount, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+
+    VkSubmitInfo submitInfo{VK_STRUCTURE_TYPE_SUBMIT_INFO};
+    submitInfo.waitSemaphoreCount = utils::toUint(waitSemaphoreCount);
+    submitInfo.pWaitSemaphores = _gpuQueue->lastSignaledSemaphores.data();
+    submitInfo.pWaitDstStageMask = _gpuQueue->submitStageMasks.data();
+    submitInfo.commandBufferCount = utils::toUint(_gpuQueue->commandBuffers.size());
+    submitInfo.pCommandBuffers = &_gpuQueue->commandBuffers[0];
+    submitInfo.signalSemaphoreCount = waitSemaphoreCount ? 1 : 0;
+    submitInfo.pSignalSemaphores = &signal;
+
+    VkFence vkFence = device->gpuFencePool()->alloc();
+    VK_CHECK(vkQueueSubmit(_gpuQueue->vkQueue, 1, &submitInfo, vkFence));
+
+    _gpuQueue->lastSignaledSemaphores.assign(1, signal);
+}
 
     inline CCVKGPUQueue *gpuQueue() const { return _gpuQueue.get(); }
 
 protected:
     friend class CCVKDevice;
 
-    void doInit(const QueueInfo &info) override;
-    void doDestroy() override;
+    void doInit(const QueueInfo &info) {
+    _gpuQueue = std::make_unique<CCVKGPUQueue>();
+    _gpuQueue->type = _type;
+    cmdFuncCCVKGetDeviceQueue(CCVKDevice::getInstance(), _gpuQueue.get());
+}
+    void doDestroy() {
+    _gpuQueue = nullptr;
+}
 
     std::unique_ptr<CCVKGPUQueue> _gpuQueue;
 

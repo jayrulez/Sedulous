@@ -34,8 +34,34 @@ struct CCVKGPUTextureBarrier;
 
 class CC_VULKAN_API CCVKTextureBarrier : public TextureBarrier {
 public:
-    explicit CCVKTextureBarrier(const TextureBarrierInfo &info);
-    ~CCVKTextureBarrier() override = default;
+    explicit CCVKTextureBarrier(const TextureBarrierInfo &info){
+    _typedID = generateObjectID<decltype(this)>();
+
+    _gpuBarrier = std::make_unique<CCVKGPUTextureBarrier>();
+    getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
+    getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
+
+    _gpuBarrier->barrier.prevAccessCount = utils::toUint(_gpuBarrier->prevAccesses.size());
+    _gpuBarrier->barrier.pPrevAccesses = _gpuBarrier->prevAccesses.data();
+    _gpuBarrier->barrier.nextAccessCount = utils::toUint(_gpuBarrier->nextAccesses.size());
+    _gpuBarrier->barrier.pNextAccesses = _gpuBarrier->nextAccesses.data();
+
+    _gpuBarrier->barrier.prevLayout = getAccessLayout(info.prevAccesses);
+    _gpuBarrier->barrier.nextLayout = getAccessLayout(info.nextAccesses);
+    _gpuBarrier->barrier.discardContents = !!info.discardContents;
+    _gpuBarrier->barrier.subresourceRange.baseMipLevel = info.range.mipLevel;
+    _gpuBarrier->barrier.subresourceRange.levelCount = info.range.levelCount;
+    _gpuBarrier->barrier.subresourceRange.baseArrayLayer = info.range.firstSlice;
+    _gpuBarrier->barrier.subresourceRange.layerCount = info.range.numSlices;
+    _gpuBarrier->barrier.srcQueueFamilyIndex = info.srcQueue
+                                                   ? static_cast<CCVKQueue *>(info.srcQueue)->gpuQueue()->queueFamilyIndex
+                                                   : VK_QUEUE_FAMILY_IGNORED;
+    _gpuBarrier->barrier.dstQueueFamilyIndex = info.dstQueue
+                                                   ? static_cast<CCVKQueue *>(info.dstQueue)->gpuQueue()->queueFamilyIndex
+                                                   : VK_QUEUE_FAMILY_IGNORED;
+
+    thsvsGetVulkanImageMemoryBarrier(_gpuBarrier->barrier, &_gpuBarrier->srcStageMask, &_gpuBarrier->dstStageMask, &_gpuBarrier->vkBarrier);
+}
 
     inline const CCVKGPUTextureBarrier *gpuBarrier() const { return _gpuBarrier.get(); }
 

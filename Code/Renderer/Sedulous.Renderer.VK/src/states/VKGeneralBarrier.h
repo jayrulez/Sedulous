@@ -35,7 +35,15 @@ struct CCVKGPUGeneralBarrier;
 
 class CC_VULKAN_API CCVKGeneralBarrier : public GeneralBarrier {
 public:
-    explicit CCVKGeneralBarrier(const GeneralBarrierInfo &info);
+    explicit CCVKGeneralBarrier(const GeneralBarrierInfo &info){
+    _typedID = generateObjectID<decltype(this)>();
+
+    _gpuBarrier = std::make_unique<CCVKGPUGeneralBarrier>();
+    getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
+    getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
+
+    cmdFuncCCVKCreateGeneralBarrier(CCVKDevice::getInstance(), _gpuBarrier.get());
+}
     ~CCVKGeneralBarrier() override = default;
 
     inline const CCVKGPUGeneralBarrier *gpuBarrier() const { return _gpuBarrier.get(); }

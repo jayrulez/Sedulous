@@ -33,14 +33,42 @@ namespace gfx {
 
 class CC_VULKAN_API CCVKPipelineState final : public PipelineState {
 public:
-    CCVKPipelineState();
+    CCVKPipelineState(){
+    _typedID = generateObjectID<decltype(this)>();
+}
     ~CCVKPipelineState() override;
 
     inline CCVKGPUPipelineState *gpuPipelineState() const { return _gpuPipelineState; }
 
 protected:
-    void doInit(const PipelineStateInfo &info) override;
-    void doDestroy() override;
+    void doInit(const PipelineStateInfo &info) {
+    _gpuPipelineState = ccnew CCVKGPUPipelineState;
+    _gpuPipelineState->bindPoint = _bindPoint;
+    _gpuPipelineState->primitive = _primitive;
+    _gpuPipelineState->gpuShader = static_cast<CCVKShader *>(_shader)->gpuShader();
+    _gpuPipelineState->inputState = _inputState;
+    _gpuPipelineState->rs = _rasterizerState;
+    _gpuPipelineState->dss = _depthStencilState;
+    _gpuPipelineState->bs = _blendState;
+    _gpuPipelineState->subpass = _subpass;
+    _gpuPipelineState->gpuPipelineLayout = static_cast<CCVKPipelineLayout *>(_pipelineLayout)->gpuPipelineLayout();
+    if (_renderPass) _gpuPipelineState->gpuRenderPass = static_cast<CCVKRenderPass *>(_renderPass)->gpuRenderPass();
+
+    for (uint32_t i = 0; i < 31; i++) {
+        if (static_cast<uint32_t>(_dynamicStates) & (1 << i)) {
+            _gpuPipelineState->dynamicStates.push_back(static_cast<DynamicStateFlagBit>(1 << i));
+        }
+    }
+
+    if (_bindPoint == PipelineBindPoint::GRAPHICS) {
+        cmdFuncCCVKCreateGraphicsPipelineState(CCVKDevice::getInstance(), _gpuPipelineState);
+    } else {
+        cmdFuncCCVKCreateComputePipelineState(CCVKDevice::getInstance(), _gpuPipelineState);
+    }
+}
+    void doDestroy() {
+    _gpuPipelineState = nullptr;
+}
 
     IntrusivePtr<CCVKGPUPipelineState> _gpuPipelineState;
 };

@@ -34,7 +34,29 @@ struct CCVKGPUBufferBarrier;
 
 class CC_VULKAN_API CCVKBufferBarrier : public BufferBarrier {
 public:
-    explicit CCVKBufferBarrier(const BufferBarrierInfo &info);
+    explicit CCVKBufferBarrier(const BufferBarrierInfo &info) {
+    _typedID = generateObjectID<decltype(this)>();
+
+    _gpuBarrier = std::make_unique<CCVKGPUBufferBarrier>();
+    getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
+    getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
+
+    _gpuBarrier->barrier.prevAccessCount = utils::toUint(_gpuBarrier->prevAccesses.size());
+    _gpuBarrier->barrier.pPrevAccesses = _gpuBarrier->prevAccesses.data();
+    _gpuBarrier->barrier.nextAccessCount = utils::toUint(_gpuBarrier->nextAccesses.size());
+    _gpuBarrier->barrier.pNextAccesses = _gpuBarrier->nextAccesses.data();
+
+    _gpuBarrier->barrier.offset = info.offset;
+    _gpuBarrier->barrier.size = info.size;
+    _gpuBarrier->barrier.srcQueueFamilyIndex = info.srcQueue
+                                                   ? static_cast<CCVKQueue *>(info.srcQueue)->gpuQueue()->queueFamilyIndex
+                                                   : VK_QUEUE_FAMILY_IGNORED;
+    _gpuBarrier->barrier.dstQueueFamilyIndex = info.dstQueue
+                                                   ? static_cast<CCVKQueue *>(info.dstQueue)->gpuQueue()->queueFamilyIndex
+                                                   : VK_QUEUE_FAMILY_IGNORED;
+
+    thsvsGetVulkanBufferMemoryBarrier(_gpuBarrier->barrier, &_gpuBarrier->srcStageMask, &_gpuBarrier->dstStageMask, &_gpuBarrier->vkBarrier);
+}
     ~CCVKBufferBarrier() override = default;
 
     inline const CCVKGPUBufferBarrier *gpuBarrier() const { return _gpuBarrier.get(); }

@@ -33,22 +33,66 @@ namespace gfx {
 
 class CC_VULKAN_API CCVKBuffer final : public Buffer {
 public:
-    CCVKBuffer();
-    ~CCVKBuffer() override;
+    CCVKBuffer(){
+    _typedID = generateObjectID<decltype(this)>();
+}
+    ~CCVKBuffer() {
+    destroy();
+}
 
-    void update(const void *buffer, uint32_t size) override;
+    void update(const void *buffer, uint32_t size) {
+    CC_PROFILE(CCVKBufferUpdate);
+    cmdFuncCCVKUpdateBuffer(CCVKDevice::getInstance(), _gpuBuffer, buffer, size, nullptr);
+}
 
     inline CCVKGPUBuffer *gpuBuffer() const { return _gpuBuffer; }
     inline CCVKGPUBufferView *gpuBufferView() const { return _gpuBufferView; }
 
 protected:
-    void doInit(const BufferInfo &info) override;
-    void doInit(const BufferViewInfo &info) override;
-    void doDestroy() override;
-    void doResize(uint32_t size, uint32_t count) override;
+    void doInit(const BufferInfo &info) {
+    createBuffer(_size, _count);
 
-    void createBuffer(uint32_t size, uint32_t count);
-    void createBufferView(uint32_t range);
+    createBufferView(_size);
+}
+
+    void doInit(const BufferViewInfo &info) {
+    auto *buffer = static_cast<CCVKBuffer *>(info.buffer);
+    _gpuBuffer = buffer->gpuBuffer();
+
+    createBufferView(_size);
+}
+
+    void doDestroy() {
+    _gpuBufferView = nullptr;
+    _gpuBuffer = nullptr;
+}
+    void doResize(uint32_t size, uint32_t count) {
+    createBuffer(size, count);
+
+    // Hold reference to keep the old bufferView alive during DescriptorHub::update and IAHub::update.
+    IntrusivePtr<CCVKGPUBufferView> oldBufferView = _gpuBufferView;
+    createBufferView(size);
+    CCVKDevice::getInstance()->gpuDescriptorHub()->update(oldBufferView, _gpuBufferView);
+    CCVKDevice::getInstance()->gpuIAHub()->update(oldBufferView, _gpuBufferView);
+}
+
+    void createBuffer(uint32_t size, uint32_t count){
+    _gpuBuffer = ccnew CCVKGPUBuffer;
+    _gpuBuffer->size = size;
+    _gpuBuffer->count = count;
+
+    _gpuBuffer->usage = _usage;
+    _gpuBuffer->memUsage = _memUsage;
+    _gpuBuffer->stride = _stride;
+    _gpuBuffer->init();
+}
+    void createBufferView(uint32_t range){
+    _gpuBufferView = ccnew CCVKGPUBufferView;
+    _gpuBufferView->range = range;
+
+    _gpuBufferView->gpuBuffer = _gpuBuffer;
+    _gpuBufferView->offset = _offset;
+}
 
     IntrusivePtr<CCVKGPUBuffer> _gpuBuffer;
     IntrusivePtr<CCVKGPUBufferView> _gpuBufferView;

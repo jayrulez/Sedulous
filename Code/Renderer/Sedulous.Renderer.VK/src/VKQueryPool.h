@@ -34,8 +34,12 @@ namespace gfx {
 
 class CC_VULKAN_API CCVKQueryPool final : public QueryPool {
 public:
-    CCVKQueryPool();
-    ~CCVKQueryPool() override;
+    CCVKQueryPool() {
+    _typedID = generateObjectID<decltype(this)>();
+}
+    ~CCVKQueryPool(){
+    destroy();
+}
 
     inline CCVKGPUQueryPool *gpuQueryPool() const { return _gpuQueryPool; }
 
@@ -43,8 +47,17 @@ protected:
     friend class CCVKCommandBuffer;
     friend class CCVKDevice;
 
-    void doInit(const QueryPoolInfo &info) override;
-    void doDestroy() override;
+    void doInit(const QueryPoolInfo &info){
+    CCVKDevice *device = CCVKDevice::getInstance();
+    _gpuQueryPool = ccnew CCVKGPUQueryPool;
+    _gpuQueryPool->type = _type;
+    _gpuQueryPool->maxQueryObjects = _maxQueryObjects;
+    _gpuQueryPool->forceWait = _forceWait;
+    cmdFuncCCVKCreateQueryPool(device, _gpuQueryPool);
+}
+    void doDestroy() {
+    _gpuQueryPool = nullptr;
+}
 
     IntrusivePtr<CCVKGPUQueryPool> _gpuQueryPool;
     ccstd::vector<uint32_t> _ids;

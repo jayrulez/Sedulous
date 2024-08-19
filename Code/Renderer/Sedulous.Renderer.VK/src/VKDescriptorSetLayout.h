@@ -33,8 +33,12 @@ namespace gfx {
 
 class CC_VULKAN_API CCVKDescriptorSetLayout final : public DescriptorSetLayout {
 public:
-    CCVKDescriptorSetLayout();
-    ~CCVKDescriptorSetLayout() override;
+    CCVKDescriptorSetLayout(){
+    _typedID = generateObjectID<decltype(this)>();
+}
+    ~CCVKDescriptorSetLayout() {
+    destroy();
+}
 
     inline CCVKGPUDescriptorSetLayout *gpuDescriptorSetLayout() const { return _gpuDescriptorSetLayout; }
 
@@ -44,8 +48,27 @@ protected:
         return idGen++;
     }
 
-    void doInit(const DescriptorSetLayoutInfo &info) override;
-    void doDestroy() override;
+    void doInit(const DescriptorSetLayoutInfo &info) {
+    _gpuDescriptorSetLayout = ccnew CCVKGPUDescriptorSetLayout;
+    _gpuDescriptorSetLayout->id = generateID();
+    _gpuDescriptorSetLayout->descriptorCount = _descriptorCount;
+    _gpuDescriptorSetLayout->bindingIndices = _bindingIndices;
+    _gpuDescriptorSetLayout->descriptorIndices = _descriptorIndices;
+    _gpuDescriptorSetLayout->bindings = _bindings;
+
+    for (auto &binding : _bindings) {
+        if (hasAnyFlags(binding.descriptorType, DESCRIPTOR_DYNAMIC_TYPE)) {
+            for (uint32_t j = 0U; j < binding.count; j++) {
+                _gpuDescriptorSetLayout->dynamicBindings.push_back(binding.binding);
+            }
+        }
+    }
+
+    cmdFuncCCVKCreateDescriptorSetLayout(CCVKDevice::getInstance(), _gpuDescriptorSetLayout);
+}
+    void doDestroy() {
+    _gpuDescriptorSetLayout = nullptr;
+}
 
     IntrusivePtr<CCVKGPUDescriptorSetLayout> _gpuDescriptorSetLayout;
 };

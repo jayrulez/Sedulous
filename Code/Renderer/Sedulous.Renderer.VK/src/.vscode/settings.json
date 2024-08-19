@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "system_error": "cpp",
+        "xiosbase": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "xmemory": "cpp",
+        "xutility": "cpp"
+    }
+}
