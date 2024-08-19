@@ -1,7 +1,8 @@
-/****************************************************************************
- Copyright (c) 2022-2023 Xiamen Yaji Software Co., Ltd.
+using System;
+/***********************************************************************
+ Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
- https://www.cocos.com/
+ http://www.cocos.com
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -22,30 +23,26 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-#include "GFXDef-common.h"
-
 namespace cc {
+	namespace gfx {
 
-namespace gfx {
+		class BufferBarrier : GFXObject {
+			public this(in BufferBarrierInfo info)
+				: base(ObjectType.BUFFER_BARRIER) {
+				_info = info;
+				_hash = computeHash(info);
+			}
 
-AccessFlags getAccessFlags(
-    BufferUsage usage, MemoryUsage memUsage,
-    MemoryAccess access,
-    ShaderStageFlags visibility) noexcept;
+			public static HashType computeHash(in BufferBarrierInfo info) {
+				return info.GetHashCode();
+			}
 
-AccessFlags getAccessFlags(
-    TextureUsage usage,
-    MemoryAccess access,
-    ShaderStageFlags visibility) noexcept;
+			[Inline] public readonly ref BufferBarrierInfo getInfo() { return ref _info; }
+			[Inline] public readonly ref HashType getHash() { return ref _hash; }
 
-constexpr AccessFlags INVALID_ACCESS_FLAGS = static_cast<AccessFlags>(0xFFFFFFFF);
+			protected BufferBarrierInfo _info;
+			protected HashType _hash =  0 ;
+		}
 
-AccessFlags getDeviceAccessFlags(
-    TextureUsage usage,
-    MemoryAccess access,
-    ShaderStageFlags visibility);
-
-} // namespace gfx
-
+	} // namespace gfx
 } // namespace cc

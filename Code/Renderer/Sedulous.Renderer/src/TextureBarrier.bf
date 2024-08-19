@@ -1,3 +1,4 @@
+using System;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,47 +23,26 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-
-#include "GFXObject.h"
-#include "base/RefCounted.h"
-#include "base/Utils.h"
-
 namespace cc {
 	namespace gfx {
 
-		class CC_DLL Queue : public GFXObject, public RefCounted {
-		public:
-			Queue()
-				: GFXObject(ObjectType::QUEUE) {
-			}
-			~Queue() override;
-
-			void initialize(const QueueInfo& info) {
-				_type = info.type;
-
-				doInit(info);
+		class TextureBarrier : GFXObject {
+			public this(in TextureBarrierInfo info)
+				: base(ObjectType.TEXTURE_BARRIER) {
+				_info = info;
+				_hash = computeHash(info);
 			}
 
-
-			void destroy() {
-				doDestroy();
-
-				_type = QueueType::GRAPHICS;
+			public static HashType computeHash(in TextureBarrierInfo info) {
+				return info.GetHashCode();
 			}
 
-			virtual void submit(CommandBuffer* const* cmdBuffs, uint32_t count) = 0;
+			[Inline] public readonly ref TextureBarrierInfo getInfo() { return ref _info; }
+			[Inline] public readonly ref HashType getHash() { return ref _hash; }
 
-			inline void submit(const CommandBufferList& cmdBuffs) { submit(cmdBuffs.data(), utils::toUint(cmdBuffs.size())); }
-
-			inline QueueType getType() const { return _type; }
-
-		protected:
-			virtual void doInit(const QueueInfo& info) = 0;
-			virtual void doDestroy() = 0;
-
-			QueueType _type = QueueType::GRAPHICS;
-		};
+			protected TextureBarrierInfo _info;
+			protected HashType _hash =  0 ;
+		}
 
 	} // namespace gfx
 } // namespace cc

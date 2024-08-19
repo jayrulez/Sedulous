@@ -1,4 +1,5 @@
-/***********************************************************************
+using System;
+/****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos.com
@@ -22,33 +23,37 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-
-#include "../GFXObject.h"
-#include "gfx-base/GFXDef-common.h"
-
-namespace cc {
-	namespace gfx {
-
-		class CC_DLL BufferBarrier : public GFXObject {
-		public:
-			explicit BufferBarrier(const BufferBarrierInfo& info)
-				: GFXObject(ObjectType::BUFFER_BARRIER) {
-				_info = info;
-				_hash = computeHash(info);
+namespace cc
+{
+	namespace gfx
+	{
+		abstract class PipelineLayout : GFXObject
+		{
+			public this()
+				: base(ObjectType.PIPELINE_LAYOUT)
+			{
 			}
 
-			static ccstd::hash_t computeHash(const BufferBarrierInfo& info) {
-				return Hasher<BufferBarrierInfo>()(info);
+			public void initialize(in PipelineLayoutInfo info)
+			{
+				_setLayouts = info.setLayouts;
+
+				doInit(info);
+			}
+			public void destroy()
+			{
+				doDestroy();
+
+				_setLayouts.Clear();
 			}
 
-			inline const BufferBarrierInfo& getInfo() const { return _info; }
-			inline const ccstd::hash_t& getHash() const { return _hash; }
+			[Inline] public readonly ref DescriptorSetLayoutList getSetLayouts() { return ref _setLayouts; }
 
-		protected:
-			BufferBarrierInfo _info;
-			ccstd::hash_t _hash{ 0U };
-		};
+			protected abstract void doInit(in PipelineLayoutInfo info);
+			protected abstract void doDestroy();
+
+			protected DescriptorSetLayoutList _setLayouts;
+		}
 
 	} // namespace gfx
 } // namespace cc

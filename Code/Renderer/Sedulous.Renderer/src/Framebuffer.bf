@@ -1,3 +1,4 @@
+using System;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,66 +23,57 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
 
-#include <cstdint>
-#include <mutex>
-#include "GFXObject.h"
-#include "base/std/container/unordered_map.h"
-
-namespace cc {
-	namespace gfx {
-
-		/**
-		 * QueryPool usage:
-		 * Update
-		 * Render
-		 *  getQueryPoolResults
-		 *  resetQueryPool
-		 *  for each renderObject
-		 *      beginQuery
-		 *          drawObject
-		 *      endQuery
-		 *  completeQueryPool
-		 */
-
-		class CC_DLL QueryPool : public GFXObject {
-		public:
-			QueryPool()
-				: GFXObject(ObjectType::QUERY_POOL) {
+namespace cc
+{
+	namespace gfx
+	{
+		abstract class Framebuffer : GFXObject
+		{
+			public this()
+				: base(ObjectType.FRAMEBUFFER)
+			{
 			}
-			~QueryPool() override;
 
-			void initialize(const QueryPoolInfo& info) {
-				_type = info.type;
-				_maxQueryObjects = info.maxQueryObjects;
-				_forceWait = info.forceWait;
+			public static HashType computeHash(in FramebufferInfo info)
+			{
+				return info.GetHashCode();
+			}
+
+			public void initialize(in FramebufferInfo info)
+			{
+				_renderPass = info.renderPass;
+				_colorTextures = info.colorTextures;
+				_depthStencilTexture = info.depthStencilTexture;
+				_depthStencilResolveTexture = info.depthStencilResolveTexture;
 
 				doInit(info);
 			}
-			void destroy() {
+			public void destroy()
+			{
 				doDestroy();
 
-				_type = QueryType::OCCLUSION;
-				_maxQueryObjects = 0;
+				_renderPass = null;
+				_colorTextures.Clear();
+				_depthStencilTexture = null;
+				_depthStencilResolveTexture = null;
 			}
 
-			inline bool hasResult(uint32_t id) { return _results.count(id) != 0; }
-			inline uint64_t getResult(uint32_t id) { return _results[id]; }
-			inline QueryType getType() const { return _type; }
-			inline uint32_t getMaxQueryObjects() const { return _maxQueryObjects; }
-			inline bool getForceWait() const { return _forceWait; }
+			[Inline] public RenderPass getRenderPass() { return _renderPass; }
+			[Inline] public readonly ref TextureList getColorTextures() { return ref _colorTextures; }
+			[Inline] public Texture getDepthStencilTexture() { return _depthStencilTexture; }
+			[Inline] public Texture getDepthStencilResolveTexture() { return _depthStencilResolveTexture; }
 
-		protected:
-			virtual void doInit(const QueryPoolInfo& info) = 0;
-			virtual void doDestroy() = 0;
+			protected abstract void doInit(in FramebufferInfo info);
+			protected abstract void doDestroy();
 
-			QueryType _type{ QueryType::OCCLUSION };
-			uint32_t _maxQueryObjects{ 0 };
-			bool _forceWait{ true };
-			std::mutex _mutex;
-			ccstd::unordered_map<uint32_t, uint64_t> _results;
-		};
-
+			// weak reference
+			RenderPass _renderPass =  null;
+			// weak reference
+			TextureList _colorTextures;
+			// weak reference
+			Texture _depthStencilTexture =  null;
+			Texture _depthStencilResolveTexture =  null;
+		}
 	} // namespace gfx
 } // namespace cc

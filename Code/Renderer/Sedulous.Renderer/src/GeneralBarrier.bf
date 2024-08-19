@@ -1,3 +1,4 @@
+using System;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,46 +23,29 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-
-#include "../GFXObject.h"
-#include "base/std/hash/hash.h"
-#include "gfx-base/GFXDef-common.h"
-
-namespace cc {
-	namespace gfx {
-
-		class CC_DLL Sampler : public GFXObject {
-		public:
-			explicit Sampler(const SamplerInfo& info)
-				: GFXObject(ObjectType::SAMPLER) {
+namespace cc
+{
+	namespace gfx
+	{
+		class GeneralBarrier : GFXObject
+		{
+			public this(in GeneralBarrierInfo info)
+				: base(ObjectType.GLOBAL_BARRIER)
+			{
 				_info = info;
 				_hash = computeHash(info);
 			}
 
-			static ccstd::hash_t computeHash(const SamplerInfo& info) {
-				return Hasher<SamplerInfo>()(info);
-			}
-			static SamplerInfo unpackFromHash(ccstd::hash_t hash) {
-				SamplerInfo info;
-				info.minFilter = static_cast<Filter>((hash & ((1 << 2) - 1)) >> 0);
-				info.magFilter = static_cast<Filter>((hash & ((1 << 2) - 1)) >> 2);
-				info.mipFilter = static_cast<Filter>((hash & ((1 << 2) - 1)) >> 4);
-				info.addressU = static_cast<Address>((hash & ((1 << 2) - 1)) >> 6);
-				info.addressV = static_cast<Address>((hash & ((1 << 2) - 1)) >> 8);
-				info.addressW = static_cast<Address>((hash & ((1 << 2) - 1)) >> 10);
-				info.maxAnisotropy = (hash & ((1 << 4) - 1)) >> 12;
-				info.cmpFunc = static_cast<ComparisonFunc>((hash & ((1 << 3) - 1)) >> 16);
-				return info;
+			public static HashType computeHash(in GeneralBarrierInfo info)
+			{
+				return info.GetHashCode();
 			}
 
-			inline const SamplerInfo& getInfo() const { return _info; }
-			inline const ccstd::hash_t& getHash() const { return _hash; }
+			[Inline] public readonly ref GeneralBarrierInfo getInfo() { return ref _info; }
+			[Inline] public readonly ref HashType getHash() { return ref _hash; }
 
-		protected:
-			SamplerInfo _info;
-			ccstd::hash_t _hash{ 0U };
-		};
-
+			protected GeneralBarrierInfo _info;
+			protected HashType _hash =  0;
+		}
 	} // namespace gfx
 } // namespace cc

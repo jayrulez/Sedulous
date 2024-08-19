@@ -1,3 +1,4 @@
+using System;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,32 +23,42 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-
-#include "../GFXObject.h"
-
-namespace cc {
-	namespace gfx {
-
-		class CC_DLL GeneralBarrier : public GFXObject {
-		public:
-			explicit GeneralBarrier(const GeneralBarrierInfo& info)
-				: GFXObject(ObjectType::GLOBAL_BARRIER) {
-				_info = info;
-				_hash = computeHash(info);
+namespace cc
+{
+	namespace gfx
+	{
+		abstract class CommandQueue : GFXObject
+		{
+			public this()
+				: base(ObjectType.QUEUE)
+			{
 			}
 
-			static ccstd::hash_t computeHash(const GeneralBarrierInfo& info) {
-				return Hasher<GeneralBarrierInfo>()(info);
+			public void initialize(in QueueInfo info)
+			{
+				_type = info.type;
+
+				doInit(info);
 			}
 
-			inline const GeneralBarrierInfo& getInfo() const { return _info; }
-			inline const ccstd::hash_t& getHash() const { return _hash; }
 
-		protected:
-			GeneralBarrierInfo _info;
-			ccstd::hash_t _hash{ 0U };
-		};
+			public void destroy()
+			{
+				doDestroy();
 
+				_type = QueueType.GRAPHICS;
+			}
+
+			public abstract void submit(CommandBuffer* cmdBuffs, uint32 count);
+
+			[Inline] public void submit(in CommandBufferList cmdBuffs) { submit(cmdBuffs.Ptr, (uint32)cmdBuffs.Count); }
+
+			[Inline] public QueueType getType() { return _type; }
+
+			protected abstract void doInit(in QueueInfo info);
+			protected abstract void doDestroy();
+
+			QueueType _type = QueueType.GRAPHICS;
+		}
 	} // namespace gfx
 } // namespace cc

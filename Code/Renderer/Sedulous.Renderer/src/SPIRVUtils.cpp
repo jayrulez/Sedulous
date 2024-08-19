@@ -93,10 +93,10 @@ glslang::EShTargetLanguageVersion getTargetVersion(int vulkanMinorVersion) {
 
 // https://www.khronos.org/registry/spir-v/specs/1.0/SPIRV.pdf
 struct Id {
-    uint32_t opcode{0};
-    uint32_t typeId{0};
-    uint32_t storageClass{0};
-    uint32_t *pLocation{nullptr};
+    uint32 opcode = 0;
+    uint32 typeId = 0;
+    uint32 storageClass = 0;
+    uint32 *pLocation = null;
 };
 } // namespace
 
@@ -115,7 +115,7 @@ void SPIRVUtils::destroy() {
     _output.clear();
 }
 
-void SPIRVUtils::compileGLSL(ShaderStageFlagBit type, const ccstd::string &source) {
+void SPIRVUtils::compileGLSL(ShaderStageFlagBit type, const String &source) {
     EShLanguage stage = getShaderStage(type);
     const char *string = source.c_str();
 
@@ -153,29 +153,29 @@ void SPIRVUtils::compileGLSL(ShaderStageFlagBit type, const ccstd::string &sourc
     glslang::GlslangToSpv(*_program->getIntermediate(stage), _output, &logger, &spvOptions);
 }
 
-void SPIRVUtils::compressInputLocations(gfx::AttributeList &attributes) {
-    static ccstd::vector<Id> ids;
-    static ccstd::vector<uint32_t> activeLocations;
-    static ccstd::vector<uint32_t> newLocations;
+void SPIRVUtils::compressInputLocations(gfx::VertexAttributeList &attributes) {
+    static List<Id> ids;
+    static List<uint32> activeLocations;
+    static List<uint32> newLocations;
 
-    uint32_t *code = _output.data();
-    uint32_t codeSize = utils::toUint(_output.size());
+    uint32 *code = _output.data();
+    uint32 codeSize = utils::toUint(_output.size());
 
-    CC_ASSERT(code[0] == SpvMagicNumber);
+    Runtime.Assert(code[0] == SpvMagicNumber);
 
-    uint32_t idBound = code[3];
+    uint32 idBound = code[3];
     ids.assign(idBound, {});
 
-    uint32_t *insn = code + 5;
+    uint32 *insn = code + 5;
     while (insn != code + codeSize) {
-        auto opcode = static_cast<uint16_t>(insn[0]);
-        auto wordCount = static_cast<uint16_t>(insn[0] >> 16);
+        auto opcode = static_cast<uint16>(insn[0]);
+        auto wordCount = static_cast<uint16>(insn[0] >> 16);
 
         switch (opcode) {
             case SpvOpDecorate: {
                 CC_ASSERT_GE(wordCount, 3);
 
-                uint32_t id = insn[1];
+                uint32 id = insn[1];
                 CC_ASSERT_LT(id, idBound);
 
                 switch (insn[2]) {
@@ -188,17 +188,17 @@ void SPIRVUtils::compressInputLocations(gfx::AttributeList &attributes) {
             case SpvOpVariable: {
                 CC_ASSERT_GE(wordCount, 4);
 
-                uint32_t id = insn[2];
+                uint32 id = insn[2];
                 CC_ASSERT_LT(id, idBound);
 
-                CC_ASSERT(ids[id].opcode == 0);
+                Runtime.Assert(ids[id].opcode == 0);
                 ids[id].opcode = opcode;
                 ids[id].typeId = insn[1];
                 ids[id].storageClass = insn[3];
             } break;
         }
 
-        CC_ASSERT(insn + wordCount <= code + codeSize);
+        Runtime.Assert(insn + wordCount <= code + codeSize);
         insn += wordCount;
     }
 
@@ -209,13 +209,13 @@ void SPIRVUtils::compressInputLocations(gfx::AttributeList &attributes) {
         activeLocations.push_back(_program->getPipeInput(i).getType()->getQualifier().layoutLocation);
     }
 
-    uint32_t location = 0;
-    uint32_t unusedLocation = activeCount;
+    uint32 location = 0;
+    uint32 unusedLocation = activeCount;
     newLocations.assign(attributes.size(), UINT_MAX);
 
     for (auto &id : ids) {
         if (id.opcode == SpvOpVariable && id.storageClass == SpvStorageClassInput && id.pLocation) {
-            uint32_t oldLocation = *id.pLocation;
+            uint32 oldLocation = *id.pLocation;
 
             // update locations in SPIRV
             if (std::find(activeLocations.begin(), activeLocations.end(), *id.pLocation) != activeLocations.end()) {
@@ -225,8 +225,8 @@ void SPIRVUtils::compressInputLocations(gfx::AttributeList &attributes) {
             }
 
             // save record
-            bool found{false};
-            for (size_t i = 0; i < attributes.size(); ++i) {
+            bool found = false;
+            for (uint i = 0; i < attributes.size(); ++i) {
                 if (attributes[i].location == oldLocation) {
                     newLocations[i] = *id.pLocation;
                     found = true;
@@ -235,12 +235,12 @@ void SPIRVUtils::compressInputLocations(gfx::AttributeList &attributes) {
             }
 
             // Missing attribute declarations?
-            CC_ASSERT(found);
+            Runtime.Assert(found);
         }
     }
 
     // update gfx references
-    for (size_t i = 0; i < attributes.size(); ++i) {
+    for (uint i = 0; i < attributes.size(); ++i) {
         attributes[i].location = newLocations[i];
     }
 

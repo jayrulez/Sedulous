@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "*.bf": "c",
+        "type_traits": "c",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "xutility": "cpp",
+        "atomic": "c",
+        "list": "c",
+        "system_error": "c",
+        "vector": "c",
+        "xhash": "c",
+        "xiosbase": "c",
+        "xstring": "c",
+        "array": "cpp",
+        "format": "cpp",
+        "initializer_list": "cpp"
+    }
+}

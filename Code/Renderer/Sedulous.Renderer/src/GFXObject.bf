@@ -1,3 +1,4 @@
+using System;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,32 +23,38 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
-
-#include "../GFXObject.h"
-
-namespace cc {
-	namespace gfx {
-
-		class CC_DLL TextureBarrier : public GFXObject {
-		public:
-			explicit TextureBarrier(const TextureBarrierInfo& info)
-				: GFXObject(ObjectType::TEXTURE_BARRIER) {
-				_info = info;
-				_hash = computeHash(info);
+namespace cc
+{
+	namespace gfx
+	{
+		abstract class GFXObject
+		{
+			public this(ObjectType type)
+			{
+				_objectType = type;
+				_objectID = generateObjectID<GFXObject>();
 			}
 
-			static ccstd::hash_t computeHash(const TextureBarrierInfo& info) {
-				return Hasher<TextureBarrierInfo>()(info);
+			[Inline] public ObjectType getObjectType() { return _objectType; }
+			[Inline] public uint32 getObjectID() { return _objectID; }
+			[Inline] public uint32 getTypedID() { return _typedID; }
+
+			[Inline] public static uint32 getObjectID(GFXObject obj)
+			{
+				return obj == null ? INVALID_OBJECT_ID : obj.getObjectID();
 			}
 
-			inline const TextureBarrierInfo& getInfo() const { return _info; }
-			inline const ccstd::hash_t& getHash() const { return _hash; }
+			protected static uint32 generateObjectID<T>()
+			{
+				static uint32 generator = 1 << 16;
+				return ++generator;
+			}
 
-		protected:
-			TextureBarrierInfo _info;
-			ccstd::hash_t _hash{ 0U };
-		};
+			protected const uint32 INVALID_OBJECT_ID = 0;
+			protected ObjectType _objectType = ObjectType.UNKNOWN;
+			protected uint32 _objectID = 0;
 
+			protected uint32 _typedID = 0; // inited by sub-classes
+		}
 	} // namespace gfx
 } // namespace cc

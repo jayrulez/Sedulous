@@ -38,27 +38,27 @@ public:
     void initialize(int vulkanMinorVersion);
     void destroy();
 
-    void compileGLSL(ShaderStageFlagBit type, const ccstd::string &source);
-    void compressInputLocations(gfx::AttributeList &attributes);
+    void compileGLSL(ShaderStageFlagBit type, const String &source);
+    void compressInputLocations(gfx::VertexAttributeList &attributes);
 
-    inline uint32_t *getOutputData() {
+    [Inline] uint32 *getOutputData() {
         _shader.reset();
         _program.reset();
         return _output.data();
     }
 
-    inline size_t getOutputSize() {
-        return _output.size() * sizeof(uint32_t);
+    [Inline] uint getOutputSize() {
+        return _output.size() * sizeof(uint32);
     }
 
 private:
-    int _clientInputSemanticsVersion{0};
-    glslang::EShTargetClientVersion _clientVersion{glslang::EShTargetClientVersion::EShTargetVulkan_1_0};
-    glslang::EShTargetLanguageVersion _targetVersion{glslang::EShTargetLanguageVersion::EShTargetSpv_1_0};
+    int _clientInputSemanticsVersion = 0;
+    glslang::EShTargetClientVersion _clientVersion = glslang::EShTargetClientVersion::EShTargetVulkan_1_0;
+    glslang::EShTargetLanguageVersion _targetVersion = glslang::EShTargetLanguageVersion::EShTargetSpv_1_0;
 
-    std::unique_ptr<glslang::TShader> _shader{nullptr};
-    std::unique_ptr<glslang::TProgram> _program{nullptr};
-    ccstd::vector<uint32_t> _output;
+    std::unique_ptr<glslang::TShader> _shader = null;
+    std::unique_ptr<glslang::TProgram> _program = null;
+    List<uint32> _output;
 
     static SPIRVUtils instance;
 };

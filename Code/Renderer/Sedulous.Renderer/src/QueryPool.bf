@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Threading;
 /****************************************************************************
  Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,40 +25,61 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
+namespace cc
+{
+	namespace gfx
+	{
 
-#include "GFXObject.h"
-#include "base/RefCounted.h"
+		/**
+		 * QueryPool usage:
+		 * Update
+		 * Render
+		 *  getQueryPoolResults
+		 *  resetQueryPool
+		 *  for each renderObject
+		 *      beginQuery
+		 *          drawObject
+		 *      endQuery
+		 *  completeQueryPool
+		 */
 
-namespace cc {
-	namespace gfx {
-
-		class CC_DLL PipelineLayout : public GFXObject, public RefCounted {
-		public:
-			PipelineLayout()
-				: GFXObject(ObjectType::PIPELINE_LAYOUT) {
+		abstract class QueryPool : GFXObject
+		{
+			public this()
+				: base(ObjectType.QUERY_POOL)
+			{
 			}
-			~PipelineLayout() override;
 
-			void initialize(const PipelineLayoutInfo& info) {
-				_setLayouts = info.setLayouts;
+			public void initialize(in QueryPoolInfo info)
+			{
+				_type = info.type;
+				_maxQueryObjects = info.maxQueryObjects;
+				_forceWait = info.forceWait;
 
 				doInit(info);
 			}
-			void destroy() {
+			public void destroy()
+			{
 				doDestroy();
 
-				_setLayouts.clear();
+				_type = QueryType.OCCLUSION;
+				_maxQueryObjects = 0;
 			}
 
-			inline const DescriptorSetLayoutList& getSetLayouts() const { return _setLayouts; }
+			[Inline] public bool hasResult(uint32 id) { return _results.ContainsKey(id); }
+			[Inline] public uint64 getResult(uint32 id) { return _results[id]; }
+			[Inline] public QueryType getType() { return _type; }
+			[Inline] public uint32 getMaxQueryObjects() { return _maxQueryObjects; }
+			[Inline] public bool getForceWait() { return _forceWait; }
 
-		protected:
-			virtual void doInit(const PipelineLayoutInfo& info) = 0;
-			virtual void doDestroy() = 0;
+			protected abstract void doInit(in QueryPoolInfo info);
+			protected abstract void doDestroy();
 
-			DescriptorSetLayoutList _setLayouts;
-		};
-
+			protected QueryType _type =  QueryType.OCCLUSION;
+			protected uint32 _maxQueryObjects =  0;
+			protected bool _forceWait =  true;
+			protected Monitor _mutex;
+			protected Dictionary<uint32, uint64> _results;
+		}
 	} // namespace gfx
 } // namespace cc
