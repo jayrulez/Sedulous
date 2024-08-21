@@ -860,11 +860,11 @@ namespace Sedulous.Renderer.VK;
 			}
 
 			public static void cmdFuncCCVKCreateShader(CCVKDevice device, CCVKGPUShader gpuShader) {
-				SPIRVUtils* spirv = SPIRVUtils.getInstance();
+				SPIRVUtils spirv = SPIRVUtils.getInstance();
 
 				for (ref CCVKGPUShaderStage stage in ref gpuShader.gpuStages) {
 					spirv.compileGLSL(stage.type, scope $"#version 450\n{stage.source}");
-					if (stage.type == ShaderStageFlagBit.VERTEX) spirv.compressInputLocations(gpuShader.attributes);
+					if (stage.type == ShaderStageFlagBit.VERTEX) spirv.compressInputLocations(ref gpuShader.attributes);
 
 					VkShaderModuleCreateInfo createInfo = .() { sType = .VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO };
 					createInfo.codeSize = spirv.getOutputSize();
