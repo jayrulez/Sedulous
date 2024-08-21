@@ -32,24 +32,24 @@
 
 namespace {
 	const char* fileName = "/pipeline_cache_vk.bin";
-	const uint32_t MAGIC = 0x4343564B; // "CCVK"
-	const uint32_t VERSION = 1;
+	const uint32 MAGIC = 0x4343564B; // "CCVK"
+	const uint32 VERSION = 1;
 
-	void loadData(const ccstd::string& path, ccstd::vector<char>& data) {
+	void loadData(const ccstd::string& path, List<char>& data) {
 		std::ifstream stream(path, std::ios::binary);
 		if (!stream.is_open()) {
 			CC_LOG_INFO("Load program cache, no cached files.");
 			return;
 		}
 
-		uint32_t magic = 0;
-		uint32_t version = 0;
+		uint32 magic = 0;
+		uint32 version = 0;
 
 		cc::BinaryInputArchive archive(stream);
 		auto loadResult = archive.load(magic);
 		loadResult &= archive.load(version);
 
-		uint32_t size = 0;
+		uint32 size = 0;
 		if (loadResult && magic == MAGIC && version >= VERSION) {
 			loadResult &= archive.load(size);
 			data.resize(size);
@@ -72,7 +72,7 @@ namespace cc::gfx {
 #if CC_USE_PIPELINE_CACHE
 			saveCache();
 #endif
-			vkDestroyPipelineCache(_device, _pipelineCache, nullptr);
+			vkDestroyPipelineCache(_device, _pipelineCache, null);
 		}
 	}
 
@@ -82,17 +82,17 @@ namespace cc::gfx {
 	}
 
 	void CCVKPipelineCache::loadCache() {
-		ccstd::vector<char> data;
+		List<char> data;
 #if CC_USE_PIPELINE_CACHE
 		loadData(_savePath, data);
 #endif
 
 		VkPipelineCacheCreateInfo cacheInfo = {};
 		cacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-		cacheInfo.pNext = nullptr;
-		cacheInfo.initialDataSize = static_cast<uint32_t>(data.size());
+		cacheInfo.pNext = null;
+		cacheInfo.initialDataSize = static_cast<uint32>(data.size());
 		cacheInfo.pInitialData = data.data();
-		VK_CHECK(vkCreatePipelineCache(_device, &cacheInfo, nullptr, &_pipelineCache));
+		VK_CHECK(vkCreatePipelineCache(_device, &cacheInfo, null, &_pipelineCache));
 	}
 
 	void CCVKPipelineCache::saveCache() {
@@ -109,12 +109,12 @@ namespace cc::gfx {
 		archive.save(VERSION);
 
 		size_t size = 0;
-		vkGetPipelineCacheData(_device, _pipelineCache, &size, nullptr);
-		ccstd::vector<char> data(size);
+		vkGetPipelineCacheData(_device, _pipelineCache, &size, null);
+		List<char> data(size);
 		vkGetPipelineCacheData(_device, _pipelineCache, &size, data.data());
 
-		archive.save(static_cast<uint32_t>(size));
-		archive.save(data.data(), static_cast<uint32_t>(size));
+		archive.save(static_cast<uint32>(size));
+		archive.save(data.data(), static_cast<uint32>(size));
 		_dirty = false;
 	}
 

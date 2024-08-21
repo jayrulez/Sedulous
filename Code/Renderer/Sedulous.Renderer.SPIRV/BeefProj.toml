@@ -1,0 +1,7 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Renderer" = "*", glslang-Beef = "*", SPIRV-Cross = "*"}
+
+[Project]
+Name = "Sedulous.Renderer.SPIRV"
+TargetType = "BeefLib"
+StartupObject = "Sedulous.Renderer.SPIRV.Program"

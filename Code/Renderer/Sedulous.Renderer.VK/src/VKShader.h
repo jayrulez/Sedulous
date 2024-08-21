@@ -78,7 +78,7 @@ namespace cc {
 				}
 			}
 			void doDestroy() {
-				_gpuShader = nullptr;
+				_gpuShader = null;
 			}
 
 			IntrusivePtr<CCVKGPUShader> _gpuShader;

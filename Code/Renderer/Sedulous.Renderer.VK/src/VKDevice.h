@@ -24,35 +24,6 @@
 
 namespace Sedulous.Renderer.VK;
 
-#pragma once
-
-#include <cstring>
-#include <memory>
-#include "VKStd.h"
-#include "gfx-base/GFXDevice.h"
-
-namespace cc {
-	class IXRInterface;
-	namespace gfx {
-
-		class CCVKTexture;
-
-		class CCVKGPUDevice;
-		class CCVKGPUContext;
-
-		class CCVKGPUBufferHub;
-		class CCVKGPUTransportHub;
-		class CCVKGPUDescriptorHub;
-		class CCVKGPUSemaphorePool;
-		class CCVKGPUBarrierManager;
-		class CCVKGPUDescriptorSetHub;
-		class CCVKGPUInputAssemblerHub;
-		class CCVKPipelineCache;
-
-		class CCVKGPUFencePool;
-		class CCVKGPURecycleBin;
-		class CCVKGPUStagingBufferPool;
-
 		static
 		{
 			/*CC_DISABLE_WARNINGS()
@@ -66,118 +37,118 @@ namespace cc {
 			CC_ENABLE_WARNINGS()*/
 		}
 
-		class CC_VULKAN_API CCVKDevice final : public Device {
+		class CCVKDevice : Device {
 		public:
 			static CCVKDevice* getInstance() {
-				return CCVKDevice::instance;
+				return CCVKDevice.instance;
 			}
 
 			~CCVKDevice() {
-				CCVKDevice::instance = nullptr;
+				CCVKDevice.instance = null;
 			}
 
-			friend class CCVKContext;
-			using Device::copyBuffersToTexture;
-			using Device::createBuffer;
-			using Device::createBufferBarrier;
-			using Device::createCommandBuffer;
-			using Device::createDescriptorSet;
-			using Device::createDescriptorSetLayout;
-			using Device::createFramebuffer;
-			using Device::createGeneralBarrier;
-			using Device::createInputAssembler;
-			using Device::createPipelineLayout;
-			using Device::createPipelineState;
-			using Device::createQueryPool;
-			using Device::createQueue;
-			using Device::createRenderPass;
-			using Device::createSampler;
-			using Device::createShader;
-			using Device::createTexture;
-			using Device::createTextureBarrier;
+			/*friend class CCVKContext;
+			using Device.copyBuffersToTexture;
+			using Device.createBuffer;
+			using Device.createBufferBarrier;
+			using Device.createCommandBuffer;
+			using Device.createDescriptorSet;
+			using Device.createDescriptorSetLayout;
+			using Device.createFramebuffer;
+			using Device.createGeneralBarrier;
+			using Device.createInputAssembler;
+			using Device.createPipelineLayout;
+			using Device.createPipelineState;
+			using Device.createQueryPool;
+			using Device.createQueue;
+			using Device.createRenderPass;
+			using Device.createSampler;
+			using Device.createShader;
+			using Device.createTexture;
+			using Device.createTextureBarrier;*/
 
 			void frameSync() {}
-			void acquire(Swapchain* const* swapchains, uint32_t count) {
-				if (_onAcquire) _onAcquire->execute();
+			void acquire(Swapchain* const* swapchains, uint32 count) {
+				if (_onAcquire) _onAcquire.execute();
 
 				auto* queue = static_cast<CCVKQueue*>(_queue);
-				queue->gpuQueue()->lastSignaledSemaphores.clear();
+				queue.gpuQueue().lastSignaledSemaphores.clear();
 				vkSwapchainIndices.clear();
 				gpuSwapchains.clear();
 				vkSwapchains.clear();
 				vkAcquireBarriers.resize(count, acquireBarrier);
 				vkPresentBarriers.resize(count, presentBarrier);
-				for (uint32_t i = 0U; i < count; ++i) {
+				for (uint32 i = 0U; i < count; ++i) {
 					auto* swapchain = static_cast<CCVKSwapchain*>(swapchains[i]);
-					if (swapchain->gpuSwapchain()->lastPresentResult == VK_NOT_READY) {
-						if (!swapchain->checkSwapchainStatus()) {
+					if (swapchain.gpuSwapchain().lastPresentResult == VK_NOT_READY) {
+						if (!swapchain.checkSwapchainStatus()) {
 							continue;
 						}
 					}
 
 					if (_xr) {
-						xr::XRSwapchain xrSwapchain = _xr->doGFXDeviceAcquire(_api);
-						swapchain->gpuSwapchain()->curImageIndex = xrSwapchain.swapchainImageIndex;
+						xr.XRSwapchain xrSwapchain = _xr.doGFXDeviceAcquire(_api);
+						swapchain.gpuSwapchain().curImageIndex = xrSwapchain.swapchainImageIndex;
 					}
-					if (swapchain->gpuSwapchain()->vkSwapchain) {
-						vkSwapchains.push_back(swapchain->gpuSwapchain()->vkSwapchain);
+					if (swapchain.gpuSwapchain().vkSwapchain) {
+						vkSwapchains.push_back(swapchain.gpuSwapchain().vkSwapchain);
 					}
-					if (swapchain->gpuSwapchain()) {
-						gpuSwapchains.push_back(swapchain->gpuSwapchain());
+					if (swapchain.gpuSwapchain()) {
+						gpuSwapchains.push_back(swapchain.gpuSwapchain());
 					}
-					vkSwapchainIndices.push_back(swapchain->gpuSwapchain()->curImageIndex);
+					vkSwapchainIndices.push_back(swapchain.gpuSwapchain().curImageIndex);
 				}
 
-				_gpuDescriptorSetHub->flush();
-				_gpuSemaphorePool->reset();
+				_gpuDescriptorSetHub.flush();
+				_gpuSemaphorePool.reset();
 
-				for (uint32_t i = 0; i < vkSwapchains.size(); ++i) {
-					VkSemaphore acquireSemaphore = _gpuSemaphorePool->alloc();
-					VkResult res = vkAcquireNextImageKHR(_gpuDevice->vkDevice, vkSwapchains[i], ~0ULL,
+				for (uint32 i = 0; i < vkSwapchains.size(); ++i) {
+					VkSemaphore acquireSemaphore = _gpuSemaphorePool.alloc();
+					VkResult res = vkAcquireNextImageKHR(_gpuDevice.vkDevice, vkSwapchains[i], ~0ULL,
 						acquireSemaphore, VK_NULL_HANDLE, &vkSwapchainIndices[i]);
 					CC_ASSERT(res == VK_SUCCESS || res == VK_SUBOPTIMAL_KHR);
-					gpuSwapchains[i]->curImageIndex = vkSwapchainIndices[i];
-					queue->gpuQueue()->lastSignaledSemaphores.push_back(acquireSemaphore);
+					gpuSwapchains[i].curImageIndex = vkSwapchainIndices[i];
+					queue.gpuQueue().lastSignaledSemaphores.push_back(acquireSemaphore);
 
-					vkAcquireBarriers[i].image = gpuSwapchains[i]->swapchainImages[vkSwapchainIndices[i]];
-					vkPresentBarriers[i].image = gpuSwapchains[i]->swapchainImages[vkSwapchainIndices[i]];
+					vkAcquireBarriers[i].image = gpuSwapchains[i].swapchainImages[vkSwapchainIndices[i]];
+					vkPresentBarriers[i].image = gpuSwapchains[i].swapchainImages[vkSwapchainIndices[i]];
 				}
 
-				if (this->_options.enableBarrierDeduce) {
-					_gpuTransportHub->checkIn(
+				if (this._options.enableBarrierDeduce) {
+					_gpuTransportHub.checkIn(
 						[&](const CCVKGPUCommandBuffer* gpuCommandBuffer) {
-							vkCmdPipelineBarrier(gpuCommandBuffer->vkCommandBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-								0, 0, nullptr, 0, nullptr, utils::toUint(vkSwapchains.size()), vkAcquireBarriers.data());
+							vkCmdPipelineBarrier(gpuCommandBuffer.vkCommandBuffer, VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+								0, 0, null, 0, null, utils.toUint(vkSwapchains.size()), vkAcquireBarriers.data());
 						},
 						false, false);
 
-					_gpuTransportHub->checkIn(
+					_gpuTransportHub.checkIn(
 						[&](const CCVKGPUCommandBuffer* gpuCommandBuffer) {
-							vkCmdPipelineBarrier(gpuCommandBuffer->vkCommandBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-								0, 0, nullptr, 0, nullptr, utils::toUint(vkSwapchains.size()), vkPresentBarriers.data());
+							vkCmdPipelineBarrier(gpuCommandBuffer.vkCommandBuffer, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+								0, 0, null, 0, null, utils.toUint(vkSwapchains.size()), vkPresentBarriers.data());
 						},
 						false, true);
 				}
 			}
 			void present() {
 				CC_PROFILE(CCVKDevicePresent);
-				bool isGFXDeviceNeedsPresent = _xr ? _xr->isGFXDeviceNeedsPresent(_api) : true;
+				bool isGFXDeviceNeedsPresent = _xr ? _xr.isGFXDeviceNeedsPresent(_api) : true;
 				auto* queue = static_cast<CCVKQueue*>(_queue);
-				_numDrawCalls = queue->_numDrawCalls;
-				_numInstances = queue->_numInstances;
-				_numTriangles = queue->_numTriangles;
-				queue->_numDrawCalls = 0;
-				queue->_numInstances = 0;
-				queue->_numTriangles = 0;
+				_numDrawCalls = queue._numDrawCalls;
+				_numInstances = queue._numInstances;
+				_numTriangles = queue._numTriangles;
+				queue._numDrawCalls = 0;
+				queue._numInstances = 0;
+				queue._numTriangles = 0;
 
-				if (!_gpuTransportHub->empty(false)) _gpuTransportHub->packageForFlight(false);
-				if (!_gpuTransportHub->empty(true)) _gpuTransportHub->packageForFlight(true);
+				if (!_gpuTransportHub.empty(false)) _gpuTransportHub.packageForFlight(false);
+				if (!_gpuTransportHub.empty(true)) _gpuTransportHub.packageForFlight(true);
 
 #if CC_SWAPPY_ENABLED
 				// tripple buffer?
-				// static vector<uint8_t> queueFmlIdxBuff(_gpuDevice->backBufferCount);
-				// std::iota(std::begin(queueFmlIdxBuff), std::end(queueFmlIdxBuff), 0);
-				SwappyVk_setQueueFamilyIndex(_gpuDevice->vkDevice, queue->gpuQueue()->vkQueue, queue->gpuQueue()->queueFamilyIndex);
+				// static vector<uint8> queueFmlIdxBuff(_gpuDevice.backBufferCount);
+				// std.iota(std.begin(queueFmlIdxBuff), std.end(queueFmlIdxBuff), 0);
+				SwappyVk_setQueueFamilyIndex(_gpuDevice.vkDevice, queue.gpuQueue().vkQueue, queue.gpuQueue().queueFamilyIndex);
 				auto vkCCPresentFunc = SwappyVk_queuePresent;
 #else
 				auto vkCCPresentFunc = vkQueuePresentKHR;
@@ -185,37 +156,37 @@ namespace cc {
 
 				if (!vkSwapchains.empty()) { // don't present if not acquired
 					VkPresentInfoKHR presentInfo{ VK_STRUCTURE_TYPE_PRESENT_INFO_KHR };
-					presentInfo.waitSemaphoreCount = utils::toUint(queue->gpuQueue()->lastSignaledSemaphores.size());
-					presentInfo.pWaitSemaphores = queue->gpuQueue()->lastSignaledSemaphores.data();
-					presentInfo.swapchainCount = utils::toUint(vkSwapchains.size());
+					presentInfo.waitSemaphoreCount = utils.toUint(queue.gpuQueue().lastSignaledSemaphores.size());
+					presentInfo.pWaitSemaphores = queue.gpuQueue().lastSignaledSemaphores.data();
+					presentInfo.swapchainCount = utils.toUint(vkSwapchains.size());
 					presentInfo.pSwapchains = vkSwapchains.data();
 					presentInfo.pImageIndices = vkSwapchainIndices.data();
 
-					VkResult res = !isGFXDeviceNeedsPresent ? VK_SUCCESS : vkCCPresentFunc(queue->gpuQueue()->vkQueue, &presentInfo);
+					VkResult res = !isGFXDeviceNeedsPresent ? VK_SUCCESS : vkCCPresentFunc(queue.gpuQueue().vkQueue, &presentInfo);
 					for (auto* gpuSwapchain : gpuSwapchains) {
-						gpuSwapchain->lastPresentResult = res;
+						gpuSwapchain.lastPresentResult = res;
 					}
 				}
 
-				_gpuDevice->curBackBufferIndex = (_gpuDevice->curBackBufferIndex + 1) % _gpuDevice->backBufferCount;
+				_gpuDevice.curBackBufferIndex = (_gpuDevice.curBackBufferIndex + 1) % _gpuDevice.backBufferCount;
 
-				uint32_t fenceCount = gpuFencePool()->size();
+				uint32 fenceCount = gpuFencePool().size();
 				if (fenceCount) {
-					VK_CHECK(vkWaitForFences(_gpuDevice->vkDevice, fenceCount,
-						gpuFencePool()->data(), VK_TRUE, DEFAULT_TIMEOUT));
+					VK_CHECK(vkWaitForFences(_gpuDevice.vkDevice, fenceCount,
+						gpuFencePool().data(), VK_TRUE, DEFAULT_TIMEOUT));
 				}
 
-				gpuFencePool()->reset();
-				gpuRecycleBin()->clear();
-				gpuStagingBufferPool()->reset();
+				gpuFencePool().reset();
+				gpuRecycleBin().clear();
+				gpuStagingBufferPool().reset();
 				if (_xr) {
-					_xr->postGFXDevicePresent(_api);
+					_xr.postGFXDevicePresent(_api);
 				}
 			}
 
-			inline bool checkExtension(const ccstd::string& extension) const {
-				return std::any_of(_extensions.begin(), _extensions.end(), [&extension](auto& ext) {
-					return std::strcmp(ext, extension.c_str()) == 0;
+			inline bool checkExtension(const ccstd.string& extension) const {
+				return std.any_of(_extensions.begin(), _extensions.end(), [&extension](auto& ext) {
+					return std.strcmp(ext, extension.c_str()) == 0;
 					});
 			}
 
@@ -231,53 +202,53 @@ namespace cc {
 			inline CCVKGPUInputAssemblerHub* gpuIAHub() const { return _gpuIAHub.get(); }
 			inline CCVKPipelineCache* pipelineCache() const { return _pipelineCache.get(); }
 
-			CCVKGPUFencePool* gpuFencePool() { return _gpuFencePools[_gpuDevice->curBackBufferIndex].get(); }
-			CCVKGPURecycleBin* gpuRecycleBin() { return _gpuRecycleBins[_gpuDevice->curBackBufferIndex].get(); }
-			CCVKGPUStagingBufferPool* gpuStagingBufferPool() { return _gpuStagingBufferPools[_gpuDevice->curBackBufferIndex].get(); }
+			CCVKGPUFencePool* gpuFencePool() { return _gpuFencePools[_gpuDevice.curBackBufferIndex].get(); }
+			CCVKGPURecycleBin* gpuRecycleBin() { return _gpuRecycleBins[_gpuDevice.curBackBufferIndex].get(); }
+			CCVKGPUStagingBufferPool* gpuStagingBufferPool() { return _gpuStagingBufferPools[_gpuDevice.curBackBufferIndex].get(); }
 			void waitAllFences() {
-				static ccstd::vector<VkFence> fences;
+				static List<VkFence> fences;
 				fences.clear();
 
 				for (auto& fencePool : _gpuFencePools) {
-					fences.insert(fences.end(), fencePool->data(), fencePool->data() + fencePool->size());
+					fences.insert(fences.end(), fencePool.data(), fencePool.data() + fencePool.size());
 				}
 
 				if (!fences.empty()) {
-					VK_CHECK(vkWaitForFences(_gpuDevice->vkDevice, utils::toUint(fences.size()), fences.data(), VK_TRUE, DEFAULT_TIMEOUT));
+					VK_CHECK(vkWaitForFences(_gpuDevice.vkDevice, utils.toUint(fences.size()), fences.data(), VK_TRUE, DEFAULT_TIMEOUT));
 
 					for (auto& fencePool : _gpuFencePools) {
-						fencePool->reset();
+						fencePool.reset();
 					}
 				}
 			}
 
-			void updateBackBufferCount(uint32_t backBufferCount) {
-				if (backBufferCount <= _gpuDevice->backBufferCount) return;
-				for (uint32_t i = _gpuDevice->backBufferCount; i < backBufferCount; i++) {
-					_gpuFencePools.push_back(std::make_unique<CCVKGPUFencePool>(_gpuDevice.get()));
-					_gpuRecycleBins.push_back(std::make_unique<CCVKGPURecycleBin>(_gpuDevice.get()));
-					_gpuStagingBufferPools.push_back(std::make_unique<CCVKGPUStagingBufferPool>(_gpuDevice.get()));
+			void updateBackBufferCount(uint32 backBufferCount) {
+				if (backBufferCount <= _gpuDevice.backBufferCount) return;
+				for (uint32 i = _gpuDevice.backBufferCount; i < backBufferCount; i++) {
+					_gpuFencePools.push_back(std.make_unique<CCVKGPUFencePool>(_gpuDevice.get()));
+					_gpuRecycleBins.push_back(std.make_unique<CCVKGPURecycleBin>(_gpuDevice.get()));
+					_gpuStagingBufferPools.push_back(std.make_unique<CCVKGPUStagingBufferPool>(_gpuDevice.get()));
 				}
-				_gpuBufferHub->updateBackBufferCount(backBufferCount);
-				_gpuDescriptorSetHub->updateBackBufferCount(backBufferCount);
-				_gpuDevice->backBufferCount = backBufferCount;
+				_gpuBufferHub.updateBackBufferCount(backBufferCount);
+				_gpuDescriptorSetHub.updateBackBufferCount(backBufferCount);
+				_gpuDevice.backBufferCount = backBufferCount;
 			}
 			SampleCount getMaxSampleCount(Format format, TextureUsage usage, TextureFlags flags) {
 				auto vkFormat = mapVkFormat(format, gpuDevice());
 				auto usages = mapVkImageUsageFlags(usage, flags);
 
 				VkImageFormatProperties imageFormatProperties = {};
-				vkGetPhysicalDeviceImageFormatProperties(_gpuContext->physicalDevice, vkFormat, VK_IMAGE_TYPE_2D,
+				vkGetPhysicalDeviceImageFormatProperties(_gpuContext.physicalDevice, vkFormat, VK_IMAGE_TYPE_2D,
 					VK_IMAGE_TILING_OPTIMAL, usages, 0, &imageFormatProperties);
 
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_64_BIT) return SampleCount::X64;
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_32_BIT) return SampleCount::X32;
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_16_BIT) return SampleCount::X16;
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_8_BIT)  return SampleCount::X8;
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_4_BIT)  return SampleCount::X4;
-				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_2_BIT)  return SampleCount::X2;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_64_BIT) return SampleCount.X64;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_32_BIT) return SampleCount.X32;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_16_BIT) return SampleCount.X16;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_8_BIT)  return SampleCount.X8;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_4_BIT)  return SampleCount.X4;
+				if (imageFormatProperties.sampleCounts & VK_SAMPLE_COUNT_2_BIT)  return SampleCount.X2;
 
-				return SampleCount::X1;
+				return SampleCount.X1;
 			}
 		protected:
 			static CCVKDevice* instance;
@@ -285,49 +256,49 @@ namespace cc {
 			friend class DeviceManager;
 
 			CCVKDevice() {
-				_api = API::VULKAN;
+				_api = API.VULKAN;
 				_deviceName = "Vulkan";
 
 				_caps.supportQuery = true;
 				_caps.clipSpaceMinZ = 0.0F;
 				_caps.screenSpaceSignY = -1.0F;
 				_caps.clipSpaceSignY = -1.0F;
-				CCVKDevice::instance = this;
+				CCVKDevice.instance = this;
 			}
 
 			bool doInit(const DeviceInfo& info) {
 				_xr = CC_GET_XR_INTERFACE();
 				if (_xr) {
-					_xr->preGFXDeviceInitialize(_api);
+					_xr.preGFXDeviceInitialize(_api);
 				}
-				_gpuContext = std::make_unique<CCVKGPUContext>();
-				if (!_gpuContext->initialize()) {
+				_gpuContext = std.make_unique<CCVKGPUContext>();
+				if (!_gpuContext.initialize()) {
 					return false;
 				}
 
-				const VkPhysicalDeviceFeatures2& deviceFeatures2 = _gpuContext->physicalDeviceFeatures2;
+				const VkPhysicalDeviceFeatures2& deviceFeatures2 = _gpuContext.physicalDeviceFeatures2;
 				const VkPhysicalDeviceFeatures& deviceFeatures = deviceFeatures2.features;
-				// const VkPhysicalDeviceVulkan11Features &deviceVulkan11Features = _gpuContext->physicalDeviceVulkan11Features;
-				// const VkPhysicalDeviceVulkan12Features &deviceVulkan12Features = _gpuContext->physicalDeviceVulkan12Features;
+				// const VkPhysicalDeviceVulkan11Features &deviceVulkan11Features = _gpuContext.physicalDeviceVulkan11Features;
+				// const VkPhysicalDeviceVulkan12Features &deviceVulkan12Features = _gpuContext.physicalDeviceVulkan12Features;
 
 				///////////////////// Device Creation /////////////////////
 
-				_gpuDevice = std::make_unique<CCVKGPUDevice>();
-				_gpuDevice->minorVersion = _gpuContext->minorVersion;
+				_gpuDevice = std.make_unique<CCVKGPUDevice>();
+				_gpuDevice.minorVersion = _gpuContext.minorVersion;
 
 				// only enable the absolute essentials
-				ccstd::vector<const char*> requestedLayers{};
-				ccstd::vector<const char*> requestedExtensions{
+				List<const char*> requestedLayers{};
+				List<const char*> requestedExtensions{
 					VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 				};
 				requestedExtensions.push_back(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
 #if CC_DEBUG
 				requestedExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 #endif
-				if (_gpuDevice->minorVersion < 2) {
+				if (_gpuDevice.minorVersion < 2) {
 					requestedExtensions.push_back(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME);
 				}
-				if (_gpuDevice->minorVersion < 1) {
+				if (_gpuDevice.minorVersion < 1) {
 					requestedExtensions.push_back(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME);
 					requestedExtensions.push_back(VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME);
 					requestedExtensions.push_back(VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME);
@@ -344,42 +315,42 @@ namespace cc {
 				requestedFeatures2.features.depthBounds = deviceFeatures.depthBounds;
 				requestedFeatures2.features.multiDrawIndirect = deviceFeatures.multiDrawIndirect;
 				// requestedFeatures2.features.se
-				requestedVulkan12Features.separateDepthStencilLayouts = _gpuContext->physicalDeviceVulkan12Features.separateDepthStencilLayouts;
+				requestedVulkan12Features.separateDepthStencilLayouts = _gpuContext.physicalDeviceVulkan12Features.separateDepthStencilLayouts;
 
 				VkPhysicalDeviceFragmentShadingRateFeaturesKHR shadingRateRequest = {};
 				shadingRateRequest.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FRAGMENT_SHADING_RATE_FEATURES_KHR;
-				shadingRateRequest.attachmentFragmentShadingRate = _gpuContext->physicalDeviceFragmentShadingRateFeatures.attachmentFragmentShadingRate;
-				shadingRateRequest.pipelineFragmentShadingRate = _gpuContext->physicalDeviceFragmentShadingRateFeatures.pipelineFragmentShadingRate;
+				shadingRateRequest.attachmentFragmentShadingRate = _gpuContext.physicalDeviceFragmentShadingRateFeatures.attachmentFragmentShadingRate;
+				shadingRateRequest.pipelineFragmentShadingRate = _gpuContext.physicalDeviceFragmentShadingRateFeatures.pipelineFragmentShadingRate;
 
 				requestedVulkan12Features.pNext = &shadingRateRequest;
 
-				if (_gpuContext->validationEnabled) {
+				if (_gpuContext.validationEnabled) {
 					requestedLayers.push_back("VK_LAYER_KHRONOS_validation");
 				}
 
 				// check extensions
-				uint32_t availableLayerCount;
-				VK_CHECK(vkEnumerateDeviceLayerProperties(_gpuContext->physicalDevice, &availableLayerCount, nullptr));
-				_gpuDevice->layers.resize(availableLayerCount);
-				VK_CHECK(vkEnumerateDeviceLayerProperties(_gpuContext->physicalDevice, &availableLayerCount, _gpuDevice->layers.data()));
+				uint32 availableLayerCount;
+				VK_CHECK(vkEnumerateDeviceLayerProperties(_gpuContext.physicalDevice, &availableLayerCount, null));
+				_gpuDevice.layers.resize(availableLayerCount);
+				VK_CHECK(vkEnumerateDeviceLayerProperties(_gpuContext.physicalDevice, &availableLayerCount, _gpuDevice.layers.data()));
 
-				uint32_t availableExtensionCount;
-				VK_CHECK(vkEnumerateDeviceExtensionProperties(_gpuContext->physicalDevice, nullptr, &availableExtensionCount, nullptr));
-				_gpuDevice->extensions.resize(availableExtensionCount);
-				VK_CHECK(vkEnumerateDeviceExtensionProperties(_gpuContext->physicalDevice, nullptr, &availableExtensionCount, _gpuDevice->extensions.data()));
+				uint32 availableExtensionCount;
+				VK_CHECK(vkEnumerateDeviceExtensionProperties(_gpuContext.physicalDevice, null, &availableExtensionCount, null));
+				_gpuDevice.extensions.resize(availableExtensionCount);
+				VK_CHECK(vkEnumerateDeviceExtensionProperties(_gpuContext.physicalDevice, null, &availableExtensionCount, _gpuDevice.extensions.data()));
 
 #if CC_SWAPPY_ENABLED
-				uint32_t swappyRequiredExtensionCount = 0;
-				SwappyVk_determineDeviceExtensions(_gpuContext->physicalDevice, availableExtensionCount,
-					_gpuDevice->extensions.data(), &swappyRequiredExtensionCount, nullptr);
-				ccstd::vector<char*> swappyRequiredExtensions(swappyRequiredExtensionCount);
-				ccstd::vector<char> swappyRequiredExtensionsData(swappyRequiredExtensionCount * (VK_MAX_EXTENSION_NAME_SIZE + 1));
-				for (uint32_t i = 0; i < swappyRequiredExtensionCount; i++) {
+				uint32 swappyRequiredExtensionCount = 0;
+				SwappyVk_determineDeviceExtensions(_gpuContext.physicalDevice, availableExtensionCount,
+					_gpuDevice.extensions.data(), &swappyRequiredExtensionCount, null);
+				List<char*> swappyRequiredExtensions(swappyRequiredExtensionCount);
+				List<char> swappyRequiredExtensionsData(swappyRequiredExtensionCount * (VK_MAX_EXTENSION_NAME_SIZE + 1));
+				for (uint32 i = 0; i < swappyRequiredExtensionCount; i++) {
 					swappyRequiredExtensions[i] = &swappyRequiredExtensionsData[i * (VK_MAX_EXTENSION_NAME_SIZE + 1)];
 				}
-				SwappyVk_determineDeviceExtensions(_gpuContext->physicalDevice, availableExtensionCount,
-					_gpuDevice->extensions.data(), &swappyRequiredExtensionCount, swappyRequiredExtensions.data());
-				ccstd::vector<ccstd::string> swappyRequiredExtList(swappyRequiredExtensionCount);
+				SwappyVk_determineDeviceExtensions(_gpuContext.physicalDevice, availableExtensionCount,
+					_gpuDevice.extensions.data(), &swappyRequiredExtensionCount, swappyRequiredExtensions.data());
+				List<ccstd.string> swappyRequiredExtList(swappyRequiredExtensionCount);
 
 				for (size_t i = 0; i < swappyRequiredExtensionCount; ++i) {
 					swappyRequiredExtList[i] = swappyRequiredExtensions[i];
@@ -389,23 +360,23 @@ namespace cc {
 
 				// just filter out the unsupported layers & extensions
 				for (const char* layer : requestedLayers) {
-					if (isLayerSupported(layer, _gpuDevice->layers)) {
+					if (isLayerSupported(layer, _gpuDevice.layers)) {
 						_layers.push_back(layer);
 					}
 				}
 				for (const char* extension : requestedExtensions) {
-					if (isExtensionSupported(extension, _gpuDevice->extensions)) {
+					if (isExtensionSupported(extension, _gpuDevice.extensions)) {
 						_extensions.push_back(extension);
 					}
 				}
 
 				// prepare the device queues
-				uint32_t queueFamilyPropertiesCount = utils::toUint(_gpuContext->queueFamilyProperties.size());
-				ccstd::vector<VkDeviceQueueCreateInfo> queueCreateInfos(queueFamilyPropertiesCount, { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO });
-				ccstd::vector<ccstd::vector<float>> queuePriorities(queueFamilyPropertiesCount);
+				uint32 queueFamilyPropertiesCount = utils.toUint(_gpuContext.queueFamilyProperties.size());
+				List<VkDeviceQueueCreateInfo> queueCreateInfos(queueFamilyPropertiesCount, { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO });
+				List<List<float>> queuePriorities(queueFamilyPropertiesCount);
 
-				for (uint32_t queueFamilyIndex = 0U; queueFamilyIndex < queueFamilyPropertiesCount; ++queueFamilyIndex) {
-					const VkQueueFamilyProperties& queueFamilyProperty = _gpuContext->queueFamilyProperties[queueFamilyIndex];
+				for (uint32 queueFamilyIndex = 0U; queueFamilyIndex < queueFamilyPropertiesCount; ++queueFamilyIndex) {
+					const VkQueueFamilyProperties& queueFamilyProperty = _gpuContext.queueFamilyProperties[queueFamilyIndex];
 
 					queuePriorities[queueFamilyIndex].resize(queueFamilyProperty.queueCount, 1.0F);
 
@@ -418,40 +389,40 @@ namespace cc {
 
 				VkDeviceCreateInfo deviceCreateInfo{ VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
 
-				deviceCreateInfo.queueCreateInfoCount = utils::toUint(queueCreateInfos.size());
+				deviceCreateInfo.queueCreateInfoCount = utils.toUint(queueCreateInfos.size());
 				deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-				deviceCreateInfo.enabledLayerCount = utils::toUint(_layers.size());
+				deviceCreateInfo.enabledLayerCount = utils.toUint(_layers.size());
 				deviceCreateInfo.ppEnabledLayerNames = _layers.data();
-				deviceCreateInfo.enabledExtensionCount = utils::toUint(_extensions.size());
+				deviceCreateInfo.enabledExtensionCount = utils.toUint(_extensions.size());
 				deviceCreateInfo.ppEnabledExtensionNames = _extensions.data();
-				if (_gpuDevice->minorVersion < 1 && !_gpuContext->checkExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) {
+				if (_gpuDevice.minorVersion < 1 && !_gpuContext.checkExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) {
 					deviceCreateInfo.pEnabledFeatures = &requestedFeatures2.features;
 				}
 				else {
 					deviceCreateInfo.pNext = &requestedFeatures2;
-					if (_gpuDevice->minorVersion >= 2) {
+					if (_gpuDevice.minorVersion >= 2) {
 						requestedFeatures2.pNext = &requestedVulkan11Features;
 						requestedVulkan11Features.pNext = &requestedVulkan12Features;
 					}
 				}
 
 				if (_xr) {
-					_gpuDevice->vkDevice = _xr->createXRVulkanDevice(&deviceCreateInfo);
+					_gpuDevice.vkDevice = _xr.createXRVulkanDevice(&deviceCreateInfo);
 				}
 				else {
-					VK_CHECK(vkCreateDevice(_gpuContext->physicalDevice, &deviceCreateInfo, nullptr, &_gpuDevice->vkDevice));
+					VK_CHECK(vkCreateDevice(_gpuContext.physicalDevice, &deviceCreateInfo, null, &_gpuDevice.vkDevice));
 				}
-				volkLoadDevice(_gpuDevice->vkDevice);
+				volkLoadDevice(_gpuDevice.vkDevice);
 
-				SPIRVUtils::getInstance()->initialize(static_cast<int>(_gpuDevice->minorVersion));
+				SPIRVUtils.getInstance().initialize(static_cast<int>(_gpuDevice.minorVersion));
 
 				///////////////////// Gather Device Properties /////////////////////
 
-				auto findPreferredDepthFormat = [this](const VkFormat* formats, uint32_t count, VkFormat* pFormat) {
-					for (uint32_t i = 0; i < count; ++i) {
+				auto findPreferredDepthFormat = [this](const VkFormat* formats, uint32 count, VkFormat* pFormat) {
+					for (uint32 i = 0; i < count; ++i) {
 						VkFormat format = formats[i];
 						VkFormatProperties formatProperties;
-						vkGetPhysicalDeviceFormatProperties(_gpuContext->physicalDevice, format, &formatProperties);
+						vkGetPhysicalDeviceFormatProperties(_gpuContext.physicalDevice, format, &formatProperties);
 						// Format must support depth stencil attachment for optimal tiling
 						if (formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT) {
 							if (formatProperties.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) {
@@ -467,50 +438,50 @@ namespace cc {
 					VK_FORMAT_X8_D24_UNORM_PACK32,
 					VK_FORMAT_D16_UNORM,
 				};
-				findPreferredDepthFormat(depthFormatPriorityList, 3, &_gpuDevice->depthFormat);
+				findPreferredDepthFormat(depthFormatPriorityList, 3, &_gpuDevice.depthFormat);
 
 				VkFormat depthStencilFormatPriorityList[]{
 					VK_FORMAT_D24_UNORM_S8_UINT,
 					VK_FORMAT_D32_SFLOAT_S8_UINT,
 					VK_FORMAT_D16_UNORM_S8_UINT,
 				};
-				findPreferredDepthFormat(depthStencilFormatPriorityList, 3, &_gpuDevice->depthStencilFormat);
+				findPreferredDepthFormat(depthStencilFormatPriorityList, 3, &_gpuDevice.depthStencilFormat);
 
 				initDeviceFeature();
 				initFormatFeature();
 
-				ccstd::string compressedFmts;
+				ccstd.string compressedFmts;
 
-				if (getFormatFeatures(Format::BC1_SRGB_ALPHA) != FormatFeature::NONE) {
+				if (getFormatFeatures(Format.BC1_SRGB_ALPHA) != FormatFeature.NONE) {
 					compressedFmts += "dxt ";
 				}
 
-				if (getFormatFeatures(Format::ETC2_RGBA8) != FormatFeature::NONE) {
+				if (getFormatFeatures(Format.ETC2_RGBA8) != FormatFeature.NONE) {
 					compressedFmts += "etc2 ";
 				}
 
-				if (getFormatFeatures(Format::ASTC_RGBA_4X4) != FormatFeature::NONE) {
+				if (getFormatFeatures(Format.ASTC_RGBA_4X4) != FormatFeature.NONE) {
 					compressedFmts += "astc ";
 				}
 
-				if (getFormatFeatures(Format::PVRTC_RGBA2) != FormatFeature::NONE) {
+				if (getFormatFeatures(Format.PVRTC_RGBA2) != FormatFeature.NONE) {
 					compressedFmts += "pvrtc ";
 				}
 
-				_gpuDevice->useMultiDrawIndirect = deviceFeatures.multiDrawIndirect;
-				_gpuDevice->useDescriptorUpdateTemplate = _gpuDevice->minorVersion > 0 || checkExtension(VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME);
+				_gpuDevice.useMultiDrawIndirect = deviceFeatures.multiDrawIndirect;
+				_gpuDevice.useDescriptorUpdateTemplate = _gpuDevice.minorVersion > 0 || checkExtension(VK_KHR_DESCRIPTOR_UPDATE_TEMPLATE_EXTENSION_NAME);
 
-				if (_gpuDevice->minorVersion > 1) {
-					_gpuDevice->createRenderPass2 = vkCreateRenderPass2;
+				if (_gpuDevice.minorVersion > 1) {
+					_gpuDevice.createRenderPass2 = vkCreateRenderPass2;
 				}
 				else if (checkExtension(VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME)) {
-					_gpuDevice->createRenderPass2 = vkCreateRenderPass2KHR;
+					_gpuDevice.createRenderPass2 = vkCreateRenderPass2KHR;
 				}
 				else {
-					_gpuDevice->createRenderPass2 = vkCreateRenderPass2KHRFallback;
+					_gpuDevice.createRenderPass2 = vkCreateRenderPass2KHRFallback;
 				}
 
-				const VkPhysicalDeviceLimits& limits = _gpuContext->physicalDeviceProperties.limits;
+				const VkPhysicalDeviceLimits& limits = _gpuContext.physicalDeviceProperties.limits;
 				_caps.maxVertexAttributes = limits.maxVertexInputAttributes;
 				_caps.maxVertexUniformVectors = limits.maxUniformBufferRange / 16;
 				_caps.maxFragmentUniformVectors = limits.maxUniformBufferRange / 16;
@@ -525,7 +496,7 @@ namespace cc {
 				_caps.maxCubeMapTextureSize = limits.maxImageDimensionCube;
 				_caps.maxArrayTextureLayers = limits.maxImageArrayLayers;
 				_caps.max3DTextureSize = limits.maxImageDimension3D;
-				_caps.uboOffsetAlignment = utils::toUint(limits.minUniformBufferOffsetAlignment);
+				_caps.uboOffsetAlignment = utils.toUint(limits.minUniformBufferOffsetAlignment);
 				// compute shaders
 				_caps.maxComputeSharedMemorySize = limits.maxComputeSharedMemorySize;
 				_caps.maxComputeWorkGroupInvocations = limits.maxComputeWorkGroupInvocations;
@@ -533,28 +504,28 @@ namespace cc {
 				_caps.maxComputeWorkGroupSize = { limits.maxComputeWorkGroupSize[0], limits.maxComputeWorkGroupSize[1], limits.maxComputeWorkGroupSize[2] };
 #if defined(VK_USE_PLATFORM_ANDROID_KHR)
 				// UNASSIGNED-BestPractices-vkCreateComputePipelines-compute-work-group-size
-				_caps.maxComputeWorkGroupInvocations = std::min(_caps.maxComputeWorkGroupInvocations, 64U);
+				_caps.maxComputeWorkGroupInvocations = std.min(_caps.maxComputeWorkGroupInvocations, 64U);
 #endif // defined(VK_USE_PLATFORM_ANDROID_KHR)
 				initExtensionCapability();
 
 				///////////////////// Resource Initialization /////////////////////
 
 				QueueInfo queueInfo;
-				queueInfo.type = QueueType::GRAPHICS;
+				queueInfo.type = QueueType.GRAPHICS;
 				_queue = createQueue(queueInfo);
 
-				QueryPoolInfo queryPoolInfo{ QueryType::OCCLUSION, DEFAULT_MAX_QUERY_OBJECTS, false };
+				QueryPoolInfo queryPoolInfo{ QueryType.OCCLUSION, DEFAULT_MAX_QUERY_OBJECTS, false };
 				_queryPool = createQueryPool(queryPoolInfo);
 
 				CommandBufferInfo cmdBuffInfo;
-				cmdBuffInfo.type = CommandBufferType::PRIMARY;
+				cmdBuffInfo.type = CommandBufferType.PRIMARY;
 				cmdBuffInfo.queue = _queue;
 				_cmdBuff = createCommandBuffer(cmdBuffInfo);
 
 				VmaAllocatorCreateInfo allocatorInfo{};
-				allocatorInfo.physicalDevice = _gpuContext->physicalDevice;
-				allocatorInfo.device = _gpuDevice->vkDevice;
-				allocatorInfo.instance = _gpuContext->vkInstance;
+				allocatorInfo.physicalDevice = _gpuContext.physicalDevice;
+				allocatorInfo.device = _gpuDevice.vkDevice;
+				allocatorInfo.instance = _gpuContext.vkInstance;
 
 				VmaVulkanFunctions vmaVulkanFunc{};
 				vmaVulkanFunc.vkAllocateMemory = vkAllocateMemory;
@@ -575,7 +546,7 @@ namespace cc {
 				vmaVulkanFunc.vkUnmapMemory = vkUnmapMemory;
 				vmaVulkanFunc.vkCmdCopyBuffer = vkCmdCopyBuffer;
 
-				if (_gpuDevice->minorVersion > 0) {
+				if (_gpuDevice.minorVersion > 0) {
 					allocatorInfo.flags |= VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
 					vmaVulkanFunc.vkGetBufferMemoryRequirements2KHR = vkGetBufferMemoryRequirements2;
 					vmaVulkanFunc.vkGetImageMemoryRequirements2KHR = vkGetImageMemoryRequirements2;
@@ -595,7 +566,7 @@ namespace cc {
 					}
 				}
 				if (checkExtension(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)) {
-					if (_gpuDevice->minorVersion > 0) {
+					if (_gpuDevice.minorVersion > 0) {
 						vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties2KHR = vkGetPhysicalDeviceMemoryProperties2;
 					}
 					else if (checkExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) {
@@ -605,92 +576,92 @@ namespace cc {
 
 				allocatorInfo.pVulkanFunctions = &vmaVulkanFunc;
 
-				VK_CHECK(vmaCreateAllocator(&allocatorInfo, &_gpuDevice->memoryAllocator));
+				VK_CHECK(vmaCreateAllocator(&allocatorInfo, &_gpuDevice.memoryAllocator));
 
-				uint32_t backBufferCount = _gpuDevice->backBufferCount;
-				for (uint32_t i = 0U; i < backBufferCount; i++) {
-					_gpuFencePools.push_back(std::make_unique<CCVKGPUFencePool>(_gpuDevice.get()));
-					_gpuRecycleBins.push_back(std::make_unique<CCVKGPURecycleBin>(_gpuDevice.get()));
-					_gpuStagingBufferPools.push_back(std::make_unique<CCVKGPUStagingBufferPool>(_gpuDevice.get()));
+				uint32 backBufferCount = _gpuDevice.backBufferCount;
+				for (uint32 i = 0U; i < backBufferCount; i++) {
+					_gpuFencePools.push_back(std.make_unique<CCVKGPUFencePool>(_gpuDevice.get()));
+					_gpuRecycleBins.push_back(std.make_unique<CCVKGPURecycleBin>(_gpuDevice.get()));
+					_gpuStagingBufferPools.push_back(std.make_unique<CCVKGPUStagingBufferPool>(_gpuDevice.get()));
 				}
 
-				_gpuBufferHub = std::make_unique<CCVKGPUBufferHub>(_gpuDevice.get());
-				_gpuIAHub = std::make_unique<CCVKGPUInputAssemblerHub>(_gpuDevice.get());
-				_gpuTransportHub = std::make_unique<CCVKGPUTransportHub>(_gpuDevice.get(), static_cast<CCVKQueue*>(_queue)->gpuQueue());
-				_gpuDescriptorHub = std::make_unique<CCVKGPUDescriptorHub>(_gpuDevice.get());
-				_gpuSemaphorePool = std::make_unique<CCVKGPUSemaphorePool>(_gpuDevice.get());
-				_gpuBarrierManager = std::make_unique<CCVKGPUBarrierManager>(_gpuDevice.get());
-				_gpuDescriptorSetHub = std::make_unique<CCVKGPUDescriptorSetHub>(_gpuDevice.get());
+				_gpuBufferHub = std.make_unique<CCVKGPUBufferHub>(_gpuDevice.get());
+				_gpuIAHub = std.make_unique<CCVKGPUInputAssemblerHub>(_gpuDevice.get());
+				_gpuTransportHub = std.make_unique<CCVKGPUTransportHub>(_gpuDevice.get(), static_cast<CCVKQueue*>(_queue).gpuQueue());
+				_gpuDescriptorHub = std.make_unique<CCVKGPUDescriptorHub>(_gpuDevice.get());
+				_gpuSemaphorePool = std.make_unique<CCVKGPUSemaphorePool>(_gpuDevice.get());
+				_gpuBarrierManager = std.make_unique<CCVKGPUBarrierManager>(_gpuDevice.get());
+				_gpuDescriptorSetHub = std.make_unique<CCVKGPUDescriptorSetHub>(_gpuDevice.get());
 
-				_gpuDevice->defaultSampler = ccnew CCVKGPUSampler();
-				_gpuDevice->defaultSampler->init();
+				_gpuDevice.defaultSampler = ccnew CCVKGPUSampler();
+				_gpuDevice.defaultSampler.init();
 
-				_gpuDevice->defaultTexture = ccnew CCVKGPUTexture();
-				_gpuDevice->defaultTexture->format = Format::RGBA8;
-				_gpuDevice->defaultTexture->usage = TextureUsageBit::SAMPLED | TextureUsage::STORAGE;
-				_gpuDevice->defaultTexture->width = _gpuDevice->defaultTexture->height = 1U;
-				_gpuDevice->defaultTexture->size = formatSize(Format::RGBA8, 1U, 1U, 1U);
-				_gpuDevice->defaultTexture->init();
+				_gpuDevice.defaultTexture = ccnew CCVKGPUTexture();
+				_gpuDevice.defaultTexture.format = Format.RGBA8;
+				_gpuDevice.defaultTexture.usage = TextureUsageBit.SAMPLED | TextureUsage.STORAGE;
+				_gpuDevice.defaultTexture.width = _gpuDevice.defaultTexture.height = 1U;
+				_gpuDevice.defaultTexture.size = formatSize(Format.RGBA8, 1U, 1U, 1U);
+				_gpuDevice.defaultTexture.init();
 
-				_gpuDevice->defaultTextureView = ccnew CCVKGPUTextureView();
-				_gpuDevice->defaultTextureView->gpuTexture = _gpuDevice->defaultTexture;
-				_gpuDevice->defaultTextureView->format = Format::RGBA8;
-				_gpuDevice->defaultTextureView->init();
+				_gpuDevice.defaultTextureView = ccnew CCVKGPUTextureView();
+				_gpuDevice.defaultTextureView.gpuTexture = _gpuDevice.defaultTexture;
+				_gpuDevice.defaultTextureView.format = Format.RGBA8;
+				_gpuDevice.defaultTextureView.init();
 
 				ThsvsImageBarrier barrier{};
 				barrier.nextAccessCount = 1;
-				barrier.pNextAccesses = getAccessType(AccessFlagBit::VERTEX_SHADER_READ_TEXTURE);
-				barrier.image = _gpuDevice->defaultTexture->vkImage;
+				barrier.pNextAccesses = getAccessType(AccessFlagBit.VERTEX_SHADER_READ_TEXTURE);
+				barrier.image = _gpuDevice.defaultTexture.vkImage;
 				barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 				barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
 				barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 				barrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
 				barrier.subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-				gpuTransportHub()->checkIn(
+				gpuTransportHub().checkIn(
 					[&barrier](const CCVKGPUCommandBuffer* gpuCommandBuffer) {
 						cmdFuncCCVKImageMemoryBarrier(gpuCommandBuffer, barrier);
 					},
 					true);
 
-				_gpuDevice->defaultBuffer = ccnew CCVKGPUBuffer();
-				_gpuDevice->defaultBuffer->usage = BufferUsage::UNIFORM | BufferUsage::STORAGE;
-				_gpuDevice->defaultBuffer->memUsage = MemoryUsage::HOST | MemoryUsage::DEVICE;
-				_gpuDevice->defaultBuffer->size = _gpuDevice->defaultBuffer->stride = 16U;
-				_gpuDevice->defaultBuffer->count = 1U;
-				_gpuDevice->defaultBuffer->init();
+				_gpuDevice.defaultBuffer = ccnew CCVKGPUBuffer();
+				_gpuDevice.defaultBuffer.usage = BufferUsage.UNIFORM | BufferUsage.STORAGE;
+				_gpuDevice.defaultBuffer.memUsage = MemoryUsage.HOST | MemoryUsage.DEVICE;
+				_gpuDevice.defaultBuffer.size = _gpuDevice.defaultBuffer.stride = 16U;
+				_gpuDevice.defaultBuffer.count = 1U;
+				_gpuDevice.defaultBuffer.init();
 
-				getAccessTypes(AccessFlagBit::COLOR_ATTACHMENT_WRITE, _gpuDevice->defaultColorBarrier.nextAccesses);
-				cmdFuncCCVKCreateGeneralBarrier(this, &_gpuDevice->defaultColorBarrier);
+				getAccessTypes(AccessFlagBit.COLOR_ATTACHMENT_WRITE, _gpuDevice.defaultColorBarrier.nextAccesses);
+				cmdFuncCCVKCreateGeneralBarrier(this, &_gpuDevice.defaultColorBarrier);
 
-				getAccessTypes(AccessFlagBit::DEPTH_STENCIL_ATTACHMENT_WRITE, _gpuDevice->defaultDepthStencilBarrier.nextAccesses);
-				cmdFuncCCVKCreateGeneralBarrier(this, &_gpuDevice->defaultDepthStencilBarrier);
+				getAccessTypes(AccessFlagBit.DEPTH_STENCIL_ATTACHMENT_WRITE, _gpuDevice.defaultDepthStencilBarrier.nextAccesses);
+				cmdFuncCCVKCreateGeneralBarrier(this, &_gpuDevice.defaultDepthStencilBarrier);
 
-				_pipelineCache = std::make_unique<CCVKPipelineCache>();
-				_pipelineCache->init(_gpuDevice->vkDevice);
+				_pipelineCache = std.make_unique<CCVKPipelineCache>();
+				_pipelineCache.init(_gpuDevice.vkDevice);
 
 				///////////////////// Print Debug Info /////////////////////
 
-				ccstd::string instanceLayers;
-				ccstd::string instanceExtensions;
-				ccstd::string deviceLayers;
-				ccstd::string deviceExtensions;
-				for (const char* layer : _gpuContext->layers) {
-					instanceLayers += layer + ccstd::string(" ");
+				ccstd.string instanceLayers;
+				ccstd.string instanceExtensions;
+				ccstd.string deviceLayers;
+				ccstd.string deviceExtensions;
+				for (const char* layer : _gpuContext.layers) {
+					instanceLayers += layer + ccstd.string(" ");
 				}
-				for (const char* extension : _gpuContext->extensions) {
-					instanceExtensions += extension + ccstd::string(" ");
+				for (const char* extension : _gpuContext.extensions) {
+					instanceExtensions += extension + ccstd.string(" ");
 				}
 				for (const char* layer : _layers) {
-					deviceLayers += layer + ccstd::string(" ");
+					deviceLayers += layer + ccstd.string(" ");
 				}
 				for (const char* extension : _extensions) {
-					deviceExtensions += extension + ccstd::string(" ");
+					deviceExtensions += extension + ccstd.string(" ");
 				}
 
-				uint32_t apiVersion = _gpuContext->physicalDeviceProperties.apiVersion;
-				_renderer = _gpuContext->physicalDeviceProperties.deviceName;
-				_vendor = mapVendorName(_gpuContext->physicalDeviceProperties.vendorID);
-				_version = StringUtil::format("%d.%d.%d", VK_VERSION_MAJOR(apiVersion),
+				uint32 apiVersion = _gpuContext.physicalDeviceProperties.apiVersion;
+				_renderer = _gpuContext.physicalDeviceProperties.deviceName;
+				_vendor = mapVendorName(_gpuContext.physicalDeviceProperties.vendorID);
+				_version = StringUtil.format("%d.%d.%d", VK_VERSION_MAJOR(apiVersion),
 					VK_VERSION_MINOR(apiVersion), VK_VERSION_PATCH(apiVersion));
 
 				CC_LOG_INFO("Vulkan device initialized.");
@@ -704,22 +675,22 @@ namespace cc {
 				CC_LOG_INFO("COMPRESSED_FORMATS: %s", compressedFmts.c_str());
 
 				if (_xr) {
-					cc::gfx::CCVKGPUQueue* vkQueue = static_cast<cc::gfx::CCVKQueue*>(getQueue())->gpuQueue();
-					_xr->setXRConfig(xr::XRConfigKey::VK_QUEUE_FAMILY_INDEX, static_cast<int>(vkQueue->queueFamilyIndex));
-					_xr->postGFXDeviceInitialize(_api);
+					cc.gfx.CCVKGPUQueue* vkQueue = static_cast<cc.gfx.CCVKQueue*>(getQueue()).gpuQueue();
+					_xr.setXRConfig(xr.XRConfigKey.VK_QUEUE_FAMILY_INDEX, static_cast<int>(vkQueue.queueFamilyIndex));
+					_xr.postGFXDeviceInitialize(_api);
 				}
 				return true;
 			}
 			void doDestroy() {
 				waitAllFences();
 
-				SPIRVUtils::getInstance()->destroy();
+				SPIRVUtils.getInstance().destroy();
 
 				if (_gpuDevice) {
-					_gpuDevice->defaultBuffer = nullptr;
-					_gpuDevice->defaultTexture = nullptr;
-					_gpuDevice->defaultTextureView = nullptr;
-					_gpuDevice->defaultSampler = nullptr;
+					_gpuDevice.defaultBuffer = null;
+					_gpuDevice.defaultTexture = null;
+					_gpuDevice.defaultTextureView = null;
+					_gpuDevice.defaultSampler = null;
 				}
 
 				CC_SAFE_DESTROY_AND_DELETE(_queryPool)
@@ -729,18 +700,18 @@ namespace cc {
 					_gpuStagingBufferPools.clear();
 				_gpuFencePools.clear();
 
-				_gpuBufferHub = nullptr;
-				_gpuTransportHub = nullptr;
-				_gpuSemaphorePool = nullptr;
-				_gpuDescriptorHub = nullptr;
-				_gpuBarrierManager = nullptr;
-				_gpuDescriptorSetHub = nullptr;
-				_gpuIAHub = nullptr;
+				_gpuBufferHub = null;
+				_gpuTransportHub = null;
+				_gpuSemaphorePool = null;
+				_gpuDescriptorHub = null;
+				_gpuBarrierManager = null;
+				_gpuDescriptorSetHub = null;
+				_gpuIAHub = null;
 
 				if (_gpuDevice) {
-					uint32_t backBufferCount = _gpuDevice->backBufferCount;
-					for (uint32_t i = 0U; i < backBufferCount; i++) {
-						_gpuRecycleBins[i]->clear();
+					uint32 backBufferCount = _gpuDevice.backBufferCount;
+					for (uint32 i = 0U; i < backBufferCount; i++) {
+						_gpuRecycleBins[i].clear();
 					}
 				}
 				_gpuStagingBufferPools.clear();
@@ -750,32 +721,32 @@ namespace cc {
 				if (_gpuDevice) {
 					_pipelineCache.reset();
 
-					if (_gpuDevice->memoryAllocator != VK_NULL_HANDLE) {
+					if (_gpuDevice.memoryAllocator != VK_NULL_HANDLE) {
 						VmaStats stats;
-						vmaCalculateStats(_gpuDevice->memoryAllocator, &stats);
+						vmaCalculateStats(_gpuDevice.memoryAllocator, &stats);
 						CC_LOG_INFO("Total device memory leaked: %d bytes.", stats.total.usedBytes);
 						CC_ASSERT(!_memoryStatus.bufferSize);  // Buffer memory leaked.
 						CC_ASSERT(!_memoryStatus.textureSize); // Texture memory leaked.
 
-						vmaDestroyAllocator(_gpuDevice->memoryAllocator);
-						_gpuDevice->memoryAllocator = VK_NULL_HANDLE;
+						vmaDestroyAllocator(_gpuDevice.memoryAllocator);
+						_gpuDevice.memoryAllocator = VK_NULL_HANDLE;
 					}
 
-					for (auto it = _gpuDevice->_commandBufferPools.begin(); it != _gpuDevice->_commandBufferPools.end(); ++it) {
-						CC_SAFE_DELETE(it->second)
+					for (auto it = _gpuDevice._commandBufferPools.begin(); it != _gpuDevice._commandBufferPools.end(); ++it) {
+						CC_SAFE_DELETE(it.second)
 					}
-					_gpuDevice->_commandBufferPools.clear();
-					_gpuDevice->_descriptorSetPools.clear();
+					_gpuDevice._commandBufferPools.clear();
+					_gpuDevice._descriptorSetPools.clear();
 
-					if (_gpuDevice->vkDevice != VK_NULL_HANDLE) {
-						vkDestroyDevice(_gpuDevice->vkDevice, nullptr);
-						_gpuDevice->vkDevice = VK_NULL_HANDLE;
+					if (_gpuDevice.vkDevice != VK_NULL_HANDLE) {
+						vkDestroyDevice(_gpuDevice.vkDevice, null);
+						_gpuDevice.vkDevice = VK_NULL_HANDLE;
 					}
 
-					_gpuDevice = nullptr;
+					_gpuDevice = null;
 				}
 
-				_gpuContext = nullptr;
+				_gpuContext = null;
 			}
 			CommandBuffer* createCommandBuffer(const CommandBufferInfo& info, bool hasAgent) {
 				return ccnew CCVKCommandBuffer;
@@ -788,7 +759,7 @@ namespace cc {
 			}
 			Swapchain* createSwapchain() {
 				if (_xr) {
-					_xr->createXRSwapchains();
+					_xr.createXRSwapchains();
 				}
 				return ccnew CCVKSwapchain;
 			}
@@ -836,61 +807,61 @@ namespace cc {
 				return ccnew CCVKBufferBarrier(info);
 			}
 
-			void copyBuffersToTexture(const uint8_t* const* buffers, Texture* dst, const BufferTextureCopy* regions, uint32_t count) {
+			void copyBuffersToTexture(const uint8* const* buffers, Texture* dst, const BufferTextureCopy* regions, uint32 count) {
 				CC_PROFILE(CCVKDeviceCopyBuffersToTexture);
-				gpuTransportHub()->checkIn([this, buffers, dst, regions, count](CCVKGPUCommandBuffer* gpuCommandBuffer) {
-					cmdFuncCCVKCopyBuffersToTexture(this, buffers, static_cast<CCVKTexture*>(dst)->gpuTexture(), regions, count, gpuCommandBuffer);
+				gpuTransportHub().checkIn([this, buffers, dst, regions, count](CCVKGPUCommandBuffer* gpuCommandBuffer) {
+					cmdFuncCCVKCopyBuffersToTexture(this, buffers, static_cast<CCVKTexture*>(dst).gpuTexture(), regions, count, gpuCommandBuffer);
 					});
 			}
-			void copyTextureToBuffers(Texture* src, uint8_t* const* buffers, const BufferTextureCopy* region, uint32_t count) {
+			void copyTextureToBuffers(Texture* src, uint8* const* buffers, const BufferTextureCopy* region, uint32 count) {
 				CC_PROFILE(CCVKDeviceCopyTextureToBuffers);
-				uint32_t totalSize = 0U;
-				Format format = srcTexture->getFormat();
-				ccstd::vector<std::pair<uint32_t, uint32_t>> regionOffsetSizes(count);
+				uint32 totalSize = 0U;
+				Format format = srcTexture.getFormat();
+				List<std.pair<uint32, uint32>> regionOffsetSizes(count);
 				for (size_t i = 0U; i < count; ++i) {
 					const BufferTextureCopy& region = regions[i];
-					uint32_t w = region.buffStride > 0 ? region.buffStride : region.texExtent.width;
-					uint32_t h = region.buffTexHeight > 0 ? region.buffTexHeight : region.texExtent.height;
-					uint32_t regionSize = formatSize(format, w, h, region.texExtent.depth);
+					uint32 w = region.buffStride > 0 ? region.buffStride : region.texExtent.width;
+					uint32 h = region.buffTexHeight > 0 ? region.buffTexHeight : region.texExtent.height;
+					uint32 regionSize = formatSize(format, w, h, region.texExtent.depth);
 					regionOffsetSizes[i] = { totalSize, regionSize };
 					totalSize += regionSize;
 				}
 
-				uint32_t texelSize = GFX_FORMAT_INFOS[toNumber(format)].size;
-				IntrusivePtr<CCVKGPUBufferView> stagingBuffer = gpuStagingBufferPool()->alloc(totalSize, texelSize);
+				uint32 texelSize = GFX_FORMAT_INFOS[toNumber(format)].size;
+				IntrusivePtr<CCVKGPUBufferView> stagingBuffer = gpuStagingBufferPool().alloc(totalSize, texelSize);
 
 				// make sure the src texture is up-to-date
 				waitAllFences();
 
-				_gpuTransportHub->checkIn(
+				_gpuTransportHub.checkIn(
 					[&](CCVKGPUCommandBuffer* cmdBuffer) {
-						cmdFuncCCVKCopyTextureToBuffers(this, static_cast<const CCVKTexture*>(srcTexture)->gpuTexture(), stagingBuffer, regions, count, cmdBuffer);
+						cmdFuncCCVKCopyTextureToBuffers(this, static_cast<const CCVKTexture*>(srcTexture).gpuTexture(), stagingBuffer, regions, count, cmdBuffer);
 					},
 					true);
 
-				for (uint32_t i = 0; i < count; ++i) {
-					uint32_t regionOffset = 0;
-					uint32_t regionSize = 0;
-					std::tie(regionOffset, regionSize) = regionOffsetSizes[i];
-					memcpy(buffers[i], stagingBuffer->mappedData() + regionOffset, regionSize);
+				for (uint32 i = 0; i < count; ++i) {
+					uint32 regionOffset = 0;
+					uint32 regionSize = 0;
+					std.tie(regionOffset, regionSize) = regionOffsetSizes[i];
+					memcpy(buffers[i], stagingBuffer.mappedData() + regionOffset, regionSize);
 				}
 			}
 			void getQueryPoolResults(QueryPool* queryPool) {
 				CC_PROFILE(CCVKDeviceGetQueryPoolResults);
 				auto* vkQueryPool = static_cast<CCVKQueryPool*>(queryPool);
-				auto queryCount = static_cast<uint32_t>(vkQueryPool->_ids.size());
-				CC_ASSERT(queryCount <= vkQueryPool->getMaxQueryObjects());
+				auto queryCount = static_cast<uint32>(vkQueryPool._ids.size());
+				CC_ASSERT(queryCount <= vkQueryPool.getMaxQueryObjects());
 
-				const bool bWait = queryPool->getForceWait();
-				uint32_t width = bWait ? 1U : 2U;
-				uint64_t stride = sizeof(uint64_t) * width;
+				const bool bWait = queryPool.getForceWait();
+				uint32 width = bWait ? 1U : 2U;
+				uint64 stride = sizeof(uint64) * width;
 				VkQueryResultFlagBits flag = bWait ? VK_QUERY_RESULT_WAIT_BIT : VK_QUERY_RESULT_WITH_AVAILABILITY_BIT;
-				ccstd::vector<uint64_t> results(queryCount * width, 0);
+				List<uint64> results(queryCount * width, 0);
 
 				if (queryCount > 0U) {
 					VkResult result = vkGetQueryPoolResults(
-						gpuDevice()->vkDevice,
-						vkQueryPool->_gpuQueryPool->vkPool,
+						gpuDevice().vkDevice,
+						vkQueryPool._gpuQueryPool.vkPool,
 						0,
 						queryCount,
 						static_cast<size_t>(queryCount * stride),
@@ -900,14 +871,14 @@ namespace cc {
 					CC_ASSERT(result == VK_SUCCESS || result == VK_NOT_READY);
 				}
 
-				ccstd::unordered_map<uint32_t, uint64_t> mapResults;
+				Dictionary<uint32, uint64> mapResults;
 				for (auto queryId = 0U; queryId < queryCount; queryId++) {
-					uint32_t offset = queryId * width;
+					uint32 offset = queryId * width;
 					if (bWait || results[offset + 1] > 0) {
-						uint32_t id = vkQueryPool->_ids[queryId];
+						uint32 id = vkQueryPool._ids[queryId];
 						auto iter = mapResults.find(id);
 						if (iter != mapResults.end()) {
-							iter->second += results[offset];
+							iter.second += results[offset];
 						}
 						else {
 							mapResults[id] = results[offset];
@@ -916,136 +887,136 @@ namespace cc {
 				}
 
 				{
-					std::lock_guard<std::mutex> lock(vkQueryPool->_mutex);
-					vkQueryPool->_results = std::move(mapResults);
+					std.lock_guard<std.mutex> lock(vkQueryPool._mutex);
+					vkQueryPool._results = std.move(mapResults);
 				}
 			}
 
 			void initFormatFeature() {
-				const auto formatLen = static_cast<size_t>(Format::COUNT);
+				const auto formatLen = static_cast<size_t>(Format.COUNT);
 				VkFormatProperties properties = {};
 				VkFormat format = {};
 				VkFormatFeatureFlags formatFeature = {};
-				for (uint32_t i = toNumber(Format::R8); i < formatLen; ++i) {
-					if (static_cast<Format>(i) == Format::ETC_RGB8) continue;
+				for (uint32 i = toNumber(Format.R8); i < formatLen; ++i) {
+					if (static_cast<Format>(i) == Format.ETC_RGB8) continue;
 					format = mapVkFormat(static_cast<Format>(i), _gpuDevice.get());
-					vkGetPhysicalDeviceFormatProperties(_gpuContext->physicalDevice, format, &properties);
+					vkGetPhysicalDeviceFormatProperties(_gpuContext.physicalDevice, format, &properties);
 
 					// render buffer support
 					formatFeature = VK_FORMAT_FEATURE_COLOR_ATTACHMENT_BIT | VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT;
 					if (properties.optimalTilingFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::RENDER_TARGET;
+						_formatFeatures[i] |= FormatFeature.RENDER_TARGET;
 					}
 					// texture storage support
 					formatFeature = VK_FORMAT_FEATURE_STORAGE_IMAGE_BIT;
 					if (properties.optimalTilingFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::STORAGE_TEXTURE;
+						_formatFeatures[i] |= FormatFeature.STORAGE_TEXTURE;
 					}
 					// sampled render target support
 					formatFeature = VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT;
 					if (properties.optimalTilingFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::SAMPLED_TEXTURE;
+						_formatFeatures[i] |= FormatFeature.SAMPLED_TEXTURE;
 					}
 					// linear filter support
 					formatFeature = VK_FORMAT_FEATURE_SAMPLED_IMAGE_FILTER_LINEAR_BIT;
 					if (properties.optimalTilingFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::LINEAR_FILTER;
+						_formatFeatures[i] |= FormatFeature.LINEAR_FILTER;
 					}
 					// vertex attribute support
 					formatFeature = VK_FORMAT_FEATURE_VERTEX_BUFFER_BIT;
 					if (properties.bufferFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::VERTEX_ATTRIBUTE;
+						_formatFeatures[i] |= FormatFeature.VERTEX_ATTRIBUTE;
 					}
 					// shading reate support
 					formatFeature = VK_FORMAT_FEATURE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 					if (properties.optimalTilingFeatures & formatFeature) {
-						_formatFeatures[i] |= FormatFeature::SHADING_RATE;
+						_formatFeatures[i] |= FormatFeature.SHADING_RATE;
 					}
 				}
 			}
 			void initDeviceFeature() {
-				_features[toNumber(Feature::ELEMENT_INDEX_UINT)] = true;
-				_features[toNumber(Feature::INSTANCED_ARRAYS)] = true;
-				_features[toNumber(Feature::MULTIPLE_RENDER_TARGETS)] = true;
-				_features[toNumber(Feature::BLEND_MINMAX)] = true;
-				_features[toNumber(Feature::COMPUTE_SHADER)] = true;
-				_features[toNumber(Feature::INPUT_ATTACHMENT_BENEFIT)] = true;
-				_features[toNumber(Feature::SUBPASS_COLOR_INPUT)] = true;
-				_features[toNumber(Feature::SUBPASS_DEPTH_STENCIL_INPUT)] = true;
-				_features[toNumber(Feature::RASTERIZATION_ORDER_NOCOHERENT)] = true;
-				_features[toNumber(Feature::MULTI_SAMPLE_RESOLVE_DEPTH_STENCIL)] = checkExtension("VK_KHR_depth_stencil_resolve");
+				_features[toNumber(Feature.ELEMENT_INDEX_UINT)] = true;
+				_features[toNumber(Feature.INSTANCED_ARRAYS)] = true;
+				_features[toNumber(Feature.MULTIPLE_RENDER_TARGETS)] = true;
+				_features[toNumber(Feature.BLEND_MINMAX)] = true;
+				_features[toNumber(Feature.COMPUTE_SHADER)] = true;
+				_features[toNumber(Feature.INPUT_ATTACHMENT_BENEFIT)] = true;
+				_features[toNumber(Feature.SUBPASS_COLOR_INPUT)] = true;
+				_features[toNumber(Feature.SUBPASS_DEPTH_STENCIL_INPUT)] = true;
+				_features[toNumber(Feature.RASTERIZATION_ORDER_NOCOHERENT)] = true;
+				_features[toNumber(Feature.MULTI_SAMPLE_RESOLVE_DEPTH_STENCIL)] = checkExtension("VK_KHR_depth_stencil_resolve");
 
-				_gpuContext->debugReport = _gpuContext->checkExtension(VK_EXT_DEBUG_REPORT_EXTENSION_NAME) &&
+				_gpuContext.debugReport = _gpuContext.checkExtension(VK_EXT_DEBUG_REPORT_EXTENSION_NAME) &&
 					checkExtension(VK_EXT_DEBUG_MARKER_EXTENSION_NAME) &&
-					(vkCmdDebugMarkerBeginEXT != nullptr) &&
-					(vkCmdDebugMarkerInsertEXT != nullptr) &&
-					(vkCmdDebugMarkerEndEXT != nullptr);
-				_gpuContext->debugUtils = _gpuContext->checkExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) &&
-					(vkCmdBeginDebugUtilsLabelEXT != nullptr) &&
-					(vkCmdInsertDebugUtilsLabelEXT != nullptr) &&
-					(vkCmdEndDebugUtilsLabelEXT != nullptr);
+					(vkCmdDebugMarkerBeginEXT != null) &&
+					(vkCmdDebugMarkerInsertEXT != null) &&
+					(vkCmdDebugMarkerEndEXT != null);
+				_gpuContext.debugUtils = _gpuContext.checkExtension(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) &&
+					(vkCmdBeginDebugUtilsLabelEXT != null) &&
+					(vkCmdInsertDebugUtilsLabelEXT != null) &&
+					(vkCmdEndDebugUtilsLabelEXT != null);
 			}
 			void initExtensionCapability() {
 				_caps.supportVariableRateShading = checkExtension(VK_KHR_FRAGMENT_SHADING_RATE_EXTENSION_NAME);
-				_caps.supportVariableRateShading &= _gpuContext->physicalDeviceFragmentShadingRateFeatures.pipelineFragmentShadingRate &&
-					_gpuContext->physicalDeviceFragmentShadingRateFeatures.attachmentFragmentShadingRate;
-				_caps.supportVariableRateShading &= hasFlag(_formatFeatures[static_cast<uint32_t>(Format::R8UI)], FormatFeatureBit::SHADING_RATE);
+				_caps.supportVariableRateShading &= _gpuContext.physicalDeviceFragmentShadingRateFeatures.pipelineFragmentShadingRate &&
+					_gpuContext.physicalDeviceFragmentShadingRateFeatures.attachmentFragmentShadingRate;
+				_caps.supportVariableRateShading &= hasFlag(_formatFeatures[static_cast<uint32>(Format.R8UI)], FormatFeatureBit.SHADING_RATE);
 
 				_caps.supportSubPassShading = checkExtension(VK_HUAWEI_SUBPASS_SHADING_EXTENSION_NAME);
 			}
 
-			std::unique_ptr<CCVKGPUDevice> _gpuDevice;
-			std::unique_ptr<CCVKGPUContext> _gpuContext;
+			std.unique_ptr<CCVKGPUDevice> _gpuDevice;
+			std.unique_ptr<CCVKGPUContext> _gpuContext;
 
-			ccstd::vector<std::unique_ptr<CCVKGPUFencePool>> _gpuFencePools;
-			ccstd::vector<std::unique_ptr<CCVKGPURecycleBin>> _gpuRecycleBins;
-			ccstd::vector<std::unique_ptr<CCVKGPUStagingBufferPool>> _gpuStagingBufferPools;
+			List<std.unique_ptr<CCVKGPUFencePool>> _gpuFencePools;
+			List<std.unique_ptr<CCVKGPURecycleBin>> _gpuRecycleBins;
+			List<std.unique_ptr<CCVKGPUStagingBufferPool>> _gpuStagingBufferPools;
 
-			std::unique_ptr<CCVKGPUBufferHub> _gpuBufferHub;
-			std::unique_ptr<CCVKGPUTransportHub> _gpuTransportHub;
-			std::unique_ptr<CCVKGPUDescriptorHub> _gpuDescriptorHub;
-			std::unique_ptr<CCVKGPUSemaphorePool> _gpuSemaphorePool;
-			std::unique_ptr<CCVKGPUBarrierManager> _gpuBarrierManager;
-			std::unique_ptr<CCVKGPUDescriptorSetHub> _gpuDescriptorSetHub;
-			std::unique_ptr<CCVKGPUInputAssemblerHub> _gpuIAHub;
-			std::unique_ptr<CCVKPipelineCache> _pipelineCache;
+			std.unique_ptr<CCVKGPUBufferHub> _gpuBufferHub;
+			std.unique_ptr<CCVKGPUTransportHub> _gpuTransportHub;
+			std.unique_ptr<CCVKGPUDescriptorHub> _gpuDescriptorHub;
+			std.unique_ptr<CCVKGPUSemaphorePool> _gpuSemaphorePool;
+			std.unique_ptr<CCVKGPUBarrierManager> _gpuBarrierManager;
+			std.unique_ptr<CCVKGPUDescriptorSetHub> _gpuDescriptorSetHub;
+			std.unique_ptr<CCVKGPUInputAssemblerHub> _gpuIAHub;
+			std.unique_ptr<CCVKPipelineCache> _pipelineCache;
 
-			ccstd::vector<const char*> _layers;
-			ccstd::vector<const char*> _extensions;
+			List<const char*> _layers;
+			List<const char*> _extensions;
 
-			IXRInterface* _xr{ nullptr };
+			IXRInterface* _xr{ null };
 		};
 
 		static
 		{
-			ccstd::vector<VkSwapchainKHR> vkSwapchains;
-			ccstd::vector<uint32_t> vkSwapchainIndices;
-			ccstd::vector<CCVKGPUSwapchain*> gpuSwapchains;
-			ccstd::vector<VkImageMemoryBarrier> vkAcquireBarriers;
-			ccstd::vector<VkImageMemoryBarrier> vkPresentBarriers;
+			List<VkSwapchainKHR> vkSwapchains;
+			List<uint32> vkSwapchainIndices;
+			List<CCVKGPUSwapchain*> gpuSwapchains;
+			List<VkImageMemoryBarrier> vkAcquireBarriers;
+			List<VkImageMemoryBarrier> vkPresentBarriers;
 
 			VkImageMemoryBarrier acquireBarrier{
 				VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-				nullptr,
+				null,
 				0,
 				VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
 				VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
 				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 				VK_QUEUE_FAMILY_IGNORED,
 				VK_QUEUE_FAMILY_IGNORED,
-				0, // NOLINT(modernize-use-nullptr) platform dependent type
+				0, // NOLINT(modernize-use-null) platform dependent type
 				{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1},
 			};
 			VkImageMemoryBarrier presentBarrier{
 				VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-				nullptr,
+				null,
 				VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
 				0,
 				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
 				VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
 				VK_QUEUE_FAMILY_IGNORED,
 				VK_QUEUE_FAMILY_IGNORED,
-				0, // NOLINT(modernize-use-nullptr) platform dependent type
+				0, // NOLINT(modernize-use-null) platform dependent type
 				{VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1},
 			};
 
@@ -1057,19 +1028,19 @@ namespace cc {
 				const VkRenderPassCreateInfo2* pCreateInfo,
 				const VkAllocationCallbacks* pAllocator,
 				VkRenderPass* pRenderPass) {
-				static ccstd::vector<VkAttachmentDescription> attachmentDescriptions;
-				static ccstd::vector<VkSubpassDescription> subpassDescriptions;
-				static ccstd::vector<VkAttachmentReference> attachmentReferences;
-				static ccstd::vector<VkSubpassDependency> subpassDependencies;
-				static ccstd::vector<size_t> inputs;
-				static ccstd::vector<size_t> colors;
-				static ccstd::vector<size_t> resolves;
-				static ccstd::vector<size_t> depths;
+				static List<VkAttachmentDescription> attachmentDescriptions;
+				static List<VkSubpassDescription> subpassDescriptions;
+				static List<VkAttachmentReference> attachmentReferences;
+				static List<VkSubpassDependency> subpassDependencies;
+				static List<size_t> inputs;
+				static List<size_t> colors;
+				static List<size_t> resolves;
+				static List<size_t> depths;
 
-				attachmentDescriptions.resize(pCreateInfo->attachmentCount);
-				for (uint32_t i = 0; i < pCreateInfo->attachmentCount; ++i) {
+				attachmentDescriptions.resize(pCreateInfo.attachmentCount);
+				for (uint32 i = 0; i < pCreateInfo.attachmentCount; ++i) {
 					VkAttachmentDescription& desc{ attachmentDescriptions[i] };
-					const VkAttachmentDescription2& desc2{ pCreateInfo->pAttachments[i] };
+					const VkAttachmentDescription2& desc2{ pCreateInfo.pAttachments[i] };
 					desc.flags = desc2.flags;
 					desc.format = desc2.format;
 					desc.samples = desc2.samples;
@@ -1081,56 +1052,56 @@ namespace cc {
 					desc.finalLayout = desc2.finalLayout;
 				}
 
-				subpassDescriptions.resize(pCreateInfo->subpassCount);
+				subpassDescriptions.resize(pCreateInfo.subpassCount);
 				attachmentReferences.clear();
-				inputs.assign(pCreateInfo->subpassCount, std::numeric_limits<size_t>::max());
-				colors.assign(pCreateInfo->subpassCount, std::numeric_limits<size_t>::max());
-				resolves.assign(pCreateInfo->subpassCount, std::numeric_limits<size_t>::max());
-				depths.assign(pCreateInfo->subpassCount, std::numeric_limits<size_t>::max());
-				for (uint32_t i = 0; i < pCreateInfo->subpassCount; ++i) {
-					const VkSubpassDescription2& desc2{ pCreateInfo->pSubpasses[i] };
+				inputs.assign(pCreateInfo.subpassCount, std.numeric_limits<size_t>.max());
+				colors.assign(pCreateInfo.subpassCount, std.numeric_limits<size_t>.max());
+				resolves.assign(pCreateInfo.subpassCount, std.numeric_limits<size_t>.max());
+				depths.assign(pCreateInfo.subpassCount, std.numeric_limits<size_t>.max());
+				for (uint32 i = 0; i < pCreateInfo.subpassCount; ++i) {
+					const VkSubpassDescription2& desc2{ pCreateInfo.pSubpasses[i] };
 					if (desc2.inputAttachmentCount) {
 						inputs[i] = attachmentReferences.size();
-						for (uint32_t j = 0; j < desc2.inputAttachmentCount; ++j) {
+						for (uint32 j = 0; j < desc2.inputAttachmentCount; ++j) {
 							attachmentReferences.push_back({ desc2.pInputAttachments[j].attachment, desc2.pInputAttachments[j].layout });
 						}
 					}
 					if (desc2.colorAttachmentCount) {
 						colors[i] = attachmentReferences.size();
-						for (uint32_t j = 0; j < desc2.colorAttachmentCount; ++j) {
+						for (uint32 j = 0; j < desc2.colorAttachmentCount; ++j) {
 							attachmentReferences.push_back({ desc2.pColorAttachments[j].attachment, desc2.pColorAttachments[j].layout });
 						}
 						if (desc2.pResolveAttachments) {
 							resolves[i] = attachmentReferences.size();
-							for (uint32_t j = 0; j < desc2.colorAttachmentCount; ++j) {
+							for (uint32 j = 0; j < desc2.colorAttachmentCount; ++j) {
 								attachmentReferences.push_back({ desc2.pResolveAttachments[j].attachment, desc2.pResolveAttachments[j].layout });
 							}
 						}
 					}
 					if (desc2.pDepthStencilAttachment) {
 						depths[i] = attachmentReferences.size();
-						attachmentReferences.push_back({ desc2.pDepthStencilAttachment->attachment, desc2.pDepthStencilAttachment->layout });
+						attachmentReferences.push_back({ desc2.pDepthStencilAttachment.attachment, desc2.pDepthStencilAttachment.layout });
 					}
 				}
-				for (uint32_t i = 0; i < pCreateInfo->subpassCount; ++i) {
+				for (uint32 i = 0; i < pCreateInfo.subpassCount; ++i) {
 					VkSubpassDescription& desc{ subpassDescriptions[i] };
-					const VkSubpassDescription2& desc2{ pCreateInfo->pSubpasses[i] };
+					const VkSubpassDescription2& desc2{ pCreateInfo.pSubpasses[i] };
 					desc.flags = desc2.flags;
 					desc.pipelineBindPoint = desc2.pipelineBindPoint;
 					desc.inputAttachmentCount = desc2.inputAttachmentCount;
-					desc.pInputAttachments = inputs[i] > attachmentReferences.size() ? nullptr : &attachmentReferences[inputs[i]];
+					desc.pInputAttachments = inputs[i] > attachmentReferences.size() ? null : &attachmentReferences[inputs[i]];
 					desc.colorAttachmentCount = desc2.colorAttachmentCount;
-					desc.pColorAttachments = colors[i] > attachmentReferences.size() ? nullptr : &attachmentReferences[colors[i]];
-					desc.pResolveAttachments = resolves[i] > attachmentReferences.size() ? nullptr : &attachmentReferences[resolves[i]];
-					desc.pDepthStencilAttachment = depths[i] > attachmentReferences.size() ? nullptr : &attachmentReferences[depths[i]];
+					desc.pColorAttachments = colors[i] > attachmentReferences.size() ? null : &attachmentReferences[colors[i]];
+					desc.pResolveAttachments = resolves[i] > attachmentReferences.size() ? null : &attachmentReferences[resolves[i]];
+					desc.pDepthStencilAttachment = depths[i] > attachmentReferences.size() ? null : &attachmentReferences[depths[i]];
 					desc.preserveAttachmentCount = desc2.preserveAttachmentCount;
 					desc.pPreserveAttachments = desc2.pPreserveAttachments;
 				}
 
-				subpassDependencies.resize(pCreateInfo->dependencyCount);
-				for (uint32_t i = 0; i < pCreateInfo->dependencyCount; ++i) {
+				subpassDependencies.resize(pCreateInfo.dependencyCount);
+				for (uint32 i = 0; i < pCreateInfo.dependencyCount; ++i) {
 					VkSubpassDependency& desc{ subpassDependencies[i] };
-					const VkSubpassDependency2& desc2{ pCreateInfo->pDependencies[i] };
+					const VkSubpassDependency2& desc2{ pCreateInfo.pDependencies[i] };
 					desc.srcSubpass = desc2.srcSubpass;
 					desc.dstSubpass = desc2.dstSubpass;
 					desc.srcStageMask = desc2.srcStageMask;
@@ -1141,16 +1112,13 @@ namespace cc {
 				}
 
 				VkRenderPassCreateInfo renderPassCreateInfo{ VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO };
-				renderPassCreateInfo.attachmentCount = utils::toUint(attachmentDescriptions.size());
+				renderPassCreateInfo.attachmentCount = utils.toUint(attachmentDescriptions.size());
 				renderPassCreateInfo.pAttachments = attachmentDescriptions.data();
-				renderPassCreateInfo.subpassCount = utils::toUint(subpassDescriptions.size());
+				renderPassCreateInfo.subpassCount = utils.toUint(subpassDescriptions.size());
 				renderPassCreateInfo.pSubpasses = subpassDescriptions.data();
-				renderPassCreateInfo.dependencyCount = utils::toUint(subpassDependencies.size());
+				renderPassCreateInfo.dependencyCount = utils.toUint(subpassDependencies.size());
 				renderPassCreateInfo.pDependencies = subpassDependencies.data();
 
 				return vkCreateRenderPass(device, &renderPassCreateInfo, pAllocator, pRenderPass);
 			}
 		}
-
-	} // namespace gfx
-} // namespace cc

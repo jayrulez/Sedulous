@@ -45,8 +45,8 @@ namespace cc {
 			inline CCVKGPUDescriptorSetLayout* gpuDescriptorSetLayout() const { return _gpuDescriptorSetLayout; }
 
 		protected:
-			static uint32_t generateID() noexcept {
-				static uint32_t idGen = 10000;
+			static uint32 generateID() noexcept {
+				static uint32 idGen = 10000;
 				return idGen++;
 			}
 
@@ -60,7 +60,7 @@ namespace cc {
 
 				for (auto& binding : _bindings) {
 					if (hasAnyFlags(binding.descriptorType, DESCRIPTOR_DYNAMIC_TYPE)) {
-						for (uint32_t j = 0U; j < binding.count; j++) {
+						for (uint32 j = 0U; j < binding.count; j++) {
 							_gpuDescriptorSetLayout->dynamicBindings.push_back(binding.binding);
 						}
 					}
@@ -69,7 +69,7 @@ namespace cc {
 				cmdFuncCCVKCreateDescriptorSetLayout(CCVKDevice::getInstance(), _gpuDescriptorSetLayout);
 			}
 			void doDestroy() {
-				_gpuDescriptorSetLayout = nullptr;
+				_gpuDescriptorSetLayout = null;
 			}
 
 			IntrusivePtr<CCVKGPUDescriptorSetLayout> _gpuDescriptorSetLayout;

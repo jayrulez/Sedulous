@@ -81,7 +81,7 @@ namespace cc {
 				}
 			}
 			void doDestroy() {
-				_gpuInputAssembler = nullptr;
+				_gpuInputAssembler = null;
 			}
 
 			IntrusivePtr<CCVKGPUInputAssembler> _gpuInputAssembler;

@@ -54,12 +54,12 @@ namespace cc {
 				_gpuRenderPass->dependencies = _dependencies;
 
 				// assign a dummy subpass if not specified
-				uint32_t colorCount = utils::toUint(_gpuRenderPass->colorAttachments.size());
+				uint32 colorCount = utils::toUint(_gpuRenderPass->colorAttachments.size());
 				if (_gpuRenderPass->subpasses.empty()) {
 					_gpuRenderPass->subpasses.emplace_back();
 					auto& subpass = _gpuRenderPass->subpasses.back();
 					subpass.colors.resize(_colorAttachments.size());
-					for (uint32_t i = 0U; i < _colorAttachments.size(); ++i) {
+					for (uint32 i = 0U; i < _colorAttachments.size(); ++i) {
 						subpass.colors[i] = i;
 					}
 					if (_depthStencilAttachment.format != Format::UNKNOWN) {
@@ -84,7 +84,7 @@ namespace cc {
 				cmdFuncCCVKCreateRenderPass(CCVKDevice::getInstance(), _gpuRenderPass);
 			}
 			void doDestroy() {
-				_gpuRenderPass = nullptr;
+				_gpuRenderPass = null;
 			}
 
 			IntrusivePtr<CCVKGPURenderPass> _gpuRenderPass;

@@ -44,7 +44,7 @@ namespace cc {
 				destroy();
 			}
 
-			void submit(CommandBuffer* const* cmdBuffs, uint32_t count) {
+			void submit(CommandBuffer* const* cmdBuffs, uint32 count) {
 				CCVKDevice* device = CCVKDevice::getInstance();
 				_gpuQueue->commandBuffers.clear();
 
@@ -57,7 +57,7 @@ namespace cc {
 					_gpuQueue->commandBuffers.push_back(device->gpuTransportHub()->packageForFlight(false));
 				}
 
-				for (uint32_t i = 0U; i < count; ++i) {
+				for (uint32 i = 0U; i < count; ++i) {
 					auto* cmdBuff = static_cast<CCVKCommandBuffer*>(cmdBuffs[i]);
 					if (!cmdBuff->_pendingQueue.empty()) {
 						_gpuQueue->commandBuffers.push_back(cmdBuff->_pendingQueue.front());
@@ -103,14 +103,14 @@ namespace cc {
 				cmdFuncCCVKGetDeviceQueue(CCVKDevice::getInstance(), _gpuQueue.get());
 			}
 			void doDestroy() {
-				_gpuQueue = nullptr;
+				_gpuQueue = null;
 			}
 
 			std::unique_ptr<CCVKGPUQueue> _gpuQueue;
 
-			uint32_t _numDrawCalls = 0;
-			uint32_t _numInstances = 0;
-			uint32_t _numTriangles = 0;
+			uint32 _numDrawCalls = 0;
+			uint32 _numInstances = 0;
+			uint32 _numTriangles = 0;
 		};
 
 	} // namespace gfx

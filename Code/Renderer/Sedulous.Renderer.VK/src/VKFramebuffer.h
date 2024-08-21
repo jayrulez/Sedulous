@@ -68,7 +68,7 @@ namespace cc {
 				cmdFuncCCVKCreateFramebuffer(CCVKDevice::getInstance(), _gpuFBO);
 			}
 			void doDestroy() {
-				_gpuFBO = nullptr;
+				_gpuFBO = null;
 			}
 
 			IntrusivePtr<CCVKGPUFramebuffer> _gpuFBO;

@@ -42,9 +42,9 @@ namespace cc {
 				destroy();
 			}
 
-			void update(const void* buffer, uint32_t size) {
+			void update(const void* buffer, uint32 size) {
 				CC_PROFILE(CCVKBufferUpdate);
-				cmdFuncCCVKUpdateBuffer(CCVKDevice::getInstance(), _gpuBuffer, buffer, size, nullptr);
+				cmdFuncCCVKUpdateBuffer(CCVKDevice::getInstance(), _gpuBuffer, buffer, size, null);
 			}
 
 			inline CCVKGPUBuffer* gpuBuffer() const { return _gpuBuffer; }
@@ -65,10 +65,10 @@ namespace cc {
 			}
 
 			void doDestroy() {
-				_gpuBufferView = nullptr;
-				_gpuBuffer = nullptr;
+				_gpuBufferView = null;
+				_gpuBuffer = null;
 			}
-			void doResize(uint32_t size, uint32_t count) {
+			void doResize(uint32 size, uint32 count) {
 				createBuffer(size, count);
 
 				// Hold reference to keep the old bufferView alive during DescriptorHub::update and IAHub::update.
@@ -78,7 +78,7 @@ namespace cc {
 				CCVKDevice::getInstance()->gpuIAHub()->update(oldBufferView, _gpuBufferView);
 			}
 
-			void createBuffer(uint32_t size, uint32_t count) {
+			void createBuffer(uint32 size, uint32 count) {
 				_gpuBuffer = ccnew CCVKGPUBuffer;
 				_gpuBuffer->size = size;
 				_gpuBuffer->count = count;
@@ -88,7 +88,7 @@ namespace cc {
 				_gpuBuffer->stride = _stride;
 				_gpuBuffer->init();
 			}
-			void createBufferView(uint32_t range) {
+			void createBufferView(uint32 range) {
 				_gpuBufferView = ccnew CCVKGPUBufferView;
 				_gpuBufferView->range = range;
 

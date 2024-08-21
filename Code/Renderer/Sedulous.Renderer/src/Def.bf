@@ -165,7 +165,7 @@ namespace Sedulous.Renderer;
 			
 			private static uint32 ceilDiv(uint32 x, uint32 y) { return (x - 1) / y + 1; }
 
-			public static (uint32, uint32) formatAlignment(Format format){
+			public static (uint32 first, uint32 second) formatAlignment(Format format){
 			switch (format) {
 			case Format.BC1,
 			 Format.BC1_ALPHA,

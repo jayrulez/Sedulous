@@ -67,11 +67,11 @@ namespace cc {
 			}
 
 			void doDestroy() {
-				_gpuTexture = nullptr;
-				_gpuTextureView = nullptr;
+				_gpuTexture = null;
+				_gpuTextureView = null;
 			}
 
-			void doResize(uint32_t width, uint32_t height, uint32_t size) {
+			void doResize(uint32 width, uint32 height, uint32 size) {
 				if (!width || !height) return;
 				createTexture(width, height, size);
 
@@ -81,13 +81,13 @@ namespace cc {
 				CCVKDevice::getInstance()->gpuDescriptorHub()->update(oldTextureView, _gpuTextureView);
 			}
 
-			void createTexture(uint32_t width, uint32_t height, uint32_t size, bool initGPUTexture = true) {
+			void createTexture(uint32 width, uint32 height, uint32 size, bool initGPUTexture = true) {
 				_gpuTexture = ccnew CCVKGPUTexture;
 				_gpuTexture->width = width;
 				_gpuTexture->height = height;
 				_gpuTexture->size = size;
 
-				if (_swapchain != nullptr) {
+				if (_swapchain != null) {
 					_gpuTexture->swapchain = static_cast<CCVKSwapchain*>(_swapchain)->gpuSwapchain();
 					_gpuTexture->memoryAllocated = false;
 				}

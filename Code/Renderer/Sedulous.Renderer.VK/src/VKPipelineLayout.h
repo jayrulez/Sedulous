@@ -48,10 +48,10 @@ namespace cc {
 			void doInit(const PipelineLayoutInfo& info) {
 				_gpuPipelineLayout = ccnew CCVKGPUPipelineLayout;
 
-				uint32_t offset = 0U;
+				uint32 offset = 0U;
 				for (auto* setLayout : _setLayouts) {
 					CCVKGPUDescriptorSetLayout* gpuSetLayout = static_cast<CCVKDescriptorSetLayout*>(setLayout)->gpuDescriptorSetLayout();
-					uint32_t dynamicCount = utils::toUint(gpuSetLayout->dynamicBindings.size());
+					uint32 dynamicCount = utils::toUint(gpuSetLayout->dynamicBindings.size());
 					_gpuPipelineLayout->dynamicOffsetOffsets.push_back(offset);
 					_gpuPipelineLayout->setLayouts.emplace_back(gpuSetLayout);
 					offset += dynamicCount;
@@ -62,7 +62,7 @@ namespace cc {
 				cmdFuncCCVKCreatePipelineLayout(CCVKDevice::getInstance(), _gpuPipelineLayout);
 			}
 			void doDestroy() {
-				_gpuPipelineLayout = nullptr;
+				_gpuPipelineLayout = null;
 			}
 
 			IntrusivePtr<CCVKGPUPipelineLayout> _gpuPipelineLayout;

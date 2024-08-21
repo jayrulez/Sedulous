@@ -58,11 +58,11 @@ namespace cc {
 				cmdFuncCCVKCreateQueryPool(device, _gpuQueryPool);
 			}
 			void doDestroy() {
-				_gpuQueryPool = nullptr;
+				_gpuQueryPool = null;
 			}
 
 			IntrusivePtr<CCVKGPUQueryPool> _gpuQueryPool;
-			ccstd::vector<uint32_t> _ids;
+			List<uint32> _ids;
 		};
 
 	} // namespace gfx

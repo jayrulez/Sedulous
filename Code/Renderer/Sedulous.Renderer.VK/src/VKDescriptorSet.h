@@ -48,8 +48,8 @@ namespace cc {
 				if (_isDirty && _gpuDescriptorSet) {
 					CCVKGPUDescriptorHub* descriptorHub = CCVKDevice::getInstance()->gpuDescriptorHub();
 					CCVKGPUBarrierManager* layoutMgr = CCVKDevice::getInstance()->gpuBarrierManager();
-					uint32_t descriptorCount = utils::toUint(_gpuDescriptorSet->gpuDescriptors.size());
-					uint32_t instanceCount = utils::toUint(_gpuDescriptorSet->instances.size());
+					uint32 descriptorCount = utils::toUint(_gpuDescriptorSet->gpuDescriptors.size());
+					uint32 instanceCount = utils::toUint(_gpuDescriptorSet->instances.size());
 
 					for (size_t i = 0U; i < descriptorCount; i++) {
 						CCVKGPUDescriptor& binding = _gpuDescriptorSet->gpuDescriptors[i];
@@ -57,7 +57,7 @@ namespace cc {
 						if (hasFlag(DESCRIPTOR_BUFFER_TYPE, binding.type)) {
 							if (_buffers[i].ptr) {
 								CCVKGPUBufferView* bufferView = static_cast<CCVKBuffer*>(_buffers[i].ptr)->gpuBufferView();
-								for (uint32_t t = 0U; t < instanceCount; ++t) {
+								for (uint32 t = 0U; t < instanceCount; ++t) {
 									CCVKDescriptorInfo& descriptorInfo = _gpuDescriptorSet->instances[t].descriptorInfos[i];
 
 									if (binding.gpuBufferView) {
@@ -117,8 +117,8 @@ namespace cc {
 		protected:
 			void doInit(const DescriptorSetInfo& info) {
 				CCVKGPUDescriptorSetLayout* gpuDescriptorSetLayout = static_cast<const CCVKDescriptorSetLayout*>(_layout)->gpuDescriptorSetLayout();
-				uint32_t bindingCount = utils::toUint(gpuDescriptorSetLayout->bindings.size());
-				uint32_t descriptorCount = gpuDescriptorSetLayout->descriptorCount;
+				uint32 bindingCount = utils::toUint(gpuDescriptorSetLayout->bindings.size());
+				uint32 descriptorCount = gpuDescriptorSetLayout->descriptorCount;
 
 				_gpuDescriptorSet = ccnew CCVKGPUDescriptorSet;
 				_gpuDescriptorSet->gpuDescriptors.resize(descriptorCount, {});
@@ -126,7 +126,7 @@ namespace cc {
 
 				for (size_t i = 0U, k = 0U; i < bindingCount; ++i) {
 					const DescriptorSetLayoutBinding& binding = gpuDescriptorSetLayout->bindings[i];
-					for (uint32_t j = 0; j < binding.count; ++j, ++k) {
+					for (uint32 j = 0; j < binding.count; ++j, ++k) {
 						CCVKGPUDescriptor& gpuDescriptor = _gpuDescriptorSet->gpuDescriptors[k];
 						gpuDescriptor.type = binding.descriptorType;
 						switch (binding.descriptorType) {
@@ -164,14 +164,14 @@ namespace cc {
 				_gpuDescriptorSet->gpuLayout = gpuDescriptorSetLayout;
 				_gpuDescriptorSet->instances.resize(gpuDevice->backBufferCount);
 
-				for (uint32_t t = 0U; t < gpuDevice->backBufferCount; ++t) {
+				for (uint32 t = 0U; t < gpuDevice->backBufferCount; ++t) {
 					CCVKGPUDescriptorSet::Instance& instance = _gpuDescriptorSet->instances[t];
 					instance.vkDescriptorSet = gpuDevice->getDescriptorSetPool(_gpuDescriptorSet->layoutID)->request();
 					instance.descriptorInfos.resize(descriptorCount, {});
 
-					for (uint32_t i = 0U, k = 0U; i < bindingCount; ++i) {
+					for (uint32 i = 0U, k = 0U; i < bindingCount; ++i) {
 						const DescriptorSetLayoutBinding& binding = gpuDescriptorSetLayout->bindings[i];
-						for (uint32_t j = 0; j < binding.count; ++j, ++k) {
+						for (uint32 j = 0; j < binding.count; ++j, ++k) {
 							if (hasFlag(DESCRIPTOR_BUFFER_TYPE, binding.descriptorType)) {
 								instance.descriptorInfos[k].buffer.buffer = gpuDevice->defaultBuffer->vkBuffer;
 								instance.descriptorInfos[k].buffer.offset = gpuDevice->defaultBuffer->getStartOffset(t);
@@ -188,12 +188,12 @@ namespace cc {
 					}
 
 					if (!gpuDevice->useDescriptorUpdateTemplate) {
-						ccstd::vector<VkWriteDescriptorSet>& entries = instance.descriptorUpdateEntries;
+						List<VkWriteDescriptorSet>& entries = instance.descriptorUpdateEntries;
 						entries.resize(descriptorCount, { VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET });
 
-						for (uint32_t i = 0U, j = 0U; i < bindingCount; i++) {
+						for (uint32 i = 0U, j = 0U; i < bindingCount; i++) {
 							const VkDescriptorSetLayoutBinding& descriptor = gpuDescriptorSetLayout->vkBindings[i];
-							for (uint32_t k = 0U; k < descriptor.descriptorCount; k++, j++) {
+							for (uint32 k = 0U; k < descriptor.descriptorCount; k++, j++) {
 								entries[j].dstSet = instance.vkDescriptorSet;
 								entries[j].dstBinding = descriptor.binding;
 								entries[j].dstArrayElement = k;
@@ -225,7 +225,7 @@ namespace cc {
 				}
 			}
 			void doDestroy() {
-				_gpuDescriptorSet = nullptr;
+				_gpuDescriptorSet = null;
 			}
 
 			IntrusivePtr<CCVKGPUDescriptorSet> _gpuDescriptorSet;

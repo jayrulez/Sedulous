@@ -418,27 +418,6 @@ namespace Sedulous.Renderer;
 
 		static
 		{
-			static bool hasFlag<T>(T flags, T flagToTest)
-				where T : enum
-				where T : operator T & T
-			{
-				return flags & flagToTest != 0;
-			}
-
-			static bool hasAnyFlags<T>(T flags, T flagsToTest)
-				where T : enum
-				where T : operator T & T
-			{
-				return flags & flagsToTest != 0;
-			}
-
-			static bool hasAllFlags<T>(T flags, T flagsToTest)
-				where T : enum
-				where T : operator T & T
-			{
-				return flags & flagsToTest == flagsToTest;
-			}
-
 			static bool validateAccess(ResourceType type, CommonUsage usage, MemoryAccess access, ShaderStageFlags visibility) {
 				/*delegate uint32(uint32* elements, int count) getMaxElement = scope(elements, count) =>
 					{
