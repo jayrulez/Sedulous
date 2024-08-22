@@ -1,3 +1,8 @@
+using Bulkan;
+using System;
+using System.Collections;
+
+using static Bulkan.VulkanNative;
 /****************************************************************************
  Copyright (c) 2023 Xiamen Yaji Software Co., Ltd.
 
@@ -22,21 +27,15 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#include "VKPipelineCache.h"
-
-#include <fstream>
-
-#include "base/BinaryArchive.h"
-
-#include "gfx-base/GFXUtil.h"
-
-namespace {
-	const char* fileName = "/pipeline_cache_vk.bin";
+static
+{
+	const String fileName = "/pipeline_cache_vk.bin";
 	const uint32 MAGIC = 0x4343564B; // "CCVK"
 	const uint32 VERSION = 1;
 
-	void loadData(const ccstd::string& path, List<char>& data) {
-		std::ifstream stream(path, std::ios::binary);
+	internal static void loadData(String path, ref List<char8> data)
+	{
+		/*std::ifstream stream(path, std::ios::binary);
 		if (!stream.is_open()) {
 			CC_LOG_INFO("Load program cache, no cached files.");
 			return;
@@ -57,18 +56,23 @@ namespace {
 		}
 		if (loadResult) {
 			CC_LOG_INFO("Load pipeline cache success.");
-		}
+		}*/
 	}
-} // namespace
+}
 
-namespace cc::gfx {
+namespace Sedulous.Renderer.VK;
 
-	CCVKPipelineCache::CCVKPipelineCache() {
-		_savePath = getPipelineCacheFolder() + fileName;
+class CCVKPipelineCache
+{
+	public this()
+	{
+		//_savePath = getPipelineCacheFolder() + fileName;
 	}
 
-	CCVKPipelineCache::~CCVKPipelineCache() {
-		if (_pipelineCache != VK_NULL_HANDLE) {
+	public ~this()
+	{
+		if (_pipelineCache != .Null)
+		{
 #if CC_USE_PIPELINE_CACHE
 			saveCache();
 #endif
@@ -76,54 +80,62 @@ namespace cc::gfx {
 		}
 	}
 
-	void CCVKPipelineCache::init(VkDevice dev) {
+	public void init(VkDevice dev)
+	{
 		_device = dev;
 		loadCache();
 	}
 
-	void CCVKPipelineCache::loadCache() {
-		List<char> data;
+	public void loadCache()
+	{
+		List<char8> data = scope .();
 #if CC_USE_PIPELINE_CACHE
 		loadData(_savePath, data);
 #endif
 
-		VkPipelineCacheCreateInfo cacheInfo = {};
-		cacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+		VkPipelineCacheCreateInfo cacheInfo = .();
+		cacheInfo.sType = .VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
 		cacheInfo.pNext = null;
-		cacheInfo.initialDataSize = static_cast<uint32>(data.size());
-		cacheInfo.pInitialData = data.data();
-		VK_CHECK(vkCreatePipelineCache(_device, &cacheInfo, null, &_pipelineCache));
+		cacheInfo.initialDataSize = (uint32)data.Count;
+		cacheInfo.pInitialData = data.Ptr;
+		VK_CHECK!(vkCreatePipelineCache(_device, &cacheInfo, null, &_pipelineCache));
 	}
-
-	void CCVKPipelineCache::saveCache() {
-		if (!_dirty) {
+	public void saveCache()
+	{
+		if (!_dirty)
+		{
 			return;
 		}
-		std::ofstream stream(_savePath, std::ios::binary);
-		if (!stream.is_open()) {
-			CC_LOG_INFO("Save program cache failed.");
-			return;
-		}
-		BinaryOutputArchive archive(stream);
-		archive.save(MAGIC);
-		archive.save(VERSION);
+		//std::ofstream stream(_savePath, std::ios::binary);
+		//if (!stream.is_open()) {
+		//	CC_LOG_INFO("Save program cache failed.");
+		//	return;
+		//}
+		//BinaryOutputArchive archive(stream);
+		//archive.save(MAGIC);
+		//archive.save(VERSION);
 
-		size_t size = 0;
+		uint size = 0;
 		vkGetPipelineCacheData(_device, _pipelineCache, &size, null);
-		List<char> data(size);
-		vkGetPipelineCacheData(_device, _pipelineCache, &size, data.data());
+		List<char8> data = scope .() { Count = (int)size };
+		vkGetPipelineCacheData(_device, _pipelineCache, &size, data.Ptr);
 
-		archive.save(static_cast<uint32>(size));
-		archive.save(data.data(), static_cast<uint32>(size));
+		//archive.save((uint32)size);
+		//archive.save(data.data(), (uint32)size);
 		_dirty = false;
 	}
 
-	void CCVKPipelineCache::setDirty() {
+	public void setDirty()
+	{
 		_dirty = true;
 	}
-
-	VkPipelineCache CCVKPipelineCache::getHandle() const {
+	public VkPipelineCache getHandle()
+	{
 		return _pipelineCache;
 	}
 
-} // namespace cc::gfx
+	private VkDevice _device = .Null;
+	private VkPipelineCache _pipelineCache = .Null;
+	private String _savePath;
+	private bool _dirty = false;
+}

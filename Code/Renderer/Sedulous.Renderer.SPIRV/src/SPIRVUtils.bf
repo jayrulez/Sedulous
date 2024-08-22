@@ -5,7 +5,7 @@ using SPIRV_Cross;
 namespace Sedulous.Renderer.SPIRV;
 
 using internal Sedulous.Renderer.SPIRV;
-
+using static SPIRV_Cross.SPIRV;
 
 
 static
@@ -229,12 +229,64 @@ class SPIRVUtils
 			Runtime.Assert(insn + wordCount <= code + codeSize);
 			insn += wordCount;
 		}
+		
 
+		//_program.buildReflection();
 		{
+			const bool g_fail_on_error = true;
+			void error_callback(void* userdata, char8* error)
+			{
+				(void)userdata;
+				if (g_fail_on_error)
+				{
+					Console.WriteLine("Error: {0}\n", scope String(error));
+					Runtime.FatalError();
+				}
+				else
+					Console.WriteLine("Expected error hit: {0}\n", scope String(error));
+			} 
 
+			spvc_context context = .Null;
+			Runtime.Assert(spvc_context_create(&context) == 0);
+			defer spvc_context_destroy(context);
+
+			function void(void* userdata, char8* error) errorCb = => error_callback;
+			spvc_error_callback cb = .((int)(void*)errorCb);
+
+			spvc_context_set_error_callback(context, cb, null);
+
+			spvc_compiler compiler = .Null;
+			spvc_parsed_ir ir = .Null;
+			spvc_compiler_options options = .Null;
+
+			SpvId* buffer = (SpvId*)_output.Ptr;
+			uint64 word_count = uint64(_output.Count / sizeof(SpvId));
+			Runtime.Assert(spvc_context_parse_spirv(context, buffer, word_count, &ir) == 0);
+
+			Runtime.Assert(spvc_compiler_create_compiler_options(compiler, &options) == 0);
+			Runtime.Assert(spvc_compiler_install_compiler_options(compiler, options) == 0);
+
+			char8* source = null;
+			Runtime.Assert(spvc_compiler_compile(compiler, (.)&source) == 0);
+
+			{
+				spvc_resources resources = .Null;
+
+				Runtime.Assert(spvc_compiler_create_shader_resources(compiler, &resources) == 0);
+
+				delegate void(spvc_resources resources, spvc_resource_type type) enumerate_resources = scope [&] (resources, type) =>
+				{
+					spvc_reflected_resource* list = null;
+					uint count = 0;
+					Runtime.Assert(spvc_resources_get_resource_list_for_type(resources, type, (.)&list, &count) == 0);
+					for (uint i = 0; i < count; i++)
+					{
+						spvc_reflected_resource resource = list[i];
+						// todo
+					}
+				};
+			}
 		}
-
-		_program.buildReflection();
 
 		activeLocations.Clear();
 		uint32 activeCount = _program.getNumPipeInputs();

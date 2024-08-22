@@ -23,6 +23,8 @@ class CCVKGPUCommandBufferPool
 			{
 				VulkanNative.vkDestroyCommandPool(_device.vkDevice, pool.vkCommandPool, null);
 				pool.vkCommandPool = .Null;
+				delete pool;
+				pool = null;
 			}
 			for (var item in pool.usedCommandBuffers) item.Clear();
 			for (var item in pool.commandBuffers) item.Clear();
@@ -114,15 +116,11 @@ class CCVKGPUCommandBufferPool
 		}
 	}
 
-	private struct CommandBufferPool
+	private class CommandBufferPool
 	{
 		public VkCommandPool vkCommandPool = .Null;
 		public CachedArray<VkCommandBuffer>[2] commandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[0]; delete _[1]; };
 		public CachedArray<VkCommandBuffer>[2] usedCommandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[0]; delete _[1]; };
-
-		public void Destroy() mut
-		{
-		}
 	}
 
 	private CCVKGPUDevice _device = null;

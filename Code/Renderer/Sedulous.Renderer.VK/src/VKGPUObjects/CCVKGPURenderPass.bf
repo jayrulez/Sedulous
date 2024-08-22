@@ -27,9 +27,9 @@ class CCVKGPURenderPass : CCVKGPUDeviceObject
 	{
 		if (index < (uint)colorAttachments.Count)
 		{
-			return colorAttachments[(int)index].barrier != null ? ((CCVKGeneralBarrier)(colorAttachments[(int)index].barrier)).gpuBarrier() : &gpuDevice.defaultColorBarrier;
+			return colorAttachments[(int)index].barrier != null ? ((CCVKGeneralBarrier)(colorAttachments[(int)index].barrier)).gpuBarrier() : gpuDevice.defaultColorBarrier;
 		}
-		return depthStencilAttachment.barrier != null ? ((CCVKGeneralBarrier)(depthStencilAttachment.barrier)).gpuBarrier() : &gpuDevice.defaultDepthStencilBarrier;
+		return depthStencilAttachment.barrier != null ? ((CCVKGeneralBarrier)(depthStencilAttachment.barrier)).gpuBarrier() : gpuDevice.defaultDepthStencilBarrier;
 	}
 	public bool hasShadingAttachment(uint32 subPassId)
 	{

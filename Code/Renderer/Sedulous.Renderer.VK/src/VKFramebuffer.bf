@@ -1,6 +1,7 @@
 using System;
+using Sedulous.Renderer.VK.Internal;
 /****************************************************************************
- Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
+ Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos.com
 
@@ -23,38 +24,52 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace Sedulous.Renderer;
+namespace Sedulous.Renderer.VK;
 
-		abstract class CommandQueue : GFXObject
+
+class CCVKFramebuffer : Framebuffer
+{
+	public this()
+	{
+		_typedID = generateObjectID<decltype(this)>();
+	}
+	public ~this()
+	{
+		destroy();
+	}
+
+	[Inline] public CCVKGPUFramebuffer gpuFBO() { return _gpuFBO; }
+
+	protected override void doInit(in FramebufferInfo info)
+	{
+		_gpuFBO = new CCVKGPUFramebuffer();
+		_gpuFBO.gpuRenderPass = ((CCVKRenderPass)_renderPass).gpuRenderPass();
+
+		_gpuFBO.gpuColorViews.Resize(_colorTextures.Count);
+		for (int i = 0; i < _colorTextures.Count; ++i)
 		{
-			public this()
-				: base(ObjectType.QUEUE)
-			{
-			}
-
-			public void initialize(in QueueInfo info)
-			{
-				_type = info.type;
-
-				doInit(info);
-			}
-
-
-			public void destroy()
-			{
-				doDestroy();
-
-				_type = QueueType.GRAPHICS;
-			}
-
-			public abstract void submit(CommandBuffer* cmdBuffs, uint32 count);
-
-			[Inline] public void submit(in CommandBufferList cmdBuffs) { submit(cmdBuffs.Ptr, (uint32)cmdBuffs.Count); }
-
-			[Inline] public QueueType getType() { return _type; }
-
-			protected abstract void doInit(in QueueInfo info);
-			protected abstract void doDestroy();
-
-			protected QueueType _type = QueueType.GRAPHICS;
+			var colorTex = (CCVKTexture)_colorTextures[i];
+			_gpuFBO.gpuColorViews[i] = colorTex.gpuTextureView();
 		}
+
+		if (_depthStencilTexture != null)
+		{
+			var depthTex = (CCVKTexture)_depthStencilTexture;
+			_gpuFBO.gpuDepthStencilView = depthTex.gpuTextureView();
+		}
+
+		if (_depthStencilResolveTexture != null)
+		{
+			var depthTex = (CCVKTexture)_depthStencilResolveTexture;
+			_gpuFBO.gpuDepthStencilResolveView = depthTex.gpuTextureView();
+		}
+
+		cmdFuncCCVKCreateFramebuffer(CCVKDevice.getInstance(), _gpuFBO);
+	}
+	protected override void doDestroy()
+	{
+		_gpuFBO = null;
+	}
+
+	protected CCVKGPUFramebuffer _gpuFBO;
+}

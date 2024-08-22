@@ -1,3 +1,4 @@
+using Sedulous.Renderer.VK.Internal;
 /****************************************************************************
  Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -24,35 +25,66 @@
 
 namespace Sedulous.Renderer.VK;
 
-#pragma once
+using internal Sedulous.Renderer.VK;
 
-#include <memory>
-#include "../VKStd.h"
-#include "gfx-base/states/GFXGeneralBarrier.h"
+static
+{
+	internal static void initGpuShader(CCVKGPUShader gpuShader)
+	{
+		cmdFuncCCVKCreateShader(CCVKDevice.getInstance(), gpuShader);
 
-namespace cc {
-	namespace gfx {
+		// Clear shader source after they're uploaded to GPU
+		for (var stage in ref gpuShader.gpuStages)
+		{
+			stage.source.Clear();
+			stage.source.shrink_to_fit();
+		}
 
-		struct CCVKGPUGeneralBarrier;
+		gpuShader.initialized = true;
+	}
+}
 
-		class CC_VULKAN_API CCVKGeneralBarrier : public GeneralBarrier {
-		public:
-			explicit CCVKGeneralBarrier(const GeneralBarrierInfo& info) {
-				_typedID = generateObjectID<decltype(this)>();
+class CCVKShader : Shader
+{
+	public this()
+	{
+		_typedID = generateObjectID<Self>();
+	}
 
-				_gpuBarrier = std::make_unique<CCVKGPUGeneralBarrier>();
-				getAccessTypes(info.prevAccesses, _gpuBarrier->prevAccesses);
-				getAccessTypes(info.nextAccesses, _gpuBarrier->nextAccesses);
+	public ~this()
+	{
+		destroy();
+	}
 
-				cmdFuncCCVKCreateGeneralBarrier(CCVKDevice::getInstance(), _gpuBarrier.get());
-			}
-			~CCVKGeneralBarrier() override = default;
+	public CCVKGPUShader gpuShader()
+	{
+		if (!_gpuShader.initialized)
+		{
+			initGpuShader(_gpuShader);
+		}
+		return _gpuShader;
+	}
 
-			inline const CCVKGPUGeneralBarrier* gpuBarrier() const { return _gpuBarrier.get(); }
+	protected  override void doInit(in ShaderInfo info)
+	{
+		_gpuShader = new CCVKGPUShader();
+		_gpuShader.name = _name;
+		_gpuShader.attributes = _attributes;
+		for (ref ShaderStage stage in ref _stages)
+		{
+			_gpuShader.gpuStages.Add(new CCVKGPUShaderStage(stage.stage, stage.source));
+		}
+		for (var stage in ref _stages)
+		{
+			stage.source.Clear();
+			stage.source.shrink_to_fit();
+		}
+	}
 
-		protected:
-			std::unique_ptr<CCVKGPUGeneralBarrier> _gpuBarrier;
-		};
+	protected  override void doDestroy()
+	{
+		_gpuShader = null;
+	}
 
-	} // namespace gfx
-} // namespace cc
+	protected CCVKGPUShader _gpuShader;
+}

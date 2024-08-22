@@ -45,5 +45,5 @@ class CCVKGPUInputAssembler : CCVKGPUDeviceObject
 	public CCVKGPUBufferView gpuIndexBuffer;
 	public CCVKGPUBufferView gpuIndirectBuffer;
 	public List<VkBuffer> vertexBuffers;
-	public List<VkDeviceSize> vertexBufferOffsets;
+	public List<uint64> vertexBufferOffsets;
 }

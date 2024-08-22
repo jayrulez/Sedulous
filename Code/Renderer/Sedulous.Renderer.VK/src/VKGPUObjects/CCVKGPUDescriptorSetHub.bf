@@ -1,5 +1,6 @@
 using System.Collections;
 using Bulkan;
+using static Bulkan.VulkanNative;
 namespace Sedulous.Renderer.VK.Internal;
 
 		/**
@@ -11,14 +12,14 @@ class CCVKGPUDescriptorSetHub
 	{
 		_device = device;
 		_setsToBeUpdated.Resize(device.backBufferCount);
-		if (device.minorVersion > 0)
+		//if (device.minorVersion > 0)
 		{
-			_updateFn = vkUpdateDescriptorSetWithTemplate;
+			_updateFn = => VulkanNative.vkUpdateDescriptorSetWithTemplate;
 		}
-		else
-		{
-			_updateFn = vkUpdateDescriptorSetWithTemplateKHR;
-		}
+		//else
+		//{
+		//	_updateFn =  =>VulkanNative.vkUpdateDescriptorSetWithTemplateKHR;
+		//}
 	}
 
 	public void record(CCVKGPUDescriptorSet gpuDescriptorSet)
@@ -82,5 +83,5 @@ class CCVKGPUDescriptorSetHub
 
 	private CCVKGPUDevice _device = null;
 	private List<DescriptorSetList> _setsToBeUpdated;
-	private PFN_vkUpdateDescriptorSetWithTemplate _updateFn = null;
+	private vkUpdateDescriptorSetWithTemplateFunction _updateFn = null;
 }

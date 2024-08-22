@@ -2,6 +2,7 @@ using Bulkan;
 using System;
 using System.Collections;
 using Bulkan.Utilities;
+using Sedulous.Renderer.VK.Internal;
 namespace Sedulous.Renderer.VK;
 
 static
@@ -112,10 +113,10 @@ static
 		case Format.EAC_RG11: return .VK_FORMAT_EAC_R11G11_UNORM_BLOCK;
 		case Format.EAC_RG11SN: return .VK_FORMAT_EAC_R11G11_SNORM_BLOCK;
 
-		case Format.PVRTC_RGB2:
-		case Format.PVRTC_RGBA2: return .VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG;
-		case Format.PVRTC_RGB4:
-		case Format.PVRTC_RGBA4: return .VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG;
+		case Format.PVRTC_RGB2,
+			 Format.PVRTC_RGBA2: return .VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG;
+		case Format.PVRTC_RGB4,
+			 Format.PVRTC_RGBA4: return .VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG;
 		case Format.PVRTC2_2BPP: return .VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG;
 		case Format.PVRTC2_4BPP: return .VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG;
 
@@ -340,17 +341,17 @@ static
 		return SurfaceTransform.IDENTITY;
 	}
 
-	public static String mapVendorName(uint32 vendorID) {
+	public static void mapVendorName(uint32 vendorID, String name) {
 		switch (vendorID) {
-		case 0x1002: return "Advanced Micro Devices, Inc.";
-		case 0x1010: return "Imagination Technologies";
-		case 0x106b: return "Apple Inc.";
-		case 0x10DE: return "Nvidia Corporation";
-		case 0x13B5: return "Arm Limited";
-		case 0x5143: return "Qualcomm Incorporated";
-		case 0x8086: return "Intel Corporation";
+		case 0x1002: name.Append("Advanced Micro Devices, Inc.");return;
+		case 0x1010: name.Append("Imagination Technologies");return;
+		case 0x106b: name.Append("Apple Inc.");return;
+		case 0x10DE: name.Append("Nvidia Corporation");return;
+		case 0x13B5: name.Append("Arm Limited");return;
+		case 0x5143: name.Append("Qualcomm Incorporated");return;
+		case 0x8086: name.Append("Intel Corporation");return;
 		}
-		return StringUtil.format("Unknown VendorID %d", vendorID);
+		name.AppendF("Unknown VendorID {}", vendorID);
 	}
 
 	public const VkSurfaceTransformFlagsKHR TRANSFORMS_THAT_REQUIRE_FLIPPING =

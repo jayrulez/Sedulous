@@ -80,7 +80,7 @@ namespace Sedulous.Renderer;
 			public abstract void resetQueryPool(QueryPool queryPool);
 			public virtual void completeQueryPool(QueryPool queryPool) { }
 
-			typealias CustomCommand = function void(void*);
+			public typealias CustomCommand = function void(void*);
 			public virtual void customCommand(CustomCommand cmd) { }
 
 			// barrier: excutionBarrier
@@ -90,7 +90,7 @@ namespace Sedulous.Renderer;
 			// textureBarriers: array of TextureBarrier*, descriptions of access of textures
 			// textures: array of MTL/VK/GLES textures
 			// textureBarrierCount: number of barrier, should be equal to number of textures
-			public abstract void pipelineBarrier(in GeneralBarrier barrier, BufferBarrier* bufferBarriers, Buffer* buffers, uint32 bufferBarrierCount, TextureBarrier* textureBarriers, Texture* textures, uint32 textureBarrierCount);
+			public abstract void pipelineBarrier(GeneralBarrier barrier, BufferBarrier* bufferBarriers, Buffer* buffers, uint32 bufferBarrierCount, TextureBarrier* textureBarriers, Texture* textures, uint32 textureBarrierCount);
 
 			[Inline] public void begin()
 			{

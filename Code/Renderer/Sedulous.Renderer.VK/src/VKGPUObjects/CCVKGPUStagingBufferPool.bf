@@ -1,5 +1,6 @@
 using Bulkan;
 using System.Collections;
+using System;
 namespace Sedulous.Renderer.VK.Internal;
 
 		/**
@@ -23,7 +24,7 @@ class CCVKGPUStagingBufferPool
 
 	public CCVKGPUBufferView alloc(uint32 size, uint32 alignment)
 	{
-		CC_ASSERT_LE(size, CHUNK_SIZE);
+		Runtime.Assert(size <= CHUNK_SIZE);
 
 		int bufferCount = _pool.Count;
 		Buffer* buffer = null;

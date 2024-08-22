@@ -76,6 +76,6 @@ namespace Sedulous.Renderer;
 			protected QueryType _type =  QueryType.OCCLUSION;
 			protected uint32 _maxQueryObjects =  0;
 			protected bool _forceWait =  true;
-			protected Monitor _mutex;
+			protected Monitor _mutex = new .() ~ delete _;
 			protected Dictionary<uint32, uint64> _results;
 		}

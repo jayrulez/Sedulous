@@ -3,7 +3,7 @@ using Bulkan.Utilities;
 using System.Collections;
 namespace Sedulous.Renderer.VK.Internal;
 
-struct CCVKGPUTextureBarrier
+class CCVKGPUTextureBarrier
 {
 	public VkPipelineStageFlags srcStageMask = 0U;
 	public VkPipelineStageFlags dstStageMask = 0U;

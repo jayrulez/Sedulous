@@ -1,3 +1,5 @@
+using Sedulous.Renderer.VK.Internal;
+using System;
 /****************************************************************************
  Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -24,46 +26,25 @@
 
 namespace Sedulous.Renderer.VK;
 
-#pragma once
 
-#include <mutex>
-#include "VKStd.h"
-#include "gfx-base/GFXQueryPool.h"
-#include "gfx-vulkan/VKGPUObjects.h"
+class CCVKGeneralBarrier : GeneralBarrier
+{
+	public this(in GeneralBarrierInfo info)
+		: base(info)
+	{
+		_typedID = generateObjectID<decltype(this)>();
 
-namespace cc {
-	namespace gfx {
+		_gpuBarrier = new CCVKGPUGeneralBarrier();
+		getAccessTypes(info.prevAccesses, ref _gpuBarrier.prevAccesses);
+		getAccessTypes(info.nextAccesses, ref _gpuBarrier.nextAccesses);
 
-		class CC_VULKAN_API CCVKQueryPool final : public QueryPool {
-		public:
-			CCVKQueryPool() {
-				_typedID = generateObjectID<decltype(this)>();
-			}
-			~CCVKQueryPool() {
-				destroy();
-			}
+		cmdFuncCCVKCreateGeneralBarrier(CCVKDevice.getInstance(), _gpuBarrier);
+	}
+	public ~this()
+	{
+	}
 
-			inline CCVKGPUQueryPool* gpuQueryPool() const { return _gpuQueryPool; }
+	[Inline] public CCVKGPUGeneralBarrier gpuBarrier() { return _gpuBarrier; }
 
-		protected:
-			friend class CCVKCommandBuffer;
-			friend class CCVKDevice;
-
-			void doInit(const QueryPoolInfo& info) {
-				CCVKDevice* device = CCVKDevice::getInstance();
-				_gpuQueryPool = ccnew CCVKGPUQueryPool;
-				_gpuQueryPool->type = _type;
-				_gpuQueryPool->maxQueryObjects = _maxQueryObjects;
-				_gpuQueryPool->forceWait = _forceWait;
-				cmdFuncCCVKCreateQueryPool(device, _gpuQueryPool);
-			}
-			void doDestroy() {
-				_gpuQueryPool = null;
-			}
-
-			IntrusivePtr<CCVKGPUQueryPool> _gpuQueryPool;
-			List<uint32> _ids;
-		};
-
-	} // namespace gfx
-} // namespace cc
+	protected CCVKGPUGeneralBarrier _gpuBarrier;
+}

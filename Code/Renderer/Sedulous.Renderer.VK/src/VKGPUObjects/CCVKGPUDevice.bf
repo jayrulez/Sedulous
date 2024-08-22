@@ -22,7 +22,7 @@ using System.Threading;
 			public bool useDescriptorUpdateTemplate = false;
 			public bool useMultiDrawIndirect = false;
 
-			public PFN_vkCreateRenderPass2 createRenderPass2 = null;
+			public VulkanNative.vkCreateRenderPass2Function createRenderPass2 = null;
 
 			// for default backup usages
 			public CCVKGPUSampler defaultSampler;

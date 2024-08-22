@@ -1,5 +1,6 @@
+using Sedulous.Renderer.VK.Internal;
 /****************************************************************************
- Copyright (c) 2023 Xiamen Yaji Software Co., Ltd.
+ Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos.com
 
@@ -22,34 +23,28 @@
  THE SOFTWARE.
 ****************************************************************************/
 
-#pragma once
+namespace Sedulous.Renderer.VK;
 
-#include "VKGPUObjects.h"
-#include "base/Ptr.h"
-#include "base/RefCounted.h"
-#include "base/std/container/string.h"
-#include "base/std/container/unordered_map.h"
-#include "base/std/container/vector.h"
+class CCVKSampler : Sampler
+{
+	public this(in SamplerInfo info) : base(info)
+	{
+		_typedID = generateObjectID<Self>();
 
-namespace cc::gfx {
+		_gpuSampler = new CCVKGPUSampler();
+		_gpuSampler.minFilter = _info.minFilter;
+		_gpuSampler.magFilter = _info.magFilter;
+		_gpuSampler.mipFilter = _info.mipFilter;
+		_gpuSampler.addressU = _info.addressU;
+		_gpuSampler.addressV = _info.addressV;
+		_gpuSampler.addressW = _info.addressW;
+		_gpuSampler.maxAnisotropy = _info.maxAnisotropy;
+		_gpuSampler.cmpFunc = _info.cmpFunc;
+		_gpuSampler.init();
+	}
+	public ~this() { }
 
-	class CCVKPipelineCache : public RefCounted {
-	public:
-		CCVKPipelineCache();
-		~CCVKPipelineCache() override;
+	public CCVKGPUSampler gpuSampler() { return _gpuSampler; }
 
-		void init(VkDevice dev);
-		void loadCache();
-		void saveCache();
-
-		void setDirty();
-		VkPipelineCache getHandle() const;
-
-	private:
-		VkDevice _device = VK_NULL_HANDLE;
-		VkPipelineCache _pipelineCache = VK_NULL_HANDLE;
-		ccstd::string _savePath;
-		bool _dirty = false;
-	};
-
-} // namespace cc::gfx
+	protected CCVKGPUSampler _gpuSampler;
+}

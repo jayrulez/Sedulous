@@ -1,6 +1,8 @@
 using System;
+using Sedulous.Renderer.VK.Internal;
+using System.Collections;
 /****************************************************************************
- Copyright (c) 2019-2023 Xiamen Yaji Software Co., Ltd.
+ Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
  http://www.cocos.com
 
@@ -23,38 +25,36 @@ using System;
  THE SOFTWARE.
 ****************************************************************************/
 
-namespace Sedulous.Renderer;
+namespace Sedulous.Renderer.VK;
 
-		abstract class CommandQueue : GFXObject
-		{
-			public this()
-				: base(ObjectType.QUEUE)
-			{
-			}
+class CCVKQueryPool : QueryPool
+{
+	public this()
+	{
+		_typedID = generateObjectID<decltype(this)>();
+	}
+	public ~this()
+	{
+		destroy();
+	}
 
-			public void initialize(in QueueInfo info)
-			{
-				_type = info.type;
-
-				doInit(info);
-			}
+	[Inline] public CCVKGPUQueryPool gpuQueryPool() { return _gpuQueryPool; }
 
 
-			public void destroy()
-			{
-				doDestroy();
+	protected override void doInit(in QueryPoolInfo info)
+	{
+		CCVKDevice device = CCVKDevice.getInstance();
+		_gpuQueryPool = new CCVKGPUQueryPool();
+		_gpuQueryPool.type = _type;
+		_gpuQueryPool.maxQueryObjects = _maxQueryObjects;
+		_gpuQueryPool.forceWait = _forceWait;
+		cmdFuncCCVKCreateQueryPool(device, _gpuQueryPool);
+	}
+	protected override void doDestroy()
+	{
+		_gpuQueryPool = null;
+	}
 
-				_type = QueueType.GRAPHICS;
-			}
-
-			public abstract void submit(CommandBuffer* cmdBuffs, uint32 count);
-
-			[Inline] public void submit(in CommandBufferList cmdBuffs) { submit(cmdBuffs.Ptr, (uint32)cmdBuffs.Count); }
-
-			[Inline] public QueueType getType() { return _type; }
-
-			protected abstract void doInit(in QueueInfo info);
-			protected abstract void doDestroy();
-
-			protected QueueType _type = QueueType.GRAPHICS;
-		}
+	protected CCVKGPUQueryPool _gpuQueryPool;
+	protected List<uint32> _ids = new .() ~ delete _;
+}

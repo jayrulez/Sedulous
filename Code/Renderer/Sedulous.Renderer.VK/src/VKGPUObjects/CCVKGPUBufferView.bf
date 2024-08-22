@@ -19,6 +19,6 @@ class CCVKGPUBufferView : CCVKGPUDeviceObject
 
 	public VkDeviceSize getStartOffset(uint32 curBackBufferIndex)
 	{
-		return gpuBuffer.getStartOffset(curBackBufferIndex) + offset;
+		return (VkDeviceSize)gpuBuffer.getStartOffset(curBackBufferIndex) + offset;
 	}
 }

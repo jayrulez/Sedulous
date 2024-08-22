@@ -66,10 +66,10 @@ namespace Sedulous.Renderer;
 			protected abstract void doDestroy();
 
 			// weak reference
-			RenderPass _renderPass =  null;
+			protected RenderPass _renderPass =  null;
 			// weak reference
-			TextureList _colorTextures;
+			protected TextureList _colorTextures;
 			// weak reference
-			Texture _depthStencilTexture =  null;
-			Texture _depthStencilResolveTexture =  null;
+			protected Texture _depthStencilTexture =  null;
+			protected Texture _depthStencilResolveTexture =  null;
 		}

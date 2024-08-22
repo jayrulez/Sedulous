@@ -98,25 +98,25 @@ void collect(const _type *gpuRes) { /* NOLINT(bugprone-macro-parentheses) N/A */
 			DEFINE_RECYCLE_BIN_COLLECT_FN(CCVKGPUQueryPool, RecycledType.QUERY_POOL, res.vkQueryPool = gpuRes.vkPool)
 			DEFINE_RECYCLE_BIN_COLLECT_FN(CCVKGPUPipelineState, RecycledType.PIPELINE_STATE, res.vkPipeline = gpuRes.vkPipeline)*/
 
-	private void collect(CCVKGPURenderPass gpuRes)
+	public void collect(CCVKGPURenderPass gpuRes)
 	{
 		ref Resource res = ref emplaceBack();
 		res.type = RecycledType.RENDER_PASS;
 		res.vkRenderPass = gpuRes.vkRenderPass;
 	}
-	private void collect(CCVKGPUSampler gpuRes)
+	public void collect(CCVKGPUSampler gpuRes)
 	{
 		ref Resource res = ref emplaceBack();
 		res.type = RecycledType.SAMPLER;
 		res.vkSampler = gpuRes.vkSampler;
 	}
-	private void collect(CCVKGPUQueryPool gpuRes)
+	public void collect(CCVKGPUQueryPool gpuRes)
 	{
 		ref Resource res = ref emplaceBack();
 		res.type = RecycledType.QUERY_POOL;
 		res.vkQueryPool = gpuRes.vkPool;
 	}
-	private void collect(CCVKGPUPipelineState gpuRes)
+	public void collect(CCVKGPUPipelineState gpuRes)
 	{
 		ref Resource res = ref emplaceBack();
 		res.type = RecycledType.PIPELINE_STATE;

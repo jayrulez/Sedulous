@@ -40,4 +40,19 @@ static
 		Console.WriteLine(scope $"Error: {format}", params args);
 		System.Diagnostics.Debug.WriteLine(scope $"Warning: {format}", params args);
 	}
+
+	public static void WriteInfo(StringView format, params Object[] args)
+	{
+		Console.WriteLine(scope $"Info: {format}", params args);
+		System.Diagnostics.Debug.WriteLine(scope $"Warning: {format}", params args);
+	}
+
+	public static mixin CC_SAFE_DESTROY_AND_DELETE(var resource)
+ 	{
+		 if(resource != null)
+		 {
+			 delete resource;
+			 resource = null;
+		}
+	}
 }

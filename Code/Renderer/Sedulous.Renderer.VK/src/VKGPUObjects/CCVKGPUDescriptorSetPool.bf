@@ -15,7 +15,8 @@ using Bulkan;
 			public void link(CCVKGPUDevice device, uint32 maxSetsPerPool, in List<VkDescriptorSetLayoutBinding> bindings, VkDescriptorSetLayout setLayout) {
 				_device = device;
 				_maxSetsPerPool = maxSetsPerPool;
-				_setLayouts.insert(_setLayouts.cbegin(), _maxSetsPerPool, setLayout);
+
+				_setLayouts.Insert(0, scope List<VkDescriptorSetLayout>()..Resize(_maxSetsPerPool, setLayout));
 
 				Dictionary<VkDescriptorType, uint32> typeMap = scope .();
 				for (var vkBinding in bindings) {

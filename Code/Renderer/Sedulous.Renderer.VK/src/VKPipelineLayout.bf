@@ -1,3 +1,5 @@
+using Sedulous.Renderer.VK.Internal;
+using System;
 /****************************************************************************
  Copyright (c) 2020-2023 Xiamen Yaji Software Co., Ltd.
 
@@ -24,38 +26,41 @@
 
 namespace Sedulous.Renderer.VK;
 
-#pragma once
+class CCVKPipelineLayout : PipelineLayout
+{
+	public this()
+	{
+		_typedID = generateObjectID<decltype(this)>();
+	}
+	public ~this()
+	{
+		destroy();
+	}
 
-#include "../VKStd.h"
-#include "gfx-base/states/GFXSampler.h"
-#include "gfx-vulkan/VKGPUObjects.h"
+	[Inline] public CCVKGPUPipelineLayout gpuPipelineLayout() { return _gpuPipelineLayout; }
 
-namespace cc {
-	namespace gfx {
+	protected override void doInit(in PipelineLayoutInfo info)
+	{
+		_gpuPipelineLayout = new CCVKGPUPipelineLayout();
 
-		class CC_VULKAN_API CCVKSampler final : public Sampler {
-		public:
-			explicit CCVKSampler(const SamplerInfo& info) {
-				_typedID = generateObjectID<decltype(this)>();
+		uint32 offset = 0U;
+		for (var setLayout in _setLayouts)
+		{
+			CCVKGPUDescriptorSetLayout gpuSetLayout = ((CCVKDescriptorSetLayout)setLayout).gpuDescriptorSetLayout();
+			uint32 dynamicCount = (uint32)gpuSetLayout.dynamicBindings.Count;
+			_gpuPipelineLayout.dynamicOffsetOffsets.Add(offset);
+			_gpuPipelineLayout.setLayouts.Add(gpuSetLayout);
+			offset += dynamicCount;
+		}
+		_gpuPipelineLayout.dynamicOffsetOffsets.Add(offset);
+		_gpuPipelineLayout.dynamicOffsetCount = offset;
 
-				_gpuSampler = ccnew CCVKGPUSampler;
-				_gpuSampler->minFilter = _info.minFilter;
-				_gpuSampler->magFilter = _info.magFilter;
-				_gpuSampler->mipFilter = _info.mipFilter;
-				_gpuSampler->addressU = _info.addressU;
-				_gpuSampler->addressV = _info.addressV;
-				_gpuSampler->addressW = _info.addressW;
-				_gpuSampler->maxAnisotropy = _info.maxAnisotropy;
-				_gpuSampler->cmpFunc = _info.cmpFunc;
-				_gpuSampler->init();
-			}
-			~CCVKSampler() override = default;
+		cmdFuncCCVKCreatePipelineLayout(CCVKDevice.getInstance(), _gpuPipelineLayout);
+	}
+	protected override void doDestroy()
+	{
+		_gpuPipelineLayout = null;
+	}
 
-			inline CCVKGPUSampler* gpuSampler() const { return _gpuSampler; }
-
-		protected:
-			IntrusivePtr<CCVKGPUSampler> _gpuSampler;
-		};
-
-	} // namespace gfx
-} // namespace cc
+	protected CCVKGPUPipelineLayout _gpuPipelineLayout;
+}
