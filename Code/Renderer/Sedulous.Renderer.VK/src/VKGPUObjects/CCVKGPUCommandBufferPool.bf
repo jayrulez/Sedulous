@@ -75,7 +75,7 @@ class CCVKGPUCommandBufferPool
 		}
 	}
 
-	public void @yield(CCVKGPUCommandBuffer gpuCommandBuffer)
+	public void _yield(CCVKGPUCommandBuffer gpuCommandBuffer)
 	{
 		if (gpuCommandBuffer.vkCommandBuffer != .Null)
 		{

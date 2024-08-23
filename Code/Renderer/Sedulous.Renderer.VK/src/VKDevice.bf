@@ -77,7 +77,7 @@ namespace Sedulous.Renderer.VK;
 
 			public override void frameSync() {}
 			public override void acquire(Swapchain* swapchains, uint32 count) {
-				if (_onAcquire != null) _onAcquire.execute();
+				//if (_onAcquire != null) _onAcquire.execute();
 
 				var queue = (CCVKQueue)_queue;
 				queue.gpuQueue().lastSignaledSemaphores.Clear();
@@ -400,7 +400,7 @@ namespace Sedulous.Renderer.VK;
 				deviceCreateInfo.ppEnabledLayerNames = _layers.Ptr;
 				deviceCreateInfo.enabledExtensionCount = (uint32)_extensions.Count;
 				deviceCreateInfo.ppEnabledExtensionNames = _extensions.Ptr;
-				if (_gpuDevice.minorVersion < 1 && !_gpuContext.checkExtension(scope .(VulkanNative.VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME))) {
+				if (_gpuDevice.minorVersion < 1 && !_gpuContext.checkExtension(VulkanNative.VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) {
 					deviceCreateInfo.pEnabledFeatures = &requestedFeatures2.features;
 				}
 				else {
@@ -417,7 +417,8 @@ namespace Sedulous.Renderer.VK;
 				//else {
 					VK_CHECK!(vkCreateDevice(_gpuContext.physicalDevice, &deviceCreateInfo, null, &_gpuDevice.vkDevice));
 				//}
-				volkLoadDevice(_gpuDevice.vkDevice);
+				//volkLoadDevice(_gpuDevice.vkDevice);
+				//VulkanNative.LoadPostInstanceFunctions();
 
 				SPIRVUtils.getInstance().initialize((int32)_gpuDevice.minorVersion);
 
@@ -533,49 +534,49 @@ namespace Sedulous.Renderer.VK;
 				allocatorInfo.instance = _gpuContext.vkInstance;
 
 				VmaVulkanFunctions vmaVulkanFunc = .();
-				vmaVulkanFunc.vkAllocateMemory = VulkanNative.vkAllocateMemory;
-				vmaVulkanFunc.vkBindBufferMemory = VulkanNative.vkBindBufferMemory;
-				vmaVulkanFunc.vkBindImageMemory = VulkanNative.vkBindImageMemory;
-				vmaVulkanFunc.vkCreateBuffer = VulkanNative.vkCreateBuffer;
-				vmaVulkanFunc.vkCreateImage = VulkanNative.vkCreateImage;
-				vmaVulkanFunc.vkDestroyBuffer = VulkanNative.vkDestroyBuffer;
-				vmaVulkanFunc.vkDestroyImage = VulkanNative.vkDestroyImage;
-				vmaVulkanFunc.vkFlushMappedMemoryRanges = VulkanNative.vkFlushMappedMemoryRanges;
-				vmaVulkanFunc.vkFreeMemory = VulkanNative.vkFreeMemory;
-				vmaVulkanFunc.vkGetBufferMemoryRequirements = VulkanNative.vkGetBufferMemoryRequirements;
-				vmaVulkanFunc.vkGetImageMemoryRequirements = VulkanNative.vkGetImageMemoryRequirements;
-				vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties = VulkanNative.vkGetPhysicalDeviceMemoryProperties;
-				vmaVulkanFunc.vkGetPhysicalDeviceProperties = VulkanNative.vkGetPhysicalDeviceProperties;
-				vmaVulkanFunc.vkInvalidateMappedMemoryRanges = VulkanNative.vkInvalidateMappedMemoryRanges;
-				vmaVulkanFunc.vkMapMemory = VulkanNative.vkMapMemory;
-				vmaVulkanFunc.vkUnmapMemory = VulkanNative.vkUnmapMemory;
-				vmaVulkanFunc.vkCmdCopyBuffer = VulkanNative.vkCmdCopyBuffer;
+				vmaVulkanFunc.vkAllocateMemory = (vkAllocateMemoryFunction)(=> VulkanNative.vkAllocateMemory);
+				vmaVulkanFunc.vkBindBufferMemory = (vkBindBufferMemoryFunction)(=> VulkanNative.vkBindBufferMemory);
+				vmaVulkanFunc.vkBindImageMemory = (vkBindImageMemoryFunction)(=> VulkanNative.vkBindImageMemory);
+				vmaVulkanFunc.vkCreateBuffer = (vkCreateBufferFunction)(=> VulkanNative.vkCreateBuffer);
+				vmaVulkanFunc.vkCreateImage = (vkCreateImageFunction)(=> VulkanNative.vkCreateImage);
+				vmaVulkanFunc.vkDestroyBuffer = (vkDestroyBufferFunction)(=> VulkanNative.vkDestroyBuffer);
+				vmaVulkanFunc.vkDestroyImage = (vkDestroyImageFunction)(=> VulkanNative.vkDestroyImage);
+				vmaVulkanFunc.vkFlushMappedMemoryRanges = (vkFlushMappedMemoryRangesFunction)(=> VulkanNative.vkFlushMappedMemoryRanges);
+				vmaVulkanFunc.vkFreeMemory = (vkFreeMemoryFunction)(=> VulkanNative.vkFreeMemory);
+				vmaVulkanFunc.vkGetBufferMemoryRequirements = (vkGetBufferMemoryRequirementsFunction)(=> VulkanNative.vkGetBufferMemoryRequirements);
+				vmaVulkanFunc.vkGetImageMemoryRequirements = (vkGetImageMemoryRequirementsFunction)(=> VulkanNative.vkGetImageMemoryRequirements);
+				vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties = (vkGetPhysicalDeviceMemoryPropertiesFunction)(=> VulkanNative.vkGetPhysicalDeviceMemoryProperties);
+				vmaVulkanFunc.vkGetPhysicalDeviceProperties = (vkGetPhysicalDevicePropertiesFunction)(=> VulkanNative.vkGetPhysicalDeviceProperties);
+				vmaVulkanFunc.vkInvalidateMappedMemoryRanges = (vkInvalidateMappedMemoryRangesFunction)(=> VulkanNative.vkInvalidateMappedMemoryRanges);
+				vmaVulkanFunc.vkMapMemory = (vkMapMemoryFunction)(=> VulkanNative.vkMapMemory);
+				vmaVulkanFunc.vkUnmapMemory = (vkUnmapMemoryFunction)(=> VulkanNative.vkUnmapMemory);
+				vmaVulkanFunc.vkCmdCopyBuffer = (vkCmdCopyBufferFunction)(=> VulkanNative.vkCmdCopyBuffer);
 
 				if (_gpuDevice.minorVersion > 0) {
 					allocatorInfo.flags |= .VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
-					vmaVulkanFunc.vkGetBufferMemoryRequirements2KHR = VulkanNative.vkGetBufferMemoryRequirements2;
-					vmaVulkanFunc.vkGetImageMemoryRequirements2KHR = VulkanNative.vkGetImageMemoryRequirements2;
-					vmaVulkanFunc.vkBindBufferMemory2KHR = VulkanNative.vkBindBufferMemory2;
-					vmaVulkanFunc.vkBindImageMemory2KHR = VulkanNative.vkBindImageMemory2;
+					vmaVulkanFunc.vkGetBufferMemoryRequirements2KHR = (vkGetBufferMemoryRequirements2Function)(=> VulkanNative.vkGetBufferMemoryRequirements2);
+					vmaVulkanFunc.vkGetImageMemoryRequirements2KHR = (vkGetImageMemoryRequirements2Function)(=> VulkanNative.vkGetImageMemoryRequirements2);
+					vmaVulkanFunc.vkBindBufferMemory2KHR = (vkBindBufferMemory2Function)(=> VulkanNative.vkBindBufferMemory2);
+					vmaVulkanFunc.vkBindImageMemory2KHR = (vkBindImageMemory2Function)(=> VulkanNative.vkBindImageMemory2);
 				}
 				else {
 					if (checkExtension(VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME) &&
 						checkExtension(VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME)) {
 						allocatorInfo.flags |= .VMA_ALLOCATOR_CREATE_KHR_DEDICATED_ALLOCATION_BIT;
-						vmaVulkanFunc.vkGetBufferMemoryRequirements2KHR = VulkanNative.vkGetBufferMemoryRequirements2KHR;
-						vmaVulkanFunc.vkGetImageMemoryRequirements2KHR = VulkanNative.vkGetImageMemoryRequirements2KHR;
+						vmaVulkanFunc.vkGetBufferMemoryRequirements2KHR = (vkGetBufferMemoryRequirements2Function)(=> VulkanNative.vkGetBufferMemoryRequirements2);
+						vmaVulkanFunc.vkGetImageMemoryRequirements2KHR = (vkGetImageMemoryRequirements2Function)(=> VulkanNative.vkGetImageMemoryRequirements2);
 					}
 					if (checkExtension(VK_KHR_BIND_MEMORY_2_EXTENSION_NAME)) {
-						vmaVulkanFunc.vkBindBufferMemory2KHR = VulkanNative.vkBindBufferMemory2KHR;
-						vmaVulkanFunc.vkBindImageMemory2KHR = VulkanNative.vkBindImageMemory2KHR;
+						vmaVulkanFunc.vkBindBufferMemory2KHR = (vkBindBufferMemory2Function)(=> VulkanNative.vkBindBufferMemory2);
+						vmaVulkanFunc.vkBindImageMemory2KHR = (vkBindImageMemory2Function)(=> VulkanNative.vkBindImageMemory2);
 					}
 				}
 				if (checkExtension(VK_EXT_MEMORY_BUDGET_EXTENSION_NAME)) {
 					if (_gpuDevice.minorVersion > 0) {
-						vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties2KHR = VulkanNative.vkGetPhysicalDeviceMemoryProperties2;
+						vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties2KHR = (vkGetPhysicalDeviceMemoryProperties2Function)(=> VulkanNative.vkGetPhysicalDeviceMemoryProperties2);
 					}
 					else if (checkExtension(VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME)) {
-						vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties2KHR = VulkanNative.vkGetPhysicalDeviceMemoryProperties2KHR;
+						vmaVulkanFunc.vkGetPhysicalDeviceMemoryProperties2KHR = (vkGetPhysicalDeviceMemoryProperties2Function)(=> VulkanNative.vkGetPhysicalDeviceMemoryProperties2);
 					}
 				}
 
@@ -730,7 +731,7 @@ namespace Sedulous.Renderer.VK;
 					if (_gpuDevice.memoryAllocator != default) {
 						VmaTotalStatistics stats = .();
 						vmaCalculateStatistics(_gpuDevice.memoryAllocator, &stats);
-						WriteInfo("Total device memory leaked: %d bytes.", stats.total.usedBytes);
+						WriteInfo("Total device memory leaked: %d bytes.", stats.total.statistics.allocationBytes);
 						Runtime.Assert(_memoryStatus.bufferSize == 0);  // Buffer memory leaked.
 						Runtime.Assert(_memoryStatus.textureSize == 0); // Texture memory leaked.
 

@@ -63,7 +63,7 @@ class CCVKGPUTransportHub
 			VK_CHECK!(VulkanNative.vkQueueSubmit(_queue.vkQueue, 1, &submitInfo, _fence));
 			VK_CHECK!(VulkanNative.vkWaitForFences(_device.vkDevice, 1, &_fence, VulkanNative.VK_TRUE, DEFAULT_TIMEOUT));
 			VulkanNative.vkResetFences(_device.vkDevice, 1, &_fence);
-			commandBufferPool.yield(cmdBuff);
+			commandBufferPool._yield(cmdBuff);
 			cmdBuff.vkCommandBuffer = .Null;
 		}
 	}
@@ -76,7 +76,7 @@ class CCVKGPUTransportHub
 		if (vkCommandBuffer != .Null)
 		{
 			VK_CHECK!(VulkanNative.vkEndCommandBuffer(vkCommandBuffer));
-			_device.getCommandBufferPool().@yield(cmdBuff);
+			_device.getCommandBufferPool()._yield(cmdBuff);
 		}
 		return vkCommandBuffer;
 	}

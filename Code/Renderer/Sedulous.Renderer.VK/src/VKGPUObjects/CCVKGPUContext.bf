@@ -70,6 +70,20 @@ static
 #endif
 		}
 
+typealias FN_vkDebugUtilsMessengerCallbackEXT = function VkBool32(VkDebugUtilsMessageSeverityFlagsEXT messageSeverity,
+		VkDebugUtilsMessageTypeFlagsEXT messageType,
+		VkDebugUtilsMessengerCallbackDataEXT* callbackData,
+		void* userData);
+
+typealias FN_vkDebugReportCallbackEXT = function VkBool32(VkDebugReportFlagsEXT flags,
+VkDebugReportObjectTypeEXT type,
+uint64 object,
+uint location,
+int32 messageCode,
+char8* layerPrefix,
+char8* message,
+void* userData);
+
 		class CCVKGPUContext {
 		public bool initialize() {
 				// only enable the absolute essentials
@@ -91,7 +105,8 @@ static
 				if (VulkanNative.[Friend]vkEnumerateInstanceVersion_ptr != null) {
 					VulkanNative.vkEnumerateInstanceVersion(&apiVersion);
 					if (FORCE_MINOR_VERSION) {
-						apiVersion = VulkanNative.VK_MAKE_API_VERSION(0, 1, (FORCE_MINOR_VERSION ? 1: 0) - 1, 0);
+						uint32 force = FORCE_MINOR_VERSION ? 1 : 0;
+						apiVersion = VulkanNative.VK_MAKE_API_VERSION(0, 1, force - 1, 0);
 					}
 				}
 
@@ -218,7 +233,8 @@ static
 						.VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT |
 						.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
 					debugUtilsCreateInfo.messageType = .VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | .VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
-					debugUtilsCreateInfo.pfnUserCallback = => debugUtilsMessengerCallback;
+					FN_vkDebugUtilsMessengerCallbackEXT fn = => debugUtilsMessengerCallback;
+					debugUtilsCreateInfo.pfnUserCallback = fn;
 
 					instanceInfo.pNext = &debugUtilsCreateInfo;
 				}
@@ -228,7 +244,8 @@ static
 						.VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT |
 						.VK_DEBUG_REPORT_INFORMATION_BIT_EXT |
 						.VK_DEBUG_REPORT_DEBUG_BIT_EXT;
-					debugReportCreateInfo.pfnCallback = => debugReportCallback;
+					FN_vkDebugReportCallbackEXT fn = => debugReportCallback;
+					debugReportCreateInfo.pfnCallback = fn;
 
 					instanceInfo.pNext = &debugReportCreateInfo;
 				}

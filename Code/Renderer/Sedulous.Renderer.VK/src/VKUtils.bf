@@ -17,19 +17,22 @@ static
 	public const uint32 BARRIER_DEDUCTION_LEVEL = BARRIER_DEDUCTION_LEVEL_BASIC;
 #endif
 
-	public static VkQueryType mapVkQueryType(QueryType type) {
+	public static VkQueryType mapVkQueryType(QueryType type)
+	{
 		switch (type) {
 		case QueryType.OCCLUSION: return .VK_QUERY_TYPE_OCCLUSION;
 		case QueryType.PIPELINE_STATISTICS: return .VK_QUERY_TYPE_PIPELINE_STATISTICS;
 		case QueryType.TIMESTAMP: return .VK_QUERY_TYPE_TIMESTAMP;
-		default: {
-			Runtime.Assert(false);
-			return .VK_QUERY_TYPE_OCCLUSION;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_QUERY_TYPE_OCCLUSION;
+			}
 		}
 	}
 
-	public static VkFormat mapVkFormat(Format format, CCVKGPUDevice gpuDevice) {
+	public static VkFormat mapVkFormat(Format format, CCVKGPUDevice gpuDevice)
+	{
 		switch (format) {
 		case Format.R8: return .VK_FORMAT_R8_UNORM;
 		case Format.R8SN: return .VK_FORMAT_R8_SNORM;
@@ -114,9 +117,9 @@ static
 		case Format.EAC_RG11SN: return .VK_FORMAT_EAC_R11G11_SNORM_BLOCK;
 
 		case Format.PVRTC_RGB2,
-			 Format.PVRTC_RGBA2: return .VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG;
+			Format.PVRTC_RGBA2: return .VK_FORMAT_PVRTC1_2BPP_UNORM_BLOCK_IMG;
 		case Format.PVRTC_RGB4,
-			 Format.PVRTC_RGBA4: return .VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG;
+			Format.PVRTC_RGBA4: return .VK_FORMAT_PVRTC1_4BPP_UNORM_BLOCK_IMG;
 		case Format.PVRTC2_2BPP: return .VK_FORMAT_PVRTC2_2BPP_UNORM_BLOCK_IMG;
 		case Format.PVRTC2_4BPP: return .VK_FORMAT_PVRTC2_4BPP_UNORM_BLOCK_IMG;
 
@@ -150,37 +153,43 @@ static
 		case Format.ASTC_SRGBA_12X10: return .VK_FORMAT_ASTC_12x10_SRGB_BLOCK;
 		case Format.ASTC_SRGBA_12X12: return .VK_FORMAT_ASTC_12x12_SRGB_BLOCK;
 
-		default: {
-			Runtime.Assert(false);
-			return .VK_FORMAT_B8G8R8A8_UNORM;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_FORMAT_B8G8R8A8_UNORM;
+			}
 		}
 	}
 
-	public static VkAttachmentLoadOp mapVkLoadOp(LoadOp loadOp) {
+	public static VkAttachmentLoadOp mapVkLoadOp(LoadOp loadOp)
+	{
 		switch (loadOp) {
 		case LoadOp.CLEAR: return .VK_ATTACHMENT_LOAD_OP_CLEAR;
 		case LoadOp.LOAD: return .VK_ATTACHMENT_LOAD_OP_LOAD;
 		case LoadOp.DISCARD: return .VK_ATTACHMENT_LOAD_OP_DONT_CARE;
-		default: {
-			Runtime.Assert(false);
-			return .VK_ATTACHMENT_LOAD_OP_LOAD;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_ATTACHMENT_LOAD_OP_LOAD;
+			}
 		}
 	}
 
-	public static VkAttachmentStoreOp mapVkStoreOp(StoreOp storeOp) {
+	public static VkAttachmentStoreOp mapVkStoreOp(StoreOp storeOp)
+	{
 		switch (storeOp) {
 		case StoreOp.STORE: return .VK_ATTACHMENT_STORE_OP_STORE;
 		case StoreOp.DISCARD: return .VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		default: {
-			Runtime.Assert(false);
-			return .VK_ATTACHMENT_STORE_OP_STORE;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_ATTACHMENT_STORE_OP_STORE;
+			}
 		}
 	}
 
-	public static VkBufferUsageFlags mapVkBufferUsageFlagBits(BufferUsage usage) {
+	public static VkBufferUsageFlags mapVkBufferUsageFlagBits(BufferUsage usage)
+	{
 		VkBufferUsageFlags flags = 0U;
 		if (hasFlag(usage, BufferUsage.TRANSFER_SRC)) flags |= .VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		if (hasFlag(usage, BufferUsage.TRANSFER_DST)) flags |= .VK_BUFFER_USAGE_TRANSFER_DST_BIT;
@@ -192,22 +201,25 @@ static
 		return (VkBufferUsageFlags)(flags);
 	}
 
-	public static VkImageType mapVkImageType(TextureType type) {
+	public static VkImageType mapVkImageType(TextureType type)
+	{
 		switch (type) {
 		case TextureType.TEX1D,
-			 TextureType.TEX1D_ARRAY: return .VK_IMAGE_TYPE_1D;
+			TextureType.TEX1D_ARRAY: return .VK_IMAGE_TYPE_1D;
 		case TextureType.CUBE,
-			 TextureType.TEX2D,
-			 TextureType.TEX2D_ARRAY: return .VK_IMAGE_TYPE_2D;
+			TextureType.TEX2D,
+			TextureType.TEX2D_ARRAY: return .VK_IMAGE_TYPE_2D;
 		case TextureType.TEX3D: return .VK_IMAGE_TYPE_3D;
-		default: {
-			Runtime.Assert(false);
-			return .VK_IMAGE_TYPE_2D;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_IMAGE_TYPE_2D;
+			}
 		}
 	}
 
-	public static VkFormatFeatureFlags mapVkFormatFeatureFlags(TextureUsage usage) {
+	public static VkFormatFeatureFlags mapVkFormatFeatureFlags(TextureUsage usage)
+	{
 		VkFormatFeatureFlags flags = 0U;
 		if (hasFlag(usage, TextureUsage.TRANSFER_SRC)) flags |= .VK_FORMAT_FEATURE_TRANSFER_SRC_BIT;
 		if (hasFlag(usage, TextureUsage.TRANSFER_DST)) flags |= .VK_FORMAT_FEATURE_TRANSFER_DST_BIT;
@@ -218,7 +230,8 @@ static
 		return (VkFormatFeatureFlags)(flags);
 	}
 
-	public static VkImageUsageFlags mapVkImageUsageFlags(TextureUsage usage, TextureFlags textureFlags) {
+	public static VkImageUsageFlags mapVkImageUsageFlags(TextureUsage usage, TextureFlags textureFlags)
+	{
 		VkImageUsageFlags flags = 0;
 		if (hasFlag(usage, TextureUsage.TRANSFER_SRC)) flags |= .VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 		if (hasFlag(usage, TextureUsage.TRANSFER_DST)) flags |= .VK_IMAGE_USAGE_TRANSFER_DST_BIT;
@@ -229,16 +242,19 @@ static
 		if (hasFlag(usage, TextureUsage.INPUT_ATTACHMENT)) flags |= .VK_IMAGE_USAGE_INPUT_ATTACHMENT_BIT;
 		if (hasFlag(usage, TextureUsage.SHADING_RATE)) flags |= .VK_IMAGE_USAGE_FRAGMENT_SHADING_RATE_ATTACHMENT_BIT_KHR;
 
-		if (hasFlag(textureFlags, TextureFlags.GEN_MIPMAP)) {
+		if (hasFlag(textureFlags, TextureFlags.GEN_MIPMAP))
+		{
 			flags |= .VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 		}
-		if (hasFlag(textureFlags, TextureFlags.LAZILY_ALLOCATED)) {
+		if (hasFlag(textureFlags, TextureFlags.LAZILY_ALLOCATED))
+		{
 			flags |= .VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT;
 		}
 		return flags;
 	}
 
-	public static VkImageAspectFlags mapVkImageAspectFlags(Format format) {
+	public static VkImageAspectFlags mapVkImageAspectFlags(Format format)
+	{
 		VkImageAspectFlags aspectMask = .VK_IMAGE_ASPECT_COLOR_BIT;
 		readonly ref FormatInfo info = ref GFX_FORMAT_INFOS[uint32(format)];
 		if (info.hasDepth) aspectMask = .VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -246,7 +262,8 @@ static
 		return aspectMask;
 	}
 
-	public static VkImageCreateFlags mapVkImageCreateFlags(TextureType type) {
+	public static VkImageCreateFlags mapVkImageCreateFlags(TextureType type)
+	{
 		VkImageCreateFlags res = 0U;
 		switch (type) {
 		case TextureType.CUBE: res |= .VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT; break;
@@ -255,7 +272,8 @@ static
 		return (VkImageCreateFlags)(res);
 	}
 
-	public static VkImageViewType mapVkImageViewType(TextureType viewType) {
+	public static VkImageViewType mapVkImageViewType(TextureType viewType)
+	{
 		switch (viewType) {
 		case TextureType.TEX1D: return .VK_IMAGE_VIEW_TYPE_1D;
 		case TextureType.TEX1D_ARRAY: return .VK_IMAGE_VIEW_TYPE_1D_ARRAY;
@@ -263,25 +281,29 @@ static
 		case TextureType.TEX2D_ARRAY: return .VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 		case TextureType.TEX3D: return .VK_IMAGE_VIEW_TYPE_3D;
 		case TextureType.CUBE: return .VK_IMAGE_VIEW_TYPE_CUBE;
-		default: {
-			Runtime.Assert(false);
-			return .VK_IMAGE_VIEW_TYPE_2D;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_IMAGE_VIEW_TYPE_2D;
+			}
 		}
 	}
 
-	public static VkCommandBufferLevel mapVkCommandBufferLevel(CommandBufferType type) {
+	public static VkCommandBufferLevel mapVkCommandBufferLevel(CommandBufferType type)
+	{
 		switch (type) {
 		case CommandBufferType.PRIMARY: return .VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		case CommandBufferType.SECONDARY: return .VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-		default: {
-			Runtime.Assert(false);
-			return .VK_COMMAND_BUFFER_LEVEL_SECONDARY;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+			}
 		}
 	}
 
-	public static VkDescriptorType mapVkDescriptorType(DescriptorType type) {
+	public static VkDescriptorType mapVkDescriptorType(DescriptorType type)
+	{
 		switch (type) {
 		case DescriptorType.DYNAMIC_UNIFORM_BUFFER: return .VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
 		case DescriptorType.UNIFORM_BUFFER: return .VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -292,14 +314,16 @@ static
 		case DescriptorType.TEXTURE: return .VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
 		case DescriptorType.STORAGE_IMAGE: return .VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 		case DescriptorType.INPUT_ATTACHMENT: return .VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
-		default: {
-			Runtime.Assert(false);
-			return .VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+			}
 		}
 	}
 
-	public static VkColorComponentFlags mapVkColorComponentFlags(ColorMask colorMask) {
+	public static VkColorComponentFlags mapVkColorComponentFlags(ColorMask colorMask)
+	{
 		VkColorComponentFlags flags = 0U;
 		if (hasFlag(colorMask, ColorMask.R)) flags |= .VK_COLOR_COMPONENT_R_BIT;
 		if (hasFlag(colorMask, ColorMask.G)) flags |= .VK_COLOR_COMPONENT_G_BIT;
@@ -308,7 +332,8 @@ static
 		return (VkColorComponentFlags)(flags);
 	}
 
-	public static VkShaderStageFlags mapVkShaderStageFlagBits(ShaderStageFlagBit stage) {
+	public static VkShaderStageFlags mapVkShaderStageFlagBits(ShaderStageFlagBit stage)
+	{
 		switch (stage) {
 		case ShaderStageFlagBit.VERTEX: return .VK_SHADER_STAGE_VERTEX_BIT;
 		case ShaderStageFlagBit.CONTROL: return .VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
@@ -316,14 +341,16 @@ static
 		case ShaderStageFlagBit.GEOMETRY: return .VK_SHADER_STAGE_GEOMETRY_BIT;
 		case ShaderStageFlagBit.FRAGMENT: return .VK_SHADER_STAGE_FRAGMENT_BIT;
 		case ShaderStageFlagBit.COMPUTE: return .VK_SHADER_STAGE_COMPUTE_BIT;
-		default: {
-			Runtime.Assert(false);
-			return .VK_SHADER_STAGE_VERTEX_BIT;
-		}
+		default:
+			{
+				Runtime.Assert(false);
+				return .VK_SHADER_STAGE_VERTEX_BIT;
+			}
 		}
 	}
 
-	public static VkShaderStageFlags mapVkShaderStageFlags(ShaderStageFlagBit stages) {
+	public static VkShaderStageFlags mapVkShaderStageFlags(ShaderStageFlagBit stages)
+	{
 		VkShaderStageFlags flags = 0U;
 		if (hasFlag(stages, ShaderStageFlagBit.VERTEX)) flags |= .VK_SHADER_STAGE_VERTEX_BIT;
 		if (hasFlag(stages, ShaderStageFlagBit.CONTROL)) flags |= .VK_SHADER_STAGE_TESSELLATION_CONTROL_BIT;
@@ -334,22 +361,24 @@ static
 		return (VkShaderStageFlags)(flags);
 	}
 
-	public static SurfaceTransform mapSurfaceTransform(VkSurfaceTransformFlagsKHR transform) {
+	public static SurfaceTransform mapSurfaceTransform(VkSurfaceTransformFlagsKHR transform)
+	{
 		if (transform & .VK_SURFACE_TRANSFORM_ROTATE_90_BIT_KHR != 0) return SurfaceTransform.ROTATE_90;
 		if (transform & .VK_SURFACE_TRANSFORM_ROTATE_180_BIT_KHR != 0) return SurfaceTransform.ROTATE_180;
 		if (transform & .VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR != 0) return SurfaceTransform.ROTATE_270;
 		return SurfaceTransform.IDENTITY;
 	}
 
-	public static void mapVendorName(uint32 vendorID, String name) {
+	public static void mapVendorName(uint32 vendorID, String name)
+	{
 		switch (vendorID) {
-		case 0x1002: name.Append("Advanced Micro Devices, Inc.");return;
-		case 0x1010: name.Append("Imagination Technologies");return;
-		case 0x106b: name.Append("Apple Inc.");return;
-		case 0x10DE: name.Append("Nvidia Corporation");return;
-		case 0x13B5: name.Append("Arm Limited");return;
-		case 0x5143: name.Append("Qualcomm Incorporated");return;
-		case 0x8086: name.Append("Intel Corporation");return;
+		case 0x1002: name.Append("Advanced Micro Devices, Inc."); return;
+		case 0x1010: name.Append("Imagination Technologies"); return;
+		case 0x106b: name.Append("Apple Inc."); return;
+		case 0x10DE: name.Append("Nvidia Corporation"); return;
+		case 0x13B5: name.Append("Arm Limited"); return;
+		case 0x5143: name.Append("Qualcomm Incorporated"); return;
+		case 0x8086: name.Append("Intel Corporation"); return;
 		}
 		name.AppendF("Unknown VendorID {}", vendorID);
 	}
@@ -359,33 +388,33 @@ static
 		.VK_SURFACE_TRANSFORM_ROTATE_270_BIT_KHR;
 
 	public const VkPrimitiveTopology[?] VK_PRIMITIVE_MODES = .(
-		.VK_PRIMITIVE_TOPOLOGY_POINT_LIST,                    // POINT_LIST
-		.VK_PRIMITIVE_TOPOLOGY_LINE_LIST,                     // LINE_LIST
-		.VK_PRIMITIVE_TOPOLOGY_LINE_STRIP,                    // LINE_STRIP
-		(VkPrimitiveTopology)(0),                 // LINE_LOOP
-		.VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY,      // LINE_LIST_ADJACENCY
-		.VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY,     // LINE_STRIP_ADJACENCY
-		(VkPrimitiveTopology)(0),                 // ISO_LINE_LIST
-		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST,                 // TRIANGLE_LIST
-		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP,                // TRIANGLE_STRIP
-		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN,                  // TRIANGLE_FAN
-		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY,  // TRIANGLE_LIST_ADJACENCY
+		.VK_PRIMITIVE_TOPOLOGY_POINT_LIST, // POINT_LIST
+		.VK_PRIMITIVE_TOPOLOGY_LINE_LIST, // LINE_LIST
+		.VK_PRIMITIVE_TOPOLOGY_LINE_STRIP, // LINE_STRIP
+		(VkPrimitiveTopology)(0), // LINE_LOOP
+		.VK_PRIMITIVE_TOPOLOGY_LINE_LIST_WITH_ADJACENCY, // LINE_LIST_ADJACENCY
+		.VK_PRIMITIVE_TOPOLOGY_LINE_STRIP_WITH_ADJACENCY, // LINE_STRIP_ADJACENCY
+		(VkPrimitiveTopology)(0), // ISO_LINE_LIST
+		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, // TRIANGLE_LIST
+		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP, // TRIANGLE_STRIP
+		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_FAN, // TRIANGLE_FAN
+		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST_WITH_ADJACENCY, // TRIANGLE_LIST_ADJACENCY
 		.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_STRIP_WITH_ADJACENCY, // TRIANGLE_STRIP_ADJACENCY,
-		(VkPrimitiveTopology)(0),                 // TRIANGLE_PATCH_ADJACENCY,
-		.VK_PRIMITIVE_TOPOLOGY_PATCH_LIST,                    // QUAD_PATCH_LIST,
-	);
+		(VkPrimitiveTopology)(0), // TRIANGLE_PATCH_ADJACENCY,
+		.VK_PRIMITIVE_TOPOLOGY_PATCH_LIST // QUAD_PATCH_LIST,
+		);
 
 	public const VkCullModeFlags[?] VK_CULL_MODES = .(
 		.VK_CULL_MODE_NONE,
 		.VK_CULL_MODE_FRONT_BIT,
-		.VK_CULL_MODE_BACK_BIT,
-	);
+		.VK_CULL_MODE_BACK_BIT
+		);
 
 	public const VkPolygonMode[?] VK_POLYGON_MODES = .(
 		.VK_POLYGON_MODE_FILL,
 		.VK_POLYGON_MODE_LINE,
-		.VK_POLYGON_MODE_POINT,
-	);
+		.VK_POLYGON_MODE_POINT
+		);
 
 	public const VkCompareOp[?] VK_CMP_FUNCS = .(
 		.VK_COMPARE_OP_NEVER,
@@ -395,8 +424,8 @@ static
 		.VK_COMPARE_OP_GREATER,
 		.VK_COMPARE_OP_NOT_EQUAL,
 		.VK_COMPARE_OP_GREATER_OR_EQUAL,
-		.VK_COMPARE_OP_ALWAYS,
-	);
+		.VK_COMPARE_OP_ALWAYS
+		);
 
 	public const VkStencilOp[?] VK_STENCIL_OPS = .(
 		.VK_STENCIL_OP_ZERO,
@@ -406,16 +435,16 @@ static
 		.VK_STENCIL_OP_DECREMENT_AND_CLAMP,
 		.VK_STENCIL_OP_INVERT,
 		.VK_STENCIL_OP_INCREMENT_AND_WRAP,
-		.VK_STENCIL_OP_DECREMENT_AND_WRAP,
-	);
+		.VK_STENCIL_OP_DECREMENT_AND_WRAP
+		);
 
 	public const VkBlendOp[?] VK_BLEND_OPS = .(
 		.VK_BLEND_OP_ADD,
 		.VK_BLEND_OP_SUBTRACT,
 		.VK_BLEND_OP_REVERSE_SUBTRACT,
 		.VK_BLEND_OP_MIN,
-		.VK_BLEND_OP_MAX,
-	);
+		.VK_BLEND_OP_MAX
+		);
 
 	public const VkBlendFactor[?] VK_BLEND_FACTORS = .(
 		.VK_BLEND_FACTOR_ZERO,
@@ -432,43 +461,43 @@ static
 		.VK_BLEND_FACTOR_CONSTANT_COLOR,
 		.VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_COLOR,
 		.VK_BLEND_FACTOR_CONSTANT_ALPHA,
-		.VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA,
-	);
+		.VK_BLEND_FACTOR_ONE_MINUS_CONSTANT_ALPHA
+		);
 
 	public const VkFilter[?] VK_FILTERS = .(
 		(VkFilter)(0), // NONE
-		.VK_FILTER_NEAREST,        // POINT
-		.VK_FILTER_LINEAR,         // LINEAR
-		(VkFilter)0, // ANISOTROPIC
-	);
+		.VK_FILTER_NEAREST, // POINT
+		.VK_FILTER_LINEAR, // LINEAR
+		(VkFilter)0 // ANISOTROPIC
+		);
 
 	public const VkSamplerMipmapMode[?] VK_SAMPLER_MIPMAP_MODES = .(
 		(VkSamplerMipmapMode)(0), // NONE
-		.VK_SAMPLER_MIPMAP_MODE_NEAREST,      // POINT
-		.VK_SAMPLER_MIPMAP_MODE_LINEAR,       // LINEAR
-		.VK_SAMPLER_MIPMAP_MODE_LINEAR,       // ANISOTROPIC
-	);
+		.VK_SAMPLER_MIPMAP_MODE_NEAREST, // POINT
+		.VK_SAMPLER_MIPMAP_MODE_LINEAR, // LINEAR
+		.VK_SAMPLER_MIPMAP_MODE_LINEAR // ANISOTROPIC
+		);
 
 	public const VkSamplerAddressMode[?] VK_SAMPLER_ADDRESS_MODES = .(
-		.VK_SAMPLER_ADDRESS_MODE_REPEAT,          // WRAP
+		.VK_SAMPLER_ADDRESS_MODE_REPEAT, // WRAP
 		.VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT, // MIRROR
-		.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE,   // CLAMP
-		.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER, // BORDER
-	);
+		.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE, // CLAMP
+		.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_BORDER // BORDER
+		);
 
 	public const VkPipelineBindPoint[?] VK_PIPELINE_BIND_POINTS = .(
 		.VK_PIPELINE_BIND_POINT_GRAPHICS,
 		.VK_PIPELINE_BIND_POINT_COMPUTE,
-		.VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR,
-	);
+		.VK_PIPELINE_BIND_POINT_RAY_TRACING_KHR
+		);
 
 	public const VkResolveModeFlags[?] VK_RESOLVE_MODES = .(
 		.VK_RESOLVE_MODE_NONE,
 		.VK_RESOLVE_MODE_SAMPLE_ZERO_BIT,
 		.VK_RESOLVE_MODE_AVERAGE_BIT,
 		.VK_RESOLVE_MODE_MIN_BIT,
-		.VK_RESOLVE_MODE_MAX_BIT,
-	);
+		.VK_RESOLVE_MODE_MAX_BIT
+		);
 
 	public const VkImageLayout[?] VK_IMAGE_LAYOUTS = .(
 		.VK_IMAGE_LAYOUT_UNDEFINED,
@@ -480,14 +509,14 @@ static
 		.VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 		.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
 		.VK_IMAGE_LAYOUT_PREINITIALIZED,
-		.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-	);
+		.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
+		);
 
 	public const VkStencilFaceFlags[?] VK_STENCIL_FACE_FLAGS = .(
 		.VK_STENCIL_FACE_FRONT_BIT,
 		.VK_STENCIL_FACE_BACK_BIT,
-		.VK_STENCIL_FACE_FRONT_AND_BACK,
-	);
+		.VK_STENCIL_FACE_FRONT_AND_BACK
+		);
 
 	public const VkAccessFlags FULL_ACCESS_FLAGS =
 		.VK_ACCESS_INDIRECT_COMMAND_READ_BIT |
@@ -506,7 +535,8 @@ static
 		.VK_ACCESS_HOST_READ_BIT |
 		.VK_ACCESS_HOST_WRITE_BIT;
 
-	public static void fullPipelineBarrier(VkCommandBuffer cmdBuff) {
+	public static void fullPipelineBarrier(VkCommandBuffer cmdBuff)
+	{
 #if DEBUG
 		VkMemoryBarrier memoryBarrier = .(){ sType = .VK_STRUCTURE_TYPE_MEMORY_BARRIER };
 		memoryBarrier.srcAccessMask = FULL_ACCESS_FLAGS;
@@ -516,119 +546,134 @@ static
 #endif
 	}
 
-	public const ThsvsAccessType[?] THSVS_ACCESS_TYPES = .(
-		.THSVS_ACCESS_NONE,                                                       // NONE
-		.THSVS_ACCESS_INDIRECT_BUFFER,                                            // INDIRECT_BUFFER
-		.THSVS_ACCESS_INDEX_BUFFER,                                               // INDEX_BUFFER
-		.THSVS_ACCESS_VERTEX_BUFFER,                                              // VERTEX_BUFFER
-		.THSVS_ACCESS_VERTEX_SHADER_READ_UNIFORM_BUFFER,                          // VERTEX_SHADER_READ_UNIFORM_BUFFER
-		.THSVS_ACCESS_VERTEX_SHADER_READ_SAMPLED_IMAGE_OR_UNIFORM_TEXEL_BUFFER,   // VERTEX_SHADER_READ_TEXTURE
-		.THSVS_ACCESS_VERTEX_SHADER_READ_OTHER,                                   // VERTEX_SHADER_READ_OTHER
-		.THSVS_ACCESS_FRAGMENT_SHADER_READ_UNIFORM_BUFFER,                        // FRAGMENT_SHADER_READ_UNIFORM_BUFFER
+	public static ThsvsAccessType[?] THSVS_ACCESS_TYPES = .(
+		.THSVS_ACCESS_NONE, // NONE
+		.THSVS_ACCESS_INDIRECT_BUFFER, // INDIRECT_BUFFER
+		.THSVS_ACCESS_INDEX_BUFFER, // INDEX_BUFFER
+		.THSVS_ACCESS_VERTEX_BUFFER, // VERTEX_BUFFER
+		.THSVS_ACCESS_VERTEX_SHADER_READ_UNIFORM_BUFFER, // VERTEX_SHADER_READ_UNIFORM_BUFFER
+		.THSVS_ACCESS_VERTEX_SHADER_READ_SAMPLED_IMAGE_OR_UNIFORM_TEXEL_BUFFER, // VERTEX_SHADER_READ_TEXTURE
+		.THSVS_ACCESS_VERTEX_SHADER_READ_OTHER, // VERTEX_SHADER_READ_OTHER
+		.THSVS_ACCESS_FRAGMENT_SHADER_READ_UNIFORM_BUFFER, // FRAGMENT_SHADER_READ_UNIFORM_BUFFER
 		.THSVS_ACCESS_FRAGMENT_SHADER_READ_SAMPLED_IMAGE_OR_UNIFORM_TEXEL_BUFFER, // FRAGMENT_SHADER_READ_TEXTURE
-		.THSVS_ACCESS_FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT,                // FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT
-		.THSVS_ACCESS_FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT,        // FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT
-		.THSVS_ACCESS_FRAGMENT_SHADER_READ_OTHER,                                 // FRAGMENT_SHADER_READ_OTHER
-		.THSVS_ACCESS_COLOR_ATTACHMENT_READ,                                      // COLOR_ATTACHMENT_READ
-		.THSVS_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ,                              // DEPTH_STENCIL_ATTACHMENT_READ
-		.THSVS_ACCESS_COMPUTE_SHADER_READ_UNIFORM_BUFFER,                         // COMPUTE_SHADER_READ_UNIFORM_BUFFER
-		.THSVS_ACCESS_COMPUTE_SHADER_READ_SAMPLED_IMAGE_OR_UNIFORM_TEXEL_BUFFER,  // COMPUTE_SHADER_READ_TEXTURE
-		.THSVS_ACCESS_COMPUTE_SHADER_READ_OTHER,                                  // COMPUTE_SHADER_READ_OTHER
-		.THSVS_ACCESS_TRANSFER_READ,                                              // TRANSFER_READ
-		.THSVS_ACCESS_HOST_READ,                                                  // HOST_READ
-		.THSVS_ACCESS_PRESENT,                                                    // PRESENT
-		.THSVS_ACCESS_VERTEX_SHADER_WRITE,                                        // VERTEX_SHADER_WRITE
-		.THSVS_ACCESS_FRAGMENT_SHADER_WRITE,                                      // FRAGMENT_SHADER_WRITE
-		.THSVS_ACCESS_COLOR_ATTACHMENT_WRITE,                                     // COLOR_ATTACHMENT_WRITE
-		.THSVS_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE,                             // DEPTH_STENCIL_ATTACHMENT_WRITE
-		.THSVS_ACCESS_COMPUTE_SHADER_WRITE,                                       // COMPUTE_SHADER_WRITE
-		.THSVS_ACCESS_TRANSFER_WRITE,                                             // TRANSFER_WRITE
-		.THSVS_ACCESS_HOST_PREINITIALIZED,                                        // HOST_PREINITIALIZED
-		.THSVS_ACCESS_HOST_WRITE,                                                 // HOST_WRITE
-		.THSVS_ACCESS_SHADING_RATE_READ_NV,                                       // SHADING_RATE
-	);
+		.THSVS_ACCESS_FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT, // FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT
+		.THSVS_ACCESS_FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT, // FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT
+		.THSVS_ACCESS_FRAGMENT_SHADER_READ_OTHER, // FRAGMENT_SHADER_READ_OTHER
+		.THSVS_ACCESS_COLOR_ATTACHMENT_READ, // COLOR_ATTACHMENT_READ
+		.THSVS_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ, // DEPTH_STENCIL_ATTACHMENT_READ
+		.THSVS_ACCESS_COMPUTE_SHADER_READ_UNIFORM_BUFFER, // COMPUTE_SHADER_READ_UNIFORM_BUFFER
+		.THSVS_ACCESS_COMPUTE_SHADER_READ_SAMPLED_IMAGE_OR_UNIFORM_TEXEL_BUFFER, // COMPUTE_SHADER_READ_TEXTURE
+		.THSVS_ACCESS_COMPUTE_SHADER_READ_OTHER, // COMPUTE_SHADER_READ_OTHER
+		.THSVS_ACCESS_TRANSFER_READ, // TRANSFER_READ
+		.THSVS_ACCESS_HOST_READ, // HOST_READ
+		.THSVS_ACCESS_PRESENT, // PRESENT
+		.THSVS_ACCESS_VERTEX_SHADER_WRITE, // VERTEX_SHADER_WRITE
+		.THSVS_ACCESS_FRAGMENT_SHADER_WRITE, // FRAGMENT_SHADER_WRITE
+		.THSVS_ACCESS_COLOR_ATTACHMENT_WRITE, // COLOR_ATTACHMENT_WRITE
+		.THSVS_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE, // DEPTH_STENCIL_ATTACHMENT_WRITE
+		.THSVS_ACCESS_COMPUTE_SHADER_WRITE, // COMPUTE_SHADER_WRITE
+		.THSVS_ACCESS_TRANSFER_WRITE, // TRANSFER_WRITE
+		.THSVS_ACCESS_HOST_PREINITIALIZED, // HOST_PREINITIALIZED
+		.THSVS_ACCESS_HOST_WRITE, // HOST_WRITE
+		.THSVS_ACCESS_SHADING_RATE_READ_NV // SHADING_RATE
+		);
 
-	[Inline]private static T getLowestBit<T>(T mask)
-		where T : operator T & T
-		where T : operator -T
-		 {
-	    return mask & (-mask);
-	}
-
-	[Inline]private static T clearLowestBit<T>(T mask)
-		where T : operator T & T
-		where T : operator -T
-		where T : operator T-int
+	[Inline] private static T getLowestBit<T>(T mask) //where T : operator T & T
+		//where T : operator -T
+		where T : var
 	{
-	    return mask & (mask - 1);
+		return mask & (T)(-mask);
+	}
+
+	[Inline] private static T clearLowestBit<T>(T mask) //where T : operator T & T
+		//where T : operator -T
+		//where T : operator T-int
+		where T : var
+	{
+		return mask & (T)(mask - 1);
 	}
 
 	// v must be power of 2
-	[Inline]private static uint32 getBitPosition(uint32 v) {
-	    if (v == 0) return 0;
-	    uint32 c = 32;
-	    if (v & 0x0000FFFF != 0) c -= 16;
-	    if (v & 0x00FF00FF != 0) c -= 8;
-	    if (v & 0x0F0F0F0F != 0) c -= 4;
-	    if (v & 0x33333333 != 0) c -= 2;
-	    if (v & 0x55555555 != 0) c -= 1;
-	    return c;
+	[Inline] private static uint32 getBitPosition(uint32 v)
+	{
+		if (v == 0) return 0;
+		uint32 c = 32;
+		if (v & 0x0000FFFF != 0) c -= 16;
+		if (v & 0x00FF00FF != 0) c -= 8;
+		if (v & 0x0F0F0F0F != 0) c -= 4;
+		if (v & 0x33333333 != 0) c -= 2;
+		if (v & 0x55555555 != 0) c -= 1;
+		return c;
 	}
 
 	// v must be power of 2
-	[Inline] private static uint64 getBitPosition(uint64 v) {
-	    if (v == 0) return 0;
-	    uint64 c = 64;
-	    if (v & 0x00000000FFFFFFFFL != 0) c -= 32;
-	    if (v & 0x0000FFFF0000FFFFL != 0) c -= 16;
-	    if (v & 0x00FF00FF00FF00FFL != 0) c -= 8;
-	    if (v & 0x0F0F0F0F0F0F0F0FL != 0) c -= 4;
-	    if (v & 0x3333333333333333L != 0) c -= 2;
-	    if (v & 0x5555555555555555L != 0) c -= 1;
-	    return c;
+	[Inline] private static uint64 getBitPosition(uint64 v)
+	{
+		if (v == 0) return 0;
+		uint64 c = 64;
+		if (v & 0x00000000FFFFFFFFL != 0) c -= 32;
+		if (v & 0x0000FFFF0000FFFFL != 0) c -= 16;
+		if (v & 0x00FF00FF00FF00FFL != 0) c -= 8;
+		if (v & 0x0F0F0F0F0F0F0F0FL != 0) c -= 4;
+		if (v & 0x3333333333333333L != 0) c -= 2;
+		if (v & 0x5555555555555555L != 0) c -= 1;
+		return c;
 	}
 
-	public static ThsvsAccessType* getAccessType(AccessFlagBit flag) {
+	public static ThsvsAccessType* getAccessType(AccessFlagBit flag)
+	{
 		return &THSVS_ACCESS_TYPES[getBitPosition(uint32(flag))];
 	}
 
-	public static ThsvsImageLayout getAccessLayout(AccessFlags flag) {
+	public static ThsvsImageLayout getAccessLayout(AccessFlags flag)
+	{
 		if (hasAllFlags(flag, AccessFlagBit.FRAGMENT_SHADER_READ_COLOR_INPUT_ATTACHMENT | AccessFlagBit.COLOR_ATTACHMENT_WRITE) ||
-			hasAllFlags(flag, AccessFlagBit.FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT | AccessFlagBit.DEPTH_STENCIL_ATTACHMENT_WRITE)) {
+			hasAllFlags(flag, AccessFlagBit.FRAGMENT_SHADER_READ_DEPTH_STENCIL_INPUT_ATTACHMENT | AccessFlagBit.DEPTH_STENCIL_ATTACHMENT_WRITE))
+		{
 			return .THSVS_IMAGE_LAYOUT_GENERAL;
 		}
 		return .THSVS_IMAGE_LAYOUT_OPTIMAL;
 	}
 
-	public static void getAccessTypes(AccessFlags flag, ref List<ThsvsAccessType> v) {
-		for (uint32 mask = uint32(flag); mask != 0; mask = clearLowestBit(mask)) {
+	public static void getAccessTypes(AccessFlags flag, ref List<ThsvsAccessType> v)
+	{
+		for (uint32 mask = uint32(flag); mask != 0; mask = clearLowestBit(mask))
+		{
 			v.Add(THSVS_ACCESS_TYPES[getBitPosition(getLowestBit(mask))]);
 		}
 	}
 
-	public static uint32 roundUp(uint32 numToRound, uint32 multiple) {
+	public static uint32 roundUp(uint32 numToRound, uint32 multiple)
+	{
 		return ((numToRound + multiple - 1) / multiple) * multiple;
 	}
 
-	public static bool isLayerSupported(char8* required, List<VkLayerProperties> available) {
-		for (VkLayerProperties availableLayer in available) {
-			if (String.Equals(scope String(&availableLayer.layerName), required)) {
+	public static bool isLayerSupported(char8* required, List<VkLayerProperties> available)
+	{
+		for (VkLayerProperties availableLayer in available)
+		{
+			if (String.Equals(scope String(&availableLayer.layerName), required))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static bool isExtensionSupported(char8* required, List<VkExtensionProperties> available) {
-		for (VkExtensionProperties availableExtension in available) {
-			if (String.Equals(scope String(&availableExtension.extensionName), required)) {
+	public static bool isExtensionSupported(char8* required, List<VkExtensionProperties> available)
+	{
+		for (VkExtensionProperties availableExtension in available)
+		{
+			if (String.Equals(scope String(&availableExtension.extensionName), required))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static bool isFormatSupported(VkPhysicalDevice device, VkFormat format) {
+	public static bool isFormatSupported(VkPhysicalDevice device, VkFormat format)
+	{
 		VkFormatProperties properties = .();
 		VulkanNative.vkGetPhysicalDeviceFormatProperties(device, format, &properties);
 		return (properties.optimalTilingFeatures & .VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT) != 0;

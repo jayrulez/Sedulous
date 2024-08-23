@@ -2,7 +2,7 @@ using System;
 namespace glslang_Beef
 {
 	/* EShLanguage counterpart */
-	[CRepr]
+	[CRepr, AllowDuplicates]
 	enum glslang_stage_t
 	{
 		GLSLANG_STAGE_VERTEX,
@@ -11,19 +11,27 @@ namespace glslang_Beef
 		GLSLANG_STAGE_GEOMETRY,
 		GLSLANG_STAGE_FRAGMENT,
 		GLSLANG_STAGE_COMPUTE,
-		GLSLANG_STAGE_RAYGEN_NV,
-		GLSLANG_STAGE_INTERSECT_NV,
-		GLSLANG_STAGE_ANYHIT_NV,
-		GLSLANG_STAGE_CLOSESTHIT_NV,
-		GLSLANG_STAGE_MISS_NV,
-		GLSLANG_STAGE_CALLABLE_NV,
-		GLSLANG_STAGE_TASK_NV,
-		GLSLANG_STAGE_MESH_NV,
+		GLSLANG_STAGE_RAYGEN,
+		GLSLANG_STAGE_RAYGEN_NV = GLSLANG_STAGE_RAYGEN,
+		GLSLANG_STAGE_INTERSECT,
+		GLSLANG_STAGE_INTERSECT_NV = GLSLANG_STAGE_INTERSECT,
+		GLSLANG_STAGE_ANYHIT,
+		GLSLANG_STAGE_ANYHIT_NV = GLSLANG_STAGE_ANYHIT,
+		GLSLANG_STAGE_CLOSESTHIT,
+		GLSLANG_STAGE_CLOSESTHIT_NV = GLSLANG_STAGE_CLOSESTHIT,
+		GLSLANG_STAGE_MISS,
+		GLSLANG_STAGE_MISS_NV = GLSLANG_STAGE_MISS,
+		GLSLANG_STAGE_CALLABLE,
+		GLSLANG_STAGE_CALLABLE_NV = GLSLANG_STAGE_CALLABLE,
+		GLSLANG_STAGE_TASK,
+		GLSLANG_STAGE_TASK_NV = GLSLANG_STAGE_TASK,
+		GLSLANG_STAGE_MESH,
+		GLSLANG_STAGE_MESH_NV = GLSLANG_STAGE_MESH,
 		GLSLANG_STAGE_COUNT,
 	} // would be better as stage, but this is ancient now
 
 	/* EShLanguageMask counterpart */
-	[CRepr]
+	[CRepr, AllowDuplicates]
 	enum glslang_stage_mask_t
 	{
 		GLSLANG_STAGE_VERTEX_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_VERTEX),
@@ -32,14 +40,22 @@ namespace glslang_Beef
 		GLSLANG_STAGE_GEOMETRY_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_GEOMETRY),
 		GLSLANG_STAGE_FRAGMENT_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_FRAGMENT),
 		GLSLANG_STAGE_COMPUTE_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_COMPUTE),
-		GLSLANG_STAGE_RAYGEN_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_RAYGEN_NV),
-		GLSLANG_STAGE_INTERSECT_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_INTERSECT_NV),
-		GLSLANG_STAGE_ANYHIT_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_ANYHIT_NV),
-		GLSLANG_STAGE_CLOSESTHIT_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_CLOSESTHIT_NV),
-		GLSLANG_STAGE_MISS_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_MISS_NV),
-		GLSLANG_STAGE_CALLABLE_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_CALLABLE_NV),
-		GLSLANG_STAGE_TASK_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_TASK_NV),
-		GLSLANG_STAGE_MESH_NV_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_MESH_NV),
+		GLSLANG_STAGE_RAYGEN_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_RAYGEN),
+		GLSLANG_STAGE_RAYGEN_NV_MASK = GLSLANG_STAGE_RAYGEN_MASK,
+		GLSLANG_STAGE_INTERSECT_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_INTERSECT),
+		GLSLANG_STAGE_INTERSECT_NV_MASK = GLSLANG_STAGE_INTERSECT_MASK,
+		GLSLANG_STAGE_ANYHIT_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_ANYHIT),
+		GLSLANG_STAGE_ANYHIT_NV_MASK = GLSLANG_STAGE_ANYHIT_MASK,
+		GLSLANG_STAGE_CLOSESTHIT_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_CLOSESTHIT),
+		GLSLANG_STAGE_CLOSESTHIT_NV_MASK = GLSLANG_STAGE_CLOSESTHIT_MASK,
+		GLSLANG_STAGE_MISS_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_MISS),
+		GLSLANG_STAGE_MISS_NV_MASK = GLSLANG_STAGE_MISS_MASK,
+		GLSLANG_STAGE_CALLABLE_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_CALLABLE),
+		GLSLANG_STAGE_CALLABLE_NV_MASK = GLSLANG_STAGE_CALLABLE_MASK,
+		GLSLANG_STAGE_TASK_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_TASK),
+		GLSLANG_STAGE_TASK_NV_MASK = GLSLANG_STAGE_TASK_MASK,
+		GLSLANG_STAGE_MESH_MASK = (1 << (int32)glslang_stage_t.GLSLANG_STAGE_MESH),
+		GLSLANG_STAGE_MESH_NV_MASK = GLSLANG_STAGE_MESH_MASK,
 		GLSLANG_STAGE_MASK_COUNT,
 	}
 
@@ -102,7 +118,9 @@ namespace glslang_Beef
 	[CRepr]
 	enum glslang_executable_t
 	{
-		GLSLANG_EX_VERTEX_FRAGMENT, GLSLANG_EX_FRAGMENT }
+		GLSLANG_EX_VERTEX_FRAGMENT,
+		GLSLANG_EX_FRAGMENT
+	}
 
 	// EShOptimizationLevel counterpart
 	// This enum is not used in the current C interface, but could be added at a later date.
@@ -147,6 +165,8 @@ namespace glslang_Beef
 		GLSLANG_MSG_HLSL_DX9_COMPATIBLE_BIT = (1 << 13),
 		GLSLANG_MSG_BUILTIN_SYMBOL_TABLE_BIT = (1 << 14),
 		GLSLANG_MSG_ENHANCED = (1 << 15),
+		GLSLANG_MSG_ABSOLUTE_PATH               = (1 << 16),
+		GLSLANG_MSG_DISPLAY_ERROR_COLUMN        = (1 << 17),
 		GLSLANG_MSG_COUNT,
 	}
 
@@ -208,6 +228,22 @@ namespace glslang_Beef
 
 	[CRepr]
 	typealias glslang_program_t = void;
+
+	[CRepr]
+	typealias glslang_mapper_t = void;
+
+	[CRepr]
+	typealias glslang_resolver_t = void;
+
+	/* Version counterpart */
+	[CRepr]
+	struct glslang_version_t
+	{
+		public int32 major;
+		public int32 minor;
+		public int32 patch;
+		public char8* flavor;
+	}
 
 	/* TLimits counterpart */
 	[CRepr]
@@ -319,7 +355,16 @@ namespace glslang_Beef
 		public int32 max_task_work_group_size_y_nv;
 		public int32 max_task_work_group_size_z_nv;
 		public int32 max_mesh_view_count_nv;
-		public int32 maxDualSourceDrawBuffersEXT;
+		public int32 max_mesh_output_vertices_ext;
+		public int32 max_mesh_output_primitives_ext;
+		public int32 max_mesh_work_group_size_x_ext;
+		public int32 max_mesh_work_group_size_y_ext;
+		public int32 max_mesh_work_group_size_z_ext;
+		public int32 max_task_work_group_size_x_ext;
+		public int32 max_task_work_group_size_y_ext;
+		public int32 max_task_work_group_size_z_ext;
+		public int32 max_mesh_view_count_ext;
+		public int32 max_dual_source_draw_buffers_ext;
 
 		public glslang_limits_t limits;
 
@@ -419,7 +464,16 @@ namespace glslang_Beef
 					max_task_work_group_size_y_nv = 1,
 					max_task_work_group_size_z_nv = 1,
 					max_mesh_view_count_nv = 4,
-					maxDualSourceDrawBuffersEXT =  1,
+					max_mesh_output_vertices_ext = 256,
+					max_mesh_output_primitives_ext = 512,
+					max_mesh_work_group_size_x_ext = 32,
+					max_mesh_work_group_size_y_ext = 1,
+					max_mesh_work_group_size_z_ext = 1,
+					max_task_work_group_size_x_ext = 32,
+					max_task_work_group_size_y_ext = 1,
+					max_task_work_group_size_z_ext = 1,
+					max_mesh_view_count_ext = 4,
+					max_dual_source_draw_buffers_ext = 1,
 
 					limits =  .()
 						{
@@ -454,6 +508,8 @@ namespace glslang_Beef
 		public int32 forward_compatible;
 		public glslang_messages_t messages;
 		public glslang_resource_t* resource;
+		public glsl_include_callbacks_t callbacks;
+		public void* callbacks_ctx;
 	}
 
 	/* Inclusion result structure allocated by C include_local/include_system callbacks */
@@ -465,16 +521,16 @@ namespace glslang_Beef
 
 		/* Header contents or NULL */
 		public char8* header_data;
-		public int header_length;
+		public uint header_length;
 	}
 
 	/* Callback for local file inclusion */
 	typealias glsl_include_local_func = function glsl_include_result_t*(void* ctx, char8* header_name,
-		char8* includer_name, int include_depth);
+		char8* includer_name, uint include_depth);
 
 	/* Callback for system file inclusion */
 	typealias glsl_include_system_func = function glsl_include_result_t*(void* ctx, char8* header_name,
-		char8* includer_name, int include_depth);
+		char8* includer_name, uint include_depth);
 
 	/* Callback for include result destruction */
 	typealias glsl_free_include_result_func = function int32(void* ctx, glsl_include_result_t* result);
@@ -498,26 +554,47 @@ namespace glslang_Beef
 		public bool optimize_size;
 		public bool disassemble;
 		public bool validate;
+		public bool emit_nonsemantic_shader_debug_info;
+		public bool emit_nonsemantic_shader_debug_source;
+		public bool compile_only;
+		public bool optimize_allow_expanded_id_bound;
 	}
 
 	public static
 	{
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_get_version(glslang_version_t* version);
+
 		[CallingConvention(.Stdcall), CLink] public static extern int32 glslang_initialize_process();
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_finalize_process();
-		
-		[CallingConvention(.Stdcall), CLink] public static extern glslang_resource_t* glslang_default_resource();
-		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_default_resource_string();
-		[CallingConvention(.Stdcall), CLink] public static extern void glslang_decode_resource_limits(glslang_resource_t* resources, char8* config);
+
+		// Returns a struct that can be use to create custom resource values.
+		//[CallingConvention(.Stdcall), CLink] public static extern glslang_resource_t* glslang_resource();
+
+		// These are the default resources for TBuiltInResources, used for both
+		//  - parsing this string for the case where the user didn't supply one,
+		//  - dumping out a template for user construction of a config file.
+		//[CallingConvention(.Stdcall), CLink] public static extern glslang_resource_t* glslang_default_resource();
+
+		// Returns the DefaultTBuiltInResource as a human-readable string.
+		// NOTE: User is responsible for freeing this string.
+		//[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_default_resource_string();
+
+		// Decodes the resource limits from |config| to |resources|.
+		//[CallingConvention(.Stdcall), CLink] public static extern void glslang_decode_resource_limits(glslang_resource_t* resources, char8* config);
 
 		[CallingConvention(.Stdcall), CLink] public static extern glslang_shader_t* glslang_shader_create(glslang_input_t* input);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_delete(glslang_shader_t* shader);
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_preamble(glslang_shader_t* shader, char8* s);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_shift_binding(glslang_shader_t* shader, glslang_resource_type_t res, uint32 @base);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_shift_binding_for_set(glslang_shader_t* shader, glslang_resource_type_t res, uint32 @base, uint32 set);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_options(glslang_shader_t* shader, int32 options); // glslang_shader_options_t
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_glsl_version(glslang_shader_t* shader, int32 version);
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_default_uniform_block_set_and_binding(glslang_shader_t* shader, uint32 set, uint32 binding);
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_default_uniform_block_name(glslang_shader_t* shader, char8* name);
 		[CallingConvention(.Stdcall), CLink] public static extern int32 glslang_shader_preprocess(glslang_shader_t* shader, glslang_input_t* input);
 		[CallingConvention(.Stdcall), CLink] public static extern int32 glslang_shader_parse(glslang_shader_t* shader, glslang_input_t* input);
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_shader_get_preprocessed_code(glslang_shader_t* shader);
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_shader_set_preprocessed_code(glslang_shader_t* shader, char8* code);
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_shader_get_info_log(glslang_shader_t* shader);
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_shader_get_info_debug_log(glslang_shader_t* shader);
 
@@ -528,6 +605,7 @@ namespace glslang_Beef
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_program_add_source_text(glslang_program_t* program, glslang_stage_t stage, char8* text, int len);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_program_set_source_file(glslang_program_t* program, glslang_stage_t stage, char8* file);
 		[CallingConvention(.Stdcall), CLink] public static extern int32 glslang_program_map_io(glslang_program_t* program);
+		[CallingConvention(.Stdcall), CLink] public static extern int32 glslang_program_map_io_with_resolver_and_mapper(glslang_program_t* program, glslang_resolver_t* resolver, glslang_mapper_t* mapper);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_program_SPIRV_generate(glslang_program_t* program, glslang_stage_t stage);
 		[CallingConvention(.Stdcall), CLink] public static extern void glslang_program_SPIRV_generate_with_options(glslang_program_t* program, glslang_stage_t stage, glslang_spv_options_t* spv_options);
 		[CallingConvention(.Stdcall), CLink] public static extern int glslang_program_SPIRV_get_size(glslang_program_t* program);
@@ -536,5 +614,11 @@ namespace glslang_Beef
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_program_SPIRV_get_messages(glslang_program_t* program);
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_program_get_info_log(glslang_program_t* program);
 		[CallingConvention(.Stdcall), CLink] public static extern char8* glslang_program_get_info_debug_log(glslang_program_t* program);
+
+		[CallingConvention(.Stdcall), CLink] public static extern glslang_mapper_t* glslang_glsl_mapper_create();
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_glsl_mapper_delete(glslang_mapper_t* mapper);
+
+		[CallingConvention(.Stdcall), CLink] public static extern glslang_resolver_t* glslang_glsl_resolver_create(glslang_program_t* program, glslang_stage_t stage);
+		[CallingConvention(.Stdcall), CLink] public static extern void glslang_glsl_resolver_delete(glslang_resolver_t* resolver);
 	}
 }

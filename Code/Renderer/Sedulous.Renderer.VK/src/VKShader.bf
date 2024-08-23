@@ -37,7 +37,7 @@ static
 		for (var stage in ref gpuShader.gpuStages)
 		{
 			stage.source.Clear();
-			stage.source.shrink_to_fit();
+			//stage.source.shrink_to_fit();
 		}
 
 		gpuShader.initialized = true;
@@ -77,7 +77,7 @@ class CCVKShader : Shader
 		for (var stage in ref _stages)
 		{
 			stage.source.Clear();
-			stage.source.shrink_to_fit();
+			//stage.source.shrink_to_fit();
 		}
 	}
 

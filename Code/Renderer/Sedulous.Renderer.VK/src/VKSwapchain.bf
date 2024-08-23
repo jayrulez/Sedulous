@@ -513,7 +513,7 @@ var gpuDevice = CCVKDevice.getInstance().gpuDevice();
 		#endif*/
 			// assuming windows for now
 		VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = .() { sType = .VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR };
-		surfaceCreateInfo.hinstance = (HINSTANCE)GetModuleHandle(null);
+		surfaceCreateInfo.hinstance = (void*)(int)System.Windows.GetModuleHandleA(null);
 		surfaceCreateInfo.hwnd = _windowHandle;
 		VK_CHECK!(vkCreateWin32SurfaceKHR(gpuContext.vkInstance, &surfaceCreateInfo, null, &_gpuSwapchain.vkSurface));
 	}

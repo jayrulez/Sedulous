@@ -114,9 +114,9 @@ class SPIRVUtils
 	public void compileGLSL(ShaderStageFlagBit type, String source)
 	{
 		glslang_stage_t stage = getShaderStage(type);
-		char8* string = source;
+		char8* string = source.CStr();
 
-		glslang_resource_t* resources = glslang_default_resource();
+		glslang_resource_t* resources = scope glslang_resource_t();
 		glslang_input_t input = .()
 			{
 				language = .GLSLANG_SOURCE_GLSL,
@@ -136,7 +136,14 @@ class SPIRVUtils
 			};
 		_shader = glslang_shader_create(&input);
 
-		if (glslang_shader_parse(_shader, &input) != 0)
+		if (glslang_shader_preprocess(_shader, &input) == 0)
+		{
+			String infoLog = scope .(glslang_shader_get_info_log(_shader));
+			String debugLog = scope .(glslang_shader_get_info_debug_log(_shader));
+			WriteError("GLSL Parsing Failed:\n{}\n{}", infoLog, debugLog);
+		}
+
+		if (glslang_shader_parse(_shader, &input) == 0)
 		{
 			String infoLog = scope .(glslang_shader_get_info_log(_shader));
 			String debugLog = scope .(glslang_shader_get_info_debug_log(_shader));
@@ -148,7 +155,7 @@ class SPIRVUtils
 
 
 
-		if (glslang_program_link(_program, (int32)input.messages) != 0)
+		if (glslang_program_link(_program, (int32)input.messages) == 0)
 		{
 			String infoLog = scope .(glslang_program_get_info_log(_program));
 			String debugLog = scope .(glslang_program_get_info_debug_log(_program));
@@ -168,7 +175,8 @@ class SPIRVUtils
 #else
 		spvOptions.stripDebugInfo = true;
 #endif
-		glslang_program_SPIRV_generate_with_options(_program, stage, &spvOptions);
+		glslang_program_SPIRV_generate_with_options(_program, input.stage, &spvOptions);
+		//glslang_program_SPIRV_generate(_program, stage);
 		int size = glslang_program_SPIRV_get_size(_program);
 		_output.Resize(size);
 		glslang_program_SPIRV_get(_program, _output.Ptr);
@@ -212,7 +220,7 @@ class SPIRVUtils
 				} break;
 			case .SpvOpVariable:
 				{
-					Runtime.Assert(wordCount > 4);
+					Runtime.Assert(wordCount >= 4);
 
 					uint32 id = insn[2];
 					Runtime.Assert(id < idBound);
@@ -232,6 +240,8 @@ class SPIRVUtils
 		
 
 		//_program.buildReflection();
+		activeLocations.Clear();
+		uint32 activeCount = 0;
 		{
 			const bool g_fail_on_error = true;
 			void error_callback(void* userdata, char8* error)
@@ -260,10 +270,13 @@ class SPIRVUtils
 			spvc_compiler_options options = .Null;
 
 			SpvId* buffer = (SpvId*)_output.Ptr;
-			uint64 word_count = uint64(_output.Count / sizeof(SpvId));
+			uint64 word_count = uint64(_output.Count /*/ sizeof(SpvId)*/);
 			Runtime.Assert(spvc_context_parse_spirv(context, buffer, word_count, &ir) == 0);
 
+			Runtime.Assert(spvc_context_create_compiler(context, .Glsl, ir, .Copy, &compiler) == 0);
+
 			Runtime.Assert(spvc_compiler_create_compiler_options(compiler, &options) == 0);
+
 			Runtime.Assert(spvc_compiler_install_compiler_options(compiler, options) == 0);
 
 			char8* source = null;
@@ -274,26 +287,58 @@ class SPIRVUtils
 
 				Runtime.Assert(spvc_compiler_create_shader_resources(compiler, &resources) == 0);
 
-				delegate void(spvc_resources resources, spvc_resource_type type) enumerate_resources = scope [&] (resources, type) =>
+				delegate void(spvc_resources resources, spvc_resource_type type, ref uint32 numPipeInput) enumerate_resources = scope [&] (@resources, type, numPipeInput) =>
 				{
 					spvc_reflected_resource* list = null;
 					uint count = 0;
-					Runtime.Assert(spvc_resources_get_resource_list_for_type(resources, type, (.)&list, &count) == 0);
-					for (uint i = 0; i < count; i++)
+					Runtime.Assert(spvc_resources_get_resource_list_for_type(@resources, type, (.)&list, &count) == 0);
+					if(type == .StageInput)
 					{
-						spvc_reflected_resource resource = list[i];
-						// todo
+						numPipeInput = (uint32)count;
 					}
+					/*for (uint i = 0; i < count; i++)
+					{
+						//spvc_reflected_resource resource = list[i];
+						// todo
+					}*/
 				};
+
+				//enumerate_resources(resources, .UniformBuffer);
+				//enumerate_resources(resources, .StorageBuffer);
+				enumerate_resources(resources, .StageInput, ref activeCount);
+				//enumerate_resources(resources, .StageOutput);
+				//enumerate_resources(resources, .SubpassInput);
+				//enumerate_resources(resources, .StorageImage);
+				//enumerate_resources(resources, .SampledImage);
+				//enumerate_resources(resources, .AtomicCounter);
+				//enumerate_resources(resources, .PushConstant);
+				//enumerate_resources(resources, .SeparateImage);
+				//enumerate_resources(resources, .SeparateSamplers);
+				//enumerate_resources(resources, .AccelerationStructure);
+				//enumerate_resources(resources, .RayQuery);
+				//enumerate_resources(resources, .ShaderRecordBuffer);
+
+				
+				for (int i = 0; i < activeCount; ++i)
+				{
+					spvc_reflected_resource* list = null;
+					uint count = 0;
+					Runtime.Assert(spvc_resources_get_resource_list_for_type(resources, .StageInput, (.)&list, &count) == 0);
+
+					spvc_reflected_resource resource = list[i];
+					uint32 location = spvc_compiler_get_decoration(compiler, resource.id, .SpvDecorationLocation);
+
+					activeLocations.Add(location);
+				}
 			}
 		}
 
-		activeLocations.Clear();
+		/*activeLocations.Clear();
 		uint32 activeCount = _program.getNumPipeInputs();
 		for (int i = 0; i < activeCount; ++i)
 		{
 			activeLocations.Add(_program.getPipeInput(i).getType().getQualifier().layoutLocation);
-		}
+		}*/
 
 		uint32 location = 0;
 		uint32 unusedLocation = activeCount;

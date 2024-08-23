@@ -10,6 +10,6 @@ class CCVKGPUShaderStage
 		source = s;
 	}
 	public ShaderStageFlagBit type = ShaderStageFlagBit.NONE;
-	public String source;
+	public String source = new .() ~ delete _;
 	public VkShaderModule vkShader = .Null;
 }

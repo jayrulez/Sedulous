@@ -186,7 +186,7 @@ void collect(const _type *gpuRes) { /* NOLINT(bugprone-macro-parentheses) N/A */
 			case RecycledType.DESCRIPTOR_SET:
 				if (res.set.vkSet != .Null)
 				{
-					CCVKDevice.getInstance().gpuDevice().getDescriptorSetPool(res.set.layoutId).@yield(res.set.vkSet);
+					CCVKDevice.getInstance().gpuDevice().getDescriptorSetPool(res.set.layoutId)._yield(res.set.vkSet);
 				}
 				break;
 			default: break;
