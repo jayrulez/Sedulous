@@ -648,7 +648,7 @@ static
 		if (!manuallyDeduce)
 		{
 			// offset = 0U;
-			HashSet<GFXObject> subpassExternalFilter = scope .();
+			HashSet<GraphicsObject> subpassExternalFilter = scope .();
 			for (uint32 i = 0U; i < dependencyCount; ++i)
 			{
 				readonly var dependency = ref gpuRenderPass.dependencies[i];

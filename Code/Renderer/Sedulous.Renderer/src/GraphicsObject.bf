@@ -25,32 +25,32 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class GFXObject
-		{
-			public this(ObjectType type)
-			{
-				_objectType = type;
-				_objectID = generateObjectID<GFXObject>();
-			}
+abstract class GraphicsObject
+{
+	public this(ObjectType type)
+	{
+		_objectType = type;
+		_objectID = generateObjectID<GraphicsObject>();
+	}
 
-			[Inline] public ObjectType getObjectType() { return _objectType; }
-			[Inline] public uint32 getObjectID() { return _objectID; }
-			[Inline] public uint32 getTypedID() { return _typedID; }
+	[Inline] public ObjectType getObjectType() { return _objectType; }
+	[Inline] public uint32 getObjectID() { return _objectID; }
+	[Inline] public uint32 getTypedID() { return _typedID; }
 
-			[Inline] public static uint32 getObjectID(GFXObject obj)
-			{
-				return obj == null ? INVALID_OBJECT_ID : obj.getObjectID();
-			}
+	[Inline] public static uint32 getObjectID(GraphicsObject obj)
+	{
+		return obj == null ? INVALID_OBJECT_ID : obj.getObjectID();
+	}
 
-			protected static uint32 generateObjectID<T>()
-			{
-				static uint32 generator = 1 << 16;
-				return ++generator;
-			}
+	protected static uint32 generateObjectID<T>()
+	{
+		static uint32 generator = 1 << 16;
+		return ++generator;
+	}
 
-			protected const uint32 INVALID_OBJECT_ID = 0;
-			protected ObjectType _objectType = ObjectType.UNKNOWN;
-			protected uint32 _objectID = 0;
+	protected const uint32 INVALID_OBJECT_ID = 0;
+	protected ObjectType _objectType = ObjectType.UNKNOWN;
+	protected uint32 _objectID = 0;
 
-			protected uint32 _typedID = 0; // inited by sub-classes
-		}
+	protected uint32 _typedID = 0; // inited by sub-classes
+}

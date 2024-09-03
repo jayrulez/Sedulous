@@ -41,7 +41,7 @@ namespace Sedulous.Renderer;
 		 *  completeQueryPool
 		 */
 
-		abstract class QueryPool : GFXObject
+		abstract class QueryPool : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.QUERY_POOL)

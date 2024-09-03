@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class CommandQueue : GFXObject
+		abstract class CommandQueue : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.QUEUE)

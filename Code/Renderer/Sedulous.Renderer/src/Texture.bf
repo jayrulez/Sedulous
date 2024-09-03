@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class Texture : GFXObject
+		abstract class Texture : GraphicsObject
 		{
 			private static uint32 getLevelCount(uint32 width, uint32 height)
 			{

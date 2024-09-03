@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		class Sampler : GFXObject
+		class Sampler : GraphicsObject
 		{
 			public this(in SamplerInfo info)
 				: base(ObjectType.SAMPLER)

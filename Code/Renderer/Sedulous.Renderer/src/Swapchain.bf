@@ -33,7 +33,7 @@ namespace Sedulous.Renderer;
 			public uint32 height =  0 ;
 		}
 
-		abstract class Swapchain : GFXObject {
+		abstract class Swapchain : GraphicsObject {
 		public this() : base(ObjectType.SWAPCHAIN) {
 			}
 

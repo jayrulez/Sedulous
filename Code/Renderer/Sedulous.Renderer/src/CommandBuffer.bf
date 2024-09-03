@@ -26,7 +26,7 @@ using System.Collections;
 
 namespace Sedulous.Renderer;
 
-		abstract class CommandBuffer : GFXObject
+		abstract class CommandBuffer : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.COMMAND_BUFFER)

@@ -26,7 +26,7 @@ using System;
 namespace Sedulous.Renderer;
 
 
-		class TextureBarrier : GFXObject {
+		class TextureBarrier : GraphicsObject {
 			public this(in TextureBarrierInfo info)
 				: base(ObjectType.TEXTURE_BARRIER) {
 				_info = info;

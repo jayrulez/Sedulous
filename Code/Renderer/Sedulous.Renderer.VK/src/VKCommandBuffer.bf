@@ -823,7 +823,7 @@ class CCVKCommandBuffer : CommandBuffer
 		List<VkBufferMemoryBarrier> fullBufferBarriers = scope .();
 		List<VkEvent> scheduledEvents = scope .();
 
-		delegate void(GFXObject obj, VkPipelineStageFlags stageMask) signalEvent = scope [&] (obj, stageMask) =>
+		delegate void(GraphicsObject obj, VkPipelineStageFlags stageMask) signalEvent = scope [&] (obj, stageMask) =>
 			{
 				VkEvent event = .Null;
 				if (!_availableEvents.IsEmpty)
@@ -1167,7 +1167,7 @@ class CCVKCommandBuffer : CommandBuffer
 	protected List<VkImageBlit> _blitRegions;
 	protected List<VkCommandBuffer> _vkCommandBuffers;
 	protected Queue<VkEvent> _availableEvents;
-	protected Dictionary<GFXObject, VkEvent> _barrierEvents;
+	protected Dictionary<GraphicsObject, VkEvent> _barrierEvents;
 
 	protected Queue<VkCommandBuffer> _pendingQueue;
 	protected VkDebugMarkerMarkerInfoEXT _markerInfo = .() { sType = .VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT, pNext = null };

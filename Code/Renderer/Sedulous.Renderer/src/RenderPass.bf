@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class RenderPass : GFXObject
+		abstract class RenderPass : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.RENDER_PASS)

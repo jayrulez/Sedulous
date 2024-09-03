@@ -26,7 +26,7 @@ using System;
 namespace Sedulous.Renderer;
 
 
-		abstract class PipelineState : GFXObject
+		abstract class PipelineState : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.PIPELINE_STATE)

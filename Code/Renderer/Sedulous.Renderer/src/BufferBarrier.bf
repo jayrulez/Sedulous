@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		class BufferBarrier : GFXObject {
+		class BufferBarrier : GraphicsObject {
 			public this(in BufferBarrierInfo info)
 				: base(ObjectType.BUFFER_BARRIER) {
 				_info = info;

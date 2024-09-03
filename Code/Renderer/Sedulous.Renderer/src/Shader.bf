@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class Shader : GFXObject
+		abstract class Shader : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.SHADER)

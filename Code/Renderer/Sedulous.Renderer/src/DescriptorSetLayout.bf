@@ -26,72 +26,72 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class DescriptorSetLayout : GFXObject
+abstract class DescriptorSetLayout : GraphicsObject
+{
+	public this()
+		: base(ObjectType.DESCRIPTOR_SET_LAYOUT)
+	{
+	}
+
+	public void initialize(in DescriptorSetLayoutInfo info)
+	{
+		_bindings = info.bindings;
+		uint32 bindingCount = (uint32)_bindings.Count;
+		_descriptorCount = 0;
+
+		if (bindingCount > 0)
 		{
-			public this()
-				: base(ObjectType.DESCRIPTOR_SET_LAYOUT)
+			uint32 maxBinding = 0;
+			List<uint32> flattenedIndices = scope .() { Count = bindingCount };
+			for (uint32 i = 0; i < bindingCount; i++)
 			{
+				readonly ref DescriptorSetLayoutBinding binding = ref _bindings[i];
+				if (binding.binding > maxBinding) maxBinding = binding.binding;
+				flattenedIndices[i] = _descriptorCount;
+				_descriptorCount += binding.count;
 			}
 
-			public void initialize(in DescriptorSetLayoutInfo info)
+			_bindingIndices.Resize(maxBinding + 1, INVALID_BINDING);
+			_descriptorIndices.Resize(maxBinding + 1, INVALID_BINDING);
+			for (uint32 i = 0; i < bindingCount; i++)
 			{
-				_bindings = info.bindings;
-				uint32 bindingCount = (uint32)_bindings.Count;
-				_descriptorCount = 0;
-
-				if (bindingCount > 0)
+				readonly ref DescriptorSetLayoutBinding binding = ref _bindings[i];
+				_bindingIndices[binding.binding] = i;
+				_descriptorIndices[binding.binding] = flattenedIndices[i];
+				if (DESCRIPTOR_DYNAMIC_TYPE.HasFlag(binding.descriptorType))
 				{
-					uint32 maxBinding = 0;
-					List<uint32> flattenedIndices = scope .() { Count = bindingCount };
-					for (uint32 i = 0; i < bindingCount; i++)
+					for (uint32 j = 0; j < binding.count; ++j)
 					{
-						readonly ref DescriptorSetLayoutBinding binding = ref _bindings[i];
-						if (binding.binding > maxBinding) maxBinding = binding.binding;
-						flattenedIndices[i] = _descriptorCount;
-						_descriptorCount += binding.count;
-					}
-
-					_bindingIndices.Resize(maxBinding + 1, INVALID_BINDING);
-					_descriptorIndices.Resize(maxBinding + 1, INVALID_BINDING);
-					for (uint32 i = 0; i < bindingCount; i++)
-					{
-						readonly ref DescriptorSetLayoutBinding binding = ref _bindings[i];
-						_bindingIndices[binding.binding] = i;
-						_descriptorIndices[binding.binding] = flattenedIndices[i];
-						if (DESCRIPTOR_DYNAMIC_TYPE.HasFlag(binding.descriptorType))
-						{
-							for (uint32 j = 0; j < binding.count; ++j)
-							{
-								_dynamicBindings.Add(binding.binding);
-							}
-						}
+						_dynamicBindings.Add(binding.binding);
 					}
 				}
-
-				doInit(info);
 			}
-			public void destroy()
-			{
-				doDestroy();
-
-				_bindings.Clear();
-				_descriptorCount = 0;
-				_bindingIndices.Clear();
-				_descriptorIndices.Clear();
-			}
-
-			[Inline] public readonly ref DescriptorSetLayoutBindingList getBindings() { return ref _bindings; }
-			[Inline] public readonly ref List<uint32> getDynamicBindings() { return ref _dynamicBindings; }
-			[Inline] public readonly ref List<uint32> getBindingIndices() { return ref _bindingIndices; }
-			[Inline] public readonly ref List<uint32> getDescriptorIndices() { return ref _descriptorIndices; }
-			[Inline] public uint32 getDescriptorCount() { return _descriptorCount; }
-
-			protected abstract void doInit(in DescriptorSetLayoutInfo info);
-			protected abstract void doDestroy();
-
-			protected DescriptorSetLayoutBindingList _bindings;
-			protected uint32 _descriptorCount = 0;
-			protected List<uint32> _bindingIndices;
-			protected List<uint32> _descriptorIndices;
-			protected List<uint32> _dynamicBindings;
 		}
+
+		doInit(info);
+	}
+	public void destroy()
+	{
+		doDestroy();
+
+		_bindings.Clear();
+		_descriptorCount = 0;
+		_bindingIndices.Clear();
+		_descriptorIndices.Clear();
+	}
+
+	[Inline] public readonly ref DescriptorSetLayoutBindingList getBindings() { return ref _bindings; }
+	[Inline] public readonly ref List<uint32> getDynamicBindings() { return ref _dynamicBindings; }
+	[Inline] public readonly ref List<uint32> getBindingIndices() { return ref _bindingIndices; }
+	[Inline] public readonly ref List<uint32> getDescriptorIndices() { return ref _descriptorIndices; }
+	[Inline] public uint32 getDescriptorCount() { return _descriptorCount; }
+
+	protected abstract void doInit(in DescriptorSetLayoutInfo info);
+	protected abstract void doDestroy();
+
+	protected DescriptorSetLayoutBindingList _bindings;
+	protected uint32 _descriptorCount = 0;
+	protected List<uint32> _bindingIndices;
+	protected List<uint32> _descriptorIndices;
+	protected List<uint32> _dynamicBindings;
+}

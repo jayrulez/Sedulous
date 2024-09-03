@@ -341,5 +341,5 @@ abstract class Device
 	protected Dictionary<TextureBarrierInfo, TextureBarrier> _textureBarriers;
 	protected Dictionary<BufferBarrierInfo, BufferBarrier> _bufferBarriers;
 
-	private List<Swapchain> _swapchains; // weak reference
+	private List<Swapchain> _swapchains = new .() ~ delete _; // weak reference
 }

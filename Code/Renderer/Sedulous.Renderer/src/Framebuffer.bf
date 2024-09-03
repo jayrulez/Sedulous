@@ -26,7 +26,7 @@ using System;
 namespace Sedulous.Renderer;
 
 
-		abstract class Framebuffer : GFXObject
+		abstract class Framebuffer : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.FRAMEBUFFER)

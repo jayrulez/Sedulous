@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class PipelineLayout : GFXObject
+		abstract class PipelineLayout : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.PIPELINE_LAYOUT)

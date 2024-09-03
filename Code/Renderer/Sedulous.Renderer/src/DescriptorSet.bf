@@ -27,7 +27,7 @@ using System.Collections;
 namespace Sedulous.Renderer;
 
 
-		abstract class DescriptorSet : GFXObject {
+		abstract class DescriptorSet : GraphicsObject {
 			public this()
 				: base(ObjectType.DESCRIPTOR_SET) {
 			}

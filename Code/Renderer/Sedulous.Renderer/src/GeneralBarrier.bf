@@ -25,23 +25,23 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		class GeneralBarrier : GFXObject
-		{
-			public this(in GeneralBarrierInfo info)
-				: base(ObjectType.GLOBAL_BARRIER)
-			{
-				_info = info;
-				_hash = computeHash(info);
-			}
+class GeneralBarrier : GraphicsObject
+{
+	public this(in GeneralBarrierInfo info)
+		: base(ObjectType.GLOBAL_BARRIER)
+	{
+		_info = info;
+		_hash = computeHash(info);
+	}
 
-			public static HashType computeHash(in GeneralBarrierInfo info)
-			{
-				return info.GetHashCode();
-			}
+	public static HashType computeHash(in GeneralBarrierInfo info)
+	{
+		return info.GetHashCode();
+	}
 
-			[Inline] public readonly ref GeneralBarrierInfo getInfo() { return ref _info; }
-			[Inline] public readonly ref HashType getHash() { return ref _hash; }
+	[Inline] public readonly ref GeneralBarrierInfo getInfo() { return ref _info; }
+	[Inline] public readonly ref HashType getHash() { return ref _hash; }
 
-			protected GeneralBarrierInfo _info;
-			protected HashType _hash =  0;
-		}
+	protected GeneralBarrierInfo _info;
+	protected HashType _hash =  0;
+}

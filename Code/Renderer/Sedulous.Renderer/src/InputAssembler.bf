@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class InputAssembler : GFXObject
+		abstract class InputAssembler : GraphicsObject
 		{
 			public this()
 				: base(ObjectType.INPUT_ASSEMBLER)

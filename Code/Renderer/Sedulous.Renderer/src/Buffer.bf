@@ -25,7 +25,7 @@ using System;
 
 namespace Sedulous.Renderer;
 
-		abstract class Buffer : GFXObject
+		abstract class Buffer : GraphicsObject
 		{
 			public this() : base(ObjectType.BUFFER)
 				{ }
