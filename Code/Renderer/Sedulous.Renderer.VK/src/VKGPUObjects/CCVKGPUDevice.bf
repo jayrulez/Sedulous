@@ -30,8 +30,8 @@ using System.Threading;
 			public CCVKGPUTextureView defaultTextureView;
 			public CCVKGPUBuffer defaultBuffer;
 
-			public CCVKGPUGeneralBarrier defaultColorBarrier;
-			public CCVKGPUGeneralBarrier defaultDepthStencilBarrier;
+			public CCVKGPUGeneralBarrier defaultColorBarrier = new .() ~ delete _;
+			public CCVKGPUGeneralBarrier defaultDepthStencilBarrier = new .() ~ delete _;
 
 			public HashSet<CCVKGPUSwapchain> swapchains;
 
@@ -53,7 +53,7 @@ using System.Threading;
 
 			// cannot use thread_local here because we need explicit control over their destruction
 			private typealias CommandBufferPools = ConcurrentDictionary<uint, CCVKGPUCommandBufferPool>;
-			private CommandBufferPools _commandBufferPools;
+			private CommandBufferPools _commandBufferPools = new .() ~ delete _;
 
-			private Dictionary<uint32, CCVKGPUDescriptorSetPool> _descriptorSetPools;
+			private Dictionary<uint32, CCVKGPUDescriptorSetPool> _descriptorSetPools = new .() ~ delete _;
 		}

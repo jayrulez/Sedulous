@@ -10,6 +10,8 @@ class CCVKGPUInputAssemblerHub
 
 	public void connect(CCVKGPUInputAssembler ia, CCVKGPUBufferView buffer)
 	{
+		if(!_ias.ContainsKey(buffer))
+			_ias[buffer] = new .();
 		_ias[buffer].Add(ia);
 	}
 
@@ -23,6 +25,7 @@ class CCVKGPUInputAssemblerHub
 				ia.update(oldBuffer, newBuffer);
 				_ias[newBuffer].Add(ia);
 			}
+			//delete _ias[oldBuffer];
 			_ias.Remove(oldBuffer);
 		}
 	}
@@ -31,6 +34,7 @@ class CCVKGPUInputAssemblerHub
 	{
 		if (_ias.ContainsKey(buffer))
 		{
+			delete _ias[buffer];
 			_ias.Remove(buffer);
 		}
 	}
@@ -44,5 +48,5 @@ class CCVKGPUInputAssemblerHub
 	}
 
 	private CCVKGPUDevice _gpuDevice = null;
-	private Dictionary<CCVKGPUBufferView, HashSet<CCVKGPUInputAssembler>> _ias;
+	private Dictionary<CCVKGPUBufferView, HashSet<CCVKGPUInputAssembler>> _ias = new .() ~ delete _;
 }

@@ -11,6 +11,6 @@ class CCVKGPUShader : CCVKGPUDeviceObject
 
 	public String name;
 	public VertexAttributeList attributes;
-	public List<CCVKGPUShaderStage> gpuStages;
+	public List<CCVKGPUShaderStage> gpuStages = new .() ~ delete _;
 	public bool initialized = false;
 }

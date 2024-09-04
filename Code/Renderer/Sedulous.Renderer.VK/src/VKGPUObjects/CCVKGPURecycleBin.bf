@@ -258,6 +258,6 @@ void collect(const _type *gpuRes) { /* NOLINT(bugprone-macro-parentheses) N/A */
 	}
 
 	private CCVKGPUDevice _device = null;
-	private List<Resource> _resources;
+	private List<Resource> _resources= new .() ~ delete _;
 	private int _count = 0U;
 }

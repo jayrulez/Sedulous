@@ -6,6 +6,7 @@ using Sedulous.Platform;
 using Sedulous.Platform.Desktop;
 using System.Collections;
 using System;
+using Sedulous.Renderer.VK;
 using static Sedulous.Core.IContext;
 namespace Sedulous.Renderer.Sandbox;
 
@@ -231,7 +232,9 @@ void main() {
 	{
 		VertexAttribute          position = .() { name = "a_position", format = .RG32F, isNormalized = false, stream = 0, isInstanced = false };
 		InputAssemblerInfo inputAssemblerInfo = .();
+		inputAssemblerInfo.attributes = new .();
 		inputAssemblerInfo.attributes.Add(position);
+		inputAssemblerInfo.vertexBuffers = new .();
 		inputAssemblerInfo.vertexBuffers.Add(_vertexBuffer);
 		inputAssemblerInfo.indexBuffer    = _indexBuffer;
 		inputAssemblerInfo.indirectBuffer = _indirectBuffer;
@@ -241,13 +244,16 @@ void main() {
 	private void createPipeline()
 	{
 		DescriptorSetLayoutInfo dslInfo = .();
+		dslInfo.bindings = new .();
 		dslInfo.bindings.Add(.() { binding = 0, descriptorType = DescriptorType.UNIFORM_BUFFER, count = 1, stageFlags = ShaderStageFlagBit.FRAGMENT });
 		dslInfo.bindings.Add(.() { binding = 1, descriptorType = DescriptorType.UNIFORM_BUFFER, count = 1, stageFlags = ShaderStageFlagBit.VERTEX });
 		_descriptorSetLayout = device.createDescriptorSetLayout(dslInfo);
 
-		_pipelineLayout = device.createPipelineLayout(.() { setLayouts = new .() { _descriptorSetLayout } });
+		PipelineLayoutInfo plInfo = .() { setLayouts = new .() { _descriptorSetLayout } };
+		_pipelineLayout = device.createPipelineLayout(plInfo);
 
-		_descriptorSet = device.createDescriptorSet(.() { layout = _descriptorSetLayout });
+		DescriptorSetInfo dsInfo = .() { layout = _descriptorSetLayout };
+		_descriptorSet = device.createDescriptorSet(dsInfo);
 
 		_descriptorSet.bindBuffer(0, _uniformBuffer);
 		_descriptorSet.bindBuffer(1, _uniformBufferMVP);
@@ -266,7 +272,7 @@ void main() {
 
 		_invisiblePipelineState = device.createPipelineState(pipelineInfo);
 
-		_generalBarriers.Add(device.getGeneralBarrier(.()
+		GeneralBarrierInfo b1 = .()
 			{
 				prevAccesses = AccessFlagBit.TRANSFER_WRITE,
 				nextAccesses = AccessFlagBit.VERTEX_SHADER_READ_UNIFORM_BUFFER |
@@ -274,14 +280,16 @@ void main() {
 					AccessFlagBit.INDIRECT_BUFFER |
 					AccessFlagBit.VERTEX_BUFFER |
 					AccessFlagBit.INDEX_BUFFER
-			}));
+			};
+		_generalBarriers.Add(device.getGeneralBarrier(b1));
 
-		_generalBarriers.Add(device.getGeneralBarrier(.()
+		GeneralBarrierInfo b2 = .()
 			{
 				prevAccesses = AccessFlagBit.TRANSFER_WRITE,
 				nextAccesses = AccessFlagBit.VERTEX_SHADER_READ_UNIFORM_BUFFER |
 					AccessFlagBit.FRAGMENT_SHADER_READ_UNIFORM_BUFFER
-			}));
+			};
+		_generalBarriers.Add(device.getGeneralBarrier(b2));
 	}
 
 
@@ -300,6 +308,15 @@ void main() {
 			});
 
 
+		device = new [Friend]CCVKDevice();
+		DeviceInfo deviceInfo = .()
+			{
+				bindingMappingInfo = .()
+					{
+
+					}
+			};
+		device.initialize(deviceInfo);
 		createShader();
 		createVertexBuffer();
 		createInputAssembler();

@@ -1147,10 +1147,10 @@ class CCVKCommandBuffer : CommandBuffer
 	protected CCVKGPUCommandBuffer _gpuCommandBuffer;
 
 	protected CCVKGPUPipelineState _curGPUPipelineState;
-	protected List<CCVKGPUDescriptorSet> _curGPUDescriptorSets;
-	protected List<VkDescriptorSet> _curVkDescriptorSets;
-	protected List<uint32> _curDynamicOffsets;
-	protected List<List<uint32>> _curDynamicOffsetsArray;
+	protected List<CCVKGPUDescriptorSet> _curGPUDescriptorSets = new .() ~ delete _;
+	protected List<VkDescriptorSet> _curVkDescriptorSets = new .() ~ delete _;
+	protected List<uint32> _curDynamicOffsets = new .() ~ delete _;
+	protected List<List<uint32>> _curDynamicOffsetsArray = new .() ~ delete _;
 	protected uint32 _firstDirtyDescriptorSet = uint32.MaxValue;
 
 	protected CCVKGPUInputAssembler _curGPUInputAssembler;
@@ -1164,12 +1164,12 @@ class CCVKCommandBuffer : CommandBuffer
 	protected DynamicStates _curDynamicStates;
 
 	// temp storage
-	protected List<VkImageBlit> _blitRegions;
-	protected List<VkCommandBuffer> _vkCommandBuffers;
-	protected Queue<VkEvent> _availableEvents;
-	protected Dictionary<GraphicsObject, VkEvent> _barrierEvents;
+	protected List<VkImageBlit> _blitRegions = new .() ~ delete _;
+	protected List<VkCommandBuffer> _vkCommandBuffers = new .() ~ delete _;
+	protected Queue<VkEvent> _availableEvents = new .() ~ delete _;
+	protected Dictionary<GraphicsObject, VkEvent> _barrierEvents = new .() ~ delete _;
 
-	protected Queue<VkCommandBuffer> _pendingQueue;
+	protected Queue<VkCommandBuffer> _pendingQueue = new .() ~ delete _;
 	protected VkDebugMarkerMarkerInfoEXT _markerInfo = .() { sType = .VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT, pNext = null };
 	protected VkDebugUtilsLabelEXT _utilLabelInfo = .() { sType = .VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT, pNext = null };
 }

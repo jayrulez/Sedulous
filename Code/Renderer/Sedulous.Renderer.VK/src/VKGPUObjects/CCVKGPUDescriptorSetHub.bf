@@ -12,6 +12,10 @@ class CCVKGPUDescriptorSetHub
 	{
 		_device = device;
 		_setsToBeUpdated.Resize(device.backBufferCount);
+		for(int i = 0; i < _setsToBeUpdated.Count; i++)
+		{
+			_setsToBeUpdated[i] = new .();
+		}
 		//if (device.minorVersion > 0)
 		{
 			_updateFn = => VulkanNative.vkUpdateDescriptorSetWithTemplate;
@@ -82,6 +86,6 @@ class CCVKGPUDescriptorSetHub
 	private typealias DescriptorSetList = HashSet<CCVKGPUDescriptorSet>;
 
 	private CCVKGPUDevice _device = null;
-	private List<DescriptorSetList> _setsToBeUpdated;
+	private List<DescriptorSetList> _setsToBeUpdated = new .() ~ delete _;
 	private vkUpdateDescriptorSetWithTemplateFunction _updateFn = null;
 }

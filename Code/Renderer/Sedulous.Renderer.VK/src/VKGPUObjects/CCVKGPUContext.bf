@@ -96,7 +96,7 @@ void* userData);
 
 				///////////////////// Instance Creation /////////////////////
 
-				if (VulkanNative.Initialize() case .Ok) {
+				if (VulkanNative.Initialize() case .Err) {
 					return false;
 				}
 			VulkanNative.LoadPreInstanceFunctions();
@@ -190,9 +190,9 @@ void* userData);
 					debugUtils = true;
 					requestedExtensions.Add(VulkanNative.VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 				}
-				else {
+				//else {
 					requestedExtensions.Add(VulkanNative.VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
-				}
+				//}
 #endif
 
 				// just filter out the unsupported layers & extensions
@@ -388,7 +388,7 @@ void* userData);
 			public List<char8*> layers = new .() ~ delete _;
 			public List<char8*> extensions = new .() ~ delete _;
 
-			[Inline] public bool checkExtension(char8* extensionToCheck) {
+			/*[Inline]*/ public bool checkExtension(char8* extensionToCheck) {
 				return extensions.FindIndex(scope [&](ext)=> {
 					return String.Equals(ext, extensionToCheck);
 				}) != -1;

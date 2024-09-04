@@ -7,7 +7,7 @@ class CCVKGPUShaderStage
 	public this(ShaderStageFlagBit t, String s)
 	{
 		type = t;
-		source = s;
+		source.Set(s);
 	}
 	public ShaderStageFlagBit type = ShaderStageFlagBit.NONE;
 	public String source = new .() ~ delete _;

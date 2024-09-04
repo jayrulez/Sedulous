@@ -91,7 +91,7 @@ abstract class DescriptorSetLayout : GraphicsObject
 
 	protected DescriptorSetLayoutBindingList _bindings;
 	protected uint32 _descriptorCount = 0;
-	protected List<uint32> _bindingIndices;
-	protected List<uint32> _descriptorIndices;
-	protected List<uint32> _dynamicBindings;
+	protected List<uint32> _bindingIndices = new .() ~ delete _;
+	protected List<uint32> _descriptorIndices = new .() ~ delete _;
+	protected List<uint32> _dynamicBindings = new .() ~ delete _;
 }

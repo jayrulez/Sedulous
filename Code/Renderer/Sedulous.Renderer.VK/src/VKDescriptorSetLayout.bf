@@ -70,6 +70,7 @@ class CCVKDescriptorSetLayout : DescriptorSetLayout
 	}
 	protected override void doDestroy()
 	{
+		delete _gpuDescriptorSetLayout;
 		_gpuDescriptorSetLayout = null;
 	}
 

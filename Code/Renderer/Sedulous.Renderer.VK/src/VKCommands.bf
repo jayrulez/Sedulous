@@ -996,7 +996,7 @@ static
 			VK_CHECK!(vkCreateShaderModule(device.gpuDevice().vkDevice, &createInfo, null, &stage.vkShader));
 		}
 
-		WriteWarning(scope $"Shader '{gpuShader.name}' compilation succeeded.");
+		WriteInfo(scope $"Shader '{gpuShader.name}' compilation succeeded.");
 	}
 
 	public static void cmdFuncCCVKCreateDescriptorSetLayout(CCVKDevice device, CCVKGPUDescriptorSetLayout gpuDescriptorSetLayout)
@@ -1209,7 +1209,8 @@ static
 		///////////////////// Multisample State /////////////////////
 
 		VkPipelineMultisampleStateCreateInfo multisampleState = .() { sType = .VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO };
-		multisampleState.rasterizationSamples = gpuPipelineState.gpuRenderPass.sampleCounts[gpuPipelineState.subpass];
+		if(gpuPipelineState.gpuRenderPass.sampleCounts.Count > gpuPipelineState.subpass)
+			multisampleState.rasterizationSamples = gpuPipelineState.gpuRenderPass.sampleCounts[gpuPipelineState.subpass];
 		multisampleState.alphaToCoverageEnable = gpuPipelineState.bs.isA2C;
 		// multisampleState.sampleShadingEnable;
 		// multisampleState.minSampleShading;
@@ -1456,6 +1457,7 @@ static
 						bufferUpload(stagingBuffer, gpuBuffer, region, gpuCommandBuffer);
 					});
 			}
+			delete stagingBuffer;
 		}
 
 		gpuBuffer.transferAccess = .THSVS_ACCESS_TRANSFER_WRITE;
@@ -1590,6 +1592,7 @@ static
 
 						vkCmdCopyBufferToImage(gpuCommandBuffer.vkCommandBuffer, stagingBuffer.gpuBuffer.vkBuffer, gpuTexture.vkImage,
 							.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &stagingRegion);
+						delete stagingBuffer;
 					}
 				}
 				idx++;

@@ -146,7 +146,7 @@ class CachedArray<T>
 
 	public void FastRemove(int idx)
 	{
-	    if (idx >= _size) return;
+	    if (idx >= _size || idx < 0) return;
 	    _array[idx] = _array[--_size];
 	}
 

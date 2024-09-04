@@ -178,6 +178,10 @@ class CCVKDescriptorSet : DescriptorSet
 		CCVKGPUDevice gpuDevice = CCVKDevice.getInstance().gpuDevice();
 		_gpuDescriptorSet.gpuLayout = gpuDescriptorSetLayout;
 		_gpuDescriptorSet.instances.Resize(gpuDevice.backBufferCount);
+		for(int i = 0; i < _gpuDescriptorSet.instances.Count; i++)
+		{
+			_gpuDescriptorSet.instances[i] = .();
+		}
 
 		for (uint32 t = 0U; t < gpuDevice.backBufferCount; ++t)
 		{

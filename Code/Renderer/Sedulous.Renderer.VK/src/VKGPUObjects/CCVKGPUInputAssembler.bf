@@ -41,9 +41,9 @@ class CCVKGPUInputAssembler : CCVKGPUDeviceObject
 	}
 
 	public VertexAttributeList attributes;
-	public List<CCVKGPUBufferView> gpuVertexBuffers;
+	public List<CCVKGPUBufferView> gpuVertexBuffers = new .() ~ delete _;
 	public CCVKGPUBufferView gpuIndexBuffer;
 	public CCVKGPUBufferView gpuIndirectBuffer;
-	public List<VkBuffer> vertexBuffers;
-	public List<uint64> vertexBufferOffsets;
+	public List<VkBuffer> vertexBuffers = new .() ~ delete _;
+	public List<uint64> vertexBufferOffsets = new .() ~ delete _;
 }

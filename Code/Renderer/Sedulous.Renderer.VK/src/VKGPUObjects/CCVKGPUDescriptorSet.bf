@@ -94,7 +94,7 @@ class CCVKGPUDescriptorSet : CCVKGPUDeviceObject
 		CCVKDevice.getInstance().gpuDescriptorSetHub().record(this);
 	}
 
-	public List<CCVKGPUDescriptor> gpuDescriptors;
+	public List<CCVKGPUDescriptor> gpuDescriptors = new .() ~ delete _;
 
 	// references
 	public CCVKGPUDescriptorSetLayout gpuLayout;
@@ -102,10 +102,10 @@ class CCVKGPUDescriptorSet : CCVKGPUDeviceObject
 	public struct Instance
 	{
 		public VkDescriptorSet vkDescriptorSet = .Null;
-		public List<CCVKDescriptorInfo> descriptorInfos;
-		public List<VkWriteDescriptorSet> descriptorUpdateEntries;
+		public List<CCVKDescriptorInfo> descriptorInfos = new .();
+		public List<VkWriteDescriptorSet> descriptorUpdateEntries = new .();
 	}
-	public List<Instance> instances; // per swapchain image
+	public List<Instance> instances = new .() ~ { for(var x in _){ delete x.descriptorInfos; delete x.descriptorUpdateEntries;} delete _;}; // per swapchain image
 
 	public uint32 layoutID = 0U;
 }

@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", "Sedulous.Renderer" = "*", "Sedulous.Renderer.SPIRV" = "*", Bulkan = "*", "Sedulous.Core" = "*", "Sedulous.Platform" = "*", "Sedulous.Platform.Desktop" = "*"}
+Dependencies = {corlib = "*", "Sedulous.Renderer" = "*", "Sedulous.Renderer.SPIRV" = "*", Bulkan = "*", "Sedulous.Core" = "*", "Sedulous.Platform" = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.Renderer.VK" = "*"}
 
 [Project]
 Name = "Sedulous.Renderer.Sandbox"

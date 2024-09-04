@@ -90,7 +90,7 @@ class CCVKGPUBufferHub
 		public bool canMemcpy = false;
 	}
 
-	private List<Dictionary<CCVKGPUBuffer, BufferUpdate>> _buffersToBeUpdated;
+	private List<Dictionary<CCVKGPUBuffer, BufferUpdate>> _buffersToBeUpdated = new .() ~ delete _;
 
 	private CCVKGPUDevice _device = null;
 }

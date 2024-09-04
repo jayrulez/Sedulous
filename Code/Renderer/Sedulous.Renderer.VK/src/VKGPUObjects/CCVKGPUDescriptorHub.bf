@@ -17,12 +17,16 @@ class CCVKGPUDescriptorHub
 
 	public void connect(CCVKGPUDescriptorSet set, CCVKGPUBufferView buffer, VkDescriptorBufferInfo* descriptor, uint32 instanceIdx)
 	{
+		if(!_gpuBufferViewSet.ContainsKey(buffer))
+			_gpuBufferViewSet[buffer] = .();
 		_gpuBufferViewSet[buffer].sets.Add(set);
 		_gpuBufferViewSet[buffer].descriptors.Push(descriptor);
 		_bufferInstanceIndices[descriptor] = instanceIdx;
 	}
 	public void connect(CCVKGPUDescriptorSet set, CCVKGPUTextureView texture, VkDescriptorImageInfo* descriptor)
 	{
+		if(!_gpuTextureViewSet.ContainsKey(texture))
+			_gpuTextureViewSet[texture] = .();
 		_gpuTextureViewSet[texture].sets.Add(set);
 		_gpuTextureViewSet[texture].descriptors.Push(descriptor);
 	}
@@ -205,12 +209,12 @@ class CCVKGPUDescriptorHub
 
 	private struct DescriptorInfo<T>
 	{
-		public HashSet<CCVKGPUDescriptorSet> sets;
-		public CachedArray<T*> descriptors;
+		public HashSet<CCVKGPUDescriptorSet> sets = new .();
+		public CachedArray<T*> descriptors = new .();
 	}
 
-	private Dictionary<VkDescriptorBufferInfo*, uint32> _bufferInstanceIndices;
-	private Dictionary<CCVKGPUBufferView, DescriptorInfo<VkDescriptorBufferInfo>> _gpuBufferViewSet;
-	private Dictionary<CCVKGPUTextureView, DescriptorInfo<VkDescriptorImageInfo>> _gpuTextureViewSet;
-	private Dictionary<CCVKGPUSampler, CachedArray<VkDescriptorImageInfo*>> _samplers;
+	private Dictionary<VkDescriptorBufferInfo*, uint32> _bufferInstanceIndices = new .() ~ delete _;
+	private Dictionary<CCVKGPUBufferView, DescriptorInfo<VkDescriptorBufferInfo>> _gpuBufferViewSet = new .() ~ { for(var entry in _){delete entry.value.sets; delete entry.value.descriptors;} delete _;};
+	private Dictionary<CCVKGPUTextureView, DescriptorInfo<VkDescriptorImageInfo>> _gpuTextureViewSet = new .() ~ {for(var entry in _){delete entry.value.sets; delete entry.value.descriptors;} delete _;};
+	private Dictionary<CCVKGPUSampler, CachedArray<VkDescriptorImageInfo*>> _samplers = new .() ~ { for(var entry in _){delete entry.value;} delete _;};
 }

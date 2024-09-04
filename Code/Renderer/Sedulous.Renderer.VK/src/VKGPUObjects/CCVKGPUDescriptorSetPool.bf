@@ -25,6 +25,8 @@ class CCVKGPUDescriptorSetPool
 		Dictionary<VkDescriptorType, uint32> typeMap = scope .();
 		for (var vkBinding in bindings)
 		{
+			if(!typeMap.ContainsKey(vkBinding.descriptorType))
+				typeMap[vkBinding.descriptorType] = 0;
 			typeMap[vkBinding.descriptorType] += maxSetsPerPool * vkBinding.descriptorCount;
 		}
 
@@ -91,10 +93,10 @@ class CCVKGPUDescriptorSetPool
 
 	private CCVKGPUDevice _device = null;
 
-	private List<VkDescriptorPool> _pools;
-	private List<VkDescriptorSet> _freeList;
+	private List<VkDescriptorPool> _pools = new .() ~ delete _;
+	private List<VkDescriptorSet> _freeList = new .() ~ delete _;
 
-	private List<VkDescriptorPoolSize> _poolSizes;
-	private List<VkDescriptorSetLayout> _setLayouts;
+	private List<VkDescriptorPoolSize> _poolSizes = new .() ~ delete _;
+	private List<VkDescriptorSetLayout> _setLayouts = new .() ~ delete _;
 	private uint32 _maxSetsPerPool = 0U;
 }

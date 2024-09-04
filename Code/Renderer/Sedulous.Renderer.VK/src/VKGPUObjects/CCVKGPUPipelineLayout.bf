@@ -9,11 +9,11 @@ class CCVKGPUPipelineLayout : CCVKGPUDeviceObject
 		cmdFuncCCVKDestroyPipelineLayout(CCVKDevice.getInstance().gpuDevice(), this);
 	}
 
-	public List<CCVKGPUDescriptorSetLayout> setLayouts;
+	public List<CCVKGPUDescriptorSetLayout> setLayouts = new .() ~ delete _;
 
 	public VkPipelineLayout vkPipelineLayout = .Null;
 
 	// helper storage
-	public List<uint32> dynamicOffsetOffsets;
+	public List<uint32> dynamicOffsetOffsets = new .() ~ delete _;
 	public uint32 dynamicOffsetCount;
 }

@@ -56,6 +56,7 @@ class CCVKGPUCommandBufferPool
 			VkCommandPoolCreateInfo createInfo = .() { sType = .VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO };
 			createInfo.queueFamilyIndex = gpuCommandBuffer.queueFamilyIndex;
 			createInfo.flags = .VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
+			_pools[hash] = new .();
 			VK_CHECK!(VulkanNative.vkCreateCommandPool(_device.vkDevice, &createInfo, null, &_pools[hash].vkCommandPool));
 		}
 		ref CommandBufferPool pool = ref _pools[hash];
@@ -119,12 +120,12 @@ class CCVKGPUCommandBufferPool
 	private class CommandBufferPool
 	{
 		public VkCommandPool vkCommandPool = .Null;
-		public CachedArray<VkCommandBuffer>[2] commandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[0]; delete _[1]; };
-		public CachedArray<VkCommandBuffer>[2] usedCommandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[0]; delete _[1]; };
+		public CachedArray<VkCommandBuffer>[2] commandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[1]; };
+		public CachedArray<VkCommandBuffer>[2] usedCommandBuffers = .(new .(), new .()) ~ { delete _[0]; delete _[1]; };
 	}
 
 	private CCVKGPUDevice _device = null;
 	private uint32 _lastBackBufferIndex = 0U;
 
-	private Dictionary<uint32, CommandBufferPool> _pools;
+	private Dictionary<uint32, CommandBufferPool> _pools = new .() ~ delete _;
 }

@@ -72,5 +72,5 @@ class CCVKGPUStagingBufferPool
 	};
 
 	private CCVKGPUDevice _device = null;
-	private List<Buffer> _pool;
+	private List<Buffer> _pool = new .() ~ delete _;
 }

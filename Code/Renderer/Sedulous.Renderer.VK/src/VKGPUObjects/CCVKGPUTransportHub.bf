@@ -84,7 +84,7 @@ class CCVKGPUTransportHub
 	private CCVKGPUDevice _device = null;
 
 	private CCVKGPUQueue _queue = null;
-	private CCVKGPUCommandBuffer _earlyCmdBuff;
-	private CCVKGPUCommandBuffer _lateCmdBuff;
+	private CCVKGPUCommandBuffer _earlyCmdBuff = new .() ~ delete _;
+	private CCVKGPUCommandBuffer _lateCmdBuff = new .() ~ delete _;
 	private VkFence _fence = .Null;
 }

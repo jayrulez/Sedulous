@@ -94,7 +94,11 @@ struct Id
 
 class SPIRVUtils
 {
-	public static SPIRVUtils getInstance() { return instance; }
+	public static SPIRVUtils getInstance() {
+		if(instance == null)
+			instance = new .();
+		return instance;
+	}
 
 	public void initialize(int32 vulkanMinorVersion)
 	{
@@ -116,7 +120,8 @@ class SPIRVUtils
 		glslang_stage_t stage = getShaderStage(type);
 		char8* string = source.CStr();
 
-		glslang_resource_t* resources = scope glslang_resource_t();
+		glslang_resource_t r = .GetDefaultBuiltinResources();
+		glslang_resource_t* resources = &r;
 		glslang_input_t input = .()
 			{
 				language = .GLSLANG_SOURCE_GLSL,

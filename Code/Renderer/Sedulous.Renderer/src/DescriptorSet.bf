@@ -149,9 +149,9 @@ namespace Sedulous.Renderer;
 			};
 
 			protected DescriptorSetLayout _layout = null;
-			protected List<ObjectWithId<Buffer>> _buffers;
-			protected List<ObjectWithId<Texture>> _textures;
-			protected List<ObjectWithId<Sampler>> _samplers;
+			protected List<ObjectWithId<Buffer>> _buffers = new .() ~ delete _;
+			protected List<ObjectWithId<Texture>> _textures = new .() ~ delete _;
+			protected List<ObjectWithId<Sampler>> _samplers = new .() ~ delete _;
 
 			protected bool _isDirty = false;
 		}

@@ -35,8 +35,8 @@ class CCVKGPUBuffer : CCVKGPUDeviceObject
 	public void* buffer = null;
 
 	public bool isDrawIndirectByIndex = false;
-	public List<VkDrawIndirectCommand> indirectCmds;
-	public List<VkDrawIndexedIndirectCommand> indexedIndirectCmds;
+	public List<VkDrawIndirectCommand> indirectCmds = new .() ~ delete _;
+	public List<VkDrawIndexedIndirectCommand> indexedIndirectCmds = new .() ~ delete _;
 
 	public uint8* mappedData = null;
 	public VmaAllocation vmaAllocation = .();
@@ -46,10 +46,10 @@ class CCVKGPUBuffer : CCVKGPUDeviceObject
 	public uint32 size = 0U;
 
 	public uint32 instanceSize = 0U; // per-back-buffer instance
-	public List<ThsvsAccessType> currentAccessTypes;
+	public List<ThsvsAccessType> currentAccessTypes = new .() ~ delete _;
 
 	// for barrier manager
-	public List<ThsvsAccessType> renderAccessTypes; // gathered from descriptor sets
+	public List<ThsvsAccessType> renderAccessTypes = new .() ~ delete _; // gathered from descriptor sets
 	public ThsvsAccessType transferAccess = .THSVS_ACCESS_NONE;
 
 	public uint32 getStartOffset(uint32 curBackBufferIndex)

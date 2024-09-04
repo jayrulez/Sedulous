@@ -123,7 +123,7 @@ class CCVKGPUBarrierManager
 	[Inline] public void cancel(CCVKGPUBuffer gpuBuffer) { _buffersToBeChecked.Remove(gpuBuffer); }
 	[Inline] public void cancel(CCVKGPUTexture gpuTexture) { _texturesToBeChecked.Remove(gpuTexture); }
 
-	private HashSet<CCVKGPUBuffer> _buffersToBeChecked;
-	private HashSet<CCVKGPUTexture> _texturesToBeChecked;
+	private HashSet<CCVKGPUBuffer> _buffersToBeChecked = new .() ~ delete _;
+	private HashSet<CCVKGPUTexture> _texturesToBeChecked = new .() ~ delete _;
 	private CCVKGPUDevice _device = null;
 }

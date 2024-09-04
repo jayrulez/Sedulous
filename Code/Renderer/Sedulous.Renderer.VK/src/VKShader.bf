@@ -76,13 +76,17 @@ class CCVKShader : Shader
 		}
 		for (var stage in ref _stages)
 		{
-			stage.source.Clear();
+			//stage.source.Clear();
 			//stage.source.shrink_to_fit();
 		}
 	}
 
 	protected  override void doDestroy()
 	{
+		for (var stage in ref _gpuShader.gpuStages)
+		{
+			delete stage;
+		}
 		_gpuShader = null;
 	}
 

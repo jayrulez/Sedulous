@@ -15,15 +15,15 @@ class CCVKGPUDescriptorSetLayout : CCVKGPUDeviceObject
 	}
 
 	public DescriptorSetLayoutBindingList bindings;
-	public List<uint32> dynamicBindings;
+	public List<uint32> dynamicBindings = new .() ~ delete _;
 
-	public List<VkDescriptorSetLayoutBinding> vkBindings;
+	public List<VkDescriptorSetLayoutBinding> vkBindings = new .() ~ delete _;
 	public VkDescriptorSetLayout vkDescriptorSetLayout = .Null;
 	public VkDescriptorUpdateTemplate vkDescriptorUpdateTemplate = .Null;
 	public VkDescriptorSet defaultDescriptorSet = .Null;
 
-	public List<uint32> bindingIndices;
-	public List<uint32> descriptorIndices;
+	public List<uint32> bindingIndices;// = new .() ~ delete _;
+	public List<uint32> descriptorIndices;// = new .() ~ delete _;
 	public uint32 descriptorCount = 0U;
 
 	public uint32 id = 0U;
