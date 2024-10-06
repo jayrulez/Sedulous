@@ -7,7 +7,7 @@ namespace Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// DX12 Bottom Level Acceleration Structure implementation.
+/// DX12 Bottom-Level Acceleration Structure implementation.
 /// </summary>
 public class DX12BottomLevelAS : BottomLevelAS
 {
@@ -16,7 +16,7 @@ public class DX12BottomLevelAS : BottomLevelAS
 	private ID3D12Resource* scratchBuffer;
 
 	/// <summary>
-	/// DX12 Acceleration Structure Result buffer.
+	/// DX12 Acceleration Structure Result Buffer.
 	/// </summary>
 	public ID3D12Resource* ResultBuffer;
 
@@ -26,8 +26,8 @@ public class DX12BottomLevelAS : BottomLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12BottomLevelAS" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
-	/// <param name="description">Bottom Level Description.</param>
+	/// <param name="context">Graphics context.</param>
+	/// <param name="description">Bottom level description.</param>
 	public this(DX12GraphicsContext context, in BottomLevelASDescription description)
 		: base(context, description)
 	{
@@ -113,7 +113,7 @@ public class DX12BottomLevelAS : BottomLevelAS
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

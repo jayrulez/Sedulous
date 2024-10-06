@@ -4,7 +4,7 @@ using Win32.Graphics.Direct3D12;
 namespace Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// The DX12 capabilities.
+/// The DirectX 12 capabilities.
 /// </summary>
 public class DX12Capabilities : GraphicsContextCapabilities
 {

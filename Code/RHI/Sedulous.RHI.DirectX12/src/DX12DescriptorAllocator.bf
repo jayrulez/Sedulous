@@ -67,7 +67,7 @@ internal class DX12DescriptorAllocator : IDisposable
 			{
 				lastAlloc = (lastAlloc + 1) % maxDescriptorCount;
 			}
-			address.ptr = HeapStart.ptr + lastAlloc * descriptorSize;
+			address.ptr = (uint)(int)(uint)HeapStart.ptr + (uint)(lastAlloc * descriptorSize);
 			descriptorsAlive[lastAlloc] = true;
 			descriptorCount++;
 			return address;
@@ -76,11 +76,11 @@ internal class DX12DescriptorAllocator : IDisposable
 
 	public void Free(D3D12_CPU_DESCRIPTOR_HANDLE descriptorHandle)
 	{
-		if ((int64)descriptorHandle.ptr < (int64)HeapStart.ptr || (int64)descriptorHandle.ptr >= (int64)HeapStart.ptr + (int64)(maxDescriptorCount * descriptorSize))
+		if ((int64)(int)(uint)descriptorHandle.ptr < (int64)(int)(uint)HeapStart.ptr || (int)(uint)descriptorHandle.ptr >= (int)(uint)HeapStart.ptr + maxDescriptorCount * descriptorSize)
 		{
 			context.ValidationLayer?.Notify("DX12", "The descriptorHandle pointer is out of the heap.");
 		}
-		uint32 offset = (uint32)(descriptorHandle.ptr - HeapStart.ptr);
+		uint32 offset = (uint32)((int)(uint)descriptorHandle.ptr - (int)(uint)HeapStart.ptr);
 		offset /= descriptorSize;
 		using (descriptorsAliveMonitor.Enter())
 		{

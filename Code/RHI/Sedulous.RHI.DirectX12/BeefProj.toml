@@ -5,3 +5,9 @@ Dependencies = {corlib = "*", "Sedulous.Foundation" = "*", "Sedulous.RHI" = "*",
 Name = "Sedulous.RHI.DirectX12"
 TargetType = "BeefLib"
 StartupObject = "Sedulous.RHI.DirectX12.Program"
+
+[Configs.Debug.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/*.dll\")"]
+
+[Configs.Release.Win64]
+PostBuildCmds = ["CopyToDependents(\"$(ProjectDir)/dist/bin/*.dll\")"]

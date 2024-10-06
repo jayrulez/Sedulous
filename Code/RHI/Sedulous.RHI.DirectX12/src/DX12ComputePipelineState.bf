@@ -10,7 +10,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// The DirectX version of PipelineState.
+/// The DirectX version of the PipelineState.
 /// </summary>
 public class DX12ComputePipelineState : ComputePipelineState
 {
@@ -59,10 +59,10 @@ public class DX12ComputePipelineState : ComputePipelineState
 	}
 
 	/// <summary>
-	/// Apply only changes compare with the previous pipelineState.
+	/// Apply only changes compared with the previous pipeline state.
 	/// </summary>
-	/// <param name="commandList">The commandList where to set this pipeline.</param>
-	/// <param name="previousPipeline">The previous pipelineState.</param>
+	/// <param name="commandList">The command list where to set this pipeline.</param>
+	/// <param name="previousPipeline">The previous pipeline state.</param>
 	public void Apply(ID3D12GraphicsCommandList* commandList, DX12ComputePipelineState previousPipeline)
 	{
 		commandList.SetComputeRootSignature(rootSignature);

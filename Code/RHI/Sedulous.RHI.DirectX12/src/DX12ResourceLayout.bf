@@ -4,7 +4,7 @@ using System;
 namespace Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// The DX12 implementation of the ResourceLayout object.
+/// The DirectX 12 implementation of the ResourceLayout object.
 /// </summary>
 public class DX12ResourceLayout : ResourceLayout
 {

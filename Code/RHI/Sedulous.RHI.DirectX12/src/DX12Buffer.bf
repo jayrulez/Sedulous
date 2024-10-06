@@ -29,7 +29,7 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	public ID3D12Resource* NativeBuffer;
 
 	/// <summary>
-	/// The DirectX resource state.
+	/// Represents the DirectX resource state.
 	/// </summary>
 	public D3D12_RESOURCE_STATES nativeResourceState;
 
@@ -115,7 +115,7 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
-	/// <param name="description">A buffer description.</param>
+	/// <param name="description">The buffer description.</param>
 	public this(DX12GraphicsContext context, void* data, in BufferDescription description)
 		: base(context, description)
 	{
@@ -150,9 +150,9 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Fill the buffer from a pointer.
+	/// Fills the buffer from a pointer.
 	/// </summary>
-	/// <param name="commandList">The commandlist where execute commands.</param>
+	/// <param name="commandList">The command list where commands are executed.</param>
 	/// <param name="source">The data pointer.</param>
 	/// <param name="sourceSizeInBytes">The size in bytes.</param>
 	/// <param name="destinationOffsetInBytes">The offset in bytes.</param>
@@ -182,13 +182,13 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Copy this buffer in the destionation buffer.
+	/// Copy this buffer to the destination buffer.
 	/// </summary>
-	/// <param name="commandList">The commandlist where execute commands.</param>
+	/// <param name="commandList">The command list where commands are executed.</param>
 	/// <param name="destination">The destination buffer.</param>
 	/// <param name="sizeInBytes">The data size in bytes to copy.</param>
 	/// <param name="sourceOffset">The source buffer offset in bytes.</param>
-	/// <param name="destinationOffset">The destionation buffer offset in bytes.</param>
+	/// <param name="destinationOffset">The destination buffer offset in bytes.</param>
 	public void CopyTo(ID3D12GraphicsCommandList* commandList, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset = 0, uint32 destinationOffset = 0)
 	{
 		DX12Buffer destinationBuffer = destination as DX12Buffer;
@@ -204,9 +204,9 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	/// <summary>
 	/// Transition this buffer to a new state.
 	/// </summary>
-	/// <param name="commandList">The commandlist used to execute the barrier transition.</param>
+	/// <param name="commandList">The command list used to execute the barrier transition.</param>
 	/// <param name="newResourceState">The new state to set.</param>
-	/// <param name="subResource">The subResource of this buffer.</param>
+	/// <param name="subResource">The subresource of this buffer.</param>
 	public void ResourceTransition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES newResourceState, int32 subResource = 0)
 	{
 		if (nativeResourceState != newResourceState && nativeResourceState != D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ)
@@ -217,7 +217,7 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Return a new Buffer with ResourceUsage set to staging.
+	/// Returns a new Buffer with ResourceUsage set to staging.
 	/// </summary>
 	/// <returns>New staging Buffer.</returns>
 	public DX12Buffer ToStaging()
@@ -291,7 +291,7 @@ public class DX12Buffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

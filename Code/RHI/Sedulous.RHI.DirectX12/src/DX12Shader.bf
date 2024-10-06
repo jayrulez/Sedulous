@@ -9,7 +9,7 @@ namespace Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// This class represent a native instance of a DirectX shader.
+/// This class represents a native instance of a DirectX shader.
 /// </summary>
 public class DX12Shader : Shader
 {
@@ -61,7 +61,7 @@ public class DX12Shader : Shader
 	/// <param name="entryPoint">The entry point function name.</param>
 	/// <param name="stage">The shader stage, <see cref="T:Sedulous.RHI.ShaderStages" />.</param>
 	/// <param name="parameters">The compiler parameters.</param>
-	/// <returns>The shader byte codes.</returns>
+	/// <returns>The shader byte code.</returns>
 	public static void ShaderCompile(GraphicsContext context, String shaderSource, String entryPoint, ShaderStages stage, CompilerParameters parameters, ref CompilationResult result)
 	{
 		DxcShaderModel shaderModel = parameters.Profile.ToDirectX();
@@ -115,16 +115,21 @@ public class DX12Shader : Shader
 	private static void ProcessError(in String error, out uint32 line, out String message)
 	{
 		line = 0;
-		message = null;
-		/*MatchCollection collection = new Regex("\\((\\d+),\\d+-?\\d+?\\): (.*)", RegexOptions.IgnoreCase | RegexOptions.Multiline).Matches(error);
-		line = 0;
 		message = String.Empty;
-		for (int32 m = 0; m < collection.Count; m++)
+		/*
+		String pattern = "(?:\\((\\d+),\\d+-\\d+\\):\\s*)?error\\s+\\w+\\d+:\\s*(.*)";
+		Match match = Regex.Match(error, pattern, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+		if (match.Success)
 		{
-			String s_Line = collection[m].Groups[1].Value;
-			String s_Message = collection[m].Groups[2].Value;
+			String s_Line = match.Groups[1].Value;
+			String s_Message = match.Groups[2].Value;
 			line = ((!String.IsNullOrEmpty(s_Line)) ? uint32.Parse(s_Line) : 0);
 			message = s_Message;
-		}*/
+		}
+		else
+		{
+			message = error;
+		}
+		*/
 	}
 }

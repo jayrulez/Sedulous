@@ -14,7 +14,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// Represent a DirectX Texture.
+/// Represents a DirectX Texture.
 /// </summary>
 public class DX12Texture : Texture
 {
@@ -23,7 +23,7 @@ public class DX12Texture : Texture
 	private const uint32 TextureSubresourceAlignment = 512;
 
 	/// <summary>
-	/// The native texture pointer.
+	/// The pointer to the native texture.
 	/// </summary>
 	public ID3D12Resource* NativeTexture;
 
@@ -33,7 +33,7 @@ public class DX12Texture : Texture
 	public ID3D12Resource* NativeBuffer;
 
 	/// <summary>
-	/// The native resource state.
+	/// The state of the native resource.
 	/// </summary>
 	public D3D12_RESOURCE_STATES NativeResourceState;
 
@@ -115,7 +115,7 @@ public class DX12Texture : Texture
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="samplerState">the sampler state description for this texture.</param>
+	/// <param name="samplerState">The sampler state description for this texture.</param>
 	public this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
 		: base(context, description)
 	{
@@ -289,7 +289,7 @@ public class DX12Texture : Texture
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12Texture" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="data">Databoxes array.</param>
+	/// <param name="data">Array of databoxes.</param>
 	/// <param name="description">Texture description.</param>
 	private this(DX12GraphicsContext context, Sedulous.RHI.DataBox[] data, in TextureDescription description)
 		: base(context, description)
@@ -297,11 +297,11 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Fill the buffer from a pointer.
+	/// Fills the buffer from a pointer.
 	/// </summary>
-	/// <param name="commandList">The CommandList where execute commands.</param>
+	/// <param name="commandList">The CommandList where commands are executed.</param>
 	/// <param name="source">The data pointer.</param>
-	/// <param name="sourceSizeInBytes">The size in bytes.</param>
+	/// <param name="sourceSizeInBytes">The size in bytes of the source.</param>
 	/// <param name="subResource">The subresource index.</param>
 	public void SetData(ID3D12GraphicsCommandList* commandList, void* source, uint32 sourceSizeInBytes, uint32 subResource = 0)
 	{
@@ -338,18 +338,18 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Copy a pixel region from source to destination texture.
+	/// Copies a pixel region from the source to the destination texture.
 	/// </summary>
-	/// <param name="commandList">The CommandList where execute commands.</param>
-	/// <param name="sourceX">U coord source texture.</param>
-	/// <param name="sourceY">V coord source texture.</param>
-	/// <param name="sourceZ">W coord source texture.</param>
+	/// <param name="commandList">The CommandList where commands are executed.</param>
+	/// <param name="sourceX">U coordinate of the source texture.</param>
+	/// <param name="sourceY">V coordinate of the source texture.</param>
+	/// <param name="sourceZ">W coordinate of the source texture.</param>
 	/// <param name="sourceMipLevel">Source mip level.</param>
 	/// <param name="sourceBaseArray">Source array index.</param>
 	/// <param name="destination">Destination texture.</param>
-	/// <param name="destinationX">U coord destination texture.</param>
-	/// <param name="destinationY">V coord destination texture.</param>
-	/// <param name="destinationZ">W coord destination texture.</param>
+	/// <param name="destinationX">U coordinate of the destination texture.</param>
+	/// <param name="destinationY">V coordinate of the destination texture.</param>
+	/// <param name="destinationZ">W coordinate of the destination texture.</param>
 	/// <param name="destinationMipLevel">Destination mip level.</param>
 	/// <param name="destinationBasedArray">Destination array index.</param>
 	/// <param name="width">Destination width.</param>
@@ -454,7 +454,7 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Return a new Buffer with ResourceUsage set to staging.
+	/// Returns a new Buffer with ResourceUsage set to staging.
 	/// </summary>
 	/// <returns>New staging Buffer.</returns>
 	public DX12Texture ToStaging()
@@ -468,9 +468,9 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Create a new rendertargetview for this texture.
+	/// Creates a new RenderTargetView for this texture.
 	/// </summary>
-	/// <param name="firstSlice">The start slice of the view range.</param>
+	/// <param name="firstSlice">The starting slice of the view range.</param>
 	/// <param name="sliceCount">The number of slices in the view range.</param>
 	/// <param name="mipSlice">The mipmap level in the view range.</param>
 	/// <returns>A new RenderTargetView instance.</returns>
@@ -552,9 +552,9 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Create a new  DepthStencil view for this texture.
+	/// Creates a new DepthStencil view for this texture.
 	/// </summary>
-	/// <param name="firstSlice">The start slice of the view range.</param>
+	/// <param name="firstSlice">The starting slice of the view range.</param>
 	/// <param name="sliceCount">The number of slices in the view range.</param>
 	/// <param name="mipSlice">The mipmap level in the view range.</param>
 	/// <returns>A new DepthStencil view.</returns>
@@ -627,9 +627,9 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Create a new ShaderResource view for this texture.
+	/// Creates a new ShaderResource view for this texture.
 	/// </summary>
-	/// <param name="firstSlice">The start slice of the view range.</param>
+	/// <param name="firstSlice">The starting slice of the view range.</param>
 	/// <param name="sliceCount">The number of slices in the view range.</param>
 	/// <param name="mipSlice">The mipmap level in the view range.</param>
 	/// <returns>A new ShaderResource view.</returns>
@@ -741,7 +741,7 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Create a new UnorderedAccessView for this texture.
+	/// Creates a new UnorderedAccessView for this texture.
 	/// </summary>
 	/// <param name="arraySlice">The slice in the view range.</param>
 	/// <param name="mipSlice">The mipmap level in the view range.</param>
@@ -795,12 +795,12 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Generate a DXTexture from Vortice Texture2D.
+	/// Generates a DXTexture from Vortice Texture2D.
 	/// </summary>
 	/// <param name="context">DX context.</param>
 	/// <param name="nativeTexture">VorticeTexture instance.</param>
-	/// <param name="textureDescription">Overrided pixel format. This only affect to the generated TextureDescription. IT does not change the source texture format.</param>
-	/// <returns>DXTexture with VorticeTexture as resource.</returns>
+	/// <param name="textureDescription">Overridden pixel format. This only affects the generated TextureDescription. It does not change the source texture format.</param>
+	/// <returns>DXTexture with VorticeTexture as the resource.</returns>
 	public static DX12Texture FromDirectXTexture(DX12GraphicsContext context, ID3D12Resource* nativeTexture, TextureDescription? textureDescription = null)
 	{
 		TextureDescription description;
@@ -833,12 +833,12 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Generate a DXTexture from Vortice Texture2D.
+	/// Generates a DXTexture from Vortice Texture2D.
 	/// </summary>
 	/// <param name="context">DX context.</param>
 	/// <param name="texturePointer">DirectX Texture pointer.</param>
-	/// <param name="textureDescription">Overrided pixel format.</param>
-	/// <returns>DXTexture with VorticeTexture as resource.</returns>
+	/// <param name="textureDescription">Overridden pixel format.</param>
+	/// <returns>DXTexture with VorticeTexture as a resource.</returns>
 	public static DX12Texture FromDirectXTexture(DX12GraphicsContext context, void* texturePointer, TextureDescription? textureDescription = null)
 	{
 		ID3D12Resource* t = ((IUnknown*)texturePointer).QueryInterface<IDXGIResource>().QueryInterface<ID3D12Resource>();
@@ -846,9 +846,9 @@ public class DX12Texture : Texture
 	}
 
 	/// <summary>
-	/// Transition this texture to another native state.
+	/// Transitions this texture to another native state.
 	/// </summary>
-	/// <param name="commandList">The commandlist used to execute the barrier transition.</param>
+	/// <param name="commandList">The command list used to execute the barrier transition.</param>
 	/// <param name="newResourceState">The new native state for this texture.</param>
 	/// <param name="subResource">The subresource index.</param>
 	public void ResourceTransition(ID3D12GraphicsCommandList* commandList, D3D12_RESOURCE_STATES newResourceState, int32 subResource = 0)

@@ -9,7 +9,7 @@ using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 using static Sedulous.RHI.DirectX12.DX12Helpers;
 
 /// <summary>
-/// DX12 Top Level Acceleration Structure implementation.
+/// Implementation of the DX12 Top-Level Acceleration Structure.
 /// </summary>
 public class DX12TopLevelAS : TopLevelAS
 {
@@ -46,7 +46,7 @@ public class DX12TopLevelAS : TopLevelAS
 	private ID3D12Resource* instancesBuffer;
 
 	/// <summary>
-	/// DX12 Acceleration Structure Result buffer.
+	/// DX12 Acceleration Structure Result Buffer.
 	/// </summary>
 	public ID3D12Resource* ResultBuffer;
 
@@ -71,8 +71,8 @@ public class DX12TopLevelAS : TopLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12TopLevelAS" /> class.
 	/// </summary>
-	/// <param name="context">DirectX12 Context.</param>
-	/// <param name="description">Top Level Description.</param>
+	/// <param name="context">DirectX 12 context.</param>
+	/// <param name="description">Top-level description.</param>
 	public this(DX12GraphicsContext context, in TopLevelASDescription description)
 		: base(context, description)
 	{
@@ -120,7 +120,7 @@ public class DX12TopLevelAS : TopLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12TopLevelAS" /> class.
 	/// </summary>
-	/// <param name="description">New top level description.</param>
+	/// <param name="description">New top-level description.</param>
 	public void UpdateAccelerationStructure(in TopLevelASDescription description)
 	{
 		Description = description;
@@ -183,7 +183,7 @@ public class DX12TopLevelAS : TopLevelAS
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

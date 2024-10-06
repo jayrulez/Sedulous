@@ -14,14 +14,14 @@ using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 public class DX12RaytracingPipelineState : RaytracingPipelineState
 {
 	/// <summary>
-	/// DX12 native pipeline as ID3D12StateObject.
+	/// DX12 native pipeline as an ID3D12StateObject.
 	/// </summary>
 	public ID3D12StateObject* nativePipeline;
 
 	private D3D12_GLOBAL_ROOT_SIGNATURE globalRootSignature;
 
 	/// <summary>
-	/// Generated shader binding table.
+	/// Generates the shader binding table.
 	/// </summary>
 	public DX12ShaderTable shaderBindingTable;
 
@@ -171,9 +171,9 @@ public class DX12RaytracingPipelineState : RaytracingPipelineState
 	}
 
 	/// <summary>
-	/// Apply only changes compare with the previous pipelineState.
+	/// Applies only changes compared with the previous pipelineState.
 	/// </summary>
-	/// <param name="commandList">The commandList where to set this pipeline.</param>
+	/// <param name="commandList">The command list where to set this pipeline.</param>
 	/// <param name="previousPipeline">The previous pipelineState.</param>
 	public void Apply(ID3D12GraphicsCommandList* commandList, DX12RaytracingPipelineState previousPipeline)
 	{
@@ -188,7 +188,7 @@ public class DX12RaytracingPipelineState : RaytracingPipelineState
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

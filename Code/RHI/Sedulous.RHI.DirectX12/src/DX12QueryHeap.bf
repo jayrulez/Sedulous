@@ -7,12 +7,12 @@ using Win32;
 namespace Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// Represents a DirectX queryheap object.
+/// Represents a DirectX query heap object.
 /// </summary>
 public class DX12QueryHeap : QueryHeap
 {
 	/// <summary>
-	/// The DirectX12 native object.
+	/// The DirectX 12 native object.
 	/// </summary>
 	public ID3D12QueryHeap* nativeQueryHeap;
 
@@ -27,7 +27,7 @@ public class DX12QueryHeap : QueryHeap
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12QueryHeap" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="description">The queryheap description.</param>
+	/// <param name="description">The query heap description.</param>
 	public this(DX12GraphicsContext context, in Sedulous.RHI.QueryHeapDescription description)
 		: base(context, description)
 	{
@@ -81,7 +81,7 @@ public class DX12QueryHeap : QueryHeap
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

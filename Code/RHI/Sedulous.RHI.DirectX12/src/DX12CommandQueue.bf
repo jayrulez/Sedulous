@@ -12,7 +12,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// This class represent a queue where commandbuffers waits to be executing by the GPU.
+/// This class represents a queue where command buffers wait to be executed by the GPU.
 /// </summary>
 public class DX12CommandQueue : CommandQueue
 {
@@ -56,7 +56,7 @@ public class DX12CommandQueue : CommandQueue
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12CommandQueue" /> class.
 	/// </summary>
 	/// <param name="graphicsContext">The graphics context instance.</param>
-	/// <param name="queueType">The commandqueue elements type.</param>
+	/// <param name="queueType">The command queue element type.</param>
 	public this(DX12GraphicsContext graphicsContext, CommandQueueType queueType)
 	{
 		context = graphicsContext;
@@ -136,9 +136,9 @@ public class DX12CommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	/// Add a new commandbuffer ready to be executed.
+	/// Adds a new command buffer ready to be executed.
 	/// </summary>
-	/// <param name="commandBuffer">The new commandbuffer.</param>
+	/// <param name="commandBuffer">The new command buffer.</param>
 	internal void CommitCommandBuffer(DX12CommandBuffer commandBuffer)
 	{
 		if (executionArray.Count == executionArraySize)
@@ -155,7 +155,7 @@ public class DX12CommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	///  Clear the execution commandbuffer array.
+	/// Clears the execution command buffer array.
 	/// </summary>
 	private void ClearExecutionArray()
 	{
@@ -167,7 +167,7 @@ public class DX12CommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing">
 	/// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.

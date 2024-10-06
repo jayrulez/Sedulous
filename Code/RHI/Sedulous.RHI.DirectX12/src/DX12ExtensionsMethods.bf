@@ -8,7 +8,7 @@ using Win32.Graphics.Direct3D;
 namespace Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// Extensions methods used to convert values from Sedulous to DirectX.
+/// Extension methods used to convert values from RHI to DirectX.
 /// </summary>
 public static class DX12ExtensionsMethods
 {
@@ -19,10 +19,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from VertexElementFormat to DXGI format.
+	/// Converts from VertexElementFormat to DXGI format.
 	/// </summary>
 	/// <param name="format">The format to convert.</param>
-	/// <returns>The result DXGI format.</returns>
+	/// <returns>The resulting DXGI format.</returns>
 	public static DXGI_FORMAT ToDirectX(this ElementFormat format)
 	{
 		switch (format)
@@ -111,7 +111,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from VertexSemanticType to HLSL semantic String.
+	/// Converts from VertexSemanticType to HLSL semantic string.
 	/// </summary>
 	/// <param name="semantic">The semantic to convert.</param>
 	/// <returns>The semantic String.</returns>
@@ -141,10 +141,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from ShaderStage to DirectX String.
+	/// Converts a ShaderStage to a DirectX string.
 	/// </summary>
-	/// <param name="stage">The shaderstage to convert.</param>
-	/// <returns>The result String.</returns>
+	/// <param name="stage">The ShaderStage to convert.</param>
+	/// <returns>The resulting string.</returns>
 	public static String ToDirectXString(this ShaderStages stage)
 	{
 		switch (stage)
@@ -167,10 +167,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from ShaderStage to DirectX stage.
+	/// Converts from ShaderStage to DirectX stage.
 	/// </summary>
-	/// <param name="stage">The shaderstage to convert.</param>
-	/// <returns>The result string.</returns>
+	/// <param name="stage">The ShaderStage to convert.</param>
+	/// <returns>The resulting string.</returns>
 	public static DxcShaderStage ToDirectXStage(this ShaderStages stage)
 	{
 		switch (stage)
@@ -199,10 +199,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from graphicsProfile to directX graphics profile.
+	/// Converts from a graphics profile to a DirectX graphics profile.
 	/// </summary>
 	/// <param name="profile">The profile to convert.</param>
-	/// <returns>The profile.</returns>
+	/// <returns>The converted profile.</returns>
 	public static DxcShaderModel ToDirectX(this GraphicsProfile profile)
 	{
 		switch (profile)
@@ -217,10 +217,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from indexformat to DXGI format.
+	/// Converts from index format to DXGI format.
 	/// </summary>
-	/// <param name="format">The indexformat to convert.</param>
-	/// <returns>The result DXGI format.</returns>
+	/// <param name="format">The index format to convert.</param>
+	/// <returns>The resulting DXGI format.</returns>
 	public static DXGI_FORMAT ToDirectX(this IndexFormat format)
 	{
 		switch (format)
@@ -235,7 +235,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from TextureSampleCount to DirectX SampleDescription.
+	/// Converts TextureSampleCount to DirectX SampleDescription.
 	/// </summary>
 	/// <param name="sampleCount">The TextureSampleCount to convert.</param>
 	/// <returns>The SampleDescription value.</returns>
@@ -261,7 +261,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from DirectX SampleDescription to TextureSampleCount.
+	/// Converts a DirectX SampleDescription to a TextureSampleCount.
 	/// </summary>
 	/// <param name="sampleDescription">The SampleDescription to convert.</param>
 	/// <returns>The TextureSampleCount value.</returns>
@@ -287,10 +287,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to DirectX Pixel Format.
+	/// Converts to DirectX Pixel Format.
 	/// </summary>
-	/// <param name="pixelFormat">pixelFormat.</param>
-	/// <returns>DirectX pixel format.</returns>
+	/// <param name="pixelFormat">The pixel format.</param>
+	/// <returns>The DirectX pixel format.</returns>
 	public static DXGI_FORMAT ToDirectX(this PixelFormat pixelFormat)
 	{
 		/*if (Enum.TryParse<Format>(pixelFormat.ToString(), out var result))
@@ -308,7 +308,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to DirectX Depth stencil format.
+	/// Converts to DirectX Depth stencil format.
 	/// </summary>
 	/// <param name="pixelFormat">The pixel format.</param>
 	/// <returns>DirectX pixel format for depth stencil.</returns>
@@ -339,10 +339,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to Veldrid PixelFormat to DirectX Pixel Format.
+	/// Converts RHI PixelFormat to DirectX Pixel Format.
 	/// </summary>
-	/// <param name="pixelFormat">DirectX pixel format.</param>
-	/// <returns>Veldrid pixel format.</returns>
+	/// <param name="pixelFormat">RHI pixel format.</param>
+	/// <returns>DirectX pixel format.</returns>
 	public static PixelFormat FromDirectX(this DXGI_FORMAT pixelFormat)
 	{
 		/*if (Enum.TryParse<PixelFormat>(pixelFormat.ToString(), out var result))
@@ -362,10 +362,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to DirectX CommandListType from CommandQueueType.
+	/// Converts to DirectX CommandListType from CommandQueueType.
 	/// </summary>
-	/// <param name="queueType">The commandQueueType to convert.</param>
-	/// <returns>The DirectX commandListType.</returns>
+	/// <param name="queueType">The CommandQueueType to convert.</param>
+	/// <returns>The DirectX CommandListType.</returns>
 	public static D3D12_COMMAND_LIST_TYPE ToDirectX(this CommandQueueType queueType)
 	{
 		switch (queueType)
@@ -382,10 +382,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from DirectX BindFlags to TextureFlags.
+	/// Converts from DirectX BindFlags to TextureFlags.
 	/// </summary>
-	/// <param name="flags">the bindflags value to convert.</param>
-	/// <returns>the ResourceUsage value.</returns>
+	/// <param name="flags">The BindFlags value to convert.</param>
+	/// <returns>The ResourceUsage value.</returns>
 	public static TextureFlags FromDirectX(this D3D12_RESOURCE_FLAGS flags)
 	{
 		TextureFlags textureFlags = TextureFlags.None;
@@ -405,10 +405,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from TextureFlags to DirectX BindFlags.
+	/// Converts from TextureFlags to DirectX BindFlags.
 	/// </summary>
-	/// <param name="flags">the textureflags value to convert.</param>
-	/// <returns>the ResourceUsage value.</returns>
+	/// <param name="flags">The TextureFlags value to convert.</param>
+	/// <returns>The ResourceUsage value.</returns>
 	public static D3D12_RESOURCE_FLAGS ToDirectX(this TextureFlags flags)
 	{
 		D3D12_RESOURCE_FLAGS resourceFlags = .D3D12_RESOURCE_FLAG_NONE;
@@ -428,10 +428,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native sampler bordercolor.
+	/// Converts to native sampler border color.
 	/// </summary>
 	/// <param name="borderColor">The value to convert.</param>
-	/// <returns>The native rawColor4.</returns>
+	/// <returns>The native RawColor4.</returns>
 	public static float[4] ToDirectX(this SamplerBorderColor borderColor)
 	{
 		switch (borderColor)
@@ -448,10 +448,10 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native Texturefilter.
+	/// Converts to native TextureFilter.
 	/// </summary>
 	/// <param name="filter">The value to convert.</param>
-	/// <param name="isComparison">If comparison function is active.</param>
+	/// <param name="isComparison">Indicates if the comparison function is active.</param>
 	/// <returns>The native value.</returns>
 	public static D3D12_FILTER ToDirectX(this TextureFilter filter, bool isComparison)
 	{
@@ -520,7 +520,7 @@ public static class DX12ExtensionsMethods
 	/// Converts to DirectX sampler address mode.
 	/// </summary>
 	/// <param name="addressMode">The address mode to convert.</param>
-	/// <returns>The native addressMode.</returns>
+	/// <returns>The native address mode.</returns>
 	public static D3D12_TEXTURE_ADDRESS_MODE ToDirectX(this TextureAddressMode addressMode)
 	{
 		switch (addressMode)
@@ -541,7 +541,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to DirectX compareFunction.
+	/// Converts to DirectX compare function.
 	/// </summary>
 	/// <param name="function">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -571,7 +571,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to DirectX InputClassification enum.
+	/// Converts to the DirectX InputClassification enum.
 	/// </summary>
 	/// <param name="stepFunction">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -585,7 +585,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to DirectX HitGroupType.
+	/// Converts to DirectX HitGroupType.
 	/// </summary>
 	/// <param name="hitGroupType">HitGroup type.</param>
 	/// <returns>DirectX HitGroupType.</returns>
@@ -599,7 +599,7 @@ public static class DX12ExtensionsMethods
 	}
 
 	/// <summary>
-	/// Convert to DirectX DescriptorRangeType.
+	/// Converts to DirectX DescriptorRangeType.
 	/// </summary>
 	/// <param name="resourceType">The resource type.</param>
 	/// <returns>DirectX DescriptorRangeType.</returns>

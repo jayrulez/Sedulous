@@ -15,7 +15,7 @@ public class DX12ShaderTable
 	public struct ShaderTableRecord
 	{
 		/// <summary>
-		/// Pipeline shader identifier.
+		/// Identifies the pipeline shader.
 		/// </summary>
 		public String Name;
 
@@ -68,7 +68,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Add Raygen Program.
+	/// Adds a Raygen Program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	/// <param name="handlers">GPU Descriptor Handles.</param>
@@ -79,7 +79,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Add Miss Program.
+	/// Adds a Miss Program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	/// <param name="handlers">GPU Descriptor Handles.</param>
@@ -90,7 +90,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Add HitGroup Program.
+	/// Adds HitGroup Program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	/// <param name="handlers">GPU Descriptor Handles.</param>
@@ -101,7 +101,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Generate ShaderTable (filling buffer).
+	/// Generates a ShaderTable (filling buffer).
 	/// </summary>
 	/// <param name="pipeline">Raytracing pipeline.</param>
 	public void Generate(ID3D12StateObject* pipeline)
@@ -135,7 +135,7 @@ public class DX12ShaderTable
 	/// <summary>
 	/// Get Ray generation start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetRayGenStartAddress()
 	{
 		uint64 gPUVirtualAddress = Buffer.GetGPUVirtualAddress();
@@ -144,18 +144,18 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Gets Ray generation stride.
+	/// Gets the ray generation stride.
 	/// </summary>
-	/// <returns>Entry stride.</returns>
+	/// <returns>The entry stride.</returns>
 	public uint64 GetRayGenStride()
 	{
 		return shaderTableEntrySize;
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets the Ray generation entry size.
 	/// </summary>
-	/// <returns>Entry size.</returns>
+	/// <returns>The entry size.</returns>
 	public uint64 GetRayGenSize()
 	{
 		return shaderTableEntrySize * raygenCount;
@@ -164,14 +164,14 @@ public class DX12ShaderTable
 	/// <summary>
 	/// Get Miss start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetMissStartAddress()
 	{
 		return Buffer.GetGPUVirtualAddress() + shaderTableEntrySize * raygenCount;
 	}
 
 	/// <summary>
-	/// Gets Miss stride.
+	/// Gets miss stride.
 	/// </summary>
 	/// <returns>Entry stride.</returns>
 	public uint64 GetMissStride()
@@ -180,7 +180,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets the Ray generation entry size.
 	/// </summary>
 	/// <returns>Entry size.</returns>
 	public uint64 GetMissSize()
@@ -191,14 +191,14 @@ public class DX12ShaderTable
 	/// <summary>
 	/// Get HitGroup start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetHitGroupStartAddress()
 	{
 		return Buffer.GetGPUVirtualAddress() + shaderTableEntrySize * (raygenCount + missCount);
 	}
 
 	/// <summary>
-	/// Gets Miss stride.
+	/// Gets miss stride.
 	/// </summary>
 	/// <returns>Entry stride.</returns>
 	public uint64 GetHitGroupStride()
@@ -207,7 +207,7 @@ public class DX12ShaderTable
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets ray generation entry size.
 	/// </summary>
 	/// <returns>Entry size.</returns>
 	public uint64 GetHitGroupSize()

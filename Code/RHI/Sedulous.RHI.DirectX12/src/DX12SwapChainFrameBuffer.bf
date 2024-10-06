@@ -6,12 +6,12 @@ namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// This class represent the swapchain FrameBuffer on DirectX12.
+/// This class represents the swapchain FrameBuffer in DirectX12.
 /// </summary>
 public class DX12SwapChainFrameBuffer : FrameBuffer
 {
 	/// <summary>
-	/// The depthTargetView of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
+	/// The depth target view of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
 	/// </summary>
 	public D3D12_CPU_DESCRIPTOR_HANDLE DepthTargetview;
 
@@ -21,17 +21,17 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 	public DX12Texture DepthTargetTexture;
 
 	/// <summary>
-	/// The renderTargetView array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
+	/// The render target view array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
 	/// </summary>
 	public D3D12_CPU_DESCRIPTOR_HANDLE[] BackBuffers;
 
 	/// <summary>
-	/// The colors texture array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
+	/// The color texture array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
 	/// </summary>
 	public DX12Texture[] BackBufferTextures;
 
 	/// <summary>
-	/// The active backBuffer index.
+	/// The active back buffer index.
 	/// </summary>
 	public int32 CurrentBackBufferIndex;
 
@@ -42,7 +42,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 	private readonly DX12SwapChain swapchain;
 
 	/// <summary>
-	/// Gets the renderTargetView array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
+	/// Gets the render target view array of this <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" />.
 	/// </summary>
 	public ref D3D12_CPU_DESCRIPTOR_HANDLE ColorTargetViews => ref BackBuffers[CurrentBackBufferIndex];
 
@@ -63,7 +63,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChainFrameBuffer" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="swapchain">The swapchain to create from.</param>
+	/// <param name="swapchain">The swap chain to create from.</param>
 	public this(DX12GraphicsContext context, DX12SwapChain swapchain)
 	{
 		graphicsContext = context;

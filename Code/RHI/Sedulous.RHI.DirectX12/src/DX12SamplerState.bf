@@ -8,7 +8,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// The DirectX sampler state.
+/// The DirectX sampler state instance.
 /// </summary>
 public class DX12SamplerState : SamplerState
 {
@@ -22,7 +22,7 @@ public class DX12SamplerState : SamplerState
 	private String name = new .() ~ delete _;
 
 	/// <inheritdoc />
-	public override void* NativePointer => (void*)((int)NativeSampler.ptr);
+	public override void* NativePointer => (void*)(int)((int32)(uint)NativeSampler.ptr);
 
 	/// <inheritdoc />
 	public override String Name
@@ -40,8 +40,8 @@ public class DX12SamplerState : SamplerState
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12SamplerState" /> class.
 	/// </summary>
-	/// <param name="context">The graphics context. <see cref="T:Sedulous.RHI.GraphicsContext" />.</param>
-	/// <param name="description">The sampler state description. <see cref="T:Sedulous.RHI.SamplerStateDescription" />.</param>
+	/// <param name="context">The graphics context. See <see cref="T:Sedulous.RHI.GraphicsContext" />.</param>
+	/// <param name="description">The sampler state description. See <see cref="T:Sedulous.RHI.SamplerStateDescription" />.</param>
 	public this(GraphicsContext context, in SamplerStateDescription description)
 		: base(context, description)
 	{

@@ -11,7 +11,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// The DirectX version of PipelineState.
+/// The DirectX version of the PipelineState.
 /// </summary>
 public class DX12GraphicsPipelineState : GraphicsPipelineState
 {
@@ -117,9 +117,9 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 	}
 
 	/// <summary>
-	/// Apply only changes compare with the previous pipelineState.
+	/// Apply only changes compared with the previous pipelineState.
 	/// </summary>
-	/// <param name="commandList">The commandList where to set this pipeline.</param>
+	/// <param name="commandList">The command list where to set this pipeline.</param>
 	/// <param name="previousPipeline">The previous pipelineState.</param>
 	public void Apply(ID3D12GraphicsCommandList* commandList, DX12GraphicsPipelineState previousPipeline)
 	{
@@ -291,7 +291,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

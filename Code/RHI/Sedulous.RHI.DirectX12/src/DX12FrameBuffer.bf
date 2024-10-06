@@ -8,22 +8,22 @@ namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// FrameBuffer implementation on DirectX.
+/// FrameBuffer implementation in DirectX.
 /// </summary>
 public class DX12FrameBuffer : FrameBuffer
 {
 	/// <summary>
-	/// The renderTargetView array of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
+	/// The render target view array of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
 	/// </summary>
 	public FixedList<D3D12_CPU_DESCRIPTOR_HANDLE, const Constants.MaxAttachments> ColorTargetViews;
 
 	/// <summary>
-	/// The colors texture array of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
+	/// The color texture array of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
 	/// </summary>
 	public DX12Texture[] ColorTargetTextures;
 
 	/// <summary>
-	/// The depthTargetView of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
+	/// The depth target view of this <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" />.
 	/// </summary>
 	public D3D12_CPU_DESCRIPTOR_HANDLE DepthTargetview;
 
@@ -56,9 +56,9 @@ public class DX12FrameBuffer : FrameBuffer
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12FrameBuffer" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="depthTarget">The depth texture which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
-	/// <param name="colorTargets">The array of color textures, all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
-	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
+	/// <param name="depthTarget">The depth texture, which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
+	/// <param name="colorTargets">The array of color textures, all of which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
+	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose of the attachment textures too.</param>
 	public this(DX12GraphicsContext context, FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments = true)
 		: base(depthTarget, colorTargets, disposeAttachments)
 	{

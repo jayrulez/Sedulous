@@ -44,7 +44,7 @@ public class DX12ResourceSet : ResourceSet
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12ResourceSet" /> class.
 	/// </summary>
-	/// <param name="description">The resourceSet description.</param>
+	/// <param name="description">The resource set description.</param>
 	public this(in ResourceSetDescription description)
 		: base(description)
 	{

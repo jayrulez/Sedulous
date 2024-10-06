@@ -12,7 +12,7 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// This class represent a set of commands.
+/// This class represents a set of commands.
 /// </summary>
 public class DX12CommandBuffer : CommandBuffer
 {
@@ -66,8 +66,8 @@ public class DX12CommandBuffer : CommandBuffer
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12CommandBuffer" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
-	/// <param name="queue">The commandqueue for this commandbuffer.</param>
+	/// <param name="context">Graphics context.</param>
+	/// <param name="queue">The command queue for this command buffer.</param>
 	public this(DX12GraphicsContext context, DX12CommandQueue queue)
 	{
 		this.context = context;
@@ -186,7 +186,7 @@ public class DX12CommandBuffer : CommandBuffer
 	/// <summary>
 	/// Sets a resource barrier for a texture.
 	/// </summary>
-	/// <param name="buffer">The buffer.</param>
+	/// <param name="buffer">The texture's buffer.</param>
 	public override void ResourceBarrierUnorderedAccessView(Sedulous.RHI.Buffer buffer)
 	{
 		CommandList.ResourceBarrierUnorderedAccessView((buffer as DX12Buffer).NativeBuffer);
@@ -617,7 +617,7 @@ public class DX12CommandBuffer : CommandBuffer
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing">
 	/// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.

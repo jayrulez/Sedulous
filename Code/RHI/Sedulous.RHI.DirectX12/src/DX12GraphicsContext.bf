@@ -12,12 +12,12 @@ namespace Sedulous.RHI.DirectX12;
 using internal Sedulous.RHI.DirectX12;
 
 /// <summary>
-/// Manages all graphical functionality.
+/// Manages all graphical functionalities.
 /// </summary>
 public class DX12GraphicsContext : GraphicsContext
 {
 	/// <summary>
-	/// Native DX const used to set 4 components.
+	/// Native DX constant used to set 4 components.
 	/// </summary>
 	public static readonly uint32 DefaultShader4ComponentMapping = 5768;
 
@@ -47,7 +47,7 @@ public class DX12GraphicsContext : GraphicsContext
 	public ID3D12Device* DXDevice;
 
 	/// <summary>
-	/// The DXGI factory.
+	/// The DXGI factory instance.
 	/// </summary>
 	public IDXGIFactory4* DXFactory;
 

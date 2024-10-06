@@ -18,7 +18,7 @@ public class DX12ResourceFactory : ResourceFactory
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12ResourceFactory" /> class.
 	/// </summary>
-	/// <param name="graphicsContext">DirectX Graphics Context.</param>
+	/// <param name="graphicsContext">DirectX graphics context.</param>
 	public this(DX12GraphicsContext graphicsContext)
 	{
 		context = graphicsContext;

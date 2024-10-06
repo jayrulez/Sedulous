@@ -10,12 +10,12 @@ using internal Sedulous.RHI.DirectX12;
 using static Sedulous.RHI.DirectX12.DX12ExtensionsMethods;
 
 /// <summary>
-/// This class represents a native swapchain object on DirectX12.
+/// This class represents a native swap chain object in DirectX 12.
 /// </summary>
 public class DX12SwapChain : SwapChain
 {
 	/// <summary>
-	/// A default number of buffer in the swapchain.
+	/// The default number of buffers in the swapchain.
 	/// </summary>
 	public const int32 SwapChainBufferCount = 3;
 
@@ -33,7 +33,7 @@ public class DX12SwapChain : SwapChain
 	private String name = new .() ~ delete _;
 
 	/// <summary>
-	/// Gets or sets the active backbuffer index.
+	/// Gets or sets the active back buffer index.
 	/// </summary>
 	public int32 CurrentBackBufferIndex
 	{
@@ -73,7 +73,7 @@ public class DX12SwapChain : SwapChain
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DirectX12.DX12SwapChain" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
+	/// <param name="context">Graphics context.</param>
 	/// <param name="description">SwapChain description.</param>
 	public this(GraphicsContext context, Sedulous.RHI.SwapChainDescription description)
 	{
@@ -180,7 +180,7 @@ public class DX12SwapChain : SwapChain
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)
