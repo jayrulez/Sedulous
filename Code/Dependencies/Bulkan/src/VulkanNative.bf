@@ -127,7 +127,7 @@ public static class VulkanNative
 		return .Ok;
 	}
 
-	public static Result<void> LoadInstanceFunctions(VkInstance instance, InstanceFunctionFlags flags, List<String> additionalFunctions = null, delegate void(String) onError = null)
+	public static Result<void> LoadInstanceFunctions(VkInstance instance, InstanceFunctionFlags flags, List<String> additionalFunctions = null, List<String> excludedFunctions = null, delegate void(String) onError = null)
 	{
 		Runtime.Assert(mInitialized);
 
@@ -145,6 +145,8 @@ public static class VulkanNative
 
 		for (var functionToLoad in functionsToLoad)
 		{
+			if(excludedFunctions != null && excludedFunctions.Contains(functionToLoad))
+				continue;
 			if (LoadFunction(functionToLoad, instance) case .Err)
 			{
 				if (onError != null)
