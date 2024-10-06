@@ -379,7 +379,8 @@ public class VKGraphicsContext : GraphicsContext
 				DebugUtilsEnabled = true;
 				DebugMarkerEnabled = true;
 			}
-			else
+
+			if (availableInstanceExtensions.Contains("VK_EXT_debug_report"))
 			{
 				instanceExtensionEnabled.Add("VK_EXT_debug_report");
 			}
