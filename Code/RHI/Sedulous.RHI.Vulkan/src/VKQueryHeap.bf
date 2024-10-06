@@ -8,12 +8,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// Represents a Vulkan queryheap object.
+/// Represents a Vulkan query heap object.
 /// </summary>
 public class VKQueryHeap : QueryHeap
 {
 	/// <summary>
-	/// The vulkan native object.
+	/// The Vulkan native object.
 	/// </summary>
 	public VkQueryPool nativeQueryHeap;
 
@@ -26,7 +26,7 @@ public class VKQueryHeap : QueryHeap
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKQueryHeap" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="description">The queryheap description.</param>
+	/// <param name="description">The query heap description.</param>
 	public this(VKGraphicsContext context, in QueryHeapDescription description)
 		: base(context, description)
 	{
@@ -69,7 +69,7 @@ public class VKQueryHeap : QueryHeap
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

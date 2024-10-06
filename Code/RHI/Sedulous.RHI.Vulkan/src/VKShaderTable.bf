@@ -8,12 +8,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// Vulkan Shader binding table.
+/// Vulkan shader binding table.
 /// </summary>
 public class VKShaderTable : IDisposable
 {
 	/// <summary>
-	/// Shader Table Entry.
+	/// Shader table entry.
 	/// </summary>
 	public struct ShaderTableRecord
 	{
@@ -23,15 +23,15 @@ public class VKShaderTable : IDisposable
 		public enum RecordType
 		{
 			/// <summary>
-			/// RayGen record.
+			/// Ray generation record.
 			/// </summary>
 			RayGen,
 			/// <summary>
-			///  Miss record.
+			///  Missing record.
 			/// </summary>
 			Miss,
 			/// <summary>
-			///  Hit record.
+			/// Hit record.
 			/// </summary>
 			Hit
 		}
@@ -63,7 +63,7 @@ public class VKShaderTable : IDisposable
 	private const uint32 VKRaytracingShaderRecordByteAlignment = 64;
 
 	/// <summary>
-	/// Holds if the instance has been disposed.
+	/// Indicates if the instance has been disposed.
 	/// </summary>
 	protected bool disposed;
 
@@ -99,7 +99,7 @@ public class VKShaderTable : IDisposable
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKShaderTable" /> class.
 	/// </summary>
-	/// <param name="graphicsContext">Vulkan Graphics Context.</param>
+	/// <param name="graphicsContext">Vulkan graphics context.</param>
 	public this(VKGraphicsContext graphicsContext)
 	{
 		context = graphicsContext;
@@ -107,7 +107,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Add Raygen Program.
+	/// Adds Raygen Program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	public void AddRayGenProgram(String shaderIdentifier)
@@ -117,7 +117,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Add Miss Program.
+	/// Add missing program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	public void AddMissProgram(String shaderIdentifier)
@@ -127,7 +127,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Add HitGroup Program.
+	/// Adds HitGroup Program.
 	/// </summary>
 	/// <param name="shaderIdentifier">Shader identifier.</param>
 	public void AddHitGroupProgram(String shaderIdentifier)
@@ -137,7 +137,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Generate ShaderTable (filling buffer).
+	/// Generates ShaderTable (fills buffer).
 	/// </summary>
 	/// <param name="pipeline">Raytracing pipeline.</param>
 	public void Generate(VkPipeline pipeline)
@@ -186,11 +186,11 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// ShaderBindingTable alignment.
+	/// Shader Binding Table alignment.
 	/// </summary>
 	/// <param name="value">Record size.</param>
 	/// <param name="alignment">Record alignment.</param>
-	/// <returns>Record size aligned.</returns>
+	/// <returns>Aligned record size.</returns>
 	public uint32 AlignTo(uint32 value, uint32 alignment)
 	{
 		return (value + alignment - 1) & ~(alignment - 1);
@@ -199,23 +199,23 @@ public class VKShaderTable : IDisposable
 	/// <summary>
 	/// Get Ray generation start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetRayGenStartAddress()
 	{
 		return rayGenBuffer.Buffer.GetBufferAddress(context.VkDevice);
 	}
 
 	/// <summary>
-	/// Gets Ray generation stride.
+	/// Gets the ray generation stride.
 	/// </summary>
-	/// <returns>Entry stride.</returns>
+	/// <returns>The entry stride.</returns>
 	public uint64 GetRayGenStride()
 	{
 		return shaderTableEntrySizeAligned;
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets ray generation entry size.
 	/// </summary>
 	/// <returns>Entry size.</returns>
 	public uint64 GetRayGenSize()
@@ -224,16 +224,16 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Get Miss start address.
+	/// Gets the miss start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetMissStartAddress()
 	{
 		return missBuffer.Buffer.GetBufferAddress(context.VkDevice);
 	}
 
 	/// <summary>
-	/// Gets Miss stride.
+	/// Gets miss stride.
 	/// </summary>
 	/// <returns>Entry stride.</returns>
 	public uint64 GetMissStride()
@@ -242,25 +242,25 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets the Ray generation entry size.
 	/// </summary>
-	/// <returns>Entry size.</returns>
+	/// <returns>The entry size.</returns>
 	public uint64 GetMissSize()
 	{
 		return shaderTableEntrySizeAligned * missCount;
 	}
 
 	/// <summary>
-	/// Get HitGroup start address.
+	/// Gets the HitGroup start address.
 	/// </summary>
-	/// <returns>buffer adress.</returns>
+	/// <returns>Buffer address.</returns>
 	public uint64 GetHitGroupStartAddress()
 	{
 		return hitBuffer.Buffer.GetBufferAddress(context.VkDevice);
 	}
 
 	/// <summary>
-	/// Gets Miss stride.
+	/// Gets miss stride.
 	/// </summary>
 	/// <returns>Entry stride.</returns>
 	public uint64 GetHitGroupStride()
@@ -269,7 +269,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Gets Ray generation entry size.
+	/// Gets the Ray generation entry size.
 	/// </summary>
 	/// <returns>Entry size.</returns>
 	public uint64 GetHitGroupSize()
@@ -284,7 +284,7 @@ public class VKShaderTable : IDisposable
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

@@ -18,7 +18,7 @@ public class VKBuffer : Sedulous.RHI.Buffer
 	public VkBuffer NativeBuffer;
 
 	/// <summary>
-	/// The Vulkan buffer memory.
+	/// The Vulkan buffer's memory.
 	/// </summary>
 	public VkDeviceMemory BufferMemory;
 
@@ -55,7 +55,7 @@ public class VKBuffer : Sedulous.RHI.Buffer
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
-	/// <param name="description">A buffer description.</param>
+	/// <param name="description">The buffer description.</param>
 	public this(VKGraphicsContext context, void* data, in BufferDescription description)
 		: base(context, description)
 	{
@@ -159,9 +159,9 @@ public class VKBuffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Fill the buffer from a pointer.
+	/// Fills the buffer from a pointer.
 	/// </summary>
-	/// <param name="commandBuffer">The commandbuffer.</param>
+	/// <param name="commandBuffer">The command buffer.</param>
 	/// <param name="source">The data pointer.</param>
 	/// <param name="sourceSizeInBytes">The size in bytes.</param>
 	/// <param name="destinationOffsetInBytes">The offset in bytes.</param>
@@ -216,12 +216,12 @@ public class VKBuffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Copy this buffer in the destination buffer.
+	/// Copies this buffer to the destination buffer.
 	/// </summary>
-	/// <param name="commandBuffer">The commandbuffer.</param>
-	/// <param name="queueType">The commandqueue type of the commandBuffer.</param>
+	/// <param name="commandBuffer">The command buffer.</param>
+	/// <param name="queueType">The command queue type of the command buffer.</param>
 	/// <param name="destination">The destination buffer.</param>
-	/// <param name="sizeInBytes">The data size in bytes to copy.</param>
+	/// <param name="sizeInBytes">The size of data in bytes to copy.</param>
 	/// <param name="sourceOffset">The source buffer offset in bytes.</param>
 	/// <param name="destinationOffset">The destination buffer offset in bytes.</param>
 	public void CopyTo(VkCommandBuffer commandBuffer, CommandQueueType queueType, Sedulous.RHI.Buffer destination, uint32 sizeInBytes, uint32 sourceOffset, uint32 destinationOffset)
@@ -284,7 +284,7 @@ public class VKBuffer : Sedulous.RHI.Buffer
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

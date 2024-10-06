@@ -24,12 +24,12 @@ public class VKResourceSet : ResourceSet
 	public readonly uint32 DynamicBufferCount;
 
 	/// <summary>
-	/// Storage textures (RWTexture) list.
+	/// List of storage textures (RWTexture).
 	/// </summary>
 	internal List<VKTexture> StorageTextures;
 
 	/// <summary>
-	/// Normal Textures (Texture) list.
+	/// List of normal textures.
 	/// </summary>
 	internal List<VKTexture> Textures;
 
@@ -59,7 +59,7 @@ public class VKResourceSet : ResourceSet
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKResourceSet" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="description">The resourceSet description.</param>
+	/// <param name="description">The resource set description.</param>
 	public this(VKGraphicsContext context, in ResourceSetDescription description)
 		: base(description)
 	{
@@ -184,7 +184,7 @@ public class VKResourceSet : ResourceSet
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged resources and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

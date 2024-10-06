@@ -8,17 +8,17 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents a native pipelineState on Vulkan.
+/// This class represents a native pipeline state on Vulkan.
 /// </summary>
 public class VKComputePipelineState : ComputePipelineState
 {
 	/// <summary>
-	/// The Vulkan native pipeline struct.
+	/// The Vulkan native pipeline structure.
 	/// </summary>
 	public VkPipeline NativePipeline;
 
 	/// <summary>
-	/// The Vulkan native pipeline layout struct.
+	/// The Vulkan native pipeline layout structure.
 	/// </summary>
 	public VkPipelineLayout NativePipelineLayout;
 
@@ -88,7 +88,7 @@ public class VKComputePipelineState : ComputePipelineState
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged resources and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

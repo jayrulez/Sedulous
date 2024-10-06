@@ -13,7 +13,7 @@ using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 public class VKResourceLayout : ResourceLayout
 {
 	/// <summary>
-	/// The Vulkan desriptorset layout struct.
+	/// The Vulkan descriptor set layout struct.
 	/// </summary>
 	public readonly VkDescriptorSetLayout DescriptorSetLayout;
 
@@ -106,7 +106,7 @@ public class VKResourceLayout : ResourceLayout
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged resources and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

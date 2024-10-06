@@ -8,12 +8,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents a native shader object on Metal.
+/// This class represents a native shader object in Metal.
 /// </summary>
 public class VKShader : Shader
 {
 	/// <summary>
-	/// The native vulkan shader object.
+	/// The native Vulkan shader object.
 	/// </summary>
 	public readonly VkShaderModule ShaderModule;
 
@@ -38,7 +38,7 @@ public class VKShader : Shader
 	}
 
 	/// <summary>
-	/// Gets the ShaderStateInfo using in the pipelinestate.
+	/// Gets the ShaderStateInfo used in the pipeline state.
 	/// </summary>
 	public VkPipelineShaderStageCreateInfo ShaderStateInfo
 	{

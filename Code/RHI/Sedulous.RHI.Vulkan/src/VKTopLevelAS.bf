@@ -9,12 +9,12 @@ using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 using static Sedulous.RHI.Vulkan.VKHelpers;
 
 /// <summary>
-/// Vulkan Top Level Acceleration Structure implementation.
+/// Implementation of Vulkan Top-Level Acceleration Structure.
 /// </summary>
 public class VKTopLevelAS : TopLevelAS
 {
 	/// <summary>
-	/// The top level acceleration structure instance.
+	/// The top-level acceleration structure instance.
 	/// </summary>
 	public VkAccelerationStructureKHR TopLevelAS;
 
@@ -32,9 +32,9 @@ public class VKTopLevelAS : TopLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKTopLevelAS" /> class.
 	/// </summary>
-	/// <param name="context">DirectX12 Context.</param>
+	/// <param name="context">DirectX 12 context.</param>
 	/// <param name="commandBuffer">Command buffer.</param>
-	/// <param name="description">Top Level Description.</param>
+	/// <param name="description">Top-level description.</param>
 	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, in TopLevelASDescription description)
 		: base(context, description)
 	{
@@ -130,8 +130,8 @@ public class VKTopLevelAS : TopLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKTopLevelAS" /> class.
 	/// </summary>
-	/// <param name="commandBuffer">Command Buffer instance.</param>
-	/// <param name="description">New top level description.</param>
+	/// <param name="commandBuffer">Command buffer instance.</param>
+	/// <param name="description">New top-level description.</param>
 	public void UpdateAccelerationStructure(VkCommandBuffer commandBuffer, in TopLevelASDescription description)
 	{
 		Description = description;
@@ -200,7 +200,7 @@ public class VKTopLevelAS : TopLevelAS
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

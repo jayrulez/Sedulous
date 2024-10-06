@@ -9,27 +9,27 @@ using System.Collections;
 namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
-/// Set of Vulkan helpers.
+/// A set of Vulkan helpers.
 /// </summary>
 public static class VKHelpers
 {
 	/// <summary>
-	/// Create a valide Api version uint32.
+	/// Creates a valid API version uint.
 	/// </summary>
-	/// <param name="major">The major.</param>
-	/// <param name="minor">The minor.</param>
-	/// <param name="patch">The patch.</param>
-	/// <returns>Vulkan api version.</returns>
+	/// <param name="major">The major version.</param>
+	/// <param name="minor">The minor version.</param>
+	/// <param name="patch">The patch version.</param>
+	/// <returns>Vulkan API version.</returns>
 	public static uint32 Version(uint32 major, uint32 minor, uint32 patch)
 	{
 		return (major << 22) | (minor << 12) | patch;
 	}
 
 	/// <summary>
-	/// Check errors.
+	/// Checks for errors.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="result">The result of last operation.</param>
+	/// <param name="result">The result of the last operation.</param>
 #if !DEBUG
 	//[Conditional("DEBUG")]
 	[SkipCall]
@@ -45,21 +45,21 @@ public static class VKHelpers
 	/// <summary>
 	/// Gets the memory type.
 	/// </summary>
-	/// <param name="memoryProperties">The device memory properties.</param>
+	/// <param name="memoryProperties">The device's memory properties.</param>
 	/// <param name="index">The memory index.</param>
-	/// <returns>The result memory type.</returns>
+	/// <returns>The resulting memory type.</returns>
 	public static VkMemoryType GetMemoryType(this VkPhysicalDeviceMemoryProperties memoryProperties, uint32 index)
 	{
 		return memoryProperties.memoryTypes[index];
 	}
 
 	/// <summary>
-	/// Find a memory type.
+	/// Finds a memory type.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="typeFilter">The filter type.</param>
+	/// <param name="typeFilter">The type filter.</param>
 	/// <param name="properties">The memory properties.</param>
-	/// <returns>A value &gt; 0 if everything was ok.</returns>
+	/// <returns>A value greater than 0 if successful.</returns>
 	public static int32 FindMemoryType(VKGraphicsContext context, uint32 typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties = context.VkPhysicalDeviceMemoryProperties;
@@ -75,7 +75,7 @@ public static class VKHelpers
 	}
 
 	/// <summary>
-	/// Returns up to requested number of global layer properties.
+	/// Returns up to the requested number of global layer properties.
 	/// </summary>
 	/// <param name="instanceLayers">The string array of supported layers.</param>
 	public static void EnumerateInstanceLayers(List<String> instanceLayers)
@@ -95,7 +95,7 @@ public static class VKHelpers
 	}
 
 	/// <summary>
-	///  Returns up to requested number of global extension properties.
+	/// Returns up to the requested number of global extension properties.
 	/// </summary>
 	/// <param name="instanceExtensions">A string array of supported extensions.</param>
 	public static void EnumerateInstanceExtensions(List<String> instanceExtensions)
@@ -118,7 +118,7 @@ public static class VKHelpers
 	/// Gets the bindings offset to avoid overlap.
 	/// </summary>
 	/// <param name="element">The layout element description.</param>
-	/// <returns>The first slop available.</returns>
+	/// <returns>The first slot available.</returns>
 	public static uint32 GetBinding(LayoutElementDescription element)
 	{
 		switch (element.Type)
@@ -140,7 +140,7 @@ public static class VKHelpers
 	}
 
 	/// <summary>
-	/// Convert a Matrix4x4 in a Vulkan transform matrix 3x4.
+	/// Converts a Matrix4x4 into a Vulkan transform matrix 3x4.
 	/// </summary>
 	/// <param name="m">The matrix to convert.</param>
 	/// <returns>The Vulkan transform matrix.</returns>

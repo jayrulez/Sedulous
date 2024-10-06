@@ -9,17 +9,17 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents a native FrameBuffer object on Vulkan.
+/// This class represents a native FrameBuffer object in Vulkan.
 /// </summary>
 public class VKFrameBuffer : VKFrameBufferBase
 {
 	/// <summary>
-	/// The Vulkan frameBuffer struct.
+	/// The Vulkan Framebuffer struct.
 	/// </summary>
 	public VkFramebuffer NativeFrameBuffer;
 
 	/// <summary>
-	/// Default Render Passes.
+	/// Default Render Pass.
 	/// </summary>
 	public VkRenderPass[] defaultRenderPasses;
 
@@ -47,9 +47,9 @@ public class VKFrameBuffer : VKFrameBufferBase
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKFrameBuffer" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="depthTarget">The depth texture which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
-	/// <param name="colorTargets">The array of color textures, all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
-	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
+	/// <param name="depthTarget">The depth texture, which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
+	/// <param name="colorTargets">The array of color textures, all of which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
+	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose of the attachment textures too.</param>
 	public this(VKGraphicsContext context, FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 		: base(depthTarget, colorTargets, disposeAttachments)
 	{
@@ -103,13 +103,13 @@ public class VKFrameBuffer : VKFrameBufferBase
 	}
 
 	/// <summary>
-	/// Generate a VKImageView from FrameBufferAttachment.
+	/// Generates a VKImageView from FrameBufferAttachment.
 	/// </summary>
 	/// <param name="vkTexture">Texture instance.</param>
-	/// <param name="mipSlice">Miplevel slice.</param>
+	/// <param name="mipSlice">Mip level slice.</param>
 	/// <param name="firstSlice">First slice.</param>
 	/// <param name="flags">Aspect flags.</param>
-	/// <param name="depthTexture">This image view is a depth texture.</param>
+	/// <param name="depthTexture">Indicates if this image view is a depth texture.</param>
 	/// <returns>VkImageView instance.</returns>
 	protected VkImageView CreateImageView(VKTexture vkTexture, uint32 mipSlice, uint32 firstSlice, VkImageAspectFlags flags = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT, bool depthTexture = false)
 	{

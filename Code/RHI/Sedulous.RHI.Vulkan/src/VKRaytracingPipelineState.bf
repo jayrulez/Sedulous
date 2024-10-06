@@ -7,24 +7,24 @@ using System.Collections;
 namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
-/// Vulkan Raytracing pipeline state.
+/// Vulkan ray-tracing pipeline state.
 /// </summary>
 public class VKRaytracingPipelineState : RaytracingPipelineState
 {
 	/// <summary>
-	/// The Vulkan native pipeline struct.
+	/// The Vulkan native pipeline structure.
 	/// </summary>
 	public VkPipeline NativePipeline;
 
 	/// <summary>
-	/// The Vulkan native pipeline layout struct.
+	/// The Vulkan native pipeline layout structure.
 	/// </summary>
 	public VkPipelineLayout NativePipelineLayout;
 
 	private VKGraphicsContext vkContext;
 
 	/// <summary>
-	/// Generated shader binding table.
+	/// Generates a shader binding table.
 	/// </summary>
 	public VKShaderTable shaderBindingTable;
 
@@ -32,7 +32,7 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKRaytracingPipelineState" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="description">The raytracing pipeline state description.</param>
+	/// <param name="description">The ray tracing pipeline state description.</param>
 	public this(VKGraphicsContext context, in RaytracingPipelineDescription description)
 		: base(description)
 	{
@@ -176,7 +176,7 @@ public class VKRaytracingPipelineState : RaytracingPipelineState
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

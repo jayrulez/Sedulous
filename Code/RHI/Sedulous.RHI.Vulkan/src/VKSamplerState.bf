@@ -8,7 +8,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents the a Vulkan samplerState object.
+/// This class represents a Vulkan samplerState object.
 /// </summary>
 public class VKSamplerState : SamplerState
 {

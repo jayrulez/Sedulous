@@ -8,7 +8,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represent a pool of descriptor sets.
+/// This class represents a pool of descriptor sets.
 /// </summary>
 internal class VKDescriptorSetPool
 {

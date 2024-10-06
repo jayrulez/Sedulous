@@ -9,7 +9,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// The Vulkan version of the resource factory.
+/// The Vulkan version of the Resource Factory.
 /// </summary>
 public class VKResourceFactory : ResourceFactory
 {
@@ -21,7 +21,7 @@ public class VKResourceFactory : ResourceFactory
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKResourceFactory" /> class.
 	/// </summary>
-	/// <param name="graphicsContext">The Graphics Context.</param>
+	/// <param name="graphicsContext">The graphics context.</param>
 	public this(VKGraphicsContext graphicsContext)
 	{
 		context = graphicsContext;

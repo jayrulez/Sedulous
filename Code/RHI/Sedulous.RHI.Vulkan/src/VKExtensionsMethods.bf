@@ -5,7 +5,7 @@ using Sedulous.RHI.Raytracing;
 namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
-/// Extensions methods used to convert values from the RHI to DirectX.
+/// Extension methods used to convert values from RHI to DirectX.
 /// </summary>
 public static class VKExtensionsMethods
 {
@@ -13,7 +13,7 @@ public static class VKExtensionsMethods
 	/// Converts to Vulkan sampler address mode.
 	/// </summary>
 	/// <param name="addressMode">The address mode to convert.</param>
-	/// <returns>The native addressMode.</returns>
+	/// <returns>The native address mode.</returns>
 	public static VkSamplerAddressMode ToVulkan(this TextureAddressMode addressMode)
 	{
 		switch (addressMode)
@@ -34,7 +34,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to Vulkan compareFunction.
+	/// Converts to Vulkan compare function.
 	/// </summary>
 	/// <param name="function">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -67,7 +67,7 @@ public static class VKExtensionsMethods
 	/// Converts to Vulkan stencil operation.
 	/// </summary>
 	/// <param name="operation">The value to convert.</param>
-	/// <returns>The native value.</returns>
+	/// <returns>The converted native value.</returns>
 	public static VkStencilOp ToVulkan(this StencilOperation operation)
 	{
 		switch (operation)
@@ -94,7 +94,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to Vulkan blend operation.
+	/// Converts to a Vulkan blend operation.
 	/// </summary>
 	/// <param name="operation">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -118,7 +118,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to Vulkan blendfactor.
+	/// Converts to Vulkan blend factor.
 	/// </summary>
 	/// <param name="blend">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -168,7 +168,7 @@ public static class VKExtensionsMethods
 	/// <summary>
 	/// Converts to Vulkan ColorComponentFlags.
 	/// </summary>
-	/// <param name="channels">The value to convert.</param>
+	/// <param name="channels">The value to be converted.</param>
 	/// <returns>The native value.</returns>
 	public static VkColorComponentFlags ToVulkan(this ColorWriteChannels channels)
 	{
@@ -194,7 +194,7 @@ public static class VKExtensionsMethods
 	/// <summary>
 	/// Converts to Vulkan primitive topology.
 	/// </summary>
-	/// <param name="topology">The value to converts.</param>
+	/// <param name="topology">The value to convert.</param>
 	/// <returns>The native value.</returns>
 	public static VkPrimitiveTopology ToVulkan(this PrimitiveTopology topology)
 	{
@@ -224,7 +224,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native Vulkan minFilter, MagFilter and SamplerMipmapMode.
+	/// Converts to native Vulkan minFilter, magFilter, and samplerMipmapMode.
 	/// </summary>
 	/// <param name="filter">The texture filter to convert.</param>
 	/// <param name="minFilter">The native minFilter.</param>
@@ -283,7 +283,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native bordercolor.
+	/// Converts to native border color.
 	/// </summary>
 	/// <param name="borderColor">The value to convert.</param>
 	/// <returns>The MTLSamplerBorderColor value.</returns>
@@ -303,10 +303,10 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native shaderStage.
+	/// Converts to a native shader stage.
 	/// </summary>
 	/// <param name="stage">The stage value to convert.</param>
-	/// <returns>The native shaderStage.</returns>
+	/// <returns>The native shader stage.</returns>
 	public static VkShaderStageFlags ToVulkan(this ShaderStages stage)
 	{
 		VkShaderStageFlags result = VkShaderStageFlags.None;
@@ -361,8 +361,8 @@ public static class VKExtensionsMethods
 	/// Converts to native DescriptorType.
 	/// </summary>
 	/// <param name="type">The resource type value.</param>
-	/// <param name="allowDynamicOffset">Allow dynamic offset.</param>
-	/// <returns>The native resourceType.</returns>
+	/// <param name="allowDynamicOffset">Allows dynamic offset.</param>
+	/// <returns>The native resource type.</returns>
 	public static VkDescriptorType ToVulkan(this ResourceType type, bool allowDynamicOffset = false)
 	{
 		switch (type)
@@ -394,10 +394,10 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native Samplecount.
+	/// Converts to native sample count.
 	/// </summary>
-	/// <param name="sampleCount">The samplecount value to convert.</param>
-	/// <returns>The native samplecount.</returns>
+	/// <param name="sampleCount">The sample count value to convert.</param>
+	/// <returns>The native sample count.</returns>
 	public static VkSampleCountFlags ToVulkan(this TextureSampleCount sampleCount)
 	{
 		switch (sampleCount)
@@ -420,7 +420,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native CullMode.
+	/// Converts to the native CullMode.
 	/// </summary>
 	/// <param name="cullMode">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -440,7 +440,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native PolygonMode.
+	/// Converts to the native PolygonMode.
 	/// </summary>
 	/// <param name="fillMode">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -458,10 +458,10 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from indexformat to vulkan format.
+	/// Converts from index format to Vulkan format.
 	/// </summary>
-	/// <param name="format">The indexformat to convert.</param>
-	/// <returns>The result Vulkan format.</returns>
+	/// <param name="format">The index format to convert.</param>
+	/// <returns>The resulting Vulkan format.</returns>
 	public static VkIndexType ToVulkan(this IndexFormat format)
 	{
 		switch (format)
@@ -476,7 +476,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from instanceflags to Vulkan instance flags.
+	/// Converts instance flags to Vulkan instance flags.
 	/// </summary>
 	/// <param name="flags">The flags to convert.</param>
 	/// <returns>The Vulkan flags.</returns>
@@ -496,7 +496,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// To convert from AcelerationStructureFlags to Vulkan VkBuildAccelerationStructureFlagsKHR.
+	/// Converts from AccelerationStructureFlags to Vulkan VkBuildAccelerationStructureFlagsKHR.
 	/// </summary>
 	/// <param name="flags">The flags to convert.</param>
 	/// <returns>The converted flags.</returns>
@@ -521,11 +521,11 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to native pixel format.
+	/// Converts to a native pixel format.
 	/// </summary>
 	/// <param name="format">The format to convert.</param>
-	/// <param name="depthFormat">Whether is a depth texture.</param>
-	/// <returns>The native vulkan format.</returns>
+	/// <param name="depthFormat">Indicates whether it is a depth texture.</param>
+	/// <returns>The native Vulkan format.</returns>
 	public static VkFormat ToVulkan(this PixelFormat format, bool depthFormat)
 	{
 		switch (format)
@@ -691,7 +691,7 @@ public static class VKExtensionsMethods
 	/// <summary>
 	/// Converts to the RHI pixel format.
 	/// </summary>
-	/// <param name="format">The format to convert.</param>
+	/// <param name="format">The format to be converted.</param>
 	/// <returns>The RHI format.</returns>
 	public static PixelFormat FromVulkan(this VkFormat format)
 	{
@@ -843,7 +843,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Converts to Vulkan vertexformat.
+	/// Converts to Vulkan vertex format.
 	/// </summary>
 	/// <param name="format">The value to convert.</param>
 	/// <returns>The native value.</returns>
@@ -935,7 +935,7 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Get address from native vulkan buffer.
+	/// Gets the address from a native Vulkan buffer.
 	/// </summary>
 	/// <param name="buffer">Native buffer.</param>
 	/// <param name="device">Vulkan device.</param>
@@ -950,11 +950,11 @@ public static class VKExtensionsMethods
 	}
 
 	/// <summary>
-	/// Get address from native vulkan acceleration structure.
+	/// Gets the address from the native Vulkan acceleration structure.
 	/// </summary>
 	/// <param name="accelerationStructure">Native acceleration structure.</param>
-	/// <param name="device">Vulkan Device.</param>
-	/// <returns>Acceleration Structure address.</returns>
+	/// <param name="device">Vulkan device.</param>
+	/// <returns>Acceleration structure address.</returns>
 	public static uint64 GetAccelerationStructureAddress(this VkAccelerationStructureKHR accelerationStructure, VkDevice device)
 	{
 		VkAccelerationStructureDeviceAddressInfoKHR vkAccelerationStructureDeviceAddressInfoKHR = default(VkAccelerationStructureDeviceAddressInfoKHR);

@@ -8,7 +8,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents a native texture object on Metal.
+/// This class represents a native texture object in Metal.
 /// </summary>
 public class VKTexture : Texture
 {
@@ -18,7 +18,7 @@ public class VKTexture : Texture
 	public VkImage NativeImage;
 
 	/// <summary>
-	/// The native vulkan memory linked with native image.
+	/// The native Vulkan memory linked with the native image.
 	/// </summary>
 	public VkDeviceMemory ImageMemory;
 
@@ -28,7 +28,7 @@ public class VKTexture : Texture
 	public VkBuffer NativeBuffer;
 
 	/// <summary>
-	/// The native buffer memory linked with native buffer.
+	/// The native buffer memory linked with the native buffer.
 	/// </summary>
 	public VkDeviceMemory BufferMemory;
 
@@ -38,12 +38,12 @@ public class VKTexture : Texture
 	public VkMemoryRequirements MemoryRequirements;
 
 	/// <summary>
-	/// The native Image layouts for this texture.
+	/// The native image layouts for this texture.
 	/// </summary>
 	public VkImageLayout[] ImageLayouts;
 
 	/// <summary>
-	/// The native pixel format for this texture.
+	/// The native pixel format of this texture.
 	/// </summary>
 	public VkFormat Format;
 
@@ -86,7 +86,7 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// Gets the vulkan image view.
+	/// Gets the Vulkan image view.
 	/// </summary>
 	public VkImageView ImageView
 	{
@@ -106,7 +106,7 @@ public class VKTexture : Texture
 	/// <param name="context">The graphics context.</param>
 	/// <param name="data">The data pointer.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="samplerState">the sampler state description for this texture.</param>
+	/// <param name="samplerState">The sampler state description for this texture.</param>
 	public this(VKGraphicsContext context, DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState)
 		: base(context, description)
 	{
@@ -344,11 +344,11 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// Create a new texture from a VKImage.
+	/// Creates a new texture from a VKImage.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="image">The vulkan image already created.</param>
+	/// <param name="image">The Vulkan image already created.</param>
 	/// <returns>A new VKTexture.</returns>
 	public static VKTexture FromVulkanImage(VKGraphicsContext context, in TextureDescription description, VkImage image)
 	{
@@ -370,13 +370,13 @@ public class VKTexture : Texture
 	/// </summary>
 	/// <param name="command">The command buffer to execute.</param>
 	/// <param name="newLayout">The new state layout.</param>
-	/// <param name="baseMiplevel">The start mip level.</param>
+	/// <param name="baseMipLevel">The start mip level.</param>
 	/// <param name="levelCount">The number of mip levels.</param>
 	/// <param name="baseArrayLayer">The start array layer.</param>
 	/// <param name="layerCount">The number of array layers.</param>
-	public void TransitionImageLayout(VkCommandBuffer command, VkImageLayout newLayout, uint32 baseMiplevel, uint32 levelCount, uint32 baseArrayLayer, uint32 layerCount)
+	public void TransitionImageLayout(VkCommandBuffer command, VkImageLayout newLayout, uint32 baseMipLevel, uint32 levelCount, uint32 baseArrayLayer, uint32 layerCount)
 	{
-		uint32 subResource = Helpers.CalculateSubResource(Description, baseMiplevel, baseArrayLayer);
+		uint32 subResource = Helpers.CalculateSubResource(Description, baseMipLevel, baseArrayLayer);
 		VkImageLayout oldLayout = ImageLayouts[subResource];
 		if (oldLayout == newLayout)
 		{
@@ -399,7 +399,7 @@ public class VKTexture : Texture
 		imageBarrier.dstQueueFamilyIndex = uint32.MaxValue;
 		imageBarrier.image = NativeImage;
 		imageBarrier.subresourceRange.aspectMask = aspectMask;
-		imageBarrier.subresourceRange.baseMipLevel = baseMiplevel;
+		imageBarrier.subresourceRange.baseMipLevel = baseMipLevel;
 		imageBarrier.subresourceRange.levelCount = levelCount;
 		imageBarrier.subresourceRange.baseArrayLayer = baseArrayLayer;
 		imageBarrier.subresourceRange.layerCount = layerCount;
@@ -479,10 +479,10 @@ public class VKTexture : Texture
 		}
 		VulkanNative.vkCmdPipelineBarrier(command, srcStageFlags, dstStageFlags, VkDependencyFlags.None, 0, null, 0, null, 1, &imageBarrier);
 		uint32 numLayers = baseArrayLayer + layerCount;
-		uint32 numLevels = baseMiplevel + levelCount;
+		uint32 numLevels = baseMipLevel + levelCount;
 		for (uint32 layer = baseArrayLayer; layer < numLayers; layer++)
 		{
-			for (uint32 level = baseMiplevel; level < numLevels; level++)
+			for (uint32 level = baseMipLevel; level < numLevels; level++)
 			{
 				ImageLayouts[Helpers.CalculateSubResource(Description, level, layer)] = newLayout;
 			}
@@ -490,25 +490,25 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// Copy a pixel region from source to destination texture.
+	/// Copies a pixel region from the source to the destination texture.
 	/// </summary>
-	/// <param name="commandBuffer">The commandbuffer where execute.</param>
-	/// <param name="sourceX">U coord source texture.</param>
-	/// <param name="sourceY">V coord source texture.</param>
-	/// <param name="sourceZ">W coord source texture.</param>
+	/// <param name="commandBuffer">The command buffer to execute.</param>
+	/// <param name="sourceX">U coordinate of the source texture.</param>
+	/// <param name="sourceY">V coordinate of the source texture.</param>
+	/// <param name="sourceZ">W coordinate of the source texture.</param>
 	/// <param name="sourceMipLevel">Source mip level.</param>
 	/// <param name="sourceBaseArray">Source array index.</param>
 	/// <param name="destination">Destination texture.</param>
-	/// <param name="destinationX">U coord destination texture.</param>
-	/// <param name="destinationY">V coord destination texture.</param>
-	/// <param name="destinationZ">W coord destination texture.</param>
+	/// <param name="destinationX">U coordinate of the destination texture.</param>
+	/// <param name="destinationY">V coordinate of the destination texture.</param>
+	/// <param name="destinationZ">W coordinate of the destination texture.</param>
 	/// <param name="destinationMipLevel">Destination mip level.</param>
-	/// <param name="destinationBasedArray">Destination array index.</param>
+	/// <param name="destinationBaseArray">Destination array index.</param>
 	/// <param name="width">Destination width.</param>
-	/// <param name="height">Destination heigh.</param>
+	/// <param name="height">Destination height.</param>
 	/// <param name="depth">Destination depth.</param>
 	/// <param name="layerCount">Destination layer count.</param>
-	public void CopyTo(VkCommandBuffer commandBuffer, uint32 sourceX, uint32 sourceY, uint32 sourceZ, uint32 sourceMipLevel, uint32 sourceBaseArray, Texture destination, uint32 destinationX, uint32 destinationY, uint32 destinationZ, uint32 destinationMipLevel, uint32 destinationBasedArray, uint32 width, uint32 height, uint32 depth, uint32 layerCount)
+	public void CopyTo(VkCommandBuffer commandBuffer, uint32 sourceX, uint32 sourceY, uint32 sourceZ, uint32 sourceMipLevel, uint32 sourceBaseArray, Texture destination, uint32 destinationX, uint32 destinationY, uint32 destinationZ, uint32 destinationMipLevel, uint32 destinationBaseArray, uint32 width, uint32 height, uint32 depth, uint32 layerCount)
 	{
 		bool sourceStaging = Description.Usage == ResourceUsage.Staging;
 		bool destinationStaging = destination.Description.Usage == ResourceUsage.Staging;
@@ -522,12 +522,12 @@ public class VKTexture : Texture
 			vkImageSubresourceLayers.mipLevel = sourceMipLevel;
 			vkImageSubresourceLayers.baseArrayLayer = sourceBaseArray;
 			VkImageSubresourceLayers sourceSubresource = vkImageSubresourceLayers;
-			vkDestination.TransitionImageLayout(commandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, destinationMipLevel, 1, destinationBasedArray, layerCount);
+			vkDestination.TransitionImageLayout(commandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, destinationMipLevel, 1, destinationBaseArray, layerCount);
 			vkImageSubresourceLayers = default(VkImageSubresourceLayers);
 			vkImageSubresourceLayers.aspectMask = (((destination.Description.Flags & TextureFlags.DepthStencil) == 0) ? VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT : VkImageAspectFlags.VK_IMAGE_ASPECT_DEPTH_BIT);
 			vkImageSubresourceLayers.layerCount = layerCount;
 			vkImageSubresourceLayers.mipLevel = destinationMipLevel;
-			vkImageSubresourceLayers.baseArrayLayer = destinationBasedArray;
+			vkImageSubresourceLayers.baseArrayLayer = destinationBaseArray;
 			VkImageSubresourceLayers destinationSubresource = vkImageSubresourceLayers;
 			VkImageCopy vkImageCopy = default(VkImageCopy);
 			vkImageCopy.srcOffset = VkOffset3D()
@@ -557,12 +557,12 @@ public class VKTexture : Texture
 		uint32 blockSizeInBytes;
 		if (sourceStaging && !destinationStaging)
 		{
-			vkDestination.TransitionImageLayout(commandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, destinationMipLevel, 1, destinationBasedArray, layerCount);
+			vkDestination.TransitionImageLayout(commandBuffer, VkImageLayout.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, destinationMipLevel, 1, destinationBaseArray, layerCount);
 			VkImageSubresourceLayers vkImageSubresourceLayers = default(VkImageSubresourceLayers);
 			vkImageSubresourceLayers.aspectMask = VkImageAspectFlags.VK_IMAGE_ASPECT_COLOR_BIT;
 			vkImageSubresourceLayers.layerCount = layerCount;
 			vkImageSubresourceLayers.mipLevel = destinationMipLevel;
-			vkImageSubresourceLayers.baseArrayLayer = destinationBasedArray;
+			vkImageSubresourceLayers.baseArrayLayer = destinationBaseArray;
 			VkImageSubresourceLayers destinationSubresource = vkImageSubresourceLayers;
 			uint32 subResource = Helpers.CalculateSubResource(Description, sourceMipLevel, sourceBaseArray);
 			Helpers.GetMipDimensions(Description, sourceMipLevel, var mipWidth, var mipHeight, var mipDepth);
@@ -605,7 +605,7 @@ public class VKTexture : Texture
 			vkImageSubresourceLayers.mipLevel = sourceMipLevel;
 			vkImageSubresourceLayers.baseArrayLayer = sourceBaseArray;
 			VkImageSubresourceLayers sourceSubresource = vkImageSubresourceLayers;
-			uint32 subResource = Helpers.CalculateSubResource(vkDestination.Description, destinationMipLevel, destinationBasedArray);
+			uint32 subResource = Helpers.CalculateSubResource(vkDestination.Description, destinationMipLevel, destinationBaseArray);
 			Helpers.GetMipDimensions(vkDestination.Description, destinationMipLevel, var mipWidth, var mipHeight, var mipDepth);
 			uint32 blockSize = ((!Helpers.IsCompressedFormat(vkDestination.Description.Format)) ? 1 : 4);
 			uint32 bufferRowLength = Math.Max(mipWidth, blockSize);
@@ -639,7 +639,7 @@ public class VKTexture : Texture
 		}
 		uint32 srcSubresource = Helpers.CalculateSubResource(Description, sourceMipLevel, sourceBaseArray);
 		SubResourceInfo srcSubresourceInfo = Helpers.GetSubResourceInfo(Description, srcSubresource);
-		uint32 dstSubresource = Helpers.CalculateSubResource(destination.Description, destinationMipLevel, destinationBasedArray);
+		uint32 dstSubresource = Helpers.CalculateSubResource(destination.Description, destinationMipLevel, destinationBaseArray);
 		SubResourceInfo dstSubresourceInfo = Helpers.GetSubResourceInfo(destination.Description, dstSubresource);
 		uint32 zLimit = Math.Max(depth, layerCount);
 		if (!Helpers.IsCompressedFormat(Description.Format))
@@ -681,18 +681,18 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// Copy a pixel region from source to destination texture with format conversion and preparing to present in swapchain.
+	/// Copies a pixel region from source to destination texture with format conversion and prepares it for presentation in a swapchain.
 	/// </summary>
-	/// <param name="commandBuffer">The commandbuffer where execute.</param>
-	/// <param name="sourceX">U coord source texture.</param>
-	/// <param name="sourceY">V coord source texture.</param>
-	/// <param name="sourceZ">W coord source texture.</param>
+	/// <param name="commandBuffer">The command buffer where execution occurs.</param>
+	/// <param name="sourceX">U-coordinate of the source texture.</param>
+	/// <param name="sourceY">V-coordinate of the source texture.</param>
+	/// <param name="sourceZ">W-coordinate of the source texture.</param>
 	/// <param name="sourceMipLevel">Source mip level.</param>
 	/// <param name="sourceBaseArray">Source array index.</param>
 	/// <param name="destination">Destination texture.</param>
-	/// <param name="destinationX">U coord destination texture.</param>
-	/// <param name="destinationY">V coord destination texture.</param>
-	/// <param name="destinationZ">W coord destination texture.</param>
+	/// <param name="destinationX">U-coordinate of the destination texture.</param>
+	/// <param name="destinationY">V-coordinate of the destination texture.</param>
+	/// <param name="destinationZ">W-coordinate of the destination texture.</param>
 	/// <param name="destinationMipLevel">Destination mip level.</param>
 	/// <param name="destinationBasedArray">Destination array index.</param>
 	/// <param name="layerCount">Destination layer count.</param>
@@ -746,10 +746,10 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// The a new image layout.
+	/// A new image layout.
 	/// </summary>
 	/// <param name="mipLevel">The mipLevel of this texture.</param>
-	/// <param name="arrayLevel">The arraylelvel of this texture.</param>
+	/// <param name="arrayLevel">The arrayLevel of this texture.</param>
 	/// <param name="layout">The new layout to set.</param>
 	public void SetImageLayout(uint32 mipLevel, uint32 arrayLevel, VkImageLayout layout)
 	{
@@ -758,7 +758,7 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// The a new image layout based on subResource.
+	/// A new image layout based on the subResource.
 	/// </summary>
 	/// <param name="subResource">The subResource index.</param>
 	/// <param name="layout">The new layout state.</param>
@@ -768,9 +768,9 @@ public class VKTexture : Texture
 	}
 
 	/// <summary>
-	/// Fill the buffer from a pointer.
+	/// Fills the buffer from a pointer.
 	/// </summary>
-	/// <param name="commandBuffer">The commandbuffer.</param>
+	/// <param name="commandBuffer">The command buffer.</param>
 	/// <param name="source">The data pointer.</param>
 	/// <param name="sourceSizeInBytes">The size in bytes.</param>
 	/// <param name="subResource">The subresource index.</param>

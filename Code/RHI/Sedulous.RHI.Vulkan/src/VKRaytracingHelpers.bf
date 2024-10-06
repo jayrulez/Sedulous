@@ -4,30 +4,30 @@ using Bulkan;
 namespace Sedulous.RHI.Vulkan;
 
 /// <summary>
-/// Raytracing helpers.
+/// Ray tracing helpers.
 /// </summary>
 public static class VKRaytracingHelpers
 {
 	/// <summary>
-	/// Buffer data.
+	/// Data buffer.
 	/// </summary>
 	public struct BufferData
 	{
 		/// <summary>
-		/// Buffer vulkan resource.
+		/// Vulkan buffer resource.
 		/// </summary>
 		public VkBuffer Buffer;
 
 		/// <summary>
-		/// Device memory resource.
+		/// Device memory resources.
 		/// </summary>
 		public VkDeviceMemory Memory;
 	}
 
 	/// <summary>
-	/// Create Acceleration Structure buffer.
+	/// Creates an Acceleration Structure buffer.
 	/// </summary>
-	/// <param name="context">The vulkan context.</param>
+	/// <param name="context">The Vulkan context.</param>
 	/// <param name="bufferSize">The buffer size.</param>
 	/// <param name="usage">The buffer usage.</param>
 	/// <returns>The buffer memory address.</returns>
@@ -64,9 +64,9 @@ public static class VKRaytracingHelpers
 	}
 
 	/// <summary>
-	/// Create a stagging buffer from data.
+	/// Creates a staging buffer from data.
 	/// </summary>
-	/// <param name="context">The vulkan context.</param>
+	/// <param name="context">The Vulkan context.</param>
 	/// <param name="data">The source data pointer.</param>
 	/// <param name="bufferSize">The buffer size.</param>
 	/// <param name="usage">The buffer usage.</param>

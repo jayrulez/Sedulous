@@ -11,12 +11,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// Graphics context on Vulkan.
+/// Graphics context for Vulkan.
 /// </summary>
 public class VKGraphicsContext : GraphicsContext
 {
 	/// <summary>
-	/// Detected supported Vulkan properties and features.
+	/// Detects supported Vulkan properties and features.
 	/// </summary>
 	internal struct VKPhysicalDeviceInfo
 	{
@@ -84,17 +84,17 @@ public class VKGraphicsContext : GraphicsContext
 	public VkPhysicalDeviceMemoryProperties VkPhysicalDeviceMemoryProperties;
 
 	/// <summary>
-	/// The vulkan command buffer used to copy commands.
+	/// The Vulkan command buffer used to execute copy commands.
 	/// </summary>
 	public VkCommandBuffer CopyCommandBuffer;
 
 	/// <summary>
-	/// Properties and Features extracted from the current physicalDevice.
+	/// Properties and features extracted from the current physical device.
 	/// </summary>
 	internal VKPhysicalDeviceInfo VkPhysicalDeviceInfo;
 
 	/// <summary>
-	/// The supported queue indices.
+	/// The indices of the supported queues.
 	/// </summary>
 	internal VKQueueFamilyIndices QueueIndices;
 
@@ -125,7 +125,7 @@ public class VKGraphicsContext : GraphicsContext
 	internal bool raytracingSupported;
 
 	/// <summary>
-	/// Whether the object is disposed.
+	/// Indicates whether the object is disposed.
 	/// </summary>
 	protected bool disposed;
 
@@ -141,7 +141,7 @@ public class VKGraphicsContext : GraphicsContext
 	/// Set of device extensions to be enabled for this application.
 	/// </summary>
 	/// <remarks>
-	/// Must be set before create device.
+	/// Must be set before creating the device.
 	/// </remarks>
 	public readonly List<String> DeviceExtensionsToEnable = new .() ~ DeleteContainerAndItems!(_);
 
@@ -149,7 +149,7 @@ public class VKGraphicsContext : GraphicsContext
 	/// Set of device instance extensions to be enabled for this application.
 	/// </summary>
 	/// <remarks>
-	/// Must be set before create device.
+	/// Must be set before creating the device.
 	/// </remarks>
 	public readonly List<String> InstanceExtensionsToEnable = new .() ~ DeleteContainerAndItems!(_);
 
@@ -174,7 +174,7 @@ public class VKGraphicsContext : GraphicsContext
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKGraphicsContext" /> class.
 	/// </summary>
 	/// <param name="deviceExtensionsToEnable">Set of device extensions to be enabled for this application.</param>
-	/// <param name="instanceExtensionsToEnable">Set of device instance extensions to be enabled for this application.</param>
+	/// <param name="instanceExtensionsToEnable">Set of instance extensions to be enabled for this application.</param>
 	public this(Span<String> deviceExtensionsToEnable, Span<String> instanceExtensionsToEnable)
 	{
 		base.Factory = new VKResourceFactory(this);

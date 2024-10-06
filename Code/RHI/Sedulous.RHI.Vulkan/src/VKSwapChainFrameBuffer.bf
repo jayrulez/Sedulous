@@ -9,12 +9,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represent the swapchain FrameBuffer on Vulkan.
+/// This class represents the swapchain FrameBuffer in Vulkan.
 /// </summary>
 public class VKSwapChainFrameBuffer : VKFrameBufferBase
 {
 	/// <summary>
-	/// The colors texture array of this <see cref="T:Sedulous.RHI.Vulkan.VKFrameBuffer" />.
+	/// The color texture array of this <see cref="T:Sedulous.RHI.Vulkan.VKFrameBuffer" />.
 	/// </summary>
 	//public VkImage[] BackBufferImages;
 
@@ -29,7 +29,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	private List<VKTexture> ResolvedBackBufferTextures = new .() ~ delete _;
 
 	/// <summary>
-	/// The array of frambuffers linked to this swapchain.
+	/// The array of framebuffers linked to this swapchain.
 	/// </summary>
 	public VKFrameBuffer[] FrameBuffers;
 
@@ -38,7 +38,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	private String name = new .() ~ delete _;
 
 	/// <summary>
-	/// The active backBuffer index.
+	/// The active back buffer index.
 	/// </summary>
 	public int32 CurrentBackBufferIndex;
 
@@ -68,7 +68,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	}
 
 	/// <summary>
-	/// Gets the current framebuffer based on CurrentBackBufferIndex.
+	/// Gets the current framebuffer based on the CurrentBackBufferIndex.
 	/// </summary>
 	public VkFramebuffer CurrentBackBuffer => FrameBuffers[CurrentBackBufferIndex].NativeFrameBuffer;
 
@@ -166,7 +166,7 @@ public class VKSwapChainFrameBuffer : VKFrameBufferBase
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and, optionally, managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	protected override void Dispose(bool disposing)

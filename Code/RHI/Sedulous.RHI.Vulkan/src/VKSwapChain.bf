@@ -12,7 +12,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represents a native swapchain object on Vulkan.
+/// This class represents a native swap chain object in Vulkan.
 /// </summary>
 public class VKSwapChain : SwapChain
 {
@@ -81,11 +81,11 @@ public class VKSwapChain : SwapChain
 	}
 
 	/// <summary>
-	/// Create a ANativeWindows surface.
+	/// Creates an ANativeWindow surface.
 	/// </summary>
-	/// <param name="jniEnv">The jni environment pointer.</param>
+	/// <param name="jniEnv">The JNI environment pointer.</param>
 	/// <param name="surface">The native surface pointer.</param>
-	/// <returns>A new ANativeWindows surface.</returns>
+	/// <returns>A new ANativeWindow surface.</returns>
 	//[Import("android.so")]
 	//public static extern void* ANativeWindow_fromSurface(void* jniEnv, void* surface);
 
@@ -98,7 +98,7 @@ public class VKSwapChain : SwapChain
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKSwapChain" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
+	/// <param name="context">Graphics context.</param>
 	/// <param name="description">SwapChain description.</param>
 	public this(GraphicsContext context, SwapChainDescription description)
 	{
@@ -388,12 +388,12 @@ public class VKSwapChain : SwapChain
 	}
 
 	/// <summary>
-	/// Clamp a uint32 value.
+	/// Clamps a uint value.
 	/// </summary>
 	/// <param name="value">Value to clamp.</param>
-	/// <param name="min">Min value range.</param>
-	/// <param name="max">Max value range.</param>
-	/// <returns>clamped value.</returns>
+	/// <param name="min">Minimum value range.</param>
+	/// <param name="max">Maximum value range.</param>
+	/// <returns>Clamped value.</returns>
 	private uint32 Clamp(uint32 value, uint32 min, uint32 max)
 	{
 		if (value <= min)
@@ -408,7 +408,7 @@ public class VKSwapChain : SwapChain
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

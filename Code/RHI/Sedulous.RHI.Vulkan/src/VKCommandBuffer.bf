@@ -66,8 +66,8 @@ public class VKCommandBuffer : CommandBuffer
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKCommandBuffer" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
-	/// <param name="queue">The commandqueue for this commandbuffer.</param>
+	/// <param name="context">Graphics context.</param>
+	/// <param name="queue">The command queue for this command buffer.</param>
 	public this(VKGraphicsContext context, VKCommandQueue queue)
 	{
 		this.context = context;
@@ -691,7 +691,7 @@ public class VKCommandBuffer : CommandBuffer
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing">
 	/// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.

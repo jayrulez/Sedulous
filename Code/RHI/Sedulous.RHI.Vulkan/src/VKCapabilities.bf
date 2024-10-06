@@ -6,7 +6,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// The OpenGL capabilities.
+/// OpenGL capabilities.
 /// </summary>
 public class VKCapabilities : GraphicsContextCapabilities
 {
@@ -49,7 +49,7 @@ public class VKCapabilities : GraphicsContextCapabilities
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKCapabilities" /> class.
 	/// </summary>
-	/// <param name="vkGraphicsContext">The Vulkan Graphic context.</param>
+	/// <param name="vkGraphicsContext">The Vulkan graphics context.</param>
 	public this(VKGraphicsContext vkGraphicsContext)
 	{
 		vKGraphicsContext = vkGraphicsContext;

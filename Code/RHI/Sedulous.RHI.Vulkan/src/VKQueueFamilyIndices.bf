@@ -13,11 +13,11 @@ internal struct VKQueueFamilyIndices
 	public int32 ComputeFamily;
 
 	/// <summary>
-	/// Find the queue families supported.
+	/// Finds the queue families supported.
 	/// </summary>
 	/// <param name="context">The graphics context object.</param>
 	/// <param name="physicalDevice">The physical device object.</param>
-	/// <param name="surface">The desired suface type.</param>
+	/// <param name="surface">The desired surface type.</param>
 	/// <returns>The supported queue family indices.</returns>
 	public static VKQueueFamilyIndices FindQueueFamilies(VKGraphicsContext context, VkPhysicalDevice physicalDevice, VkSurfaceKHR? surface)
 	{

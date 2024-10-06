@@ -8,12 +8,12 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// Vulkan Bottom Level Acceleration Structure implementation.
+/// Vulkan Bottom-Level Acceleration Structure implementation.
 /// </summary>
 public class VKBottomLevelAS : BottomLevelAS
 {
 	/// <summary>
-	/// The bottom level acceleration structure instance.
+	/// The bottom-level acceleration structure instance.
 	/// </summary>
 	public VkAccelerationStructureKHR BottomLevelAS;
 
@@ -27,9 +27,9 @@ public class VKBottomLevelAS : BottomLevelAS
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKBottomLevelAS" /> class.
 	/// </summary>
-	/// <param name="context">Graphics Context.</param>
+	/// <param name="context">Graphics context.</param>
 	/// <param name="commandBuffer">Command buffer.</param>
-	/// <param name="description">Bottom Level Description.</param>
+	/// <param name="description">Bottom-level description.</param>
 	public this(VKGraphicsContext context, VkCommandBuffer commandBuffer, in BottomLevelASDescription description)
 		: base(context, description)
 	{
@@ -178,7 +178,7 @@ public class VKBottomLevelAS : BottomLevelAS
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	private void Dispose(bool disposing)

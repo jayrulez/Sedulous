@@ -9,7 +9,7 @@ using internal Sedulous.RHI.Vulkan;
 using static Sedulous.RHI.Vulkan.VKExtensionsMethods;
 
 /// <summary>
-/// This class represent a queue where commandbuffers waits to be executing by the GPU.
+/// This class represents a queue where command buffers wait to be executed by the GPU.
 /// </summary>
 public class VKCommandQueue : CommandQueue
 {
@@ -47,7 +47,7 @@ public class VKCommandQueue : CommandQueue
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Vulkan.VKCommandQueue" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context instance.</param>
-	/// <param name="queueType">The commandqueue elements type.</param>
+	/// <param name="queueType">The command queue elements' type.</param>
 	public this(VKGraphicsContext context, CommandQueueType queueType)
 	{
 		vkContext = context;
@@ -125,9 +125,9 @@ public class VKCommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	/// Add a new commandbuffer ready to be executed.
+	/// Adds a new command buffer ready to be executed.
 	/// </summary>
-	/// <param name="commandBuffer">The new commandbuffer.</param>
+	/// <param name="commandBuffer">The new command buffer.</param>
 	internal void CommitCommandBuffer(VKCommandBuffer commandBuffer)
 	{
 		if (executionArray.Count == executionArraySize)
@@ -144,7 +144,7 @@ public class VKCommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	///  Clear the execution commandbuffer array.
+	/// Clears the execution command buffer array.
 	/// </summary>
 	private void ClearExecutionArray()
 	{
@@ -156,7 +156,7 @@ public class VKCommandQueue : CommandQueue
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing">
 	/// <c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.
