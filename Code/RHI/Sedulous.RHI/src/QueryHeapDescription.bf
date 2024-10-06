@@ -3,24 +3,24 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Contains properties that describe the characteristics of a new queryheap object.
+/// Contains properties that describe the characteristics of a new query heap object.
 /// </summary>
 public struct QueryHeapDescription : IEquatable<QueryHeapDescription>
 {
 	/// <summary>
-	/// Specifies the queryheap type, <see cref="T:Sedulous.RHI.QueryType" /> structure.
+	/// Specifies the QueryHeap type, see <see cref="T:Sedulous.RHI.QueryType" /> structure.
 	/// </summary>
 	public QueryType Type;
 
 	/// <summary>
-	/// Specifies the queryheap capacity.
+	/// Specifies the query heap capacity.
 	/// </summary>
 	public uint32 QueryCount;
 
 	/// <summary>
 	/// Determines whether the specified parameter is equal to this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object used for comparison.</param>
 	/// <returns>
 	/// <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
 	/// </returns>
@@ -57,7 +57,7 @@ public struct QueryHeapDescription : IEquatable<QueryHeapDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -67,10 +67,10 @@ public struct QueryHeapDescription : IEquatable<QueryHeapDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(QueryHeapDescription value1, QueryHeapDescription value2)
 	{
@@ -80,8 +80,8 @@ public struct QueryHeapDescription : IEquatable<QueryHeapDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

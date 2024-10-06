@@ -4,38 +4,38 @@ using System.Collections;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represent which color texture and depth texture are rendered to present.
+/// This class represents which color texture and depth texture are rendered to present.
 /// </summary>
 public abstract class FrameBuffer : IDisposable
 {
 	/// <summary>
-	/// Holds if the instance has been disposed.
+	/// Indicates if the instance has been disposed.
 	/// </summary>
 	protected bool disposed;
 
 	/// <summary>
-	/// Inticates if this FrameBuffer requires the projection matrix to be flipped.
+	/// Indicates if this FrameBuffer requires the projection matrix to be flipped.
 	/// </summary>
 	protected bool requireFlipProjection;
 
 	/// <summary>
-	/// A value indicating whether we need to dispose attachment textures when this framebuffer is disposed.
+	/// A value indicating whether attachment textures need to be disposed of when this framebuffer is disposed.
 	/// </summary>
 	protected bool disposeAttachments;
 
 
 	/// <summary>
-	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.
+	/// Gets or sets a string identifying this instance. It can be used in graphics debuggers tools.
 	/// </summary>
 	public abstract String Name { get; set; }
 
 	/// <summary>
-	/// Gets or sets the width in pixels of the <see cref="T:Sedulous.RHI.FrameBuffer" />.
+	/// Gets or sets the width, in pixels, of the <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
 	public uint32 Width { get; protected set; }
 
 	/// <summary>
-	/// Gets or sets the height in pixels of the <see cref="T:Sedulous.RHI.FrameBuffer" />.
+	/// Gets or sets the height, in pixels, of the <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
 	public uint32 Height { get; protected set; }
 
@@ -52,7 +52,7 @@ public abstract class FrameBuffer : IDisposable
 
 	/// <summary>
 	/// Gets or sets a value indicating whether this FrameBuffer requires the projection matrix to be flipped.
-	/// By default they will indicate the default flip behavior, but the user can change it.
+	/// By default, it will indicate the default flip behavior, but the user can change it.
 	/// </summary>
 	public virtual bool RequireFlipProjection
 	{
@@ -67,31 +67,31 @@ public abstract class FrameBuffer : IDisposable
 	}
 
 	/// <summary>
-	/// Gets or sets the collection of colors targets textures associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
+	/// Gets or sets the collection of color target textures associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
 	public virtual ref FrameBufferAttachmentList ColorTargets { get; protected set; }
 
 	/// <summary>
-	/// Gets or sets the depth targets texture associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
+	/// Gets or sets the depth target texture associated with this <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
 	public virtual FrameBufferAttachment? DepthStencilTarget { get; protected set; }
 
 	/// <summary>
-	/// Gets or sets an <see cref="P:Sedulous.RHI.FrameBuffer.OutputDescription" /> which describes the number and formats of the depth and colors targets.
+	/// Gets or sets an <see cref="P:Sedulous.RHI.FrameBuffer.OutputDescription" /> that describes the number and formats of the depth and color targets.
 	/// </summary>
 	public OutputDescription OutputDescription { get; protected set; }
 
 	/// <summary>
-	/// Gets or sets a value indicating whether the framebuffer is associates to a swapchain.
+	/// Gets or sets a value indicating whether the framebuffer is associated with a swapchain.
 	/// </summary>
 	public bool IntermediateBufferAssociated { get; set; }
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.FrameBuffer" /> class.
 	/// </summary>
-	/// <param name="depthTarget">The depth texture which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
-	/// <param name="colorTargets">The array of color textures, all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
-	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
+	/// <param name="depthTarget">The depth texture, which must be created with the <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
+	/// <param name="colorTargets">The array of color textures, all of which must be created with the <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
+	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose of the attachment textures too.</param>
 	public this(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments)
 	{
 		DepthStencilTarget = depthTarget;
@@ -127,16 +127,14 @@ public abstract class FrameBuffer : IDisposable
 	{
 	}
 
-	/// <summary>
-	/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-	/// </summary>
+	/// <inheritdoc />
 	public void Dispose()
 	{
 		Dispose(disposing: true);
 	}
 
 	/// <summary>
-	/// Releases unmanaged and - optionally - managed resources.
+	/// Releases unmanaged and optionally managed resources.
 	/// </summary>
 	/// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
 	protected virtual void Dispose(bool disposing)

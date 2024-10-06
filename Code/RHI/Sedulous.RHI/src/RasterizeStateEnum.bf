@@ -1,36 +1,36 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Enum of the rasterizer states.
+/// Enumeration of the rasterizer states.
 /// </summary>
 public enum RasterizeStateEnum
 {
 	/// <summary>
-	/// Cull primitives with clockwise winding order,
+	/// Culls primitives with a clockwise winding order.
 	/// </summary>
 	CullFront,
 	/// <summary>
-	/// Cull primitives with counter-clockwise winding order.
+	/// Culls primitives with a counter-clockwise winding order.
 	/// </summary>
 	CullBack,
 	/// <summary>
-	/// Not cull primitives.
+	/// Do not cull primitives.
 	/// </summary>
 	None,
 	/// <summary>
-	/// Cull primitives with clockwise winding order and wireframe enable.
+	/// Culls primitives with a clockwise winding order and enables wireframe mode.
 	/// </summary>
 	WireframeCullFront,
 	/// <summary>
-	/// Cull primitives with counter-clockwise winding order and wireframe enable.
+	/// Culls primitives with a counter-clockwise winding order and enables wireframe.
 	/// </summary>
 	WireframeCullBack,
 	/// <summary>
-	/// Not cull primitives and wireframe enable.
+	/// Do not cull primitives and enable wireframe.
 	/// </summary>
 	WireframeCullNone,
 	/// <summary>
-	/// Custom value
+	/// Custom value.
 	/// </summary>
 	Custom
 }

@@ -4,7 +4,7 @@ using System.Collections;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This struct contains all the shader stages.
+/// This structure contains all the shader stages.
 /// </summary>
 public struct ComputeShaderStateDescription : IEquatable<ComputeShaderStateDescription>
 {

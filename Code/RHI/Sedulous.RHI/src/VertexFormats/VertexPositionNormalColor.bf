@@ -3,7 +3,7 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position, color and texture coordinate.
+/// Represents a vertex with position, color, and texture coordinates.
 /// </summary>
 public struct VertexPositionNormalColor
 {
@@ -31,7 +31,7 @@ public struct VertexPositionNormalColor
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.VertexFormats.VertexPositionNormalColor" /> struct.
 	/// </summary>
 	/// <param name="position">The position.</param>
-	/// <param name="normal">The normal.</param>
+	/// <param name="normal">The normal vector.</param>
 	/// <param name="color">The color.</param>
 	public this(Vector3 position, Vector3 normal, Color color)
 	{

@@ -6,17 +6,17 @@ namespace Sedulous.RHI;
 public static class DepthStencilStates
 {
 	/// <summary>
-	/// Depth disable.
+	/// Depth disabled.
 	/// </summary>
 	public static readonly DepthStencilStateDescription None;
 
 	/// <summary>
-	/// Depth enable and writemask enable.
+	/// Depth enable and write mask enable.
 	/// </summary>
 	public static readonly DepthStencilStateDescription ReadWrite;
 
 	/// <summary>
-	/// Depth enable but writemask zero.
+	/// Depth enabled, but write mask is zero.
 	/// </summary>
 	public static readonly DepthStencilStateDescription Read;
 

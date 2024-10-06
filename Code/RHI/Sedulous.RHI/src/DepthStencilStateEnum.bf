@@ -1,24 +1,24 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The depth stencil state default values.
+/// The default values for the depth stencil state.
 /// </summary>
 public enum DepthStencilStateEnum : uint8
 {
 	/// <summary>
-	/// Depth disable
+	/// Disables the depth
 	/// </summary>
 	None,
 	/// <summary>
-	/// Depth enable and writemask enable.
+	/// Depth enable and write mask enable.
 	/// </summary>
 	ReadAndWrite,
 	/// <summary>
-	/// Depth enable but writemask zero.
+	/// Depth enabled but write mask set to zero.
 	/// </summary>
 	Read,
 	/// <summary>
-	/// Custom value
+	/// Custom value.
 	/// </summary>
 	Custom
 }

@@ -3,12 +3,12 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Stencil operations that can be performed based on the results of stencil test.
+/// Stencil operations that can be performed based on the results of the stencil test.
 /// </summary>
 public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperationDescription>
 {
 	/// <summary>
-	/// The stencil operation to perform when stencil testing fails.
+	/// The stencil operation performed when stencil testing fails.
 	/// </summary>
 	public StencilOperation StencilFailOperation;
 
@@ -18,19 +18,19 @@ public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperatio
 	public StencilOperation StencilDepthFailOperation;
 
 	/// <summary>
-	/// The stencil operation to perform when stencil testing and depth testing both pass.
+	/// The stencil operation to perform when both stencil testing and depth testing pass.
 	/// </summary>
 	public StencilOperation StencilPassOperation;
 
 	/// <summary>
-	/// A function that compares stencil data against existing stencil data.
+	/// A function that compares stencil data with existing stencil data.
 	/// </summary>
 	public ComparisonFunction StencilFunction;
 
 	/// <summary>
 	/// Determines whether the specified parameter is equal to this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare with this instance.</param>
 	/// <returns>
 	/// <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
 	/// </returns>
@@ -67,7 +67,7 @@ public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperatio
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures, such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -77,10 +77,10 @@ public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperatio
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value to compare.</param>
+	/// <param name="value2">The second value to compare.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the comparison.
 	/// </returns>
 	public static bool operator ==(DepthStencilOperationDescription value1, DepthStencilOperationDescription value2)
 	{
@@ -90,10 +90,10 @@ public struct DepthStencilOperationDescription : IEquatable<DepthStencilOperatio
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(DepthStencilOperationDescription value1, DepthStencilOperationDescription value2)
 	{

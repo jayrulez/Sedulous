@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies the elements type of a CommandQueue.
+/// Specifies the element type of a <see cref="T:Sedulous.RHI.CommandQueue" />.
 /// </summary>
 public enum CommandQueueType
 {
@@ -10,11 +10,11 @@ public enum CommandQueueType
 	/// </summary>
 	Graphics = 0,
 	/// <summary>
-	/// Specifies a command buffer for computing.
+	/// Specifies a command buffer for computation.
 	/// </summary>
 	Compute = 2,
 	/// <summary>
-	/// Specifies a command buffer for copying (drawing).
+	/// Specifies a command buffer for copying (drawing data).
 	/// </summary>
 	Copy = 3
 }

@@ -3,20 +3,20 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Indicates the flip mode of a sprite, billboard, etc...
+/// Indicates the flip mode of a sprite, billboard, etc.
 /// </summary>
 public enum FlipMode : uint8
 {
 	/// <summary>
-	/// No flip.
+	/// No flipping.
 	/// </summary>
 	None = 0,
 	/// <summary>
-	/// Horizontal flip.
+	/// Horizontally flips the image.
 	/// </summary>
 	FlipHorizontally = 1,
 	/// <summary>
-	/// Vertical flip.
+	/// Vertically flips the image.
 	/// </summary>
 	FlipVertically = 2
 }

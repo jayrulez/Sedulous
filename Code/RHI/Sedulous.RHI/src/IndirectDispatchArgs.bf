@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Struct representing an indirect dispatch of a Command Buffer.
+/// Struct representing the indirect dispatching of a Command Buffer.
 /// </summary>
 public struct IndirectDispatchArgs
 {
@@ -16,16 +16,16 @@ public struct IndirectDispatchArgs
 	public uint32 ThreadGroupCountY;
 
 	/// <summary>
-	/// The thread group Z size.
+	/// The thread group Z-size.
 	/// </summary>
 	public uint32 ThreadGroupCountZ;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.IndirectDispatchArgs" /> struct.
 	/// </summary>
-	/// <param name="threadGroupCountX">The thread group X size.</param>
-	/// <param name="threadGroupCountY">The thread group Y size.</param>
-	/// <param name="threadGroupCountZ">The thread group Z size.</param>
+	/// <param name="threadGroupCountX">The thread group count X size.</param>
+	/// <param name="threadGroupCountY">The thread group count Y size.</param>
+	/// <param name="threadGroupCountZ">The thread group count Z size.</param>
 	public this(uint32 threadGroupCountX, uint32 threadGroupCountY, uint32 threadGroupCountZ)
 	{
 		ThreadGroupCountX = threadGroupCountX;

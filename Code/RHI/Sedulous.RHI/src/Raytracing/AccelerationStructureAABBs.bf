@@ -6,12 +6,12 @@ namespace Sedulous.RHI.Raytracing;
 public class AccelerationStructureAABBs : AccelerationStructureGeometry
 {
 	/// <summary>
-	/// Number of AABB in buffer.
+	/// Number of AABBs in buffer.
 	/// </summary>
 	public uint64 Count;
 
 	/// <summary>
-	/// Buffer with AABB data.
+	/// Buffer containing AABB data.
 	/// </summary>
 	public Buffer AABBs;
 

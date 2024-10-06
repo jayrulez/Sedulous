@@ -4,12 +4,12 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Miscellaneous helpers for graphic operations.
+/// Miscellaneous helper methods for graphic operations.
 /// </summary>
 public static class Helpers
 {
 	/// <summary>
-	/// Align the size in bytes to nearest multiple of 256.
+	/// Aligns the size in bytes to the nearest multiple of 256.
 	/// </summary>
 	/// <param name="sizeInBytes">The size in bytes.</param>
 	/// <returns>The aligned size.</returns>
@@ -21,7 +21,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Align the size in bytes to nearest multiple of alignment value specified by parameter.
+	/// Aligns the size in bytes to the nearest multiple of the alignment value specified by the parameter.
 	/// </summary>
 	/// <param name="alignment">The alignment size.</param>
 	/// <param name="sizeInBytes">The size in bytes.</param>
@@ -34,7 +34,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Align the size in bytes to nearest multiple of alignment value specified by parameter.
+	/// Aligns the size in bytes to the nearest multiple of the alignment value specified by the parameter.
 	/// </summary>
 	/// <param name="alignment">The alignment size.</param>
 	/// <param name="sizeInBytes">The size in bytes.</param>
@@ -47,7 +47,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Ensures the size of the array.
+	/// Ensures the array size.
 	/// </summary>
 	/// <typeparam name="T">The type of the array items.</typeparam>
 	/// <param name="array">The array.</param>
@@ -69,7 +69,7 @@ public static class Helpers
 	/// </summary>
 	/// <typeparam name="T">The type of the array items.</typeparam>
 	/// <param name="array">The array.</param>
-	/// <param name="size">The size.</param>
+	/// <param name="size">The required size.</param>
 	public static void CheckArrayCapacity<T>(ref T[] array, int32 size)
 	{
 		if (array == null)
@@ -83,7 +83,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Gets the size in byte of a PixelFormat.
+	/// Gets the size in bytes of a PixelFormat.
 	/// </summary>
 	/// <param name="format">The PixelFormat.</param>
 	/// <returns>The size in bytes of the format.</returns>
@@ -225,7 +225,7 @@ public static class Helpers
 	/// Returns a value indicating if the PixelFormat is a compressed one.
 	/// </summary>
 	/// <param name="format">The pixel format.</param>
-	/// <returns>True if the pixel format represents a compressed one. False otherwise.</returns>
+	/// <returns>True if the pixel format represents a compressed format. False otherwise.</returns>
 	public static bool IsCompressedFormat(PixelFormat format)
 	{
 		if (format != PixelFormat.BC1_UNorm && format != PixelFormat.BC1_UNorm_SRgb && format != PixelFormat.BC4_UNorm && format != PixelFormat.BC4_SNorm && format != PixelFormat.ETC1_RGB8 && format != PixelFormat.BC2_UNorm && format != PixelFormat.BC2_UNorm_SRgb && format != PixelFormat.BC3_UNorm && format != PixelFormat.BC3_UNorm_SRgb && format != PixelFormat.BC5_UNorm && format != PixelFormat.BC5_SNorm && format != PixelFormat.BC6H_Uf16 && format != PixelFormat.BC6H_Sf16 && format != PixelFormat.BC7_UNorm && format != PixelFormat.BC7_UNorm_SRgb && format != PixelFormat.ETC1_RGB8 && format != PixelFormat.ETC2_RGBA && format != PixelFormat.ETC2_RGBA_SRGB && format != PixelFormat.PVRTC_2BPP_RGB && format != PixelFormat.PVRTC_2BPP_RGBA && format != PixelFormat.PVRTC_2BPP_RGB_SRGB && format != PixelFormat.PVRTC_2BPP_RGBA_SRGBA && format != PixelFormat.PVRTC_4BPP_RGB && format != PixelFormat.PVRTC_4BPP_RGBA && format != PixelFormat.PVRTC_4BPP_RGB_SRGB)
@@ -236,10 +236,10 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Gets a value indicating if the PixelFormat can be used as stencil pixel format.
+	/// Gets a value indicating whether the PixelFormat can be used as a stencil pixel format.
 	/// </summary>
 	/// <param name="format">The pixel format.</param>
-	/// <returns>True if the format can be used as stencil. False otherwise.</returns>
+	/// <returns>True if the format can be used as a stencil; false otherwise.</returns>
 	public static bool IsStencilFormat(PixelFormat format)
 	{
 		if ((uint32)(format - 19) <= 1 || (uint32)(format - 44) <= 1)
@@ -250,11 +250,11 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Gets the size of a row with a specified size and format.
+	/// Gets the size of a row with a specified width and format.
 	/// </summary>
-	/// <param name="width">The row size.</param>
-	/// <param name="format">The row PixelFormat.</param>
-	/// <returns>The row pitch.</returns>
+	/// <param name="width">The width of the row.</param>
+	/// <param name="format">The PixelFormat of the row.</param>
+	/// <returns>The pitch of the row.</returns>
 	public static uint32 GetRowPitch(uint32 width, PixelFormat format)
 	{
 		if (IsCompressedFormat(format))
@@ -267,7 +267,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Gets the number of rows, depending of the height and the pixel format.
+	/// Gets the number of rows, depending on the height and the pixel format.
 	/// </summary>
 	/// <param name="height">The height.</param>
 	/// <param name="format">The pixel format.</param>
@@ -298,7 +298,7 @@ public static class Helpers
 	/// </summary>
 	/// <param name="largestLevelDimension">The largest level dimension.</param>
 	/// <param name="mipLevel">The mip level.</param>
-	/// <returns>The dimension of the current mip level.</returns>
+	/// <returns>The dimension size of the specified mip level.</returns>
 	public static uint32 GetDimension(uint32 largestLevelDimension, uint32 mipLevel)
 	{
 		uint32 result = (uint32)((int32)largestLevelDimension >> (int32)mipLevel);
@@ -306,11 +306,11 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Gets the sub resource info of a Texture.
+	/// Gets the subresource info of a texture.
 	/// </summary>
 	/// <param name="description">The texture info.</param>
-	/// <param name="subResource">The subResource id.</param>
-	/// <returns>The SubResource Info.</returns>
+	/// <param name="subResource">The subresource ID.</param>
+	/// <returns>The subresource info.</returns>
 	public static SubResourceInfo GetSubResourceInfo(TextureDescription description, uint32 subResource)
 	{
 		GetMipLevelAndArrayLayer(description, subResource, var miplevel, var arrayLayer);
@@ -331,11 +331,11 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Calculates the SubResource offset of a Texture.
+	/// Calculates the subresource offset of a texture.
 	/// </summary>
-	/// <param name="description">The Texture description.</param>
-	/// <param name="subResource">The SubResource index.</param>
-	/// <returns>The SubResource offset.</returns>
+	/// <param name="description">The texture description.</param>
+	/// <param name="subResource">The subresource index.</param>
+	/// <returns>The subresource offset.</returns>
 	public static uint64 ComputeSubResourceOffset(TextureDescription description, uint32 subResource)
 	{
 		GetMipLevelAndArrayLayer(description, subResource, var mipLevel, var arrayLayer);
@@ -346,9 +346,9 @@ public static class Helpers
 	/// <summary>
 	/// Computes the MipMap offset.
 	/// </summary>
-	/// <param name="description">The TextureDescription.</param>
-	/// <param name="mipLevel">The MipMap Level.</param>
-	/// <returns>The mip offset.</returns>
+	/// <param name="description">The texture description.</param>
+	/// <param name="mipLevel">The mipmap level.</param>
+	/// <returns>The MipMap offset.</returns>
 	public static uint32 ComputeMipOffset(TextureDescription description, uint32 mipLevel)
 	{
 		uint32 blockSize = ((!IsCompressedFormat(description.Format)) ? 1 : 4);
@@ -364,11 +364,11 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Computes the Layer offset.
+	/// Computes the layer offset.
 	/// </summary>
-	/// <param name="description">The TextureDescription.</param>
+	/// <param name="description">The texture description.</param>
 	/// <param name="arrayLayer">The array layer.</param>
-	/// <returns>The Layer offset.</returns>
+	/// <returns>The layer offset.</returns>
 	public static uint32 ComputeLayerOffset(TextureDescription description, uint32 arrayLayer)
 	{
 		uint32 offset = 0;
@@ -387,9 +387,9 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Computes the Texture Size in bytes of a Texture Description.
+	/// Computes the texture size in bytes from a texture description.
 	/// </summary>
-	/// <param name="description">The Texture Description.</param>
+	/// <param name="description">The texture description.</param>
 	/// <returns>The size in bytes of the texture.</returns>
 	public static uint32 ComputeTextureSize(TextureDescription description)
 	{
@@ -430,24 +430,24 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Calculates the sub resource index.
+	/// Calculates the subresource index.
 	/// </summary>
 	/// <param name="description">The texture description.</param>
 	/// <param name="mipLevel">The mipmap level.</param>
 	/// <param name="arrayLayer">The array layer index.</param>
-	/// <returns>The id of the sub resource.</returns>
+	/// <returns>The ID of the subresource.</returns>
 	public static uint32 CalculateSubResource(TextureDescription description, uint32 mipLevel, uint32 arrayLayer)
 	{
 		return arrayLayer * description.MipLevels + mipLevel;
 	}
 
 	/// <summary>
-	/// Gets the Mip Level and the Array Layer of a texture sub resource.
+	/// Gets the mip level and the array layer of a texture subresource.
 	/// </summary>
-	/// <param name="description">The Texture Description.</param>
-	/// <param name="subResource">The sub resource of the texture.</param>
-	/// <param name="mipLevel">The Mip Level.</param>
-	/// <param name="arrayLayer">The Array Layer.</param>
+	/// <param name="description">The texture description.</param>
+	/// <param name="subResource">The subresource of the texture.</param>
+	/// <param name="mipLevel">The mip level.</param>
+	/// <param name="arrayLayer">The array layer.</param>
 	public static void GetMipLevelAndArrayLayer(TextureDescription description, uint32 subResource, out uint32 mipLevel, out uint32 arrayLayer)
 	{
 		arrayLayer = subResource / description.MipLevels;
@@ -458,7 +458,7 @@ public static class Helpers
 	/// Gets the mip level dimensions.
 	/// </summary>
 	/// <param name="description">The texture description.</param>
-	/// <param name="mipLevel">The texture mip Level.</param>
+	/// <param name="mipLevel">The texture mip level.</param>
 	/// <param name="width">The texture width.</param>
 	/// <param name="height">The texture height.</param>
 	/// <param name="depth">The texture depth.</param>
@@ -479,7 +479,7 @@ public static class Helpers
 	}
 
 	/// <summary>
-	/// Transform the given value to conform to an specified <see cref="T:Sedulous.RHI.TextureAddressMode" />.
+	/// Transforms the given value to conform to a specified <see cref="T:Sedulous.RHI.TextureAddressMode" />.
 	/// </summary>
 	/// <param name="value">The value to transform.</param>
 	/// <param name="addressMode">The address mode.</param>

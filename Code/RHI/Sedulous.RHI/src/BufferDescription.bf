@@ -8,12 +8,12 @@ namespace Sedulous.RHI;
 public struct BufferDescription : IEquatable<BufferDescription>
 {
 	/// <summary>
-	/// Retrieves or sets the size of the new buffer.
+	/// Gets or sets the size of the new buffer.
 	/// </summary>
 	public uint32 SizeInBytes;
 
 	/// <summary>
-	/// Buffer flags describing buffer type.
+	/// Buffer flags describing the buffer type.
 	/// </summary>
 	public BufferFlags Flags;
 
@@ -23,12 +23,12 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	public ResourceCpuAccess CpuAccess;
 
 	/// <summary>
-	/// Usage of this buffer.
+	/// Use of this buffer.
 	/// </summary>
 	public ResourceUsage Usage;
 
 	/// <summary>
-	/// The structure byte stride.
+	/// The byte stride of the structure.
 	/// </summary>
 	public int32 StructureByteStride;
 
@@ -37,7 +37,7 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	/// </summary>
 	/// <param name="sizeInBytes">Size of the buffer in bytes.</param>
 	/// <param name="flags">Buffer flags describing the buffer type.</param>
-	/// <param name="cpuAccess">Describe the type of CPU access allowed for. </param>
+	/// <param name="cpuAccess">Type of CPU access allowed.</param>
 	/// <param name="usage">Usage for this buffer.</param>
 	/// <param name="structureByteStride">The structure byte stride.</param>
 	public this(uint32 sizeInBytes, BufferFlags flags, ResourceUsage usage, ResourceCpuAccess cpuAccess = ResourceCpuAccess.None, int32 structureByteStride = 0)
@@ -52,7 +52,7 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	/// <summary>
 	/// Determines whether the specified parameter is equal to this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare with this instance.</param>
 	/// <returns>
 	/// <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
 	/// </returns>
@@ -89,7 +89,7 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -99,8 +99,8 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -112,10 +112,10 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(BufferDescription value1, BufferDescription value2)
 	{
@@ -123,10 +123,10 @@ public struct BufferDescription : IEquatable<BufferDescription>
 	}
 
 	/// <summary>
-	/// Gets the cpu access flags from resource usage.
+	/// Gets the CPU access flags from resource usage.
 	/// </summary>
 	/// <param name="usage">The usage.</param>
-	/// <returns>The cpu access flags.</returns>
+	/// <returns>The CPU access flags.</returns>
 	private static ResourceCpuAccess GetCpuAccessFromResourceUsage(ResourceUsage usage)
 	{
 		switch (usage)

@@ -1,20 +1,20 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies polygon culling mode.
+/// Specifies the polygon culling mode.
 /// </summary>
 public enum CullMode : uint8
 {
 	/// <summary>
-	/// Always draw all triangles.
+	/// Always draws all triangles.
 	/// </summary>
 	None = 1,
 	/// <summary>
-	/// Do not draw triangles that are front-facing.
+	/// Does not draw front-facing triangles.
 	/// </summary>
 	Front,
 	/// <summary>
-	/// Do not draw triangles that are back-facing.
+	/// Do not draw triangles that are backfacing.
 	/// </summary>
 	Back
 }

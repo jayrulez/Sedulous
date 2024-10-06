@@ -3,17 +3,17 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position and normal.
+/// Represents a vertex with a position and a normal.
 /// </summary>
 public struct VertexPositionNormal
 {
 	/// <summary>
-	/// Vertex position.
+	/// Vertex's position.
 	/// </summary>
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex normal.
+	/// Vertex Normal.
 	/// </summary>
 	public Vector3 Normal;
 

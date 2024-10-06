@@ -1,16 +1,16 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The index data format.
+/// The indexed data format.
 /// </summary>
 public enum IndexFormat : uint8
 {
 	/// <summary>
-	/// Unsigned 16 bits integer format.
+	/// Unsigned 16-bit integer format.
 	/// </summary>
 	UInt16,
 	/// <summary>
-	/// Unsigned 32 bits integer format.
+	/// Unsigned 32-bit integer format.
 	/// </summary>
 	UInt32
 }

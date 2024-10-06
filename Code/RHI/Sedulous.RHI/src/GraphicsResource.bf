@@ -3,17 +3,17 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// A resource interface provides common actions on all resources.
+/// A resource interface that provides common actions for all resources.
 /// </summary>
 public abstract class GraphicsResource : IDisposable
 {
 	/// <summary>
-	/// Holds if the instance has been disposed.
+	/// Indicates if the instance has been disposed.
 	/// </summary>
 	protected bool disposed;
 
 	/// <summary>
-	/// The device context reference.
+	/// Reference to the device context.
 	/// </summary>
 	public GraphicsContext Context;
 
@@ -23,7 +23,7 @@ public abstract class GraphicsResource : IDisposable
 	public abstract void* NativePointer { get; }
 
 	/// <summary>
-	/// Gets a value indicating whether the graphic resource has been disposed.
+	/// Gets a value indicating whether the graphic resource has been disposed of.
 	/// </summary>
 	public bool Disposed => disposed;
 
@@ -36,8 +36,6 @@ public abstract class GraphicsResource : IDisposable
 		Context = context;
 	}
 
-	/// <summary>
-	/// Dispose this instance.
-	/// </summary>
+	/// <inheritdoc />
 	public abstract void Dispose();
 }

@@ -6,12 +6,12 @@ namespace Sedulous.RHI;
 public static class BlendStates
 {
 	/// <summary>
-	/// Not blending.
+	/// Not blended.
 	/// </summary>
 	public static readonly BlendStateDescription Opaque;
 
 	/// <summary>
-	/// Premultiplied alpha blending.
+	/// Pre-multiplied alpha blending.
 	/// </summary>
 	public static readonly BlendStateDescription AlphaBlend;
 
@@ -21,12 +21,12 @@ public static class BlendStates
 	public static readonly BlendStateDescription Additive;
 
 	/// <summary>
-	/// Additive alpha blending.
+	/// Additive alpha blending effect.
 	/// </summary>
 	public static readonly BlendStateDescription Multiplicative;
 
 	/// <summary>
-	/// Non premultiplied alpha blending.
+	/// Non-premultiplied alpha blending.
 	/// </summary>
 	public static readonly BlendStateDescription NonPremultiplied;
 

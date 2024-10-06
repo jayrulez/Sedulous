@@ -4,12 +4,12 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represents a parameter property of a constant buffer. Used un WebGL1 and OpenGL ES 2.0.
+/// This class represents a parameter property of a constant buffer. Used in WebGL1 and OpenGL ES 2.0.
 /// </summary>
 public class BufferParameterBinding
 {
 	/// <summary>
-	/// The buffer parameter type.
+	/// The type of the buffer parameter.
 	/// </summary>
 	public enum BufferParameterType
 	{
@@ -31,7 +31,7 @@ public class BufferParameterBinding
 	}
 
 	/// <summary>
-	/// The parameter name.
+	/// The name of the parameter.
 	/// </summary>
 	public String Name;
 
@@ -41,7 +41,7 @@ public class BufferParameterBinding
 	public int32 CBufferSlot;
 
 	/// <summary>
-	/// The buffer parameter type.
+	/// The type of the buffer parameter.
 	/// </summary>
 	public BufferParameterType ParameterType;
 
@@ -51,12 +51,12 @@ public class BufferParameterBinding
 	public int32 Offset;
 
 	/// <summary>
-	/// In case of array, specify the parameter array size.
+	/// In the case of an array, specify the parameter array size.
 	/// </summary>
 	public int32 ArrayCount;
 
 	/// <summary>
-	/// Gets the buffer parameter type from a string type.
+	/// Gets the buffer parameter type from a string value.
 	/// </summary>
 	/// <param name="type">The type.</param>
 	/// <returns>float.</returns>

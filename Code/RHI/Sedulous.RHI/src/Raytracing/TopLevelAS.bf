@@ -1,12 +1,12 @@
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// Top Level Acceleration Structure.
+/// Top-Level Acceleration Structure.
 /// </summary>
 public abstract class TopLevelAS : GraphicsResource
 {
 	/// <summary>
-	/// Get the Acceleration Structure description.
+	/// Gets the Acceleration Structure description.
 	/// </summary>
 	public TopLevelASDescription Description;
 
@@ -14,7 +14,7 @@ public abstract class TopLevelAS : GraphicsResource
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Raytracing.TopLevelAS" /> class.
 	/// </summary>
 	/// <param name="context">The device context.</param>
-	/// <param name="description">The Top Level Acceleration Structure description.</param>
+	/// <param name="description">The top-level acceleration structure description.</param>
 	protected this(GraphicsContext context, in TopLevelASDescription description)
 		: base(context)
 	{

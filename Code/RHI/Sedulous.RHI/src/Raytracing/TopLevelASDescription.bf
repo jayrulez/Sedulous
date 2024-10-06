@@ -1,7 +1,7 @@
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// The top level acceleration structure description.
+/// The top-level acceleration structure description.
 /// </summary>
 public struct TopLevelASDescription
 {
@@ -11,12 +11,12 @@ public struct TopLevelASDescription
 	public AccelerationStructureFlags Flags;
 
 	/// <summary>
-	/// The instance buffer offset.
+	/// The instance buffer's offset.
 	/// </summary>
 	public uint32 Offset;
 
 	/// <summary>
-	/// The array of Instance descriptions.
+	/// The array of instance descriptions.
 	/// </summary>
 	public AccelerationStructureInstance[] Instances;
 }

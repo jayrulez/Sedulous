@@ -1,17 +1,17 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Struct containing the sub resource info.
+/// Struct containing the subresource information.
 /// </summary>
 public struct SubResourceInfo
 {
 	/// <summary>
-	/// The size in bytes.
+	/// The size, in bytes.
 	/// </summary>
 	public uint32 SizeInBytes;
 
 	/// <summary>
-	/// The offset.
+	/// The offset value.
 	/// </summary>
 	public uint64 Offset;
 
@@ -36,12 +36,12 @@ public struct SubResourceInfo
 	public uint32 MipHeight;
 
 	/// <summary>
-	/// The mip depth.
+	/// The MIP depth.
 	/// </summary>
 	public uint32 MipDepth;
 
 	/// <summary>
-	/// The mip level.
+	/// The MIP level.
 	/// </summary>
 	public uint32 MipLevel;
 

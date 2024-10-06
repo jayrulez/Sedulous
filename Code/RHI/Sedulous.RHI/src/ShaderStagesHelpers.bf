@@ -1,12 +1,12 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Helpers for ShaderStages Enum.
+/// Helpers for the <see cref="T:Sedulous.RHI.ShaderStages" /> enum.
 /// </summary>
 public static class ShaderStagesHelpers
 {
 	/// <summary>
-	/// Gets the shader stages as array.
+	/// Gets the shader stages as an array.
 	/// </summary>
 	public static readonly ShaderStages[?] ShaderStagesArray = .(
 		ShaderStages.Vertex,
@@ -19,19 +19,19 @@ public static class ShaderStagesHelpers
 	);
 
 	/// <summary>
-	/// Gets the shaderstages count.
+	/// Gets the shader stages count.
 	/// </summary>
 	public static readonly int ShaderStagesCount = ShaderStagesArray.Count;
 
 	/// <summary>
-	/// Gets the rasterization stages (Vertex, Hull, Domain, Geometry, Pixel and Compute).
+	/// Gets the rasterization stages (Vertex, Hull, Domain, Geometry, Pixel, and Compute).
 	/// </summary>
 	public static readonly int RasterizationShaderStagesCount = ShaderStagesArray.Count - 1;
 
 	/// <summary>
-	/// Gets the shaderStage index.
+	/// Gets the shader stage index.
 	/// </summary>
-	/// <param name="stages">The shaderstage.</param>
+	/// <param name="stages">The shader stage.</param>
 	/// <returns>The stage index.</returns>
 	public static int IndexOf(ShaderStages stages)
 	{

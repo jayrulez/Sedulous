@@ -8,37 +8,37 @@ namespace Sedulous.RHI;
 public struct TextureDescription : IEquatable<TextureDescription>
 {
 	/// <summary>
-	/// Texture type <see cref="T:Sedulous.RHI.TextureType" />.
+	/// Type of texture. See <see cref="T:Sedulous.RHI.TextureType" />.
 	/// </summary>
 	public TextureType Type;
 
 	/// <summary>
-	/// Texture format <see cref="T:Sedulous.RHI.PixelFormat" />.
+	/// Texture format of <see cref="T:Sedulous.RHI.PixelFormat" />.
 	/// </summary>
 	public PixelFormat Format;
 
 	/// <summary>
-	/// Texture width (in texels).
+	/// Width of the texture (in texels).
 	/// </summary>
 	public uint32 Width;
 
 	/// <summary>
-	/// Texture height (in texels).
+	/// Height of the texture (in texels).
 	/// </summary>
 	public uint32 Height;
 
 	/// <summary>
-	/// Texture Depth (in texels).
+	/// Texture depth (in texels).
 	/// </summary>
 	public uint32 Depth;
 
 	/// <summary>
-	/// Number of textures in the texture array.
+	/// The number of textures in the texture array.
 	/// </summary>
 	public uint32 ArraySize;
 
 	/// <summary>
-	/// Number of texture faces useful in TextureCube and TextureCubeArray.
+	/// Number of texture faces used in TextureCube and TextureCubeArray.
 	/// </summary>
 	public uint32 Faces;
 
@@ -48,12 +48,12 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	public uint32 MipLevels;
 
 	/// <summary>
-	/// The texture flags  <see cref="T:Sedulous.RHI.TextureFlags" />.
+	/// The texture flags of <see cref="T:Sedulous.RHI.TextureFlags" />.
 	/// </summary>
 	public TextureFlags Flags;
 
 	/// <summary>
-	/// Value that identifies how the texture is to be read from and written to.
+	/// Value that identifies how the texture is to be read from or written to.
 	/// </summary>
 	public ResourceUsage Usage;
 
@@ -63,7 +63,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	public TextureSampleCount SampleCount;
 
 	/// <summary>
-	/// Flags <see cref="T:Sedulous.RHI.ResourceCpuAccess" /> to specify the type of CPU access allowed.
+	/// Flags <see cref="T:Sedulous.RHI.ResourceCpuAccess" /> to specify the type of CPU access that is allowed.
 	/// </summary>
 	public ResourceCpuAccess CpuAccess;
 
@@ -89,7 +89,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	}
 
 	/// <summary>
-	/// Create a Texture 1D description.
+	/// Creates a Texture 1D description.
 	/// </summary>
 	/// <param name="width">The texture width.</param>
 	/// <param name="format">The texture format.</param>
@@ -104,12 +104,12 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	}
 
 	/// <summary>
-	/// Create a Texture 2D description.
+	/// Creates a Texture 2D description.
 	/// </summary>
 	/// <param name="width">The texture width.</param>
 	/// <param name="height">The texture height.</param>
 	/// <param name="format">The texture format.</param>
-	/// <returns>The new texture 2D description.</returns>
+	/// <returns>A new texture 2D description.</returns>
 	public static TextureDescription CreateTexture2DDescription(uint32 width, uint32 height, PixelFormat format = PixelFormat.R8G8B8A8_UNorm)
 	{
 		TextureDescription texture2DDescription = DefaultValues;
@@ -121,13 +121,13 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	}
 
 	/// <summary>
-	/// Create a Texture 3D description.
+	/// Creates a Texture 3D description.
 	/// </summary>
 	/// <param name="width">The texture width.</param>
 	/// <param name="height">The texture height.</param>
 	/// <param name="depth">The texture depth.</param>
 	/// <param name="format">The texture format.</param>
-	/// <returns>The new texture 3D description.</returns>
+	/// <returns>The new Texture 3D description.</returns>
 	public static TextureDescription CreateTexture3DDescription(uint32 width, uint32 height, uint32 depth, PixelFormat format = PixelFormat.R8G8B8A8_UNorm)
 	{
 		TextureDescription texture3DDescription = DefaultValues;
@@ -140,7 +140,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	}
 
 	/// <summary>
-	/// Create a Texture cube description.
+	/// Creates a texture cube description.
 	/// </summary>
 	/// <param name="width">The texture width.</param>
 	/// <param name="height">The texture height.</param>
@@ -159,7 +159,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Other instance to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -196,7 +196,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -206,10 +206,10 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(TextureDescription value1, TextureDescription value2)
 	{
@@ -222,7 +222,7 @@ public struct TextureDescription : IEquatable<TextureDescription>
 	/// <param name="value1">The value1.</param>
 	/// <param name="value2">The value2.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(TextureDescription value1, TextureDescription value2)
 	{

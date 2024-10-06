@@ -1,36 +1,36 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Texture type.
+/// The texture type.
 /// </summary>
 public enum TextureType : uint8
 {
 	/// <summary>
-	/// Represent a 2D texture.
+	/// Represents a 2D texture.
 	/// </summary>
 	Texture2D,
 	/// <summary>
-	/// Represent a 2D texture array
+	/// Represents a 2D texture array
 	/// </summary>
 	Texture2DArray,
 	/// <summary>
-	/// Represent a 1D texture.
+	/// Represents a 1D texture.
 	/// </summary>
 	Texture1D,
 	/// <summary>
-	/// Represent a 1D texture array.
+	/// Represents a 1D texture array.
 	/// </summary>
 	Texture1DArray,
 	/// <summary>
-	/// Represent a Cubemap texture.
+	/// Represents a Cubemap texture.
 	/// </summary>
 	TextureCube,
 	/// <summary>
-	/// Represent a TextureCube array
+	/// Represents a TextureCube array
 	/// </summary>
 	TextureCubeArray,
 	/// <summary>
-	/// Represent a 3D texture.
+	/// Represents a 3D texture.
 	/// </summary>
 	Texture3D
 }

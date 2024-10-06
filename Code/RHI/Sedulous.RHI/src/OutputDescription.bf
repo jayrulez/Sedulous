@@ -8,7 +8,7 @@ namespace Sedulous.RHI;
 public struct OutputDescription : IEquatable<OutputDescription>
 {
 	/// <summary>
-	/// A description of the depth attachment, or null if none exists.
+	/// A description of the depth attachment, or null if it doesn't exist.
 	/// </summary>
 	public readonly OutputAttachmentDescription? DepthAttachment;
 
@@ -28,7 +28,7 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	public readonly TextureSampleCount SampleCount;
 
 	/// <summary>
-	/// Precomputed outputDescription hash. Used to speed up the comparison between output descriptions.
+	/// Precomputed outputDescription hash. Used to speed up the comparison of output descriptions.
 	/// </summary>
 	public readonly int CachedHashCode;
 
@@ -36,9 +36,9 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.OutputDescription" /> struct.
 	/// </summary>
 	/// <param name="depth">A description of the depth attachment.</param>
-	/// <param name="colors">An array of descriptions of each color attachment.</param>
+	/// <param name="colors">An array of descriptions for each color attachment.</param>
 	/// <param name="sampleCount">The number of samples in each target attachment.</param>
-	/// <param name="arraySliceCount">The number of views rendered.</param>
+	/// <param name="arraySliceCount">The number of rendered views.</param>
 	public this(OutputAttachmentDescription? depth, OutputAttachmentList colors, TextureSampleCount sampleCount, uint32 arraySliceCount)
 	{
 		DepthAttachment = depth;
@@ -55,9 +55,9 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	}
 
 	/// <summary>
-	/// Create a new instance of <see cref="T:Sedulous.RHI.OutputDescription" /> from a <see cref="T:Sedulous.RHI.FrameBuffer" />.
+	/// Creates a new instance of <see cref="T:Sedulous.RHI.OutputDescription" /> from a <see cref="T:Sedulous.RHI.FrameBuffer" />.
 	/// </summary>
-	/// <param name="frameBuffer">The framebuffer to extract the attachment description.</param>
+	/// <param name="frameBuffer">The FrameBuffer from which to extract the attachment description.</param>
 	/// <returns>A new instance of OutputDescription.</returns>
 	public static OutputDescription CreateFromFrameBuffer(FrameBuffer frameBuffer)
 	{
@@ -90,7 +90,7 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object used for comparison.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -123,7 +123,7 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -133,10 +133,10 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(OutputDescription value1, OutputDescription value2)
 	{
@@ -146,8 +146,8 @@ public struct OutputDescription : IEquatable<OutputDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

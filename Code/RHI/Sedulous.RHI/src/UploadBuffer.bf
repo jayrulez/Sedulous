@@ -5,17 +5,17 @@ using System.Threading;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This abstract class represent and strategy to fast upload buffers to GPU.
+/// This abstract class represents a strategy to quickly upload buffers to the GPU.
 /// </summary>
 public abstract class UploadBuffer : IDisposable
 {
 	/// <summary>
-	/// Pointer to the begin of the buffer.
+	/// Pointer to the beginning of the buffer.
 	/// </summary>
 	public uint64 DataBegin;
 
 	/// <summary>
-	/// Pointer to the current buffer position.
+	/// Points to the current buffer position.
 	/// </summary>
 	public uint64 DataCurrent;
 
@@ -35,12 +35,12 @@ public abstract class UploadBuffer : IDisposable
 	public uint32 Align;
 
 	/// <summary>
-	/// The total size in bytes of the uploadbuffer.
+	/// The total size in bytes of the upload buffer.
 	/// </summary>
 	public uint64 TotalSize;
 
 	/// <summary>
-	/// The graphics context instance.
+	/// The instance of the graphics context.
 	/// </summary>
 	protected GraphicsContext context;
 
@@ -50,8 +50,8 @@ public abstract class UploadBuffer : IDisposable
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.UploadBuffer" /> class.
 	/// </summary>
 	/// <param name="context">The graphics context.</param>
-	/// <param name="size">The uploadBuffer size.</param>
-	/// <param name="align">The uploadBuffer align if it is needed.</param>
+	/// <param name="size">The size of the upload buffer.</param>
+	/// <param name="align">The alignment of the upload buffer, if needed.</param>
 	public this(GraphicsContext context, uint64 size, uint32 align)
 	{
 		this.context = context;
@@ -60,16 +60,16 @@ public abstract class UploadBuffer : IDisposable
 	}
 
 	/// <summary>
-	/// Refresh the native buffer used by the uploadbuffer with the new size.
+	/// Refreshes the native buffer used by the upload buffer with the new size.
 	/// </summary>
 	/// <param name="size">The new size of the buffer.</param>
 	protected abstract void RefreshBuffer(uint64 size);
 
 	/// <summary>
-	/// Allocate the new data in the uploadbuffer.
+	/// Allocates the new data in the upload buffer.
 	/// </summary>
 	/// <param name="dataSize">The new data size.</param>
-	/// <returns>The destination address to copy.</returns>
+	/// <returns>The destination address to copy to.</returns>
 	public uint64 Allocate(uint64 dataSize)
 	{
 		uint64 returnValue = 0uL;
@@ -101,7 +101,7 @@ public abstract class UploadBuffer : IDisposable
 	}
 
 	/// <summary>
-	/// Reset all pointers of the uploadbuffer.
+	/// Resets all pointers of the upload buffer.
 	/// </summary>
 	public void Clear()
 	{
@@ -115,7 +115,7 @@ public abstract class UploadBuffer : IDisposable
 	/// <summary>
 	/// Gets the native address data offset.
 	/// </summary>
-	/// <param name="address">The address of data.</param>
+	/// <param name="address">The address of the data.</param>
 	/// <returns>The address data offset.</returns>
 	public uint64 CalculateOffset(uint64 address)
 	{
@@ -127,7 +127,7 @@ public abstract class UploadBuffer : IDisposable
 	}
 
 	/// <summary>
-	/// Dispose all resource of this instance.
+	/// Disposes all resources of this instance.
 	/// </summary>
 	public abstract void Dispose();
 }

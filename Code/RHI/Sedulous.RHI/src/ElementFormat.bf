@@ -6,11 +6,11 @@ namespace Sedulous.RHI;
 public enum ElementFormat
 {
 	/// <summary>
-	/// One unsigned 8-bit value.
+	/// An unsigned 8-bit value.
 	/// </summary>
 	UByte,
 	/// <summary>
-	/// Two unsigned 8-bit values.
+	/// Two 8-bit unsigned values.
 	/// </summary>
 	UByte2,
 	/// <summary>
@@ -22,47 +22,47 @@ public enum ElementFormat
 	/// </summary>
 	UByte4,
 	/// <summary>
-	/// One signed 8-bit value.
+	/// A signed 8-bit value.
 	/// </summary>
 	Byte,
 	/// <summary>
-	/// Two signed 8-bits values.
+	/// Two signed 8-bit values.
 	/// </summary>
 	Byte2,
 	/// <summary>
-	/// Three signed 8-bit values.
+	/// Three 8-bit signed values.
 	/// </summary>
 	Byte3,
 	/// <summary>
-	/// Four signed 8-bit values.
+	/// Four 8-bit signed values.
 	/// </summary>
 	Byte4,
 	/// <summary>
-	/// One unsigned normalized 8-bit value.
+	/// An unsigned normalized 8-bit value.
 	/// </summary>
 	UByteNormalized,
 	/// <summary>
-	/// Two unsigned normalized 8-bit values.
+	/// Two unsigned, normalized 8-bit values.
 	/// </summary>
 	UByte2Normalized,
 	/// <summary>
-	/// Three unsigned normalized 8-bit values.
+	/// Three unsigned, normalized 8-bit values.
 	/// </summary>
 	UByte3Normalized,
 	/// <summary>
-	/// Four unsigned normalized 8-bit values.
+	/// Four unsigned, normalized 8-bit values.
 	/// </summary>
 	UByte4Normalized,
 	/// <summary>
-	/// One signed normalized 8-bit value.
+	/// A single signed normalized 8-bit value.
 	/// </summary>
 	ByteNormalized,
 	/// <summary>
-	/// Two signed normalized 8-bit values.
+	/// Two signed 8-bit normalized values.
 	/// </summary>
 	Byte2Normalized,
 	/// <summary>
-	/// Three signed normalized 8-bit values.
+	/// Three signed, normalized 8-bit values.
 	/// </summary>
 	Byte3Normalized,
 	/// <summary>
@@ -70,7 +70,7 @@ public enum ElementFormat
 	/// </summary>
 	Byte4Normalized,
 	/// <summary>
-	/// One unsigned 16-bit value.
+	/// A single unsigned 16-bit value.
 	/// </summary>
 	UShort,
 	/// <summary>
@@ -86,7 +86,7 @@ public enum ElementFormat
 	/// </summary>
 	UShort4,
 	/// <summary>
-	/// One signed 16-bit value.
+	/// A signed 16-bit value.
 	/// </summary>
 	Short,
 	/// <summary>
@@ -94,67 +94,67 @@ public enum ElementFormat
 	/// </summary>
 	Short2,
 	/// <summary>
-	/// Three signed 16-bit values.
+	/// Three 16-bit signed values.
 	/// </summary>
 	Short3,
 	/// <summary>
-	/// Four signed 16-bit values.
+	/// Four 16-bit signed values.
 	/// </summary>
 	Short4,
 	/// <summary>
-	/// One unsigned normalized 16-bit value.
+	/// A single unsigned normalized 16-bit value.
 	/// </summary>
 	UShortNormalized,
 	/// <summary>
-	/// Two unsigned normalized 16-bit values.
+	/// Two unsigned, normalized 16-bit values.
 	/// </summary>
 	UShort2Normalized,
 	/// <summary>
-	/// Three unsigned normalized 16-bit values.
+	/// Three unsigned, normalized 16-bit values.
 	/// </summary>
 	UShort3Normalized,
 	/// <summary>
-	/// Four unsigned normalized 16-bit values.
+	/// Four 16-bit unsigned normalized values.
 	/// </summary>
 	UShort4Normalized,
 	/// <summary>
-	/// One signed normalized 16-bit value.
+	/// A single signed normalized 16-bit value.
 	/// </summary>
 	ShortNormalized,
 	/// <summary>
-	/// Two signed normalized 16-bit values.
+	/// Two signed, normalized 16-bit values.
 	/// </summary>
 	Short2Normalized,
 	/// <summary>
-	/// Three signed normalized 16-bit values.
+	/// Three signed, normalized 16-bit values.
 	/// </summary>
 	Short3Normalized,
 	/// <summary>
-	/// Four signed normalized 16-bit values.
+	/// Four 16-bit signed normalized values.
 	/// </summary>
 	Short4Normalized,
 	/// <summary>
-	/// One half-precision floating-point value.
+	/// A half-precision floating-point value.
 	/// </summary>
 	Half,
 	/// <summary>
-	/// Two half-precision floating-point value.
+	/// Two half-precision floating-point values.
 	/// </summary>
 	Half2,
 	/// <summary>
-	/// Three half-precision floating-point value.
+	/// Three half-precision floating-point values.
 	/// </summary>
 	Half3,
 	/// <summary>
-	/// Four half-precision floating-point value.
+	/// Four half-precision floating-point values.
 	/// </summary>
 	Half4,
 	/// <summary>
-	/// A single-component, 32-bit floating-point format that supports 32 bits for the red channel.
+	/// A single-component, 32-bit floating-point format that uses 32 bits for the red channel.
 	/// </summary>
 	Float,
 	/// <summary>
-	/// A two-component, 64-bit floating-point format that supports 32 bits for the red channel and 32 bits for the green channel.
+	/// A two-component, 64-bit floating-point format that allocates 32 bits to the red channel and 32 bits to the green channel.
 	/// </summary>
 	Float2,
 	/// <summary>
@@ -162,11 +162,11 @@ public enum ElementFormat
 	/// </summary>
 	Float3,
 	/// <summary>
-	/// A four-component, 128-bit floating-point format that supports 32 bits per channel including alpha.
+	/// A four-component, 128-bit floating-point format that supports 32 bits per channel, including alpha.
 	/// </summary>
 	Float4,
 	/// <summary>
-	/// One unsigned 32-bit integer values.
+	/// One unsigned 32-bit integer value.
 	/// </summary>
 	UInt,
 	/// <summary>
@@ -182,7 +182,7 @@ public enum ElementFormat
 	/// </summary>
 	UInt4,
 	/// <summary>
-	/// One signed 32-bit integer value.
+	/// A signed 32-bit integer value.
 	/// </summary>
 	Int,
 	/// <summary>

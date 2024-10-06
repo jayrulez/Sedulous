@@ -3,12 +3,12 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Structure specifying render pass begin info.
+/// Structure specifying render pass beginning information.
 /// </summary>
 public struct RenderPassDescription
 {
 	/// <summary>
-	/// The frameBuffer containing the attachments that are used with the renderpass.
+	/// The frameBuffer containing the attachments that are used with the render pass.
 	/// </summary>
 	public FrameBuffer FrameBuffer;
 
@@ -20,8 +20,8 @@ public struct RenderPassDescription
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.RenderPassDescription" /> struct.
 	/// </summary>
-	/// <param name="frameBuffer">The frameBuffer containing the attachments that are used with the renderpass.</param>
-	/// <param name="clearValue">That contains clear values for each attachment.</param>
+	/// <param name="frameBuffer">The frame buffer containing the attachments that are used with the render pass.</param>
+	/// <param name="clearValue">The values used to clear each attachment.</param>
 	public this(FrameBuffer frameBuffer, ClearValue clearValue)
 	{
 		if (/*frameBuffer.ColorTargets != null && clearValue.ColorValues != null &&*/ frameBuffer.ColorTargets.Count != clearValue.ColorValues.Count)

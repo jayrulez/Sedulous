@@ -4,7 +4,7 @@ using System.Collections;
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// This class contains all the raytracing shader stages.
+/// This class contains all the ray tracing shader stages.
 /// </summary>
 public struct RaytracingShaderStateDescription : IEquatable<RaytracingShaderStateDescription>
 {
@@ -27,17 +27,17 @@ public struct RaytracingShaderStateDescription : IEquatable<RaytracingShaderStat
 	public Dictionary<String, BufferParameterBinding> bufferParametersBinding;
 
 	/// <summary>
-	/// Gets or sets the Raygeneration shader program.
+	/// Gets or sets the ray generation shader program.
 	/// </summary>
 	public Shader RayGenerationShader;
 
 	/// <summary>
-	/// Gets or sets the closestHit shader program.
+	/// Gets or sets the closest hit shader program.
 	/// </summary>
 	public Shader[] ClosestHitShader;
 
 	/// <summary>
-	/// Gets or sets the Miss shader program.
+	/// Gets or sets the miss shader program.
 	/// </summary>
 	public Shader[] MissShader;
 
@@ -103,7 +103,7 @@ public struct RaytracingShaderStateDescription : IEquatable<RaytracingShaderStat
 	}
 
 	/// <summary>
-	/// Gets the entrypoint name from Shader stage index.
+	/// Gets the entry point name from the shader stage index.
 	/// </summary>
 	/// <param name="stage">Shader Stage.</param>
 	/// <param name="entryPointNames">Entry point names.</param>

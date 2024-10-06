@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The specify graphics low level API used by the <see cref="T:Sedulous.RHI.GraphicsContext" />.
+/// The specified graphics low-level API used by the <see cref="T:Sedulous.RHI.GraphicsContext" />.
 /// </summary>
 public enum GraphicsBackend : uint8
 {
@@ -10,23 +10,23 @@ public enum GraphicsBackend : uint8
 	/// </summary>
 	DirectX11,
 	/// <summary>
-	/// DirectX 12
+	/// DirectX 12 version
 	/// </summary>
 	DirectX12,
 	/// <summary>
-	/// OpenGL 4
+	/// OpenGL 4.0
 	/// </summary>
 	OpenGL,
 	/// <summary>
-	///  OpenGL ES 3.0
+	/// OpenGL ES 3.0
 	/// </summary>
 	OpenGLES,
 	/// <summary>
-	/// Metal 2.0
+	/// Metal version 2.0
 	/// </summary>
 	Metal,
 	/// <summary>
-	/// Vulkan 1.1
+	/// Vulkan 1.1.
 	/// </summary>
 	Vulkan,
 	/// <summary>
@@ -34,11 +34,11 @@ public enum GraphicsBackend : uint8
 	/// </summary>
 	WebGL1,
 	/// <summary>
-	/// WebGL 2.0
+	/// WebGL 2.0 specification
 	/// </summary>
 	WebGL2,
 	/// <summary>
-	/// WebGPU 1.0
+	/// WebGPU 1.0.
 	/// </summary>
 	WebGPU
 }

@@ -5,7 +5,7 @@ using System.IO;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represent contains the descriptions of vertex input layout.
+/// This class contains the descriptions of vertex input layout.
 /// </summary>
 public class InputLayouts : IEquatable<InputLayouts>
 {
@@ -14,7 +14,7 @@ public class InputLayouts : IEquatable<InputLayouts>
 	private bool isDirty = true;
 
 	/// <summary>
-	/// The vertex inputs elements.
+	/// The vertex input elements.
 	/// </summary>
 	public List<LayoutDescription> LayoutElements;
 
@@ -32,12 +32,12 @@ public class InputLayouts : IEquatable<InputLayouts>
 	}
 
 	/// <summary>
-	/// Try get the attribute slot by semantic and semantic index.
+	/// Tries to get the attribute slot by semantic and semantic index.
 	/// </summary>
 	/// <param name="semantic">Attribute semantic type.</param>
 	/// <param name="semanticIndex">Attribute semantic index.</param>
 	/// <param name="slot">Attribute slot.</param>
-	/// <returns>True whether found the attribute and False in otherwise.</returns>
+	/// <returns>True if the attribute is found; false otherwise.</returns>
 	public bool TryGetSlot(ElementSemanticType semantic, uint32 semanticIndex, out int32 slot)
 	{
 		slot = 0;
@@ -55,7 +55,7 @@ public class InputLayouts : IEquatable<InputLayouts>
 	}
 
 	/// <summary>
-	/// Finds an layout element description. by its usage semantic.
+	/// Finds a layout element description by its usage semantic.
 	/// </summary>
 	/// <param name="semantic">The element semantic.</param>
 	/// <param name="semanticIndex">The semantic index.</param>
@@ -99,10 +99,10 @@ public class InputLayouts : IEquatable<InputLayouts>
 	}
 
 	/// <summary>
-	/// If the current layout is assignable to the parameter input layout.
+	/// Determines if the current layout is assignable to the parameter input layout.
 	/// </summary>
 	/// <param name="inputLayouts">The input layouts.</param>
-	/// <returns>If the specified layout is compatible.</returns>
+	/// <returns>Whether the specified layout is compatible.</returns>
 	public bool IsAssignable(InputLayouts inputLayouts)
 	{
 		UpdateCache();
@@ -121,7 +121,7 @@ public class InputLayouts : IEquatable<InputLayouts>
 	}
 
 	/// <summary>
-	/// Clean object.
+	/// Cleans the object.
 	/// </summary>
 	public void Clean()
 	{
@@ -131,7 +131,7 @@ public class InputLayouts : IEquatable<InputLayouts>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used for comparison.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -210,8 +210,8 @@ public class InputLayouts : IEquatable<InputLayouts>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -225,10 +225,10 @@ public class InputLayouts : IEquatable<InputLayouts>
 	}
 
 	/// <summary>
-	/// Implements the operator ==.
+	/// Implements the == operator.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

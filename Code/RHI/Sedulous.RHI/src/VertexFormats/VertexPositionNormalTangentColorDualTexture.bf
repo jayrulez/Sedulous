@@ -3,7 +3,7 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position, normal and texture coordinate.
+/// Represents a vertex with position, normal, and texture coordinates.
 /// </summary>
 public struct VertexPositionNormalTangentColorDualTexture
 {
@@ -13,7 +13,7 @@ public struct VertexPositionNormalTangentColorDualTexture
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex normal.
+	/// Vertex normal vector.
 	/// </summary>
 	public Vector3 Normal;
 
@@ -28,17 +28,17 @@ public struct VertexPositionNormalTangentColorDualTexture
 	public Color Color;
 
 	/// <summary>
-	/// Vertex texture coordinate.
+	/// Vertex texture coordinates.
 	/// </summary>
 	public Vector2 TexCoord;
 
 	/// <summary>
-	/// Vertex texture coordinate.
+	/// Vertex texture coordinates.
 	/// </summary>
 	public Vector2 TexCoord2;
 
 	/// <summary>
-	/// Vertex format.
+	/// Represents the vertex format.
 	/// </summary>
 	public static readonly LayoutDescription VertexFormat ~ delete _;
 
@@ -48,9 +48,9 @@ public struct VertexPositionNormalTangentColorDualTexture
 	/// <param name="position">The position.</param>
 	/// <param name="normal">The normal.</param>
 	/// <param name="tangent">The tangent.</param>
-	/// /// <param name="color">The color.</param>
-	/// <param name="texCoord">The texcoord.</param>
-	/// <param name="texCoord2">The texcoord2.</param>
+	/// <param name="color">The color.</param>
+	/// <param name="texCoord">The texture coordinate.</param>
+	/// <param name="texCoord2">The second texture coordinate.</param>
 	public this(Vector3 position, Vector3 normal, Vector3 tangent, Color color, Vector2 texCoord, Vector2 texCoord2)
 	{
 		Position = position;

@@ -4,12 +4,12 @@ using Sedulous.Foundation.Collections;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Structure specifying a clear value.
+/// Structure that specifies a clear value.
 /// </summary>
 public struct ClearValue
 {
 	/// <summary>
-	/// The array of color clear value to use when clearing each color attachment.
+	/// The array of clear color values to use when clearing each color attachment.
 	/// </summary>
 	public FixedList<Vector4, const Constants.MaxAttachments> ColorValues = .();
 
@@ -19,17 +19,17 @@ public struct ClearValue
 	public float Depth;
 
 	/// <summary>
-	/// The stencil clear value to use when clearing a depth/stencil attachment.
+	/// The stencil clear value used when clearing a depth/stencil attachment.
 	/// </summary>
 	public uint8 Stencil;
 
 	/// <summary>
-	/// Kind of clear to perfom <see cref="T:Sedulous.RHI.ClearValue" />.
+	/// Used to perform <see cref="T:Sedulous.RHI.ClearValue" />.
 	/// </summary>
 	public ClearFlags Flags;
 
 	/// <summary>
-	/// Gets default values for None clear value.
+	/// Gets the default values for the None clear value.
 	/// </summary>
 	public static ClearValue None
 	{
@@ -44,7 +44,7 @@ public struct ClearValue
 	/// <summary>
 	/// Gets default values for clear value.
 	/// </summary>
-	/// <remarks>That mean one ColorAttachment using CornFlowerBlue as clear color and depth = 1 / stencil = 0.</remarks>
+	/// <remarks>This means one ColorAttachment using CornFlowerBlue as the clear color, with depth = 1 and stencil = 0.</remarks>
 	public static ClearValue Default
 	{
 		get
@@ -61,7 +61,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="colorValues">The array of values to clear the color attachments.</param>
 	public this(ClearFlags flags, params Color[] colorValues)
 		: this(flags, 1f, 0, params colorValues)
@@ -71,7 +71,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="colorValue">The value to clear the color attachment.</param>
 	public this(ClearFlags flags, Color colorValue)
 		: this(flags, 1f, 0, colorValue)
@@ -81,7 +81,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="colorValues">The array of values to clear the color attachments.</param>
 	public this(ClearFlags flags, params Vector4[] colorValues)
 		: this(flags, 1f, 0, params colorValues)
@@ -91,7 +91,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="depth">The value to clear the depth buffer.</param>
 	/// <param name="stencil">The value to clear the stencil buffer.</param>
 	/// <param name="colorValues">The array of values to clear the color attachments.</param>
@@ -110,7 +110,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="depth">The value to clear the depth buffer.</param>
 	/// <param name="stencil">The value to clear the stencil buffer.</param>
 	/// <param name="colorValue">The value to clear the color attachment.</param>
@@ -125,7 +125,7 @@ public struct ClearValue
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ClearValue" /> struct.
 	/// </summary>
-	/// <param name="flags">Identify the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
+	/// <param name="flags">Identifies the textures to clear <see cref="T:Sedulous.RHI.ClearFlags" />.</param>
 	/// <param name="depth">The value to clear the depth buffer.</param>
 	/// <param name="stencil">The value to clear the stencil buffer.</param>
 	/// <param name="colorValues">The array of values to clear the color attachments.</param>

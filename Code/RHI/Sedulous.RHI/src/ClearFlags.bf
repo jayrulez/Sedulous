@@ -3,7 +3,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies <see cref="T:Sedulous.RHI.FrameBuffer" /> clearing modes.
+/// Specifies the clearing modes for <see cref="T:Sedulous.RHI.FrameBuffer" />.
 /// </summary>
 public enum ClearFlags
 {
@@ -12,19 +12,19 @@ public enum ClearFlags
 	/// </summary>
 	None = 0,
 	/// <summary>
-	/// Clear color target.
+	/// Clears the color target.
 	/// </summary>
 	Target = 1,
 	/// <summary>
-	/// Clear depth target.
+	/// Clears the depth target.
 	/// </summary>
 	Depth = 2,
 	/// <summary>
-	/// Clear the stencil target
+	/// Clears the stencil target
 	/// </summary>
 	Stencil = 4,
 	/// <summary>
-	/// Clear color, depth and stencil target
+	/// Clears color, depth, and stencil targets.
 	/// </summary>
 	All = 7
 }

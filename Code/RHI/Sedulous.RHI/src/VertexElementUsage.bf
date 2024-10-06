@@ -1,12 +1,12 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies the vertex element usage.
+/// Specifies the usage of the vertex element.
 /// </summary>
 public enum VertexElementUsage
 {
 	/// <summary>
-	/// Used for position.
+	/// Used for positioning.
 	/// </summary>
 	Position,
 	/// <summary>
@@ -14,31 +14,31 @@ public enum VertexElementUsage
 	/// </summary>
 	Color,
 	/// <summary>
-	/// Used for texture coordinate.
+	/// Used for texture coordinates.
 	/// </summary>
 	TextureCoordinate,
 	/// <summary>
-	/// Used for normal.
+	/// Used for normal operation.
 	/// </summary>
 	Normal,
 	/// <summary>
-	/// Used for binormal.
+	/// Used for the binormal.
 	/// </summary>
 	Binormal,
 	/// <summary>
-	/// Used for tangent.
+	/// Used for tangents.
 	/// </summary>
 	Tangent,
 	/// <summary>
-	/// Used for blend indices.
+	/// Used for blending indices.
 	/// </summary>
 	BlendIndices,
 	/// <summary>
-	/// Used for blend weights.
+	/// Used for blending weights.
 	/// </summary>
 	BlendWeight,
 	/// <summary>
-	/// Used for depth.
+	/// Used for depth measurement.
 	/// </summary>
 	Depth,
 	/// <summary>
@@ -46,15 +46,15 @@ public enum VertexElementUsage
 	/// </summary>
 	Fog,
 	/// <summary>
-	/// Used for point size.
+	/// Used for specifying the point size.
 	/// </summary>
 	PointSize,
 	/// <summary>
-	/// Used for sample.
+	/// Used as a sample.
 	/// </summary>
 	Sample,
 	/// <summary>
-	/// Used for tesellation factor.
+	/// Used for tessellation factor.
 	/// </summary>
 	TessellateFactor
 }

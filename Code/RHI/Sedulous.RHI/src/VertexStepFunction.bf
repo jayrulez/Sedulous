@@ -1,16 +1,16 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The frequency with which the vertex function fetches attributes data.
+/// The frequency with which the vertex function fetches attribute data.
 /// </summary>
 public enum VertexStepFunction
 {
 	/// <summary>
-	/// Input data is per-vertex data.
+	/// The input data is per-vertex data.
 	/// </summary>
 	PerVertexData,
 	/// <summary>
-	/// Input data is per-instance data.
+	/// Input data is instance-specific data.
 	/// </summary>
 	PerInstanceData
 }

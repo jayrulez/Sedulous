@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The semantic meaning of a vertex element.
+/// Specifies the semantic meaning of a vertex element.
 /// </summary>
 public enum ElementSemanticType : uint8
 {
@@ -22,23 +22,23 @@ public enum ElementSemanticType : uint8
 	/// </summary>
 	Tangent,
 	/// <summary>
-	/// Describe a binormal vector.
+	/// Describes a binormal vector.
 	/// </summary>
 	Binormal,
 	/// <summary>
-	/// Describe a color.
+	/// Describes a color.
 	/// </summary>
 	Color,
 	/// <summary>
-	/// Blend indices
+	/// Blend indices.
 	/// </summary>
 	BlendIndices,
 	/// <summary>
-	/// Blend weights
+	/// Blend weights.
 	/// </summary>
 	BlendWeight,
 	/// <summary>
-	/// Auxiliar value to count all semantics
+	/// Auxiliary value to count all semantics
 	/// </summary>
 	Count
 }

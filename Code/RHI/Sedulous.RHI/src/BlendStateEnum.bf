@@ -1,20 +1,20 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The blend state default values.
+/// The default values of the blend state.
 /// </summary>
 public enum BlendStateEnum
 {
 	/// <summary>
-	/// Not blending.
+	/// Not blended.
 	/// </summary>
 	Opaque,
 	/// <summary>
-	/// Premultiplied alpha blending.
+	/// Pre-multiplied alpha blending.
 	/// </summary>
 	AlphaBlend,
 	/// <summary>
-	/// Non premultiplied alpha blending.
+	/// Non-premultiplied alpha blending.
 	/// </summary>
 	AlphaNonPremultiplied,
 	/// <summary>
@@ -26,7 +26,7 @@ public enum BlendStateEnum
 	/// </summary>
 	Multiplicative,
 	/// <summary>
-	/// Custom value
+	/// Custom value.
 	/// </summary>
 	Custom
 }

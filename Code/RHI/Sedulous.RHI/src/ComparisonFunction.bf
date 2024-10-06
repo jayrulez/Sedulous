@@ -6,11 +6,11 @@ namespace Sedulous.RHI;
 public enum ComparisonFunction : uint8
 {
 	/// <summary>
-	/// Never pass the comparison.
+	/// Never pass the comparison test.
 	/// </summary>
 	Never,
 	/// <summary>
-	/// If the source data is less than the destination data, the comparison passes.
+	/// If the source data is less than the destination data, the comparison succeeds.
 	/// </summary>
 	Less,
 	/// <summary>
@@ -22,11 +22,11 @@ public enum ComparisonFunction : uint8
 	/// </summary>
 	LessEqual,
 	/// <summary>
-	/// If the source data is greater than the destination data, the comparison passes.
+	/// If the source data is greater than the destination data, the comparison succeeds.
 	/// </summary>
 	Greater,
 	/// <summary>
-	/// If the source data is not equal to the destination data, the comparison passes.
+	/// The comparison passes if the source data is not equal to the destination data.
 	/// </summary>
 	NotEqual,
 	/// <summary>
@@ -34,7 +34,7 @@ public enum ComparisonFunction : uint8
 	/// </summary>
 	GreaterEqual,
 	/// <summary>
-	/// Always pass the comparison.
+	/// Always passes the comparison.
 	/// </summary>
 	Always
 }

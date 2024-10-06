@@ -4,12 +4,12 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Abstracts a viewport used for defining rendering regions.
+/// Abstracts a viewport used to define rendering regions.
 /// </summary>
 public struct Viewport : IEquatable<Viewport>
 {
 	/// <summary>
-	/// Empty value for an undefined viewport.
+	/// Represents an empty value for an undefined viewport.
 	/// </summary>
 	public static readonly Viewport Empty;
 
@@ -19,7 +19,7 @@ public struct Viewport : IEquatable<Viewport>
 	public static float DefaultWidth;
 
 	/// <summary>
-	/// The default viewport height.
+	/// The default height of the viewport.
 	/// </summary>
 	public static float DefaultHeight;
 
@@ -44,17 +44,17 @@ public struct Viewport : IEquatable<Viewport>
 	public float Height;
 
 	/// <summary>
-	/// Gets or sets the min depth range.
+	/// Gets or sets the minimum depth range.
 	/// </summary>
 	public float MinDepth;
 
 	/// <summary>
-	/// Gets or sets the max depth range.
+	/// Gets or sets the maximum depth range.
 	/// </summary>
 	public float MaxDepth;
 
 	/// <summary>
-	/// Gets the aspect ratio used of this viewport.
+	/// Gets the aspect ratio used for this viewport.
 	/// </summary>
 	public float AspectRatio
 	{
@@ -81,12 +81,12 @@ public struct Viewport : IEquatable<Viewport>
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Viewport" /> struct.
 	/// </summary>
-	/// <param name="x">The x.</param>
-	/// <param name="y">The y.</param>
+	/// <param name="x">The x-coordinate.</param>
+	/// <param name="y">The y-coordinate.</param>
 	/// <param name="width">The width.</param>
 	/// <param name="height">The height.</param>
-	/// <param name="minDepth">The minimun depth range.</param>
-	/// <param name="maxDepth">The maximun depth range.</param>
+	/// <param name="minDepth">The minimum depth range.</param>
+	/// <param name="maxDepth">The maximum depth range.</param>
 	public this(float x, float y, float width, float height, float minDepth = 0f, float maxDepth = 1f)
 	{
 		X = x;
@@ -101,8 +101,8 @@ public struct Viewport : IEquatable<Viewport>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Viewport" /> struct.
 	/// </summary>
 	/// <param name="rectangle">The viewport rectangle.</param>
-	/// <param name="minDepth">The minimun depth range.</param>
-	/// <param name="maxDepth">The maximun depth range.</param>
+	/// <param name="minDepth">The minimum depth range.</param>
+	/// <param name="maxDepth">The maximum depth range.</param>
 	public this(Rectangle rectangle, float minDepth = 0f, float maxDepth = 1f)
 	{
 		X = rectangle.X;
@@ -116,7 +116,7 @@ public struct Viewport : IEquatable<Viewport>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Instance used for comparison.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -153,7 +153,7 @@ public struct Viewport : IEquatable<Viewport>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -163,10 +163,10 @@ public struct Viewport : IEquatable<Viewport>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(Viewport value1, Viewport value2)
 	{
@@ -176,10 +176,10 @@ public struct Viewport : IEquatable<Viewport>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(Viewport value1, Viewport value2)
 	{

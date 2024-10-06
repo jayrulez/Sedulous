@@ -8,21 +8,21 @@ namespace Sedulous.RHI;
 /// A generic description of vertex inputs to the device's input assembler stage.
 /// This object describes the inputs from a single vertex buffer.
 /// </summary>
-/// <remarks>Shaders may use inputs from multiple vertex buffers.</remarks>
+/// <remarks>Shaders can use inputs from multiple vertex buffers.</remarks>
 public class LayoutDescription : IEquatable<LayoutDescription>
 {
 	/// <summary>
-	/// The collection of individual vertex elements comprising a single vertex.
+	/// A collection of individual vertex elements comprising a single vertex.
 	/// </summary>
 	public List<ElementDescription> Elements;
 
 	/// <summary>
-	/// The frequency with which the vertex function fetches attributes data.
+	/// The frequency with which the vertex function fetches attribute data.
 	/// </summary>
 	public VertexStepFunction StepFunction;
 
 	/// <summary>
-	/// A value controlling how often data for instances is advanced for this layout. For per-vertex elements, this value
+	/// A value controlling how often data for instances is updated for this layout. For per-vertex elements, this value
 	/// should be 0.
 	/// </summary>
 	public int32 StepRate;
@@ -35,7 +35,7 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.LayoutDescription" /> class.
 	/// </summary>
-	/// <param name="stepFunction">The frequency with which the vertex function fetches attributes data.</param>
+	/// <param name="stepFunction">The frequency at which the vertex function fetches attribute data.</param>
 	/// <param name="stepRate">The number of instances to draw using the same per-instance data before advancing in
 	/// the buffer by one element. This value must be 0 for an element that contains per-vertex data.
 	/// </param>
@@ -53,7 +53,7 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	}
 
 	/// <summary>
-	/// Adds a new ElementDescription to layout.
+	/// Adds a new <see cref="T:Sedulous.RHI.ElementDescription" /> to the layout.
 	/// </summary>
 	/// <param name="element">Element description.</param>
 	/// <returns>My own instance.</returns>
@@ -70,9 +70,9 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	}
 
 	/// <summary>
-	/// Get the size in byte of a specific vertex element format.
+	/// Gets the size in bytes of a specific vertex element format.
 	/// </summary>
-	/// <param name="format">The vertex element formant.</param>
+	/// <param name="format">The vertex element format.</param>
 	/// <returns>The size in bytes.</returns>
 	public static uint32 GetFormatSizeInBytes(ElementFormat format)
 	{
@@ -124,7 +124,7 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used for comparison.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -184,7 +184,7 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -199,10 +199,10 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(LayoutDescription value1, LayoutDescription value2)
 	{
@@ -212,8 +212,8 @@ public class LayoutDescription : IEquatable<LayoutDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

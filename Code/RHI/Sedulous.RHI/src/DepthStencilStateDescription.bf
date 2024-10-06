@@ -3,52 +3,52 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Describes depth-stencil state.
+/// Describes the depth-stencil state.
 /// </summary>
 public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescription>
 {
 	/// <summary>
-	/// Enable depth testing.
+	/// Enables depth testing.
 	/// </summary>
 	public bool DepthEnable;
 
 	/// <summary>
-	/// Identify a portion of the depth-stencil buffer that can be modified by depth data.
+	/// Identifies a portion of the depth-stencil buffer that can be modified by depth data.
 	/// </summary>
 	public bool DepthWriteMask;
 
 	/// <summary>
-	/// A function that compares depth data against existing depth data.
+	/// Compares depth data against existing depth data.
 	/// </summary>
 	public ComparisonFunction DepthFunction;
 
 	/// <summary>
-	/// Enable stencil testing.
+	/// Enables stencil testing.
 	/// </summary>
 	public bool StencilEnable;
 
 	/// <summary>
-	/// Identify a portion of the depth-stencil buffer for reading stencil data.
+	/// Identifies a portion of the depth-stencil buffer for reading stencil data.
 	/// </summary>
 	public uint8 StencilReadMask;
 
 	/// <summary>
-	/// Identify a portion of the depth-stencil buffer for writing stencil data.
+	/// Identifies a portion of the depth-stencil buffer for writing stencil data.
 	/// </summary>
 	public uint8 StencilWriteMask;
 
 	/// <summary>
-	/// Identify how to use the results of the depth test and the stencil test for pixels whose surface normal is facing towards the camera.
+	/// Identifies how to use the results of the depth test and the stencil test for pixels whose surface normals are facing towards the camera.
 	/// </summary>
 	public DepthStencilOperationDescription FrontFace;
 
 	/// <summary>
-	/// Identify how to use the results of the depth test and the stencil test for pixels whose surface normal is facing away from the camera.
+	/// Identifies how to use the results of the depth test and the stencil test for pixels whose surface normal is facing away from the camera.
 	/// </summary>
 	public DepthStencilOperationDescription BackFace;
 
 	/// <summary>
-	/// Gets default values for DephtStencilStateDescription.
+	/// Gets default values for DepthStencilStateDescription.
 	/// </summary>
 	public static DepthStencilStateDescription Default
 	{
@@ -61,7 +61,7 @@ public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescrip
 	}
 
 	/// <summary>
-	/// Default DephtStencilStateDescription values.
+	/// Default DepthStencilStateDescription values.
 	/// </summary>
 	public void SetDefault() mut
 	{
@@ -84,7 +84,7 @@ public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescrip
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -127,7 +127,7 @@ public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescrip
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -137,8 +137,8 @@ public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescrip
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -150,10 +150,10 @@ public struct DepthStencilStateDescription : IEquatable<DepthStencilStateDescrip
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(DepthStencilStateDescription value1, DepthStencilStateDescription value2)
 	{

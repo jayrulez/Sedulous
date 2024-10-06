@@ -3,7 +3,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This struct represent all parameters requiered to create a new shader.
+/// This struct represents all parameters required to create a new shader.
 /// </summary>
 public struct ShaderDescription : IEquatable<ShaderDescription>
 {
@@ -23,7 +23,7 @@ public struct ShaderDescription : IEquatable<ShaderDescription>
 	public readonly ShaderStages Stage;
 
 	/// <summary>
-	/// Byte array hastCode cached.
+	/// Byte array hash code cached.
 	/// </summary>
 	private int32 shaderArrayHashCode;
 
@@ -48,7 +48,7 @@ public struct ShaderDescription : IEquatable<ShaderDescription>
 	/// <summary>
 	/// Determines whether the specified parameter is equal to this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare with.</param>
 	/// <returns>
 	/// <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
 	/// </returns>
@@ -85,7 +85,7 @@ public struct ShaderDescription : IEquatable<ShaderDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -95,10 +95,10 @@ public struct ShaderDescription : IEquatable<ShaderDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(ShaderDescription value1, ShaderDescription value2)
 	{
@@ -108,8 +108,8 @@ public struct ShaderDescription : IEquatable<ShaderDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

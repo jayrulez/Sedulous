@@ -3,15 +3,15 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Extension Methods.
+/// Extension methods.
 /// </summary>
 public static class ExtensionMethods
 {
 	/// <summary>
-	/// Indicates if this format is in Gamma Color Scapce.
+	/// Indicates if this format is in Gamma Color Space.
 	/// </summary>
 	/// <param name="format">Pixel format.</param>
-	/// <returns>Is in gamma space.</returns>
+	/// <returns>Indicates if it is in gamma space.</returns>
 	public static bool IsGammaColorSpaceFormat(this PixelFormat format)
 	{
 		switch (format)
@@ -44,7 +44,7 @@ public static class ExtensionMethods
 	}
 
 	/// <summary>
-	/// Get Format size in bits (8 bits = byte).
+	/// Gets format size in bits.
 	/// </summary>
 	/// <param name="format">Pixel format.</param>
 	/// <returns>Size in bits.</returns>

@@ -4,18 +4,18 @@ using System.Collections;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represent a sampler state.
+/// This class represents a sampler state.
 /// </summary>
 public abstract class SamplerState : GraphicsResource
 {
 	/// <summary>
-	/// The sampler state description.
+	/// Describes the sampler state.
 	/// </summary>
 	public readonly SamplerStateDescription Description;
 
 
 	/// <summary>
-	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.
+	/// Gets or sets a string identifying this instance. It can be used in graphics debugger tools.
 	/// </summary>
 	public abstract String Name { get; set; }
 

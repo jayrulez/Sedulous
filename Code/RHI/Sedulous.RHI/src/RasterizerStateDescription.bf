@@ -8,54 +8,54 @@ namespace Sedulous.RHI;
 public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription>
 {
 	/// <summary>
-	/// Determines the fill mode to use when rendering.
+	/// Determines the fill mode used when rendering.
 	/// </summary>
 	public FillMode FillMode;
 
 	/// <summary>
-	/// Indicates triangles facing the specified direction are not drawn.
+	/// Indicates that triangles facing the specified direction are not drawn.
 	/// </summary>
 	public CullMode CullMode;
 
 	/// <summary>
-	/// Determines if a triangle is front- or back-facing. If this parameter is TRUE, a triangle will be considered front-facing
-	/// if its vertices are counter-clockwise on the render target and considered back-facing if they are clockwise.
+	/// Determines if a triangle is front- or back-facing. If this parameter is TRUE, a triangle is considered front-facing
+	/// if its vertices are counterclockwise on the render target and considered back-facing if they are clockwise.
 	/// If this parameter is FALSE, the opposite is true.
 	/// </summary>
 	public bool FrontCounterClockwise;
 
 	/// <summary>
-	/// Depth value added to a given pixel. For info about depth bias.
+	/// Depth value added to a given pixel. For information about depth bias.
 	/// </summary>
 	public int32 DepthBias;
 
 	/// <summary>
-	/// Maximum depth bias of a pixel.
+	/// The maximum depth bias of a pixel.
 	/// </summary>
 	public float DepthBiasClamp;
 
 	/// <summary>
-	/// Scalar on a given pixel's slope.
+	/// Scalar of a given pixel's slope.
 	/// </summary>
 	public float SlopeScaledDepthBias;
 
 	/// <summary>
-	/// Enable clipping based on distance.
+	/// Enables clipping based on distance.
 	/// </summary>
 	public bool DepthClipEnable;
 
 	/// <summary>
-	/// Enable scissor-rectangle culling. All pixels outside an active scissor rectangle are culled.
+	/// Enables scissor-rectangle culling. All pixels outside an active scissor rectangle are culled.
 	/// </summary>
 	public bool ScissorEnable;
 
 	/// <summary>
-	/// Specifies whether to enable line antialiasing; only applies if doing line drawing and MultisampleEnable is FALSE.
+	/// Specifies whether to enable line antialiasing; this applies only if doing line drawing and MultisampleEnable is false.
 	/// </summary>
 	public bool AntialiasedLineEnable;
 
 	/// <summary>
-	/// Gets default values for RasterizerStateDescription.
+	/// Gets the default values for RasterizerStateDescription.
 	/// </summary>
 	public static RasterizerStateDescription Default
 	{
@@ -68,7 +68,7 @@ public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription
 	}
 
 	/// <summary>
-	/// Default rasterizerstatedescription values.
+	/// Default rasterizer state description values.
 	/// </summary>
 	public void SetDefault() mut
 	{
@@ -86,7 +86,7 @@ public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -123,7 +123,7 @@ public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -149,8 +149,8 @@ public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -162,10 +162,10 @@ public struct RasterizerStateDescription : IEquatable<RasterizerStateDescription
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(RasterizerStateDescription value1, RasterizerStateDescription value2)
 	{

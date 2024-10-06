@@ -2,12 +2,12 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represent a buffer resource.
+/// This class represents a buffer resource.
 /// </summary>
 public abstract class Buffer : GraphicsResource
 {
 	/// <summary>
-	///  Counter that represent every time that this buffer is updated.
+	/// Counter that represents every time this buffer is updated.
 	/// </summary>
 	private int32 updateCounter;
 
@@ -17,12 +17,12 @@ public abstract class Buffer : GraphicsResource
 	public readonly BufferDescription Description;
 
 	/// <summary>
-	/// Gets the counter that counts every time that this buffer is updated.
+	/// Gets the counter that increments every time this buffer is updated.
 	/// </summary>
 	public int32 UpdateCounter => updateCounter;
 
 	/// <summary>
-	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.
+	/// Gets or sets a string identifying this instance. It can be used in graphics debugging tools.
 	/// </summary>
 	public abstract String Name { get; set; }
 
@@ -47,7 +47,7 @@ public abstract class Buffer : GraphicsResource
 	}
 
 	/// <summary>
-	/// Increment the update counter.
+	/// Increments the update counter.
 	/// </summary>
 	internal void Touch()
 	{

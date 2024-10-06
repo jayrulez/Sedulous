@@ -1,12 +1,12 @@
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// This struct represent a basic raytracing geometry.
+/// This struct represents basic ray tracing geometry.
 /// </summary>
 public abstract class AccelerationStructureGeometry
 {
 	/// <summary>
-	/// The geometry flags.
+	/// The geometric flags.
 	/// </summary>
 	public AccelerationStructureGeometryFlags Flags;
 }

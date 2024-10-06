@@ -6,7 +6,7 @@ namespace Sedulous.RHI;
 typealias FrameBufferAttachmentList = FixedList<FrameBufferAttachment, const Constants.MaxAttachments>;
 
 /// <summary>
-/// Contains properties that describe a framebuffer texture attachment description.
+/// Contains properties that describe a framebuffer texture attachment.
 /// </summary>
 public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 {
@@ -16,15 +16,15 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	public uint32 SliceCount;
 
 	/// <summary>
-	/// The selected MipLevel.
+	/// The selected mip level.
 	/// </summary>
 	public uint32 MipSlice;
 
 	/// <summary>
-	/// The attachment texture. This is the texture used by the framebuffer as attachment.
+	/// The attachment texture. This is the texture used by the framebuffer as an attachment.
 	/// </summary>
 	/// <remarks>
-	/// If this texture has MSAA enabled, you could set the ResolvedTexture field with a non MSAA texture. After the EndRenderPass, this texture will be resolved into this.
+	/// If this texture has MSAA enabled, you can set the ResolvedTexture field with a non-MSAA texture. After the EndRenderPass, this texture will be resolved into that.
 	/// </remarks>
 	public Texture AttachmentTexture;
 
@@ -34,7 +34,7 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	public uint32 AttachedFirstSlice;
 
 	/// <summary>
-	/// The resolved texture. If the source texture has MSAA enabled, in the EndRenderPass this texture is resolved into this texture.
+	/// The resolved texture. If the source texture has MSAA enabled, in the EndRenderPass, this texture is resolved into this texture.
 	/// </summary>
 	public Texture ResolvedTexture;
 
@@ -67,8 +67,8 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> struct.
 	/// </summary>
 	/// <param name="attachedTexture">The attachment texture.</param>
-	/// <param name="arrayIndex">The array index to compute the specify slide inside the texture.</param>
-	/// <param name="faceIndex">The face index to compute the specify slide inside the texture.</param>
+	/// <param name="arrayIndex">The array index to specify the slice inside the texture.</param>
+	/// <param name="faceIndex">The face index to specify the slice inside the texture.</param>
 	/// <param name="sliceCount">The slice count.</param>
 	/// <param name="mipLevel">The selected mipLevel.</param>
 	public this(Texture attachedTexture, uint32 arrayIndex, uint32 faceIndex, uint32 sliceCount, uint32 mipLevel)
@@ -80,9 +80,9 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> struct.
 	/// </summary>
 	/// <param name="attachedTexture">The attachment texture.</param>
-	/// <param name="firstSlice">the first slice.</param>
+	/// <param name="firstSlice">The first slice.</param>
 	/// <param name="sliceCount">The slice count.</param>
-	/// <param name="mipLevel">The selected mipLevel.</param>
+	/// <param name="mipLevel">The selected mip level.</param>
 	public this(Texture attachedTexture, uint32 firstSlice, uint32 sliceCount, uint32 mipLevel = 0)
 		: this(attachedTexture, firstSlice, null, 0, sliceCount, mipLevel)
 	{
@@ -91,7 +91,7 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> struct.
 	/// </summary>
-	/// <param name="attachedTexture">The attachment texture.</param>
+	/// <param name="attachedTexture">The attached texture.</param>
 	/// <param name="resolvedTexture">The resolved texture.</param>
 	public this(Texture attachedTexture, Texture resolvedTexture)
 		: this(attachedTexture, 0, resolvedTexture, 0, 1, 0)
@@ -102,11 +102,11 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> struct.
 	/// </summary>
 	/// <param name="attachedTexture">The attachment texture.</param>
-	/// <param name="attachedFirstSlice">the first slice.</param>
+	/// <param name="attachedFirstSlice">The first slice.</param>
 	/// <param name="resolvedTexture">The resolved texture.</param>
-	/// <param name="resolvedFirstSlice">the first slice on the resolved texture.</param>
+	/// <param name="resolvedFirstSlice">The first slice on the resolved texture.</param>
 	/// <param name="sliceCount">The slice count on the resolved texture.</param>
-	/// <param name="mipLevel">The selected mipLevel on the resolved texture.</param>
+	/// <param name="mipLevel">The selected mip level on the resolved texture.</param>
 	public this(Texture attachedTexture, uint32 attachedFirstSlice, Texture resolvedTexture, uint32 resolvedFirstSlice, uint32 sliceCount, uint32 mipLevel)
 	{
 		if (resolvedTexture != null)
@@ -131,7 +131,7 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// <summary>
 	/// Determines whether the specified parameter is equal to this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare.</param>
 	/// <returns>
 	/// <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
 	/// </returns>
@@ -168,7 +168,7 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures such as a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -185,10 +185,10 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	}
 
 	/// <summary>
-	/// Implements the operator ==.
+	/// Implements the == operator.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -200,8 +200,8 @@ public struct FrameBufferAttachment : IEquatable<FrameBufferAttachment>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">Value 1.</param>
+	/// <param name="value2">Value 2.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

@@ -1,12 +1,12 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies texture addressing mode.
+/// Specifies the texture addressing mode.
 /// </summary>
 public enum AddressMode : uint8
 {
 	/// <summary>
-	/// Point/nearest neighbor filtering, clamped texture coordinates.
+	/// Point/nearest neighbor filtering with clamped texture coordinates.
 	/// </summary>
 	PointClamp,
 	/// <summary>
@@ -14,19 +14,19 @@ public enum AddressMode : uint8
 	/// </summary>
 	PointWrap,
 	/// <summary>
-	/// Bilinear filtering, clamped texture coordinates.
+	/// Bilinear filtering with clamped texture coordinates.
 	/// </summary>
 	LinearClamp,
 	/// <summary>
-	/// Bilinear filtering, wrapped texture coordinates.
+	/// Bilinear filtering with wrapped texture coordinates.
 	/// </summary>
 	LinearWrap,
 	/// <summary>
-	/// Anisotropic filtering, clamped texture coordinates.
+	/// Anisotropic filtering with clamped texture coordinates.
 	/// </summary>
 	AnisotropicClamp,
 	/// <summary>
-	/// Anisotropic filtering, wrapped texture coordinates.
+	/// Anisotropic filtering with wrapped texture coordinates.
 	/// </summary>
 	AnisotropicWrap
 }

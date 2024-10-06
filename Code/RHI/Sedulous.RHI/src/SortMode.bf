@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specify the sort order.
+/// Specifies the sort order.
 /// </summary>
 public enum SortMode : uint8
 {
@@ -10,11 +10,11 @@ public enum SortMode : uint8
 	/// </summary>
 	None,
 	/// <summary>
-	/// Front to back sorting.
+	/// Front-to-back sorting.
 	/// </summary>
 	FrontToBack,
 	/// <summary>
-	/// Back to Front sorting.
+	/// Back-to-front sorting.
 	/// </summary>
 	BackToFront
 }

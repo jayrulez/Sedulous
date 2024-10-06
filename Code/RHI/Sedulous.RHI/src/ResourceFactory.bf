@@ -4,20 +4,20 @@ using Sedulous.RHI.Raytracing;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This Factory allow create GPU device resources.
+/// This Factory allows creating GPU device resources.
 /// </summary>
 public abstract class ResourceFactory
 {
 	/// <summary>
-	/// Gets the generic graphicsContext.
+	/// Gets the generic graphics context.
 	/// </summary>
 	protected abstract GraphicsContext GraphicsContext { get; }
 
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.CommandQueue" /> instance.
 	/// </summary>
-	/// <param name="queueType">The commandQueue type, <see cref="T:Sedulous.RHI.CommandQueueType" />.</param>
-	/// <returns>The new commandQueue.</returns>
+	/// <param name="queueType">The command queue type, <see cref="T:Sedulous.RHI.CommandQueueType" />.</param>
+	/// <returns>The new command queue.</returns>
 	public CommandQueue CreateCommandQueue(CommandQueueType queueType = CommandQueueType.Graphics)
 	{
 		GraphicsContext.ValidationLayer?.CreateCommandQueueValidation(queueType);
@@ -27,16 +27,16 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.CommandQueue" /> instance.
 	/// </summary>
-	/// <param name="queueType">The commandQueue type, <see cref="T:Sedulous.RHI.CommandQueueType" />.</param>
-	/// <returns>The new commandQueue.</returns>
+	/// <param name="queueType">The command queue type, <see cref="T:Sedulous.RHI.CommandQueueType" />.</param>
+	/// <returns>The new command queue.</returns>
 	[Inline]
 	protected abstract CommandQueue CreateCommandQueueInternal(CommandQueueType queueType = CommandQueueType.Graphics);
 
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.GraphicsPipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The graphics pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The graphics pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	public GraphicsPipelineState CreateGraphicsPipeline(in GraphicsPipelineDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateGraphicsPipelineValidation(description);
@@ -46,16 +46,16 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.GraphicsPipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The graphics pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The graphics pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	[Inline]
 	protected abstract GraphicsPipelineState CreateGraphicsPipelineInternal(in GraphicsPipelineDescription description);
 
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.ComputePipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The compute pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The compute pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	public ComputePipelineState CreateComputePipeline(in ComputePipelineDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateComputePipelineValidation(description);
@@ -65,16 +65,16 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.ComputePipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The compute pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The compute pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	[Inline]
 	protected abstract ComputePipelineState CreateComputePipelineInternal(in ComputePipelineDescription description);
 
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.Raytracing.RaytracingPipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The raytracing pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The raytracing pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	public RaytracingPipelineState CreateRaytracingPipeline(in RaytracingPipelineDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateRaytracingPipelineValidation(description);
@@ -84,8 +84,8 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.Raytracing.RaytracingPipelineState" /> instance.
 	/// </summary>
-	/// <param name="description">The raytracing pipelinestate description.</param>
-	/// <returns>The new pipelinestate.</returns>
+	/// <param name="description">The raytracing pipeline state description.</param>
+	/// <returns>The new pipeline state.</returns>
 	[Inline]
 	protected abstract RaytracingPipelineState CreateRaytracingPipelineInternal(in RaytracingPipelineDescription description);
 
@@ -93,7 +93,7 @@ public abstract class ResourceFactory
 	/// Creates a <see cref="T:Sedulous.RHI.Texture" /> instance.
 	/// </summary>
 	/// <param name="description">The texture description.</param>
-	/// <param name="debugName">The texture name (Debug purposes).</param>
+	/// <param name="debugName">The texture name (for debug purposes).</param>
 	/// <returns>The new texture.</returns>
 	public Texture CreateTexture(in TextureDescription description, String debugName = null)
 	{
@@ -106,8 +106,8 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Gets a <see cref="T:Sedulous.RHI.Texture" /> instance from an existing texture using the specified native pointer.
 	/// </summary>
-	/// <param name="texturePointer">The pointer of the texture.</param>
-	/// <param name="textureDescription">The texture description of the already created texture.</param>
+	/// <param name="texturePointer">The pointer to the texture.</param>
+	/// <param name="textureDescription">The description of the already created texture.</param>
 	/// <returns>The texture instance.</returns>
 	public Texture GetTextureFromNativePointer(void* texturePointer, in TextureDescription textureDescription)
 	{
@@ -121,8 +121,8 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Gets a <see cref="T:Sedulous.RHI.Texture" /> instance from an existing texture using the specified native pointer.
 	/// </summary>
-	/// <param name="texturePointer">The pointer of the texture.</param>
-	/// <param name="textureDescription">The texture description of the already created texture.</param>
+	/// <param name="texturePointer">The pointer to the texture.</param>
+	/// <param name="textureDescription">The description of the already created texture.</param>
 	/// <returns>The texture instance.</returns>
 	[Inline]
 	protected abstract Texture GetTextureFromNativePointerInternal(void* texturePointer, in TextureDescription textureDescription);
@@ -132,8 +132,8 @@ public abstract class ResourceFactory
 	/// </summary>
 	/// <param name="data">The texture data.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="debugName">The texture name (Debug purposes).</param>
-	/// <returns>The new texture1D.</returns>
+	/// <param name="debugName">The texture name (for debug purposes).</param>
+	/// <returns>The new Texture1D instance.</returns>
 	public Texture CreateTexture(DataBox[] data, in TextureDescription description, String debugName = null)
 	{
 		SamplerStateDescription samplerStatedescription = SamplerStates.LinearWrap;
@@ -147,8 +147,8 @@ public abstract class ResourceFactory
 	/// </summary>
 	/// <param name="data">The texture data.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="samplerState">The sampler state description <see cref="T:Sedulous.RHI.SamplerStateDescription" /> struct.</param>
-	/// <param name="debugName">The texture name (Debug pruposes).</param>
+	/// <param name="samplerState">The sampler state description in the <see cref="T:Sedulous.RHI.SamplerStateDescription" /> struct.</param>
+	/// <param name="debugName">The texture name (for debugging purposes).</param>
 	/// <returns>The new texture.</returns>
 	public Texture CreateTexture(DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState, String debugName = null)
 	{
@@ -163,7 +163,7 @@ public abstract class ResourceFactory
 	/// </summary>
 	/// <param name="data">The texture data.</param>
 	/// <param name="description">The texture description.</param>
-	/// <param name="samplerState">The sampler state description <see cref="T:Sedulous.RHI.SamplerStateDescription" /> struct.</param>
+	/// <param name="samplerState">The sampler state description of the <see cref="T:Sedulous.RHI.SamplerStateDescription" /> struct.</param>
 	/// <returns>The new texture.</returns>
 	[Inline]
 	protected abstract Texture CreateTextureInternal(DataBox[] data, in TextureDescription description, in SamplerStateDescription samplerState);
@@ -172,7 +172,7 @@ public abstract class ResourceFactory
 	/// Creates a <see cref="T:Sedulous.RHI.Buffer" /> instance.
 	/// </summary>
 	/// <param name="description">The index buffer description.</param>
-	/// <param name="debugName">The buffer name (Debug purposes).</param>
+	/// <param name="debugName">The buffer name (for debug purposes).</param>
 	/// <returns>The new buffer.</returns>
 	public Buffer CreateBuffer(in BufferDescription description, String debugName = null)
 	{
@@ -187,7 +187,7 @@ public abstract class ResourceFactory
 	/// <typeparam name="T">The data type.</typeparam>
 	/// <param name="data">The data array.</param>
 	/// <param name="description">The index buffer description.</param>
-	/// <param name="debugName">The buffer name (Debug purposes).</param>
+	/// <param name="debugName">The buffer name (for debugging purposes).</param>
 	/// <returns>The new buffer.</returns>
 	public Buffer CreateBuffer<T>(T[] data, in BufferDescription description, String debugName = null) where T : struct
 	{
@@ -202,7 +202,7 @@ public abstract class ResourceFactory
 	/// <typeparam name="T">The data type.</typeparam>
 	/// <param name="data">The data reference.</param>
 	/// <param name="description">The index buffer description.</param>
-	/// <param name="debugName">The buffer name (Debug purposes).</param>
+	/// <param name="debugName">The buffer name (for debugging purposes).</param>
 	/// <returns>The new buffer.</returns>
 	public Buffer CreateBuffer<T>(ref T data, in BufferDescription description, String debugName = null) where T : struct
 	{
@@ -214,9 +214,9 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.Buffer" /> instance.
 	/// </summary>
-	/// <param name="data">Data pointer.</param>
+	/// <param name="data">Pointer to the data.</param>
 	/// <param name="description">The index buffer description.</param>
-	/// <param name="debugName">The buffer name (Debug purposes).</param>
+	/// <param name="debugName">The buffer name for debugging purposes.</param>
 	/// <returns>The new buffer.</returns>
 	public Buffer CreateBuffer(void* data, in BufferDescription description, String debugName = null)
 	{
@@ -229,21 +229,21 @@ public abstract class ResourceFactory
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.Buffer" /> instance.
 	/// </summary>
-	/// <param name="data">Data pointer.</param>
-	/// <param name="description">The index buffer description.</param>
+	/// <param name="data">Pointer to the data.</param>
+	/// <param name="description">The description of the index buffer.</param>
 	/// <returns>The new buffer.</returns>
 	[Inline]
 	protected abstract Buffer CreateBufferInternal(void* data, in BufferDescription description);
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.QueryHeap" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.QueryHeap" /> instance.
 	/// </summary>
-	/// <param name="description">The queryheap description.</param>
-	/// <returns>The new queryheap.</returns>
+	/// <param name="description">The <see cref="T:Sedulous.RHI.QueryHeap" /> description.</param>
+	/// <returns>The new <see cref="T:Sedulous.RHI.QueryHeap" />.</returns>
 	public abstract QueryHeap CreateQueryHeap(in QueryHeapDescription description);
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.Shader" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.Shader" /> instance.
 	/// </summary>
 	/// <param name="description">The shader description.</param>
 	/// <returns>The new shader.</returns>
@@ -254,7 +254,7 @@ public abstract class ResourceFactory
 	}
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.Shader" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.Shader" /> instance.
 	/// </summary>
 	/// <param name="description">The shader description.</param>
 	/// <returns>The new shader.</returns>
@@ -265,7 +265,7 @@ public abstract class ResourceFactory
 	/// Creates a <see cref="T:Sedulous.RHI.SamplerState" /> instance.
 	/// </summary>
 	/// <param name="description">The sampler state description.</param>
-	/// <returns>The new samplerstate.</returns>
+	/// <returns>The new sampler state.</returns>
 	public SamplerState CreateSamplerState(in SamplerStateDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateSamplerStateValidation(description);
@@ -276,18 +276,18 @@ public abstract class ResourceFactory
 	/// Creates a <see cref="T:Sedulous.RHI.SamplerState" /> instance.
 	/// </summary>
 	/// <param name="description">The sampler state description.</param>
-	/// <returns>The new samplerstate.</returns>
+	/// <returns>The new sampler state.</returns>
 	[Inline]
 	protected abstract SamplerState CreateSamplerStateInternal(in SamplerStateDescription description);
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
 	/// </summary>
-	/// <param name="width">The with of the underlying textures.</param>
+	/// <param name="width">The width of the underlying textures.</param>
 	/// <param name="height">The height of the underlying textures.</param>
 	/// <param name="colorTargetPixelFormat">The pixel format of the color target.</param>
 	/// <param name="depthTargetPixelFormat">The pixel format of the depth target.</param>
-	/// <param name="debugName">The framebuffer textures names (Debug purposes).</param>
+	/// <param name="debugName">The framebuffer textures' names (for debugging purposes).</param>
 	/// <returns>The new framebuffer.</returns>
 	public FrameBuffer CreateFrameBuffer(uint32 width, uint32 height, PixelFormat colorTargetPixelFormat = PixelFormat.R8G8B8A8_UNorm, PixelFormat depthTargetPixelFormat = PixelFormat.D24_UNorm_S8_UInt, String debugName = null)
 	{
@@ -330,11 +330,11 @@ public abstract class ResourceFactory
 	}
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
 	/// </summary>
-	/// <param name="depthTarget">The depth <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
-	/// <param name="colorTargets">The array of color <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> , all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
-	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
+	/// <param name="depthTarget">The depth <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
+	/// <param name="colorTargets">The array of color <see cref="T:Sedulous.RHI.FrameBufferAttachment" />, all of which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
+	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose of the attachment textures too.</param>
 	/// <returns>The new framebuffer.</returns>
 	public FrameBuffer CreateFrameBuffer(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments = true)
 	{
@@ -342,20 +342,20 @@ public abstract class ResourceFactory
 	}
 
 	/// <summary>
-	/// Create a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
+	/// Creates a <see cref="T:Sedulous.RHI.FrameBuffer" /> instance.
 	/// </summary>
-	/// <param name="depthTarget">The depth <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
-	/// <param name="colorTargets">The array of color <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> , all of which must have been created with <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
-	/// <param name="disposeAttachments">When this framebuffer is disposed, dispose the attachment textures too.</param>
+	/// <param name="depthTarget">The depth <see cref="T:Sedulous.RHI.FrameBufferAttachment" /> which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.DepthStencil" /> flag.</param>
+	/// <param name="colorTargets">The array of color <see cref="T:Sedulous.RHI.FrameBufferAttachment" />, all of which must have been created with the <see cref="F:Sedulous.RHI.TextureFlags.RenderTarget" /> flags.</param>
+	/// <param name="disposeAttachments">When this framebuffer is disposed, disposes the attachment textures too.</param>
 	/// <returns>The new framebuffer.</returns>
 	[Inline]
 	protected abstract FrameBuffer CreateFrameBufferInternal(FrameBufferAttachment? depthTarget, FrameBufferAttachmentList colorTargets, bool disposeAttachments);
 
 	/// <summary>
-	/// Create a new <see cref="T:Sedulous.RHI.ResourceLayout" />.
+	/// Creates a new <see cref="T:Sedulous.RHI.ResourceLayout" />.
 	/// </summary>
-	/// <param name="description">The descriptions for all elements in this new resourceLayout.</param>
-	/// <returns>A new resourceLayout object.</returns>
+	/// <param name="description">The description for all elements in this new <see cref="T:Sedulous.RHI.ResourceLayout" />.</param>
+	/// <returns>A new <see cref="T:Sedulous.RHI.ResourceLayout" /> object.</returns>
 	public ResourceLayout CreateResourceLayout(in ResourceLayoutDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateResourceLayoutValidation(description);
@@ -363,18 +363,18 @@ public abstract class ResourceFactory
 	}
 
 	/// <summary>
-	/// Create a new <see cref="T:Sedulous.RHI.ResourceLayout" />.
+	/// Creates a new <see cref="T:Sedulous.RHI.ResourceLayout" />.
 	/// </summary>
-	/// <param name="description">The descriptions for all elements in this new resourceLayout.</param>
-	/// <returns>A new resourceLayout object.</returns>
+	/// <param name="description">The description of all elements in this new <see cref="T:Sedulous.RHI.ResourceLayout" />.</param>
+	/// <returns>A new ResourceLayout object.</returns>
 	[Inline]
 	protected abstract ResourceLayout CreateResourceLayoutInternal(in ResourceLayoutDescription description);
 
 	/// <summary>
-	/// Create a new <see cref="T:Sedulous.RHI.ResourceSet" />.
+	/// Creates a new <see cref="T:Sedulous.RHI.ResourceSet" />.
 	/// </summary>
-	/// <param name="description">The descriptions for all elements in this new resourceSet.</param>
-	/// <returns>A new resourceSet object.</returns>
+	/// <param name="description">The description for all elements in this new <see cref="T:Sedulous.RHI.ResourceSet" />.</param>
+	/// <returns>A new <see cref="T:Sedulous.RHI.ResourceSet" /> object.</returns>
 	public ResourceSet CreateResourceSet(in ResourceSetDescription description)
 	{
 		GraphicsContext.ValidationLayer?.CreateResourceSetValidation(description);
@@ -382,10 +382,10 @@ public abstract class ResourceFactory
 	}
 
 	/// <summary>
-	/// Create a new <see cref="T:Sedulous.RHI.ResourceSet" />.
+	/// Creates a new <see cref="T:Sedulous.RHI.ResourceSet" />.
 	/// </summary>
-	/// <param name="description">The descriptions for all elements in this new resourceSet.</param>
-	/// <returns>A new resourceSet object.</returns>
+	/// <param name="description">The description for all elements in this new <see cref="T:Sedulous.RHI.ResourceSet" />.</param>
+	/// <returns>A new <see cref="T:Sedulous.RHI.ResourceSet" /> object.</returns>
 	[Inline]
 	protected abstract ResourceSet CreateResourceSetInternal(in ResourceSetDescription description);
 }

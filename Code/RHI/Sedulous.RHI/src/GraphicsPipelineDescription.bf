@@ -8,27 +8,27 @@ namespace Sedulous.RHI;
 public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescription>
 {
 	/// <summary>
-	/// The render state description.
+	/// The rendering state description.
 	/// </summary>
 	public RenderStateDescription RenderStates;
 
 	/// <summary>
-	/// The shader state description.
+	/// Describes the state of the shader.
 	/// </summary>
 	public GraphicsShaderStateDescription Shaders;
 
 	/// <summary>
-	/// Describes the input vertex buffer data.
+	/// Describes the input for vertex buffer data.
 	/// </summary>
 	public InputLayouts InputLayouts;
 
 	/// <summary>
-	/// Describes the resource layouts input array.
+	/// Describes the resource layout's input array.
 	/// </summary>
 	public ResourceLayout[] ResourceLayouts;
 
 	/// <summary>
-	/// Define how vertices are interpreted and rendered by the pipeline.
+	/// Defines how vertices are interpreted and rendered by the pipeline.
 	/// </summary>
 	public PrimitiveTopology PrimitiveTopology;
 
@@ -40,7 +40,7 @@ public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescripti
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.GraphicsPipelineDescription" /> struct.
 	/// </summary>
-	/// <param name="primitiveTopology">Define how vertices are interpreted and rendered by the pipeline.</param>
+	/// <param name="primitiveTopology">Defines how vertices are interpreted and rendered by the pipeline.</param>
 	/// <param name="inputLayouts">Describes the input vertex buffer data.</param>
 	/// <param name="resourceLayouts">The resource layouts array.</param>
 	/// <param name="shaders">The shader state description.</param>
@@ -59,7 +59,7 @@ public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescripti
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Object to be compared.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -96,7 +96,7 @@ public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescripti
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -106,8 +106,8 @@ public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescripti
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -119,8 +119,8 @@ public struct GraphicsPipelineDescription : IEquatable<GraphicsPipelineDescripti
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

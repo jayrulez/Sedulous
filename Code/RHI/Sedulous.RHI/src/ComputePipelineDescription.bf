@@ -8,7 +8,7 @@ namespace Sedulous.RHI;
 public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription>
 {
 	/// <summary>
-	/// Describes the resources layout input.
+	/// Describes the layout of resources input.
 	/// </summary>
 	public ResourceLayout[] ResourceLayouts;
 
@@ -35,8 +35,8 @@ public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ComputePipelineDescription" /> struct.
 	/// </summary>
-	/// <param name="resourceLayouts">The resources layout description.</param>
-	/// <param name="shaderDescription">The compute shader.</param>
+	/// <param name="resourceLayouts">The resource layout description.</param>
+	/// <param name="shaderDescription">The compute shader description.</param>
 	/// <param name="threadGroupSizeX">The X dimension of the thread group size.</param>
 	/// <param name="threadGroupSizeY">The Y dimension of the thread group size.</param>
 	/// <param name="threadGroupSizeZ">The Z dimension of the thread group size.</param>
@@ -52,7 +52,7 @@ public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The other instance used for comparison.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -99,8 +99,8 @@ public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -112,8 +112,8 @@ public struct ComputePipelineDescription : IEquatable<ComputePipelineDescription
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

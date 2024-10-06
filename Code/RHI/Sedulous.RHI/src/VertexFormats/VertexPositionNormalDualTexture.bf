@@ -3,7 +3,7 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position, normal and texture coordinate.
+/// Represents a vertex with position, normal, and texture coordinates.
 /// </summary>
 public struct VertexPositionNormalDualTexture
 {
@@ -13,17 +13,17 @@ public struct VertexPositionNormalDualTexture
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex normal.
+	/// Vertex normal vector.
 	/// </summary>
 	public Vector3 Normal;
 
 	/// <summary>
-	/// Vertex texture coordinate.
+	/// Vertex texture coordinates.
 	/// </summary>
 	public Vector2 TexCoord;
 
 	/// <summary>
-	/// Second vertex texture coordinate.
+	/// Second vertex's texture coordinate.
 	/// </summary>
 	public Vector2 TexCoord2;
 

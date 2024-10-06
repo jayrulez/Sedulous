@@ -1,40 +1,40 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The stencil operations that can be performed during depth-stencil testing.
+/// The stencil operations that can be performed during depth and stencil testing.
 /// </summary>
 public enum StencilOperation : uint8
 {
 	/// <summary>
-	/// Keep the existing stencil data.
+	/// Keeps the existing stencil data.
 	/// </summary>
 	Keep = 1,
 	/// <summary>
-	/// Set the stencil data to 0.
+	/// Sets the stencil data to 0.
 	/// </summary>
 	Zero,
 	/// <summary>
-	/// Set the stencil data to the reference value.
+	/// Sets the stencil data to the reference value.
 	/// </summary>
 	Replace,
 	/// <summary>
-	/// Increment the stencil value by 1, and clamp the result.
+	/// Increments the stencil value by 1 and clamps the result.
 	/// </summary>
 	IncrementSaturation,
 	/// <summary>
-	/// Decrement the stencil value by 1, and clamp the result.
+	/// Decrements the stencil value by 1 and clamps the result.
 	/// </summary>
 	DecrementSaturation,
 	/// <summary>
-	/// Invert the stencil data.
+	/// Inverts the stencil data.
 	/// </summary>
 	Invert,
 	/// <summary>
-	/// Increment the stencil value by 1, and wrap the result if necessary.
+	/// Increments the stencil value by 1 and wraps the result if necessary.
 	/// </summary>
 	Increment,
 	/// <summary>
-	/// Decrement the stencil value by 1, and wrap the result if necessary.
+	/// Decrements the stencil value by 1, and wraps the result if necessary.
 	/// </summary>
 	Decrement
 }

@@ -6,32 +6,32 @@ namespace Sedulous.RHI;
 public static class RasterizerStates
 {
 	/// <summary>
-	/// Cull primitives with clockwise winding order;.
+	/// Culls primitives with clockwise winding order.
 	/// </summary>
 	public static readonly RasterizerStateDescription CullFront;
 
 	/// <summary>
-	/// Cull primitives with counter-clockwise winding order.
+	/// Culls primitives with a counterclockwise winding order.
 	/// </summary>
 	public static readonly RasterizerStateDescription CullBack;
 
 	/// <summary>
-	/// Not cull primitives.
+	/// Does not cull primitives.
 	/// </summary>
 	public static readonly RasterizerStateDescription None;
 
 	/// <summary>
-	/// Cull primitives with clockwise winding order and wireframe enable.
+	/// Culls primitives with a clockwise winding order and enables the wireframe.
 	/// </summary>
 	public static readonly RasterizerStateDescription WireframeCullFront;
 
 	/// <summary>
-	/// Cull primitives with counter-clockwise winding order and wireframe enable.
+	/// Culls primitives with a counter-clockwise winding order and enables wireframe mode.
 	/// </summary>
 	public static readonly RasterizerStateDescription WireframeCullBack;
 
 	/// <summary>
-	/// Not cull primitives and wireframe enable.
+	/// Do not cull primitives, and enable wireframe.
 	/// </summary>
 	public static readonly RasterizerStateDescription WireframeCullNone;
 

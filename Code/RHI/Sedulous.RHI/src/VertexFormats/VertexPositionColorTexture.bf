@@ -3,12 +3,12 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position, color and texture coordinate.
+/// Represents a vertex with position, color, and texture coordinates.
 /// </summary>
 public struct VertexPositionColorTexture
 {
 	/// <summary>
-	/// Vertex position.
+	/// Vertex's position.
 	/// </summary>
 	public Vector3 Position;
 
@@ -18,7 +18,7 @@ public struct VertexPositionColorTexture
 	public Color Color;
 
 	/// <summary>
-	/// Vertex texture coordinate.
+	/// Vertex texture coordinates.
 	/// </summary>
 	public Vector2 TexCoord;
 

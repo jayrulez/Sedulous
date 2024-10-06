@@ -3,22 +3,22 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class represent a set of bindable resources.
+/// This class represents a set of bindable resources.
 /// </summary>
 public abstract class ResourceLayout : IDisposable
 {
 	/// <summary>
-	/// The resource layout description.
+	/// The description of the resource layout.
 	/// </summary>
 	public readonly ResourceLayoutDescription Description;
 
 	/// <summary>
-	/// Gets or sets a string identifying this instance. Can be used in graphics debuggers tools.
+	/// Gets or sets a string identifying this instance. Can be used in graphics debugger tools.
 	/// </summary>
 	public abstract String Name { get; set; }
 
 	/// <summary>
-	/// Frees managed and unmanaged resources.
+	/// Releases managed and unmanaged resources.
 	/// </summary>
 	public abstract void Dispose();
 

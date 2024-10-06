@@ -1,12 +1,12 @@
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// The acceleration structure bottom level description.
+/// The description of the bottom-level acceleration structure.
 /// </summary>
 public struct BottomLevelASDescription
 {
 	/// <summary>
-	/// Array of geometries.
+	/// An array of geometries.
 	/// </summary>
 	public AccelerationStructureGeometry[] Geometries;
 }

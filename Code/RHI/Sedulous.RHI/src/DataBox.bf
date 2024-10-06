@@ -3,7 +3,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Provides access to data organized in 3D.
+/// Provides access to data organized in 3D space.
 /// </summary>
 public struct DataBox
 {
@@ -41,7 +41,7 @@ public struct DataBox
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a void*.
 	/// </summary>
-	/// <param name="datapointer">The datapointer.</param>
+	/// <param name="datapointer">The data pointer.</param>
 	/// <param name="rowPitch">The row pitch.</param>
 	/// <param name="slicePitch">The slice pitch.</param>
 	public this(void* datapointer, uint32 rowPitch = 0, uint32 slicePitch = 0)
@@ -54,7 +54,7 @@ public struct DataBox
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.DataBox" /> struct from a byte array.
 	/// </summary>
-	/// <param name="data">The data as byte array.</param>
+	/// <param name="data">The data as a byte array.</param>
 	/// <param name="rowPitch">The row pitch.</param>
 	/// <param name="slicePitch">The slice pitch.</param>
 	public this(uint8[] data, uint32 rowPitch = 0, uint32 slicePitch = 0)

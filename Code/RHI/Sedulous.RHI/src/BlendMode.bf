@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies alpha blending mode.
+/// Specifies the alpha blending mode.
 /// </summary>
 public enum BlendMode : uint8
 {
@@ -10,7 +10,7 @@ public enum BlendMode : uint8
 	/// </summary>
 	Opaque,
 	/// <summary>
-	/// Premultiplied alpha blending.
+	/// Pre-multiplied alpha blending.
 	/// </summary>
 	AlphaBlend,
 	/// <summary>
@@ -18,7 +18,7 @@ public enum BlendMode : uint8
 	/// </summary>
 	Additive,
 	/// <summary>
-	/// Non premultiplied alpha blending.
+	/// Non-premultiplied alpha blending.
 	/// </summary>
 	NonPremultiplied
 }

@@ -19,47 +19,47 @@ public struct BlendStateDescription : IEquatable<BlendStateDescription>
 	public bool IndependentBlendEnable;
 
 	/// <summary>
-	/// RenderTarget blend description 0 / 7.
+	/// RenderTarget blend description 0 of 7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget0;
 
 	/// <summary>
-	/// RenderTarget blend description 1 / 7.
+	/// Render Target blend description 1 of 7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget1;
 
 	/// <summary>
-	/// RenderTarget blend description 2 / 7.
+	/// RenderTarget blend description 2 of 7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget2;
 
 	/// <summary>
-	/// RenderTarget blend description 3 / 7.
+	/// Render Target blend description 3/7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget3;
 
 	/// <summary>
-	/// RenderTarget blend description 4 / 7.
+	/// Render target blend description 4/7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget4;
 
 	/// <summary>
-	/// RenderTarget blend description 5 / 7.
+	/// Render target blend description 5/7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget5;
 
 	/// <summary>
-	/// RenderTarget blend description 6 / 7.
+	/// RenderTarget blend description 6 of 7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget6;
 
 	/// <summary>
-	/// RenderTarget blend description 7 / 7.
+	/// RenderTarget blend description 7 out of 7.
 	/// </summary>
 	public BlendStateRenderTargetDescription RenderTarget7;
 
 	/// <summary>
-	/// Gets default values for BlendStateDescription.
+	/// Gets the default values for BlendStateDescription.
 	/// </summary>
 	public static BlendStateDescription Default
 	{
@@ -91,7 +91,7 @@ public struct BlendStateDescription : IEquatable<BlendStateDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -128,7 +128,7 @@ public struct BlendStateDescription : IEquatable<BlendStateDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -138,8 +138,8 @@ public struct BlendStateDescription : IEquatable<BlendStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -151,10 +151,10 @@ public struct BlendStateDescription : IEquatable<BlendStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(BlendStateDescription value1, BlendStateDescription value2)
 	{

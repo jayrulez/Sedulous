@@ -1,7 +1,7 @@
 namespace Sedulous.RHI.Raytracing;
 
 /// <summary>
-/// Describes the properties of a ray dispatch operation initiated with a call to DispatchRays.
+/// Describes the properties of a ray dispatch operation initiated by calling DispatchRays.
 /// </summary>
 public struct DispatchRaysDescription
 {
@@ -11,7 +11,7 @@ public struct DispatchRaysDescription
 	public uint32 Width;
 
 	/// <summary>
-	/// The height of the generation shader thread grid.
+	/// The height of the generation shader's thread grid.
 	/// </summary>
 	public uint32 Height;
 

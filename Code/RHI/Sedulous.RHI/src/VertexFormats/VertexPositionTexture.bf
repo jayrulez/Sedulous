@@ -3,17 +3,17 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// Represents a vertex with position and texture coordinate.
+/// Represents a vertex with a position and a texture coordinate.
 /// </summary>
 public struct VertexPositionTexture
 {
 	/// <summary>
-	/// Vertex position.
+	/// Position of the vertex.
 	/// </summary>
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex texture coordinate.
+	/// The vertex texture coordinate.
 	/// </summary>
 	public Vector2 TexCoord;
 
@@ -26,7 +26,7 @@ public struct VertexPositionTexture
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.VertexFormats.VertexPositionTexture" /> struct.
 	/// </summary>
 	/// <param name="position">The position.</param>
-	/// <param name="texCoord">The tex coord.</param>
+	/// <param name="texCoord">The texture coordinate.</param>
 	public this(Vector3 position, Vector2 texCoord)
 	{
 		Position = position;

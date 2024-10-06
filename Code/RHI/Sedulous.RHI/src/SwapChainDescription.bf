@@ -4,7 +4,7 @@ using Sedulous.Platform;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Represents the requiered information to create a new swapchain depending of the platform.
+/// Represents the required information to create a new swapchain depending on the platform.
 /// </summary>
 public struct SwapChainDescription : IEquatable<SwapChainDescription>
 {
@@ -14,12 +14,12 @@ public struct SwapChainDescription : IEquatable<SwapChainDescription>
 	public SurfaceInfo SurfaceInfo;
 
 	/// <summary>
-	/// The swapchain buffers width.
+	/// The width of the swapchain buffers.
 	/// </summary>
 	public uint32 Width;
 
 	/// <summary>
-	/// The swapchain buffers height.
+	/// The height of the swapchain buffers.
 	/// </summary>
 	public uint32 Height;
 
@@ -34,34 +34,34 @@ public struct SwapChainDescription : IEquatable<SwapChainDescription>
 	public PixelFormat ColorTargetFormat;
 
 	/// <summary>
-	/// The color texture flags for binding to pipeline stages. The flags ca be combined by a logical OR.
+	/// The color texture flags for binding to pipeline stages. The flags can be combined using a logical OR.
 	/// </summary>
 	public TextureFlags ColorTargetFlags;
 
 	/// <summary>
-	/// The pixel format of the depthstencil target.
+	/// The pixel format of the depth stencil target.
 	/// </summary>
 	public PixelFormat DepthStencilTargetFormat;
 
 	/// <summary>
-	/// The depth texture flags for binding to pipeline stages. The flags ca be combined by a logical OR.
+	/// The depth texture flags for binding to pipeline stages. The flags can be combined by a logical OR.
 	/// </summary>
 	public TextureFlags DepthStencilTargetFlags;
 
 	/// <summary>
-	/// The sampler count of this swapchain.
+	/// The sample count of this swap chain.
 	/// </summary>
 	public TextureSampleCount SampleCount;
 
 	/// <summary>
-	/// Whether the output is in windowed mode.
+	/// Indicates whether the output is in windowed mode.
 	/// </summary>
 	public bool IsWindowed;
 
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -106,7 +106,7 @@ public struct SwapChainDescription : IEquatable<SwapChainDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -116,8 +116,8 @@ public struct SwapChainDescription : IEquatable<SwapChainDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -129,8 +129,8 @@ public struct SwapChainDescription : IEquatable<SwapChainDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

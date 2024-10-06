@@ -17,63 +17,63 @@ public class ValidationLayer
 	/// <summary>
 	/// The Notify delegate function.
 	/// </summary>
-	/// <param name="owner">The owner of this error message.</param>
-	/// <param name="message">The error message content.</param>
+	/// <param name="owner">The owner of the error message.</param>
+	/// <param name="message">The content of the error message.</param>
 	/// <param name="severity">The severity associated with the message.</param>
 	public delegate void NotifyAction(String owner, String message, Severity severity = Severity.Error);
 
 	/// <summary>
-	/// The supported notify methods.
+	/// The supported notification methods.
 	/// </summary>
 	public enum NotifyMethod
 	{
 		/// <summary>
-		/// Validation layer throws exceptions.
+		/// The validation layer throws exceptions.
 		/// </summary>
 		Exceptions,
 		/// <summary>
-		/// Validation layer trace info.
+		/// Validation layer trace information.
 		/// </summary>
 		Trace,
 		/// <summary>
-		/// Validation layer fires events.
+		/// The validation layer triggers events.
 		/// </summary>
 		Events
 	}
 
 	/// <summary>
-	/// Severity enumerate.
+	/// Severity enumeration.
 	/// </summary>
 	public enum Severity
 	{
 		/// <summary>
-		/// Error severity.
+		/// Indicates the severity of the error.
 		/// </summary>
 		Error,
 		/// <summary>
-		/// Warning severity.
+		/// Severity of the warning.
 		/// </summary>
 		Warning,
 		/// <summary>
-		/// The information severity.
+		/// The severity of the information.
 		/// </summary>
 		Information
 	}
 
 	/// <summary>
-	/// Pointer to Notify function.
+	/// Pointer to the Notify function.
 	/// </summary>
 	public NotifyAction Notify;
 
 	/// <summary>
-	/// Event that allow to obtains the error messages if NofityMethod is set to Events.
+	/// Event that allows obtaining error messages if <see cref="T:Sedulous.RHI.ValidationLayer.NotifyMethod" /> is set to <see cref="F:Sedulous.RHI.ValidationLayer.NotifyMethod.Events" />.
 	/// </summary>
 	public delegate void(Object sender, String message) Error;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ValidationLayer" /> class.
 	/// </summary>
-	/// <param name="method">The notify method <see cref="T:Sedulous.RHI.ValidationLayer.NotifyMethod" />, exception by default.</param>
+	/// <param name="method">The notification method <see cref="T:Sedulous.RHI.ValidationLayer.NotifyMethod" />, exception by default.</param>
 	public this(ILogger logger, NotifyMethod method = NotifyMethod.Exceptions)
 	{
 		logger = logger;
@@ -96,7 +96,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ValidationLayer" /> class.
 	/// </summary>
-	/// <param name="function">The callback function called for every error detection.</param>
+	/// <param name="function">The callback function called for every detected error.</param>
 	public this(ILogger logger, NotifyAction @function)
 	{
 		logger = logger;
@@ -115,7 +115,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Creates a command queue validation layer.
 	/// </summary>
-	/// <param name="queueType">The queue type.</param>
+	/// <param name="queueType">The type of queue.</param>
 	public void CreateCommandQueueValidation(CommandQueueType queueType)
 	{
 		if (queueType < CommandQueueType.Graphics || queueType > CommandQueueType.Copy)
@@ -125,9 +125,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Creates a graphic pipeline validation.
+	/// Creates a graphics pipeline validation.
 	/// </summary>
-	/// <param name="description">The graphic pipeline description.</param>
+	/// <param name="description">The graphics pipeline description.</param>
 	public void CreateGraphicsPipelineValidation(in GraphicsPipelineDescription description)
 	{
 		if (description.Outputs.ColorAttachments.IsEmpty && !description.Outputs.DepthAttachment.HasValue)
@@ -139,7 +139,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Creates a compute pipeline validation layer.
 	/// </summary>
-	/// <param name="description">The compute pipeline description.</param>
+	/// <param name="description">The compute pipeline's description.</param>
 	public void CreateComputePipelineValidation(in ComputePipelineDescription description)
 	{
 		/*if (description.shaderDescription == null)
@@ -149,9 +149,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Creates a raytracing pipeline validatino layer.
+	/// Creates a ray tracing pipeline validation layer.
 	/// </summary>
-	/// <param name="description">The raytracing pipeline description.</param>
+	/// <param name="description">The ray tracing pipeline description.</param>
 	public void CreateRaytracingPipelineValidation(in RaytracingPipelineDescription description)
 	{
 	}
@@ -189,8 +189,8 @@ public class ValidationLayer
 	/// <summary>
 	/// Creates the buffer validation layer.
 	/// </summary>
-	/// <param name="data">The buffer data.</param>
-	/// <param name="description">The buffer description.</param>
+	/// <param name="data">The buffer's data.</param>
+	/// <param name="description">The buffer's description.</param>
 	public void CreateBufferValidation(void* data, in BufferDescription description)
 	{
 		if ((description.Flags & BufferFlags.BufferStructured) == BufferFlags.BufferStructured || (description.Flags & BufferFlags.UnorderedAccess) == BufferFlags.UnorderedAccess)
@@ -217,7 +217,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Creates a shader validation layer.
 	/// </summary>
-	/// <param name="description">The shader description.</param>
+	/// <param name="description">The shader's description.</param>
 	public void CreateShaderValidation(in ShaderDescription description)
 	{
 		if (String.IsNullOrEmpty(description.EntryPoint))
@@ -233,7 +233,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Creates the sampler state validation layer.
 	/// </summary>
-	/// <param name="description">The sampler state description.</param>
+	/// <param name="description">The description of the sampler state.</param>
 	public void CreateSamplerStateValidation(in SamplerStateDescription description)
 	{
 		if (description.MaxAnisotropy > 16)
@@ -247,7 +247,7 @@ public class ValidationLayer
 	/// </summary>
 	/// <param name="depthTarget">The depth frame buffer.</param>
 	/// <param name="colorTargets">The color frame buffers.</param>
-	/// <param name="disposeAttachments">If the attachments should be disposed.</param>
+	/// <param name="disposeAttachments">Whether the attachments should be disposed.</param>
 	public void CreateFrameBufferValidation(FrameBufferAttachment? depthTarget, FrameBufferAttachment[] colorTargets, bool disposeAttachments)
 	{
 		if (colorTargets.Count == 0)
@@ -257,7 +257,7 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Creates the resource layout validation.
+	/// Creates a resource layout validation.
 	/// </summary>
 	/// <param name="description">The resource layout description.</param>
 	public void CreateResourceLayoutValidation(in ResourceLayoutDescription description)
@@ -275,7 +275,7 @@ public class ValidationLayer
 	/// <summary>
 	/// Updates the buffer data.
 	/// </summary>
-	/// <param name="inRenderPass">IF the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Indicates if the operation is made inside a render pass.</param>
 	/// <param name="sourceSizeInBytes">The source buffer size in bytes.</param>
 	public void UpdateBufferData(bool inRenderPass, uint32 sourceSizeInBytes)
 	{
@@ -290,10 +290,10 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of the copy buffer operation.
+	/// Validates the copy buffer operation.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
-	/// <param name="sizeInBytes">The size in bytes of the buffer.</param>
+	/// <param name="inRenderPass">Indicates whether the operation is made inside a render pass.</param>
+	/// <param name="sizeInBytes">The size of the buffer in bytes.</param>
 	public void CopyBufferDataTo(bool inRenderPass, uint32 sizeInBytes)
 	{
 		if (inRenderPass)
@@ -307,9 +307,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of the copy texture data operation.
+	/// Validates the copy texture data operation.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Indicates if the operation is made inside a render pass.</param>
 	public void CopyTextureDataTo(bool inRenderPass)
 	{
 		if (inRenderPass)
@@ -319,9 +319,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of CommandBuffer.SetGraphicsPipelineState.
+	/// Validates CommandBuffer.SetGraphicsPipelineState.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Indicates if the operation is performed inside a render pass.</param>
 	public void SetGraphicsPipelineState(bool inRenderPass)
 	{
 		if (!inRenderPass)
@@ -333,8 +333,8 @@ public class ValidationLayer
 	/// <summary>
 	/// Validation of CommandBuffer.SetResourceSet.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
-	/// <param name="hasComputePipeline">Has compute pipeline binded.</param>
+	/// <param name="inRenderPass">Indicates if the operation is made inside a render pass.</param>
+	/// <param name="hasComputePipeline">Indicates if a compute pipeline is bound.</param>
 	internal void SetResourceSet(bool inRenderPass, bool hasComputePipeline)
 	{
 		if (!hasComputePipeline && !inRenderPass)
@@ -344,9 +344,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of CommandBuffer.SetVertexBuffer.
+	/// Validates <see cref="M:Sedulous.RHI.CommandBuffer.SetVertexBuffer(System.UInt32,Sedulous.RHI.Buffer,System.UInt32)" />.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Indicates if the operation is performed inside a render pass.</param>
 	internal void SetVertexBuffer(bool inRenderPass)
 	{
 		if (!inRenderPass)
@@ -356,9 +356,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of CommandBuffer.SetVertexBuffers.
+	/// Validation of <see cref="M:Sedulous.RHI.CommandBuffer.SetVertexBuffer(System.UInt32,Sedulous.RHI.Buffer,System.UInt32)" />.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Indicates if the operation is made inside a render pass.</param>
 	/// <param name="buffers">The buffers.</param>
 	/// <param name="offsets">The offsets.</param>
 	internal void SetVertexBuffers(bool inRenderPass, Buffer[] buffers, int32[] offsets)
@@ -374,9 +374,9 @@ public class ValidationLayer
 	}
 
 	/// <summary>
-	/// Validation of CommandBuffer.SetIndexBuffer.
+	/// Validation of <see cref="M:Sedulous.RHI.CommandBuffer.SetIndexBuffer(Sedulous.RHI.Buffer,Sedulous.RHI.IndexFormat,System.UInt32)" />.
 	/// </summary>
-	/// <param name="inRenderPass">If the operation is made inside a render pass.</param>
+	/// <param name="inRenderPass">Specifies whether the operation is made inside a render pass.</param>
 	internal void SetIndexBuffer(bool inRenderPass)
 	{
 		if (!inRenderPass)

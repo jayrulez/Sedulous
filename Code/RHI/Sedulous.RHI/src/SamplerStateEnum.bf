@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// The sampler state default values.
+/// The default values for the sampler state.
 /// </summary>
 public enum SamplerStateEnum
 {
@@ -10,7 +10,7 @@ public enum SamplerStateEnum
 	/// </summary>
 	PointClamp,
 	/// <summary>
-	/// SamplerState description using point filter (bilinear) and wrap address mode for UVW.
+	/// SamplerState description using point filter (bilinear filtering) and wrap address mode for UVW.
 	/// </summary>
 	PointWrap,
 	/// <summary>
@@ -18,31 +18,31 @@ public enum SamplerStateEnum
 	/// </summary>
 	PointMirror,
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and clamp address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and a clamp address mode for UVW.
 	/// </summary>
 	LinearClamp,
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and wrap address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and a wrap address mode for UVW.
 	/// </summary>
 	LinearWrap,
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and mirror address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and mirror address mode for UVW.
 	/// </summary>
 	LinearMirror,
 	/// <summary>
-	/// SamplerState description using anisotropic filter and clamp address mode for UVW.
+	/// Description of SamplerState using anisotropic filter and clamp address mode for UVW.
 	/// </summary>
 	AnisotropicClamp,
 	/// <summary>
-	/// SamplerState description using anisotropic filter and wrap address mode for UVW.
+	/// SamplerState description using anisotropic filtering and wrap address mode for UVW.
 	/// </summary>
 	AnisotropicWrap,
 	/// <summary>
-	/// SamplerState description using anisotropic filter and mirror address mode for UVW.
+	/// SamplerState description using an anisotropic filter and mirror address mode for UVW.
 	/// </summary>
 	AnisotropicMirror,
 	/// <summary>
-	/// Custom value
+	/// Custom value.
 	/// </summary>
 	Custom
 }

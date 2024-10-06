@@ -16,7 +16,7 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	public PixelFormat Format;
 
 	/// <summary>
-	/// Indicates if the <see cref="T:Sedulous.RHI.Texture" /> with MSAA attachment need to be resolved.
+	/// Indicates if the <see cref="T:Sedulous.RHI.Texture" /> with MSAA attachment needs to be resolved.
 	/// </summary>
 	public bool ResolveMSAA;
 
@@ -24,7 +24,7 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.OutputAttachmentDescription" /> struct.
 	/// </summary>
 	/// <param name="format">The format of the <see cref="T:Sedulous.RHI.Texture" /> attachment.</param>
-	/// <param name="resolveMSAA">Indicates if the <see cref="T:Sedulous.RHI.Texture" /> with MSAA attachment need to be resolved.</param>
+	/// <param name="resolveMSAA">Indicates if the <see cref="T:Sedulous.RHI.Texture" /> with MSAA attachment needs to be resolved.</param>
 	public this(PixelFormat format, bool resolveMSAA = false)
 	{
 		Format = format;
@@ -34,7 +34,7 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -71,7 +71,7 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -81,10 +81,10 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(OutputAttachmentDescription value1, OutputAttachmentDescription value2)
 	{
@@ -94,8 +94,8 @@ public struct OutputAttachmentDescription : IEquatable<OutputAttachmentDescripti
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

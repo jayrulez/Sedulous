@@ -2,7 +2,7 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Class that contains an error message.
+/// Class containing an error message.
 /// </summary>
 public class ErrorMessage
 {

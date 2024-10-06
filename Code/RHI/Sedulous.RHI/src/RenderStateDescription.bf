@@ -4,34 +4,34 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This struct represent all the parameters in the render states.
+/// This struct represents all the parameters in the render states.
 /// </summary>
 public struct RenderStateDescription : IEquatable<RenderStateDescription>
 {
 	/// <summary>
-	/// Gets or sets the Rasterizer State.
+	/// Gets or sets the rasterizer state.
 	/// </summary>
 	public RasterizerStateDescription RasterizerState;
 
 	/// <summary>
-	/// Gets or sets the DepthStencil state.
+	/// Gets or sets the depth-stencil state.
 	/// </summary>
 	public DepthStencilStateDescription DepthStencilState;
 
 	/// <summary>
-	/// Gets or sets the BlendState state.
+	/// Gets or sets the BlendState.
 	/// </summary>
 	public BlendStateDescription BlendState;
 
 	/// <summary>
-	/// The reference value to use when doing a stencil test.
+	/// The reference value to use when performing a stencil test.
 	/// </summary>
 	public int32 StencilReference;
 
 	/// <summary>
 	/// Array of blend factors, one for each RGBA component. The blend factors modulate values for the pixel shader, render target, or both.
 	/// If you created the blend-state object with D3D11_BLEND_BLEND_FACTOR or D3D11_BLEND_INV_BLEND_FACTOR, the blending stage uses the non-NULL array of blend factors.
-	/// If you didn't create the blend-state object with D3D11_BLEND_BLEND_FACTOR or D3D11_BLEND_INV_BLEND_FACTOR, the blending stage does not
+	/// If you did not create the blend-state object with D3D11_BLEND_BLEND_FACTOR or D3D11_BLEND_INV_BLEND_FACTOR, the blending stage does not
 	/// use the non-NULL array of blend factors; the runtime stores the blend factors, and you can later call ID3D11DeviceContext::OMGetBlendState to retrieve the blend factors.
 	/// If you pass NULL, the runtime uses or stores a blend factor equal to { 1, 1, 1, 1 }.
 	/// </summary>
@@ -43,7 +43,7 @@ public struct RenderStateDescription : IEquatable<RenderStateDescription>
 	public int32? SampleMask;
 
 	/// <summary>
-	/// Gets default values for RenderStateDescription.
+	/// Gets the default values for RenderStateDescription.
 	/// </summary>
 	public static RenderStateDescription Default
 	{
@@ -71,7 +71,7 @@ public struct RenderStateDescription : IEquatable<RenderStateDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -135,10 +135,10 @@ public struct RenderStateDescription : IEquatable<RenderStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(RenderStateDescription value1, RenderStateDescription value2)
 	{
@@ -148,8 +148,8 @@ public struct RenderStateDescription : IEquatable<RenderStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

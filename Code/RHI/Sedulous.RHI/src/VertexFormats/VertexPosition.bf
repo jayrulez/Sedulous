@@ -3,17 +3,17 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// A vertex format structure containing vertex position and color.
+/// A vertex format structure containing the vertex position and color.
 /// </summary>
 public struct VertexPosition
 {
 	/// <summary>
-	/// Vertex position.
+	/// Vertex's position.
 	/// </summary>
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex format of this vertex.
+	/// Format of this vertex.
 	/// </summary>
 	public static readonly LayoutDescription VertexFormat ~ delete _;
 

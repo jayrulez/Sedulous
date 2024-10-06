@@ -3,22 +3,22 @@ using Sedulous.Foundation.Mathematics;
 namespace Sedulous.RHI.VertexFormats;
 
 /// <summary>
-/// A vertex format structure containing vertex position and color.
+/// A vertex format structure containing the vertex position and color.
 /// </summary>
 public struct VertexPositionColor
 {
 	/// <summary>
-	/// Vertex position.
+	/// The vertex position.
 	/// </summary>
 	public Vector3 Position;
 
 	/// <summary>
-	/// Vertex color.
+	/// Vertex's color.
 	/// </summary>
 	public Color Color;
 
 	/// <summary>
-	/// Vertex format of this vertex.
+	/// Vertex format for this vertex.
 	/// </summary>
 	public static readonly LayoutDescription VertexFormat ~ delete _;
 

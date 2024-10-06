@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Identifies the set of device capabilities.
+/// Identifies a set of device capabilities.
 /// </summary>
 public enum GraphicsProfile : uint8
 {
@@ -35,7 +35,7 @@ public enum GraphicsProfile : uint8
 	/// </summary>
 	Level_11_1,
 	/// <summary>
-	/// DirectX 12 HLSL 6.0 | OpenGL 4.0
+	/// DirectX 12 HLSL 6.0; OpenGL 4.0
 	/// </summary>
 	Level_12_0,
 	/// <summary>
@@ -43,7 +43,7 @@ public enum GraphicsProfile : uint8
 	/// </summary>
 	Level_12_1,
 	/// <summary>
-	/// DirectX12 HLSL 6.3 (Raytracing)
+	/// DirectX12 HLSL 6.3 (Ray tracing)
 	/// </summary>
 	Level_12_3
 }

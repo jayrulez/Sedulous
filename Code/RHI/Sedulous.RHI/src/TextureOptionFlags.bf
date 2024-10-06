@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Identifies expected texture use during rendering.
+/// Identifies the expected texture usage during rendering.
 /// </summary>
 public enum TextureOptionFlags : uint8
 {
@@ -10,7 +10,7 @@ public enum TextureOptionFlags : uint8
 	/// </summary>
 	None,
 	/// <summary>
-	/// Specifies a textureCube access.
+	/// Specifies a texture cube access.
 	/// </summary>
 	TextureCube
 }

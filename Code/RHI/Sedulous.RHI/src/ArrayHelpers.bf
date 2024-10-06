@@ -9,7 +9,7 @@ namespace Sedulous.RHI;
 public static class ArrayHelpers
 {
 	/// <summary>
-	/// Ensure that the array has the specified capacity. If it's not, resize the array size to the specified capacity.
+	/// Ensures that the array has the specified capacity. If it does not, resizes the array to the specified capacity.
 	/// </summary>
 	/// <typeparam name="T">The array type.</typeparam>
 	/// <param name="array">The array.</param>
@@ -28,7 +28,7 @@ public static class ArrayHelpers
 	}
 
 	/// <summary>
-	/// Ensure that the array has the specified capacity. If it's not, resize the capacity to the next power of two value that contains the specified capacity.
+	/// Ensures that the array has the specified capacity. If it does not, resizes the capacity to the next power of two value that accommodates the specified capacity.
 	/// </summary>
 	/// <typeparam name="T">The array type.</typeparam>
 	/// <param name="array">The array.</param>
@@ -50,7 +50,7 @@ public static class ArrayHelpers
 	}
 
 	/// <summary>
-	/// Ensure that the array length is equal that the specified size. If it's not, resize the array size to the specified capacity.
+	/// Ensure that the array length is equal to the specified size. If it is not, resize the array to the specified capacity.
 	/// </summary>
 	/// <typeparam name="T">The array type.</typeparam>
 	/// <param name="array">The array.</param>
@@ -69,9 +69,9 @@ public static class ArrayHelpers
 	}
 
 	/// <summary>
-	/// Array copy.
+	/// Copies an array.
 	/// </summary>
-	/// <typeparam name="T">The array type.</typeparam>
+	/// <typeparam name="T">The type of the array.</typeparam>
 	/// <param name="src">The source array.</param>
 	/// <returns>The cloned array.</returns>
 	public static T[] CopyArray<T>(this T[] src)

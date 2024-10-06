@@ -1,39 +1,39 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Struct containing the info of an indirect indexed and instanced draw call.
+/// Struct containing the information of an indirect indexed and instanced draw call.
 /// </summary>
 public struct IndirectDrawArgsIndexedInstanced
 {
 	/// <summary>
-	/// The index count per instance.
+	/// The count of indices per instance.
 	/// </summary>
 	public uint32 IndexCountPerInstance;
 
 	/// <summary>
-	/// The instance count.
+	/// The count of instances.
 	/// </summary>
 	public uint32 InstanceCount;
 
 	/// <summary>
-	/// The start index location.
+	/// The starting index location.
 	/// </summary>
 	public uint32 StartIndexLocation;
 
 	/// <summary>
-	/// The base vertex location.
+	/// The base vertex's location.
 	/// </summary>
 	public int32 BaseVertexLocation;
 
 	/// <summary>
-	/// The start instance location.
+	/// The starting instance location.
 	/// </summary>
 	public uint32 StartInstanceLocation;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.IndirectDrawArgsIndexedInstanced" /> struct.
 	/// </summary>
-	/// <param name="indexCountPerInstance"> The index count per instance.</param>
+	/// <param name="indexCountPerInstance">The index count per instance.</param>
 	/// <param name="instanceCount">The instance count.</param>
 	/// <param name="startIndexLocation">The start index location.</param>
 	/// <param name="baseVertexLocation">The base vertex location.</param>

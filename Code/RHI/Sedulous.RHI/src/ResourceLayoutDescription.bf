@@ -1,12 +1,12 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This class describes the elements inside a <see cref="T:Sedulous.RHI.ResourceLayout" />.
+/// This class describes the elements within a <see cref="T:Sedulous.RHI.ResourceLayout" />.
 /// </summary>
 public struct ResourceLayoutDescription
 {
 	/// <summary>
-	/// The Layout elements.
+	/// The layout elements.
 	/// </summary>
 	public LayoutElementDescription[] Elements;
 
@@ -18,7 +18,7 @@ public struct ResourceLayoutDescription
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ResourceLayoutDescription" /> struct.
 	/// </summary>
-	/// <param name="elements">The elements descriptions.</param>
+	/// <param name="elements">The element descriptions.</param>
 	public this(params LayoutElementDescription[] elements)
 	{
 		Elements = elements;

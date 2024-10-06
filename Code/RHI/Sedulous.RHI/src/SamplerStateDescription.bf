@@ -3,66 +3,65 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Describes a sampler state.
+/// Describes a sampling state.
 /// </summary>
 public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 {
 	/// <summary>
-	/// Filtering method to use when sampling a texture.
+	/// Filter method to use when sampling a texture.
 	/// </summary>
 	public TextureFilter Filter;
 
 	/// <summary>
-	/// Method to use for resolving a u texture coordinate that is outside the 0 to 1 range.
+	/// Method used for resolving a u texture coordinate that is outside the 0 to 1 range.
 	/// </summary>
 	public TextureAddressMode AddressU;
 
 	/// <summary>
-	/// Method to use for resolving a v texture coordinate that is outside the 0 to 1 range.
+	/// Method used for resolving a v texture coordinate that is outside the 0 to 1 range.
 	/// </summary>
 	public TextureAddressMode AddressV;
 
 	/// <summary>
-	/// Method to use for resolving a w texture coordinate that is outside the 0 to 1 range.
+	/// Method used for resolving a w texture coordinate that is outside the 0 to 1 range.
 	/// </summary>
 	public TextureAddressMode AddressW;
 
 	/// <summary>
-	/// Offset from the calculated mipmap level. For example, if Direct3D calculates that a
-	/// texture should be sampled at mipmap level 3 and MipLODBias is 2, then the texture will be sampled at mipmap level 5.
+	/// Offset from the calculated mipmap level. For example, if Direct3D calculates that a texture should be sampled at mipmap level 3 and MipLODBias is 2, the texture will be sampled at mipmap level 5.
 	/// </summary>
 	public float MipLODBias;
 
 	/// <summary>
-	/// Clamping value used if D3D11_FILTER_ANISOTROPIC or D3D11_FILTER_COMPARISON_ANISOTROPIC is
-	/// specified in Filter. Valid values are between 1 and 16.
+	/// Clamp value used if D3D11_FILTER_ANISOTROPIC or D3D11_FILTER_COMPARISON_ANISOTROPIC is
+	/// specified in the filter. Valid values are between 1 and 16.
 	/// </summary>
 	public uint32 MaxAnisotropy;
 
 	/// <summary>
-	/// A function that compares sampled data against existing sampled data.
+	/// A function that compares sampled data with existing sampled data.
 	/// </summary>
 	public ComparisonFunction ComparisonFunc;
 
 	/// <summary>
-	/// Border color <see cref="T:Sedulous.RHI.SamplerBorderColor" />.
+	/// Border color of the <see cref="T:Sedulous.RHI.SamplerBorderColor" />.
 	/// </summary>
 	public SamplerBorderColor BorderColor;
 
 	/// <summary>
-	/// Lower end of the mipmap range to clamp access to, where 0 is the largest and most detailed mipmap level
+	/// Lower end of the mipmap range to clamp access to, where 0 is the largest and most detailed mipmap level,
 	/// and any level higher than that is less detailed.
 	/// </summary>
 	public float MinLOD;
 
 	/// <summary>
-	/// Upper end of the mipmap range to clamp access to, where 0 is the largest and most detailed mipmap level and any level
+	/// Upper end of the mipmap range to clamp access to, where 0 is the largest and most detailed mipmap level, and any level
 	/// higher than that is less detailed. This value must be greater than or equal to MinLOD.
 	/// </summary>
 	public float MaxLOD;
 
 	/// <summary>
-	/// Gets default values for SamplerStateDescription.
+	/// Gets the default values for SamplerStateDescription.
 	/// </summary>
 	public static SamplerStateDescription Default
 	{
@@ -94,7 +93,7 @@ public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -131,7 +130,7 @@ public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like hash tables.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -141,10 +140,10 @@ public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator ==(SamplerStateDescription value1, SamplerStateDescription value2)
 	{
@@ -154,8 +153,8 @@ public struct SamplerStateDescription : IEquatable<SamplerStateDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>

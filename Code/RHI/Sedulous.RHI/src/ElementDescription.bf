@@ -9,7 +9,7 @@ namespace Sedulous.RHI;
 public struct ElementDescription : IEquatable<ElementDescription>
 {
 	/// <summary>
-	/// Use secuential offset.
+	/// Use sequential offset.
 	/// </summary>
 	public const int32 AppendAligned = -1;
 
@@ -37,7 +37,7 @@ public struct ElementDescription : IEquatable<ElementDescription>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.ElementDescription" /> struct.
 	/// </summary>
 	/// <param name="format">The element format, <see cref="T:Sedulous.RHI.ElementFormat" />.</param>
-	/// <param name="semanticType">The element semantic, <see cref="T:Sedulous.RHI.ElementSemanticType" />.</param>
+	/// <param name="semanticType">The element semantic type, <see cref="T:Sedulous.RHI.ElementSemanticType" />.</param>
 	/// <param name="semanticIndex">The semantic index for this element.</param>
 	/// <param name="offset">The element offset.</param>
 	public this(ElementFormat format, ElementSemanticType semanticType, uint32 semanticIndex = 0, int32 offset = -1)
@@ -51,7 +51,7 @@ public struct ElementDescription : IEquatable<ElementDescription>
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">The object to compare.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -98,8 +98,8 @@ public struct ElementDescription : IEquatable<ElementDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -111,10 +111,10 @@ public struct ElementDescription : IEquatable<ElementDescription>
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
-	/// The result of the operator.
+	/// The result of the operation.
 	/// </returns>
 	public static bool operator !=(ElementDescription value1, ElementDescription value2)
 	{

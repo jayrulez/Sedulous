@@ -8,15 +8,15 @@ namespace Sedulous.RHI;
 public enum ResourceCpuAccess : uint8
 {
 	/// <summary>
-	/// None (default value).
+	/// No value (default).
 	/// </summary>
 	None = 0,
 	/// <summary>
-	/// The CPU can be write this resource.
+	/// The CPU can write to this resource.
 	/// </summary>
 	Write = 1,
 	/// <summary>
-	/// the CPU can be read this resources.
+	/// The CPU can read this resource.
 	/// </summary>
 	Read = 2
 }

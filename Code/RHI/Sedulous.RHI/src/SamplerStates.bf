@@ -1,7 +1,7 @@
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Describes a sampler state.
+/// Describes a sample state.
 /// </summary>
 public static class SamplerStates
 {
@@ -11,7 +11,7 @@ public static class SamplerStates
 	public static readonly SamplerStateDescription PointClamp;
 
 	/// <summary>
-	/// SamplerState description using point filter (bilinear) and wrap address mode for UVW.
+	/// SamplerState description using a point filter (bilinear) and a wrap address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription PointWrap;
 
@@ -21,32 +21,32 @@ public static class SamplerStates
 	public static readonly SamplerStateDescription PointMirror;
 
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and clamp address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and clamp address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription LinearClamp;
 
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and wrap address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and wrap address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription LinearWrap;
 
 	/// <summary>
-	/// SamplerState description using linear filter (trilinear) and mirror address mode for UVW.
+	/// SamplerState description using a linear filter (trilinear) and a mirror address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription LinearMirror;
 
 	/// <summary>
-	/// SamplerState description using anisotropic filter and clamp address mode for UVW.
+	/// SamplerState description using an anisotropic filter and clamp address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription AnisotropicClamp;
 
 	/// <summary>
-	/// SamplerState description using anisotropic filter and wrap address mode for UVW.
+	/// SamplerState description using an anisotropic filter and wrap address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription AnisotropicWrap;
 
 	/// <summary>
-	/// SamplerState description using anisotropic filter and mirror address mode for UVW.
+	/// Describes the SamplerState using anisotropic filtering and mirror address mode for UVW.
 	/// </summary>
 	public static readonly SamplerStateDescription AnisotropicMirror;
 

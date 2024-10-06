@@ -8,11 +8,11 @@ namespace Sedulous.RHI;
 public static class PrimitiveTopologyExtensions
 {
 	/// <summary>
-	/// Interpret the vertex data as a patch list.
+	/// Interprets the vertex data as a patch list.
 	/// </summary>
 	/// <param name="topology">The primitive topology.</param>
-	/// <param name="points">Number of control points. Valid range 1 - 32.</param>
-	/// <returns>The result primitive topology.</returns>
+	/// <param name="points">Number of control points. Valid range: 1 - 32.</param>
+	/// <returns>The resulting primitive topology.</returns>
 	public static PrimitiveTopology ControlPoints(this PrimitiveTopology topology, int32 points)
 	{
 		if (topology != PrimitiveTopology.Patch_List)
@@ -25,8 +25,9 @@ public static class PrimitiveTopologyExtensions
 		}
 		return (PrimitiveTopology)(33 + points - 1);
 	}
+	
 	/// <summary>
-	/// Convert index count to primitive count.
+	/// Converts the index count to the primitive count.
 	/// </summary>
 	/// <param name="primitiveTopology">The primitive topology.</param>
 	/// <param name="elementCount">The index count.</param>
@@ -57,7 +58,7 @@ public static class PrimitiveTopologyExtensions
 	}
 
 	/// <summary>
-	/// Convert primitive count to index count.
+	/// Converts primitive count to index count.
 	/// </summary>
 	/// <param name="primitiveTopology">The primitive topology.</param>
 	/// <param name="primitiveCount">The primitive count.</param>
@@ -83,7 +84,7 @@ public static class PrimitiveTopologyExtensions
 		case PrimitiveTopology.TriangleStripWithAdjacency:
 			return primitiveCount * 2 + 1;
 		default:
-			Runtime.InvalidOperationError("Primitive topology {primitiveTopology} not supported.");
+			Runtime.InvalidOperationError(scope $"Primitive topology {primitiveTopology} not supported.");
 		}
 	}
 }

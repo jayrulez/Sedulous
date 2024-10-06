@@ -3,22 +3,22 @@ using System.IO;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// This struct represent the parameters used by the shader compiler.
+/// This struct represents the parameters used by the shader compiler.
 /// </summary>
 public struct CompilerParameters
 {
 	/// <summary>
-	/// The available device capabilities, <see cref="T:Sedulous.RHI.GraphicsProfile" />.
+	/// The available device capabilities. See <see cref="T:Sedulous.RHI.GraphicsProfile" />.
 	/// </summary>
 	public GraphicsProfile Profile;
 
 	/// <summary>
-	/// The compiler mode, <see cref="F:Sedulous.RHI.CompilerParameters.CompilationMode" />.
+	/// The compiler mode. See <see cref="F:Sedulous.RHI.CompilerParameters.CompilationMode" />.
 	/// </summary>
 	public CompilationMode CompilationMode;
 
 	/// <summary>
-	/// Gets default values for CompilerParameters.
+	/// Gets the default values for CompilerParameters.
 	/// </summary>
 	public static CompilerParameters Default
 	{
@@ -31,7 +31,7 @@ public struct CompilerParameters
 	}
 
 	/// <summary>
-	/// Default CompilerParameters values.
+	/// Default values for CompilerParameters.
 	/// </summary>
 	public void SetDefault() mut
 	{

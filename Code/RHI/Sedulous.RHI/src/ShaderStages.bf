@@ -3,12 +3,12 @@ using System;
 namespace Sedulous.RHI;
 
 /// <summary>
-/// Specifies the usage of a resource in shaders.
+/// Specifies the use of a resource in shaders.
 /// </summary>
 public enum ShaderStages : int16
 {
 	/// <summary>
-	/// No stages.
+	/// No stages are present.
 	/// </summary>
 	Undefined = 0,
 	/// <summary>
@@ -20,7 +20,7 @@ public enum ShaderStages : int16
 	/// </summary>
 	Hull = 2,
 	/// <summary>
-	/// The domain shader stage.
+	/// Represents the domain shader stage.
 	/// </summary>
 	Domain = 4,
 	/// <summary>
@@ -36,19 +36,19 @@ public enum ShaderStages : int16
 	/// </summary>
 	Compute = 0x20,
 	/// <summary>
-	/// The Raytracing raygeneration shader stage.
+	/// The ray tracing ray generation shader stage.
 	/// </summary>
 	RayGeneration = 0x40,
 	/// <summary>
-	/// The Raytracing miss shader stage.
+	/// The ray tracing miss shader stage.
 	/// </summary>
 	Miss = 0x80,
 	/// <summary>
-	/// The Raytracing closestHit shader stage.
+	/// The Raytracing closest hit shader stage.
 	/// </summary>
 	ClosestHit = 0x100,
 	/// <summary>
-	/// The Raytracing anyHit shader stage.
+	/// The Raytracing any-hit shader stage.
 	/// </summary>
 	AnyHit = 0x200,
 	/// <summary>

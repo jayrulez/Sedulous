@@ -8,24 +8,24 @@ namespace Sedulous.RHI.Raytracing;
 public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescription>
 {
 	/// <summary>
-	/// Describes the resources layout input.
+	/// Describes the layout of resource inputs.
 	/// </summary>
 	public ResourceLayout[] ResourceLayouts;
 
 	/// <summary>
-	/// Gets or sets the raytracing shader program.
+	/// Gets or sets the ray tracing shader program.
 	/// </summary>
 	public RaytracingShaderStateDescription Shaders;
 
 	/// <summary>
-	/// Gets or sets the raytracing hit groups.
+	/// Gets or sets the ray tracing hit groups.
 	/// </summary>
 	public HitGroupDescription[] HitGroups;
 
 	/// <summary>
 	/// Limit on ray recursion for the raytracing pipeline. It must be in the range of 0 to 31. Below the maximum
 	/// recursion depth, shader invocations such as closest hit or miss shaders can call TraceRay any number of times.
-	/// At the maximum recursion depth, TraceRay calls result in the device going into removed state.
+	/// At the maximum recursion depth, TraceRay calls result in the device entering the removed state.
 	/// </summary>
 	public uint32 MaxTraceRecursionDepth;
 
@@ -38,7 +38,7 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 
 	/// <summary>
 	/// The maximum number of scalars (counted as 4 bytes each) that can be used for attributes in pipelines
-	/// that contain this shader. The value cannot exceed D3D12_RAYTRACING_MAX_ATTRIBUTE_SIZE_IN_BYTES constant
+	/// that contain this shader. The value cannot exceed the D3D12_RAYTRACING_MAX_ATTRIBUTE_SIZE_IN_BYTES constant
 	/// (https://microsoft.github.io/DirectX-Specs/d3d/Raytracing.html#constants).
 	/// </summary>
 	public uint32 MaxAttributeSizeInBytes;
@@ -46,12 +46,12 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 	/// <summary>
 	/// Initializes a new instance of the <see cref="T:Sedulous.RHI.Raytracing.RaytracingPipelineDescription" /> struct.
 	/// </summary>
-	/// <param name="resourceLayouts">The resources layout description.</param>
-	/// <param name="shaderDescription">The raytracing shader.</param>
+	/// <param name="resourceLayouts">The resource layout description.</param>
+	/// <param name="shaderDescription">The raytracing shader description.</param>
 	/// <param name="hitGroupDescriptions">The hit group descriptions.</param>
-	/// <param name="maxRecursionDepth">Max Recursion Depth.</param>
-	/// <param name="maxPayloadSize">Max Payload Size.</param>
-	/// <param name="maxAttributeSize">Max Attribute Size.</param>
+	/// <param name="maxRecursionDepth">The maximum recursion depth.</param>
+	/// <param name="maxPayloadSize">The maximum payload size.</param>
+	/// <param name="maxAttributeSize">The maximum attribute size.</param>
 	public this(ResourceLayout[] resourceLayouts, RaytracingShaderStateDescription shaderDescription, HitGroupDescription[] hitGroupDescriptions, uint32 maxRecursionDepth, uint32 maxPayloadSize, uint32 maxAttributeSize)
 	{
 		ResourceLayouts = resourceLayouts;
@@ -65,7 +65,7 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 	/// <summary>
 	/// Returns a hash code for this instance.
 	/// </summary>
-	/// <param name="other">Other used to compare.</param>
+	/// <param name="other">Used to compare another instance.</param>
 	/// <returns>
 	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
@@ -102,7 +102,7 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 	/// Returns a hash code for this instance.
 	/// </summary>
 	/// <returns>
-	/// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+	/// A hash code for this instance suitable for use in hashing algorithms and data structures like a hash table.
 	/// </returns>
 	public int GetHashCode()
 	{
@@ -112,8 +112,8 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
@@ -125,8 +125,8 @@ public struct RaytracingPipelineDescription : IEquatable<RaytracingPipelineDescr
 	/// <summary>
 	/// Implements the operator ==.
 	/// </summary>
-	/// <param name="value1">The value1.</param>
-	/// <param name="value2">The value2.</param>
+	/// <param name="value1">The first value.</param>
+	/// <param name="value2">The second value.</param>
 	/// <returns>
 	/// The result of the operator.
 	/// </returns>
