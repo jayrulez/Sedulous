@@ -52,7 +52,6 @@ namespace Sedulous.SDL2
 		// Property values.
 		private bool isCursorVisible = true;
 		//private Cursor cursor;
-		private readonly MessageBoxService mMessageBoxService;
 		private readonly SDL2WindowInfo mWindows;
 		private readonly SDL2DisplayInfo mDisplays;
 		private readonly SDL2InputSystem mInputSystem;
@@ -116,7 +115,6 @@ namespace Sedulous.SDL2
 		public this(SDL2PlatformConfiguration configuration)
 		{
 			mContext = new .(this);
-			mMessageBoxService = new SDL2MessageBoxService();
 			mWindows = new SDL2WindowInfo(this);
 			mDisplays = new SDL2DisplayInfo(this);
 			isCursorVisible = SDL_ShowCursor(SDL_QUERY) != 0;
@@ -132,7 +130,6 @@ namespace Sedulous.SDL2
 			}
 			delete mWindows;
 			delete mDisplays;
-			delete mMessageBoxService;
 			delete mContext;
 		}
 
@@ -152,7 +149,40 @@ namespace Sedulous.SDL2
 				parent = Windows.GetPrimary();
 
 			var window = (parent == null) ? null : (SDL_Window*)((SDL2Window)parent);
-			mMessageBoxService.ShowMessageBox(type, title, message, window);
+			ShowMessageBox(type, title, message, window);
+		}
+		
+		/// <inhertidoc/>
+		private static void ShowMessageBox(MessageBoxType type, String title, String message, void* window)
+		{
+		    var flags = GetSDLMessageBoxFlag(type);
+
+		    if (SDL_ShowSimpleMessageBox(flags, title, message, (SDL_Window*)window) < 0)
+		        Runtime.SDL2Error();
+		}
+
+		/// <summary>
+		/// Converts a <see cref="MessageBoxType"/> value to the equivalent SDL2 flag.
+		/// </summary>
+		private static uint32 GetSDLMessageBoxFlag(MessageBoxType type)
+		{
+		    switch (type)
+		    {
+		        case MessageBoxType.Information:
+		            const uint32 SDL_MESSAGEBOX_INFORMATION = 0x00000040;
+		            return SDL_MESSAGEBOX_INFORMATION;
+
+		        case MessageBoxType.Warning:
+		            const uint32 SDL_MESSAGEBOX_WARNING = 0x00000020;
+		            return SDL_MESSAGEBOX_WARNING;
+
+		        case MessageBoxType.Error:
+		            const uint32 SDL_MESSAGEBOX_ERROR = 0x00000010;
+		            return SDL_MESSAGEBOX_ERROR;
+
+		        default:
+		            return 0;
+		    }
 		}
 
 		public Result<void> GetClipboardText(String str)
