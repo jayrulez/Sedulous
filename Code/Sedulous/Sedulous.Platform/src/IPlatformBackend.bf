@@ -52,6 +52,16 @@ interface IPlatformBackend : IContextHost
 	void ShowMessageBox(MessageBoxType type, String title, String message, IWindow parent = null);
 
 	/// <summary>
+	/// Gets the clipboard text.
+	/// </summary>
+	public abstract Result<void> GetClipboardText(String str);
+
+	/// <summary>
+	/// Sets the clipboard text.
+	/// </summary>
+	public abstract void SetClipboardText(StringView text);
+
+	/// <summary>
 	/// Gets a value indicating whether the application's primary window has been initialized.
 	/// </summary>
 	bool IsPrimaryWindowInitialized { get; }
@@ -66,11 +76,6 @@ interface IPlatformBackend : IContextHost
 	/// </summary>
 	/// <remarks>Setting this property to <see langword="null"/> will restore the default cursor.</remarks>
 	Cursor Cursor { get; set; }*/
-
-	/// <summary>
-	/// Gets the system clipboard manager.
-	/// </summary>
-	ClipboardService Clipboard { get; }
 
 	/// <summary>
 	/// Gets the window information manager.

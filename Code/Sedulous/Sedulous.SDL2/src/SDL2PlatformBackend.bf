@@ -52,7 +52,6 @@ namespace Sedulous.SDL2
 		// Property values.
 		private bool isCursorVisible = true;
 		//private Cursor cursor;
-		private readonly ClipboardService mClipboard;
 		private readonly MessageBoxService mMessageBoxService;
 		private readonly SDL2WindowInfo mWindows;
 		private readonly SDL2DisplayInfo mDisplays;
@@ -88,8 +87,6 @@ namespace Sedulous.SDL2
 			}
 		}
 
-		public ClipboardService Clipboard => mClipboard;
-
 		public IWindowInfo Windows => mWindows;
 
 		public IDisplayInfo Displays => mDisplays;
@@ -119,7 +116,6 @@ namespace Sedulous.SDL2
 		public this(SDL2PlatformConfiguration configuration)
 		{
 			mContext = new .(this);
-			mClipboard = new SDL2ClipboardService();
 			mMessageBoxService = new SDL2MessageBoxService();
 			mWindows = new SDL2WindowInfo(this);
 			mDisplays = new SDL2DisplayInfo(this);
@@ -137,7 +133,6 @@ namespace Sedulous.SDL2
 			delete mWindows;
 			delete mDisplays;
 			delete mMessageBoxService;
-			delete mClipboard;
 			delete mContext;
 		}
 
@@ -158,6 +153,26 @@ namespace Sedulous.SDL2
 
 			var window = (parent == null) ? null : (SDL_Window*)((SDL2Window)parent);
 			mMessageBoxService.ShowMessageBox(type, title, message, window);
+		}
+
+		public Result<void> GetClipboardText(String str)
+		{
+			if (!SDL_HasClipboardText())
+			{
+				return .Err;
+			}
+			var ptr = SDL_GetClipboardText();
+			if (ptr == null)
+				return .Err;
+			str.Append(scope  String(ptr));
+			SDL_free(ptr);
+
+			return .Ok;
+		}
+
+		public void SetClipboardText(StringView text)
+		{
+			SDL_SetClipboardText(text.Ptr);
 		}
 
 
