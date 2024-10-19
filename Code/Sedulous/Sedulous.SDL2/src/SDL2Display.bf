@@ -40,13 +40,11 @@ namespace Sedulous.SDL2
 
 			this.desktopDisplayMode = CreateDisplayModeFromSDL(sdlDesktopDisplayMode);
 
-			this.screenRotationService = new SDL2ScreenRotationService(this);
 			this.screenDensityService = new SDL2ScreenDensityService(backend, this);
 		}
 
 		public ~this()
 		{
-			delete screenRotationService;
 			delete screenDensityService;
 			delete name;
 			delete displayModes;
@@ -370,7 +368,7 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenRotationService.ScreenRotation;
+				return .Rotation0;
 			}
 		}
 
@@ -476,7 +474,6 @@ namespace Sedulous.SDL2
 		private readonly DisplayMode desktopDisplayMode;
 
 		// Services.
-		private readonly ScreenRotationService screenRotationService;
 		private readonly ScreenDensityService screenDensityService;
 	}
 }
