@@ -248,6 +248,13 @@ namespace Sedulous.Platform
         /// <param name="dips">The <see cref="Vector2"/> in display independent pixels to convert.</param>
         /// <returns>The converted <see cref="Vector2"/> in inches.</returns>
         Vector2 DipsToInches(Vector2 dips);
+
+		
+		/// <summary>
+		/// Directs the display to refresh any cached values.
+		/// </summary>
+		/// <returns><see langword="true"/> if the display's density information changed; otherwise, <see langword="false"/>.</returns>
+		public abstract bool RefreshScreenDensity();
         
         /// <summary>
         /// Gets the display's index within the display list.
@@ -313,14 +320,31 @@ namespace Sedulous.Platform
         {
             get;
         }
+		
 
-        /*/// <summary>
+		/// <summary>
+		/// Gets the screen's density in dots per inch along the horizontal axis.
+		/// </summary>
+		float DensityX
+		{
+		    get;
+		}
+
+		/// <summary>
+		/// Gets the screen's density in dots per inch along the vertical axis.
+		/// </summary>
+		float DensityY
+		{
+		    get;
+		}
+
+        /// <summary>
         /// Gets the display's density bucket.
         /// </summary>
         ScreenDensityBucket DensityBucket
         {
             get;
-        }*/
+        }
 
         /// <summary>
         /// Gets the desktop display mode for this display.

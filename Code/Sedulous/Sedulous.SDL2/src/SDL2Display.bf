@@ -40,12 +40,11 @@ namespace Sedulous.SDL2
 
 			this.desktopDisplayMode = CreateDisplayModeFromSDL(sdlDesktopDisplayMode);
 
-			this.screenDensityService = new SDL2ScreenDensityService(backend, this);
+			this.RefreshScreenDensity();
 		}
 
 		public ~this()
 		{
-			delete screenDensityService;
 			delete name;
 			delete displayModes;
 		}
@@ -328,6 +327,28 @@ namespace Sedulous.SDL2
 			return Vector2(x, y);
 		}
 
+		/// <inheritdoc/>
+		public bool RefreshScreenDensity()
+		{
+		    var oldDensityX = densityX;
+		    var oldDensityY = densityY;
+		    var oldDensityScale = densityScale;
+		    var oldDensityBucket = densityBucket;
+
+		    float hdpi = 0, vdpi = 0;
+		    {
+		        if (SDL_GetDisplayDPI(Index, null, &hdpi, &vdpi) < 0)
+		            Runtime.SDL2Error();                
+		    }
+
+		    this.densityX = hdpi;
+		    this.densityY = vdpi;
+		    this.densityScale = hdpi / 96f;
+		    this.densityBucket = ScreenDensityBucket.GuessBucketFromDensityScale(densityScale);
+
+		    return oldDensityX != densityX || oldDensityY != densityY || oldDensityScale != densityScale || oldDensityBucket != densityBucket;
+		}
+
 		/// <summary>
 		/// Updates the display's state.
 		/// </summary>
@@ -377,7 +398,7 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenDensityService.DeviceScale;
+				return 1f;
 			}
 		}
 
@@ -386,7 +407,7 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenDensityService.DensityScale;
+				return densityScale;
 			}
 		}
 
@@ -395,7 +416,7 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenDensityService.DensityX;
+				return densityX;
 			}
 		}
 
@@ -404,7 +425,25 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenDensityService.DensityY;
+				return densityY;
+			}
+		}
+
+		/// <inheritdoc/>
+		public float DensityX
+		{
+			get
+			{
+				return densityX;
+			}
+		}
+
+		/// <inheritdoc/>
+		public float DensityY
+		{
+			get
+			{
+				return densityY;
 			}
 		}
 
@@ -413,7 +452,7 @@ namespace Sedulous.SDL2
 		{
 			get
 			{
-				return screenDensityService.DensityBucket;
+				return densityBucket;
 			}
 		}
 
@@ -437,7 +476,7 @@ namespace Sedulous.SDL2
 			//var oldDensityY = screenDensityService.DensityY;
 			//var oldDeviceScale = screenDensityService.DeviceScale;
 
-			if (screenDensityService.Refresh())
+			if (RefreshScreenDensity())
 			{
 				// todo: Invoke a screen density changed event
 			}
@@ -472,8 +511,10 @@ namespace Sedulous.SDL2
 		private readonly String name;
 		private readonly List<DisplayMode> displayModes;
 		private readonly DisplayMode desktopDisplayMode;
-
-		// Services.
-		private readonly ScreenDensityService screenDensityService;
+		
+		private float densityX;
+		private float densityY;
+		private float densityScale;
+		private ScreenDensityBucket densityBucket;
 	}
 }
