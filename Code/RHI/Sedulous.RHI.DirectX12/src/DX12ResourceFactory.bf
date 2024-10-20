@@ -34,6 +34,18 @@ public class DX12ResourceFactory : ResourceFactory
 		return new DX12CommandQueue(context, queueType);
 	}
 
+	public override void DestroyCommandQueue(ref CommandQueue commandQueue)
+	{
+		if(let dx12CommandQueue = commandQueue as DX12CommandQueue)
+		{
+			if(dx12CommandQueue.QueueType != .Graphics)
+			{
+				delete dx12CommandQueue;
+				commandQueue = null;
+			}
+		}
+	}
+
 	/// <inheritdoc />
 	protected override GraphicsPipelineState CreateGraphicsPipelineInternal(in GraphicsPipelineDescription description)
 	{

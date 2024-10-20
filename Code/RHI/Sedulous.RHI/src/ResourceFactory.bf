@@ -32,6 +32,8 @@ public abstract class ResourceFactory
 	[Inline]
 	protected abstract CommandQueue CreateCommandQueueInternal(CommandQueueType queueType = CommandQueueType.Graphics);
 
+	public abstract void DestroyCommandQueue(ref CommandQueue commandQueue);
+
 	/// <summary>
 	/// Creates a <see cref="T:Sedulous.RHI.GraphicsPipelineState" /> instance.
 	/// </summary>

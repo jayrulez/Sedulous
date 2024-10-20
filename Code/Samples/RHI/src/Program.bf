@@ -16,7 +16,7 @@ namespace RHI;
 
 class RHIApplication
 {
-	private const GraphicsBackend GraphicsBackend = .Vulkan;
+	private const GraphicsBackend GraphicsBackend = .DirectX12;
 
 	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
@@ -208,6 +208,7 @@ class RHIApplication
 
 	public void ShuttingDown(IContext context)
 	{
+		mCommandQueue.WaitIdle();
 		delete mScissors;
 		delete mViewports;
 		mGraphicsPipelineState.Dispose();
@@ -219,7 +220,7 @@ class RHIApplication
 		delete mVertexLayouts;
 		delete mGraphicsPipelineState;
 		delete mVertexBuffer;
-		//delete mCommandQueue; // Uncomment after making this work for DX12
+		mGraphicsContext.Factory.DestroyCommandQueue(ref mCommandQueue);
 		delete mSwapChain;
 
 		if (mUpdateFunctionRegistration.HasValue)

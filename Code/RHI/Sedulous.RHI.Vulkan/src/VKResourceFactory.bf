@@ -60,6 +60,15 @@ public class VKResourceFactory : ResourceFactory
 		return null;
 	}
 
+	public override void DestroyCommandQueue(ref CommandQueue commandQueue)
+	{
+		if(let vkCommandQueue = commandQueue as VKCommandQueue)
+		{
+			delete vkCommandQueue;
+			commandQueue = null;
+		}
+	}
+
 	/// <inheritdoc />
 	protected override ComputePipelineState CreateComputePipelineInternal(in ComputePipelineDescription description)
 	{
