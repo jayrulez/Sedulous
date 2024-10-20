@@ -190,6 +190,21 @@ public class VKGraphicsContext : GraphicsContext
 		}
 	}
 
+	public ~this()
+	{
+		if(BufferUploader != null)
+		{
+			delete BufferUploader;
+		}
+		if(TextureUploader != null)
+		{
+			delete TextureUploader;
+		}
+		delete DescriptorPool;
+		delete capabilities;
+		delete base.Factory;
+	}
+
 	/// <inheritdoc />
 	public override void CreateDeviceInternal()
 	{
@@ -797,17 +812,13 @@ public class VKGraphicsContext : GraphicsContext
 			if(BufferUploader != null)
 			{
 				BufferUploader.Dispose();
-				delete BufferUploader;
 			}
 			if(TextureUploader != null)
 			{
 				TextureUploader.Dispose();
-				delete TextureUploader;
 			}
 			VulkanNative.vkDestroyFence(VkDevice, vkCopyFence, null);
 			DescriptorPool.DestroyAll();
-			delete DescriptorPool;
-			delete capabilities;
 			VulkanNative.vkDestroyCommandPool(VkDevice, copyCommandPool, null);
 			VulkanNative.vkDestroyFence(VkDevice, vkImageAvailableFence, null);
 			VulkanNative.vkDestroyDevice(VkDevice, null);
@@ -825,8 +836,6 @@ public class VKGraphicsContext : GraphicsContext
 			}
 			VulkanNative.vkDestroyInstance(VkInstance, null);
 			disposed = true;
-
-			delete base.Factory;
 		}
 	}
 }

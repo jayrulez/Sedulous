@@ -102,6 +102,14 @@ public abstract class GraphicsContext : IDisposable, IGetNativePointers
 		}
 	}
 
+	public ~this()
+	{
+		if(DefaultSampler != null)
+		{
+			delete DefaultSampler;
+		}
+	}
+
 	/// <summary>
 	/// Initializes the graphics context to be used in a compute shader.
 	/// </summary>
@@ -304,10 +312,6 @@ public abstract class GraphicsContext : IDisposable, IGetNativePointers
 	public void Dispose()
 	{
 		DefaultSampler?.Dispose();
-		if(DefaultSampler != null)
-		{
-			delete DefaultSampler;
-		}
 		Dispose(disposing: true);
 	}
 

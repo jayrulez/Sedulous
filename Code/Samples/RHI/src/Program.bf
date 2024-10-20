@@ -16,7 +16,7 @@ namespace RHI;
 
 class RHIApplication
 {
-	private const GraphicsBackend GraphicsBackend = .DirectX12;
+	private const GraphicsBackend GraphicsBackend = .Vulkan;
 
 	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
