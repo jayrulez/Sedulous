@@ -1,7 +1,7 @@
 using Sedulous.Core.Resources;
 using System;
 using System.IO;
-namespace Sedulous.Graphics;
+namespace Sedulous.Graphics.Resources;
 
 [CRepr]
 struct TextureResourceHeader : ResourceHeader

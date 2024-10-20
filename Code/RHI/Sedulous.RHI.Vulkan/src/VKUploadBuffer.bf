@@ -1,5 +1,6 @@
 using Bulkan;
 using Sedulous.RHI;
+using System;
 
 namespace Sedulous.RHI.Vulkan;
 
@@ -53,7 +54,11 @@ internal class VKUploadBuffer : UploadBuffer
 		}
 		allocInfo.memoryTypeIndex = (uint32)memoryType;
 		VkDeviceMemory newDeviceMemory = default(VkDeviceMemory);
-		VulkanNative.vkAllocateMemory(nativeContext.VkDevice, &allocInfo, null, &newDeviceMemory);
+		VkResult result = VulkanNative.vkAllocateMemory(nativeContext.VkDevice, &allocInfo, null, &newDeviceMemory);
+		if(result != .VK_SUCCESS)
+		{
+			Runtime.FatalError("Failed to allocate device memory.");
+		}
 		BufferMemory = newDeviceMemory;
 		VulkanNative.vkBindBufferMemory(nativeContext.VkDevice, NativeBuffer, BufferMemory, 0uL);
 		void* data = null;

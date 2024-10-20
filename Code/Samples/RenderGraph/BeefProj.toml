@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Core" = "*", "Sedulous.Platform.Desktop" = "*", "Sedulous.RHI" = "*", "Sedulous.RHI.DirectX12" = "*", "Sedulous.RHI.Vulkan" = "*", "Sedulous.Graphics" = "*"}
+
+[Project]
+Name = "RenderGraph"
+StartupObject = "RenderGraph.Program"
