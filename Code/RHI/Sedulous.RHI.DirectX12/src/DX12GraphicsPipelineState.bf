@@ -301,7 +301,7 @@ public class DX12GraphicsPipelineState : GraphicsPipelineState
 			if (disposing)
 			{
 				nativePipeline?.Release();
-				rootSignature?.Release();
+				//rootSignature?.Release();
 			}
 			disposed = true;
 		}

@@ -65,11 +65,11 @@ public class DX12GraphicsContext : GraphicsContext
 
 	internal DX12CommandQueue DefaultGraphicsQueue;
 
-	internal ID3D12RootSignature* DefaultGraphicsSignature;
+	internal ID3D12RootSignature* DefaultGraphicsSignature = null;
 
-	internal ID3D12RootSignature* DefaultComputeSignature;
+	internal ID3D12RootSignature* DefaultComputeSignature = null;
 
-	internal ID3D12RootSignature* DefaultRaytracingGlobalRootSignature;
+	internal ID3D12RootSignature* DefaultRaytracingGlobalRootSignature = null;
 
 	internal DX12UploadBuffer BufferUploader;
 
@@ -133,6 +133,7 @@ public class DX12GraphicsContext : GraphicsContext
 			if(SUCCEEDED(result))
 			{
 				pDx12Debug.EnableDebugLayer();
+				pDx12Debug.Release();
 			}
 		}
 		HRESULT result = S_OK;
@@ -452,18 +453,37 @@ public class DX12GraphicsContext : GraphicsContext
 	{
 		if (!disposed && disposing)
 		{
-			DXDevice?.Release();
-			DXFactory?.Release();
 			RenderTargetViewAllocator?.Dispose();
 			DepthStencilViewAllocator?.Dispose();
 			ShaderResourceViewAllocator?.Dispose();
 			SamplerAllocator?.Dispose();
 			DefaultGraphicsQueue?.Dispose();
 			CopyCommandQueue?.Release();
-			CopyCommandAlloc?.Release();
 			CopyCommandList?.Release();
+			CopyCommandAlloc?.Release();
 			BufferUploader?.Dispose();
 			TextureUploader?.Dispose();
+
+			DefaultGraphicsSignature?.Release();
+			DefaultComputeSignature?.Release();
+			DefaultRaytracingGlobalRootSignature?.Release();
+			DispatchIndirectCommandSignature?.Release();
+			DrawInstancedIndirectCommandSignature?.Release();
+			DrawIndexedInstancedIndirectCommandSignature?.Release();
+			CopyFence?.Release();
+
+			if (base.IsValidationLayerEnabled)
+			{
+				ID3D12DebugDevice* pDebugDevice = DXDevice.QueryInterface<ID3D12DebugDevice>();
+
+				pDebugDevice.ReportLiveDeviceObjects(.D3D12_RLDO_DETAIL);
+
+				pDebugDevice.Release();
+			}
+
+			DXDevice?.Release();
+			DXFactory?.Release();
+
 			disposed = true;
 		}
 	}

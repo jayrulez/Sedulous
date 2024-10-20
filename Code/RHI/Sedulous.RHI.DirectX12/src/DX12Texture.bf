@@ -925,6 +925,7 @@ public class DX12Texture : Texture
 			{
 				dxContext.ShaderResourceViewAllocator.Free(unorderedAccessView.Value);
 			}
+			NativeBuffer?.Release();
 			NativeTexture?.Release();
 		}
 		disposed = true;

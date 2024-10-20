@@ -113,6 +113,7 @@ public class DX12ShaderTable
 		ID3D12Device5* device = (ID3D12Device5*)context.DXDevice;
 		Buffer = DX12RaytracingHelpers.CreateBuffer(device, shaderTableSize, D3D12_RESOURCE_FLAGS.D3D12_RESOURCE_FLAG_NONE, D3D12_RESOURCE_STATES.D3D12_RESOURCE_STATE_GENERIC_READ, DX12RaytracingHelpers.kUploadHeapProps);
 		ID3D12StateObjectProperties* pipelineProperties = pipeline.QueryInterface<ID3D12StateObjectProperties>();
+		defer pipelineProperties?.Release();
 		void* pData = null;
 		Buffer.Map(0, null, &pData);
 		for (ShaderTableRecord entry in entries)

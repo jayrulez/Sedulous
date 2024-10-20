@@ -86,7 +86,7 @@ public class DX12ComputePipelineState : ComputePipelineState
 			if (disposing)
 			{
 				nativePipeline?.Release();
-				rootSignature?.Release();
+				//rootSignature?.Release();
 			}
 			disposed = true;
 		}

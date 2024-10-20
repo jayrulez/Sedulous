@@ -184,6 +184,10 @@ public class DX12CommandQueue : CommandQueue
 			}
 			delete queue;
 			queue = null;
+
+			Fence?.Release();
+			CommandQueue?.Release();
+
 			disposed = true;
 		}
 	}

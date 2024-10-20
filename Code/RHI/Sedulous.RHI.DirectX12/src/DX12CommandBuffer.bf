@@ -84,8 +84,13 @@ public class DX12CommandBuffer : CommandBuffer
 		{
 			this.context.ValidationLayer?.Notify("DX12", scope $"Error code: {result}, see: https://docs.microsoft.com/en-us/windows/win32/direct3d12/d3d12-graphics-reference-returnvalues");
 		}
-		ID3D12GraphicsCommandList4* cmdList4 = cmdList.QueryInterface<ID3D12GraphicsCommandList4>();
-		CommandList = ((cmdList4 != null) ? cmdList4 : cmdList);
+		if(ID3D12GraphicsCommandList4* cmdList4 = cmdList.QueryInterface<ID3D12GraphicsCommandList4>())
+		{
+			CommandList = cmdList4;
+			cmdList.Release();
+		}else{
+			CommandList = cmdList;
+		}
 		resourceDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024);
 		samplerDescriptorsGPU = new DX12DescriptorTableAllocator(this.context, D3D12_DESCRIPTOR_HEAP_TYPE.D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER, 16);
 		descriptorHeaps = new ID3D12DescriptorHeap*[2] ( resourceDescriptorsGPU.GPUheap, samplerDescriptorsGPU.GPUheap );
@@ -629,8 +634,13 @@ public class DX12CommandBuffer : CommandBuffer
 			Reset();
 			resourceDescriptorsGPU?.Dispose();
 			samplerDescriptorsGPU?.Dispose();
+
 			CommandList?.Release();
 			CommandList = null;
+
+			CommandAlloc?.Release();
+			CommandAlloc = null;
+
 			disposed = true;
 		}
 	}

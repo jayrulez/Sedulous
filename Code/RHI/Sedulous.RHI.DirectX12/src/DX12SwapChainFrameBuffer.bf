@@ -75,7 +75,7 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 		for (int i = 0; i < swapChainBufferCount; i++)
 		{
 			ID3D12Resource* backBuffer = null;
-			 swapchain.nativeSwapChain.GetBuffer((uint32)i, ID3D12Resource.IID, (void**)&backBuffer);
+			swapchain.nativeSwapChain.GetBuffer((uint32)i, ID3D12Resource.IID, (void**)&backBuffer);
 			swapchain.swapChainBuffers[i] = DX12Texture.FromDirectXTexture(graphicsContext, backBuffer);
 			ColorTargets[i] = FrameBufferAttachment(swapchain.swapChainBuffers[i], 0, 1);
 		}
@@ -131,10 +131,14 @@ public class DX12SwapChainFrameBuffer : FrameBuffer
 	{
 		for(int i = 0; i < BackBufferTextures.Count; i++)
 		{
-			delete swapchain.swapChainBuffers[i];
+			BackBufferTextures[i].Dispose();
+			delete BackBufferTextures[i];
 		}
-		delete BackBuffers;
 		delete BackBufferTextures;
+
+		delete BackBuffers;
+
+		DepthTargetTexture?.Dispose();
 		delete DepthTargetTexture;
 	}
 

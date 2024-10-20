@@ -98,6 +98,7 @@ public class DX12SwapChain : SwapChain
 			};
 			IDXGISwapChain1* swapChain1 = null;
 			((DX12GraphicsContext)context).DXFactory.CreateSwapChainForComposition(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, &swapChainDescription, null, &swapChain1);
+			defer swapChain1.Release();
 			nativeSwapChain = swapChain1.QueryInterface<IDXGISwapChain3>();
 		}
 		else
@@ -124,6 +125,7 @@ public class DX12SwapChain : SwapChain
 			};
 			IDXGISwapChain1* swapChain1 = null;
 			((DX12GraphicsContext)context).DXFactory.CreateSwapChainForHwnd(((DX12GraphicsContext)context).DefaultGraphicsQueue.CommandQueue, (int)description.SurfaceInfo.Win32.Hwnd, &swapChainDescription, &fullScreenDescription, null, &swapChain1);
+			defer swapChain1.Release();
 			nativeSwapChain = swapChain1.QueryInterface<IDXGISwapChain3>();
 		}
 		DX12SwapChainFrameBuffer frameBuffer = new DX12SwapChainFrameBuffer(GraphicsContext as DX12GraphicsContext, this);
@@ -195,6 +197,7 @@ public class DX12SwapChain : SwapChain
 					delete base.FrameBuffer;
 					base.FrameBuffer = null;
 				}
+
 				nativeSwapChain?.Release();
 			}
 			disposed = true;
