@@ -56,11 +56,17 @@ class FrameGraph
 	}
 
 	// Execute the render graph by iterating over passes in the right order
-	public void Execute(CommandBuffer commandBuffer)
+	public void Execute(CommandQueue commandQueue)
 	{
+		var commandBuffer = commandQueue.CommandBuffer();
+		commandBuffer.Begin();
+
 		for (var pass in mRenderPasses)
 		{
 			pass.Execute(commandBuffer);
 		}
+
+		commandBuffer.End();
+		commandBuffer.Commit();
 	}
 }

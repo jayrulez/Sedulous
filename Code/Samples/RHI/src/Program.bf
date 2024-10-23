@@ -209,14 +209,15 @@ class RHIApplication
 	public void ShuttingDown(IContext context)
 	{
 		mCommandQueue.WaitIdle();
-		delete mScissors;
-		delete mViewports;
+
 		mGraphicsPipelineState.Dispose();
 		mVertexBuffer.Dispose();
 		mCommandQueue.Dispose();
 		mSwapChain.Dispose();
 		mGraphicsContext.Dispose();
-
+		
+		delete mScissors;
+		delete mViewports;
 		delete mVertexLayouts;
 		delete mGraphicsPipelineState;
 		delete mVertexBuffer;

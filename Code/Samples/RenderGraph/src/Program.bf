@@ -18,17 +18,14 @@ class GeometryPass : RenderPass
 {
 	public this(StringView name) : base(name)
 	{
-
 	}
 
 	public override void Setup()
 	{
-
 	}
 
 	public override void Execute(CommandBuffer commandBuffer)
 	{
-
 	}
 }
 
@@ -56,7 +53,7 @@ class RHIApplication
 	public this(IPlatformBackend host)
 	{
 		mHost = host;
-		switch(GraphicsBackend)
+		switch (GraphicsBackend)
 		{
 		case .DirectX12:
 			mGraphicsContext = new DX12GraphicsContext();
@@ -130,7 +127,32 @@ class RHIApplication
 
 		window.Drawing.Subscribe(new (window, time) =>
 			{
-				mFrameGraph.Execute(mCommandQueue.CommandBuffer());
+				{
+					CommandBuffer commandBuffer = mCommandQueue.CommandBuffer();
+					commandBuffer.Begin();
+					{
+						ClearValue clearValue = .(ClearFlags.All, 1, 0);
+						clearValue.ColorValues.Count = mSwapChain.FrameBuffer.ColorTargets.Count;
+						for (int i = 0; i < clearValue.ColorValues.Count; i++)
+							clearValue.ColorValues[i] = Color.CornflowerBlue.ToVector4();
+
+						RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, clearValue);
+						commandBuffer.BeginRenderPass(renderPassDescription);
+
+						commandBuffer.EndRenderPass();
+					}
+
+					commandBuffer.End();
+
+					commandBuffer.Commit();
+				}
+
+				mFrameGraph.Execute(mCommandQueue);
+
+				mCommandQueue.Submit();
+				mCommandQueue.WaitIdle();
+
+				mSwapChain.Present();
 			});
 
 		window.SizeChanged.Subscribe(new (window) =>
@@ -146,6 +168,7 @@ class RHIApplication
 	{
 		mCommandQueue.WaitIdle();
 
+		mCommandQueue.Dispose();
 		mSwapChain.Dispose();
 		mGraphicsContext.Dispose();
 
@@ -182,7 +205,7 @@ class Program
 			{
 				PrimaryWindowConfiguration = .()
 					{
-						Title = "RHI"
+						Title = "FrameGraph"
 					}
 			});
 
