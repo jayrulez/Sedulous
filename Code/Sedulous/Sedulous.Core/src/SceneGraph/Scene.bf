@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
 using Sedulous.Foundation.Mathematics;
-namespace Sedulous.SceneGraph;
+namespace Sedulous.Core.SceneGraph;
 
-using internal Sedulous.SceneGraph;
+using internal Sedulous.Core.SceneGraph;
 
 /*interface IScene
 {
@@ -281,76 +281,6 @@ class Scene : IScene
 	}
 }*/
 
-/// <summary>
-/// Enum representing different stages of the update process.
-/// </summary>
-public enum UpdateStage
-{
-    PreTransform,
-    PostTransform
-}
-
-/// <summary>
-/// Struct containing information passed to update functions.
-/// </summary>
-public struct UpdateInfo
-{
-    /// <summary>
-    /// The scene being updated.
-    /// </summary>
-    public Scene Scene { get; set mut; }
-
-    /// <summary>
-    /// The time elapsed since the last update.
-    /// </summary>
-    public TimeSpan DeltaTime { get; set mut; }
-}
-
-/// <summary>
-/// Delegate for update functions.
-/// </summary>
-/// <param name="updateInfo">The update information.</param>
-public delegate void UpdateFunction(UpdateInfo updateInfo);
-
-/// <summary>
-/// Struct containing information about an update function.
-/// </summary>
-public struct UpdateFunctionInfo
-{
-    /// <summary>
-    /// The priority of the update function.
-    /// </summary>
-    public int Priority { get; set mut; }
-
-    /// <summary>
-    /// The stage at which the update function is executed.
-    /// </summary>
-    public UpdateStage Stage { get; set mut; }
-
-    /// <summary>
-    /// The update function delegate.
-    /// </summary>
-    public UpdateFunction Function { get; set mut; }
-}
-
-/// <summary>
-/// Struct representing a registered update function.
-/// </summary>
-public struct RegisteredUpdateFunctionInfo
-{
-    public Guid Id { get; }
-    public int Priority { get; }
-    public UpdateStage Stage { get; }
-    public UpdateFunction Function { get; }
-
-    public this(Guid id, int priority, UpdateStage stage, UpdateFunction @function)
-    {
-        Id = id;
-        Priority = priority;
-        Stage = stage;
-        Function = @function;
-    }
-}
 
 /// <summary>
 /// Struct representing a transformation (position, rotation, scale).
@@ -518,6 +448,77 @@ public struct ComponentTypeEntry
 /// </summary>
 class Scene
 {
+	/// <summary>
+	/// Enum representing different stages of the update process.
+	/// </summary>
+	public enum UpdateStage
+	{
+	    PreTransform,
+	    PostTransform
+	}
+
+	/// <summary>
+	/// Struct containing information passed to update functions.
+	/// </summary>
+	public struct UpdateInfo
+	{
+	    /// <summary>
+	    /// The scene being updated.
+	    /// </summary>
+	    public Scene Scene { get; set mut; }
+
+	    /// <summary>
+	    /// The time elapsed since the last update.
+	    /// </summary>
+	    public TimeSpan DeltaTime { get; set mut; }
+	}
+
+	/// <summary>
+	/// Delegate for update functions.
+	/// </summary>
+	/// <param name="updateInfo">The update information.</param>
+	public delegate void UpdateFunction(UpdateInfo updateInfo);
+
+	/// <summary>
+	/// Struct containing information about an update function.
+	/// </summary>
+	public struct UpdateFunctionInfo
+	{
+	    /// <summary>
+	    /// The priority of the update function.
+	    /// </summary>
+	    public int Priority { get; set mut; }
+
+	    /// <summary>
+	    /// The stage at which the update function is executed.
+	    /// </summary>
+	    public UpdateStage Stage { get; set mut; }
+
+	    /// <summary>
+	    /// The update function delegate.
+	    /// </summary>
+	    public UpdateFunction Function { get; set mut; }
+	}
+
+	/// <summary>
+	/// Struct representing a registered update function.
+	/// </summary>
+	public struct RegisteredUpdateFunctionInfo
+	{
+	    public Guid Id { get; }
+	    public int Priority { get; }
+	    public UpdateStage Stage { get; }
+	    public UpdateFunction Function { get; }
+
+	    public this(Guid id, int priority, UpdateStage stage, UpdateFunction @function)
+	    {
+	        Id = id;
+	        Priority = priority;
+	        Stage = stage;
+	        Function = @function;
+	    }
+	}
+
     // Entity Management
     private List<Entity> entities = new List<Entity>() ~ delete _;
     private List<Transform> localTransforms = new List<Transform>() ~ delete _;
@@ -1202,7 +1203,7 @@ class Scene
     /// Updates the scene.
     /// </summary>
     /// <param name="deltaTime">The time elapsed since the last update.</param>
-    public void Update(TimeSpan deltaTime)
+    internal void Update(TimeSpan deltaTime)
     {
         ApplyQueuedEntityRemovals();
         ApplyQueuedComponentTypeUnregistrations();

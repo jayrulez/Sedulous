@@ -14,7 +14,13 @@ abstract class Subsystem
 			return .Ok;
 
 		mContext = context;
-		return OnInitializing(mContext);
+		if(OnInitializing(mContext) case .Ok)
+		{
+			mInitialized = true;
+			return .Ok;
+		}
+
+		return .Err;
 	}
 
 	internal void Initialized(Context context)

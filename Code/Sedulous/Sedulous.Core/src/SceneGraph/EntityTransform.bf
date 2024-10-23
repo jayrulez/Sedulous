@@ -1,5 +1,5 @@
 using Sedulous.Foundation.Mathematics;
-namespace Sedulous.SceneGraph;
+namespace Sedulous.Core.SceneGraph;
 
 /// <summary>
 /// Represents a 3D transformation, including position, rotation, and scale.

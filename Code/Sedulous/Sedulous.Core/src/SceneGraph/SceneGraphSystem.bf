@@ -1,45 +1,48 @@
 using System;
 using System.Collections;
 using Sedulous.Core;
-namespace Sedulous.SceneGraph;
+namespace Sedulous.Core.SceneGraph;
 
-using internal Sedulous.SceneGraph;
+using internal Sedulous.Core.SceneGraph;
 
-class SceneGraphSubsystem : Subsystem
+class SceneGraphSystem
 {
-	public override System.StringView Name => "SceneGraph";
+	private readonly IContext mContext;
 
 	private List<Scene> mScenes = new .() ~ delete _;
 	private List<Scene> mActiveScenes = new .() ~ delete _;
 
 	private IContext.RegisteredUpdateFunctionInfo? mUpdateFunctionRegistration;
 
-	private void OnEngineUpdate(IContext.UpdateInfo info)
+	public this(IContext context)
 	{
-		info.Context.Logger.LogInformation(nameof(SceneGraphSubsystem));
+		mContext = context;
+	}
 
+	private void OnContextUpdate(IContext.UpdateInfo info)
+	{
 		for (var scene in mActiveScenes)
 		{
 			scene.Update(info.Time.ElapsedTime);
 		}
 	}
 
-	protected override Result<void> OnInitializing(IContext context)
+	internal Result<void> Startup()
 	{
-		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
+		mUpdateFunctionRegistration = mContext.RegisterUpdateFunction(.()
 		{
-			Priority = 1,
+			Priority = -1,
 			Stage = .VariableUpdate,
-			Function = new => OnEngineUpdate
+			Function = new => OnContextUpdate
 		});
 		return .Ok;
 	}
 
-	protected override void OnUnitializing(IContext context)
+	internal void Shutdown()
 	{
 		if(mUpdateFunctionRegistration.HasValue)
 		{
-			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
+			mContext.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
 			delete mUpdateFunctionRegistration.Value.Function;
 			mUpdateFunctionRegistration = null;
 		}

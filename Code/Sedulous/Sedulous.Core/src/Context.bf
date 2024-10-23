@@ -7,11 +7,13 @@ using Sedulous.Foundation.Logging.Debug;
 using Sedulous.Foundation.Jobs;
 using Sedulous.Foundation;
 using Sedulous.Core.Resources;
+using Sedulous.Core.SceneGraph;
 
 namespace Sedulous.Core;
 
 using internal Sedulous.Foundation.Jobs;
 using internal Sedulous.Core;
+using internal Sedulous.Core.SceneGraph;
 
 typealias ContextInitializingCallback = delegate Result<void>(ContextInitializer initializer);
 typealias ContextInitializedCallback = delegate void(IContext context);
@@ -71,6 +73,7 @@ interface IContext
 	ILogger Logger { get; }
 	JobSystem JobSystem { get; }
 	ResourceSystem ResourceSystem { get; }
+	SceneGraphSystem SceneGraphSystem { get; }
 
 	[NoDiscard]IContext.RegisteredUpdateFunctionInfo RegisterUpdateFunction(UpdateFunctionInfo info);
 
@@ -117,6 +120,10 @@ sealed class Context : IContext
 	private readonly ResourceSystem mResourceSystem;
 
 	public ResourceSystem ResourceSystem => mResourceSystem;
+	
+	private readonly SceneGraphSystem mSceneGraphSystem;
+
+	public SceneGraphSystem SceneGraphSystem => mSceneGraphSystem;
 
 	// Current tick state.
 	private static readonly TimeSpan MaxElapsedTime = TimeSpan.FromMilliseconds(500);
@@ -156,6 +163,8 @@ sealed class Context : IContext
 
 		mResourceSystem = new .(this);
 
+		mSceneGraphSystem = new .(this);
+
 		Enum.MapValues<IContext.UpdateStage>(scope (member) =>
 			{
 				mUpdateFunctions.Add(member, new .());
@@ -168,6 +177,8 @@ sealed class Context : IContext
 			{
 				delete mUpdateFunctions[member];
 			});
+
+		delete mSceneGraphSystem;
 
 		delete mResourceSystem;
 
@@ -236,6 +247,8 @@ sealed class Context : IContext
 
 		mResourceSystem.Startup();
 
+		mSceneGraphSystem.Startup();
+
 		//mResourceSystem.AddResourceManager<TextResource...>(mTextResourceManager);
 
 		return .Ok;
@@ -250,6 +263,8 @@ sealed class Context : IContext
 		}
 
 		//mResourceSystem.RemoveResourceManager(mTextResourceManager);
+
+		mSceneGraphSystem.Shutdown();
 
 		mResourceSystem.Shutdown();
 

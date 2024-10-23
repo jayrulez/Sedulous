@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", "Sedulous.Core" = "*", "Sedulous.Graphics" = "*", "Sedulous.RHI.DirectX12" = "*", "Sedulous.RHI.Vulkan" = "*", "Sedulous.Platform.Desktop" = "*"}
+
+[Project]
+Name = "Graphics"
+StartupObject = "Graphics.Program"

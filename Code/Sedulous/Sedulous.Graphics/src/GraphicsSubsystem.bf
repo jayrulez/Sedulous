@@ -5,6 +5,7 @@ using Sedulous.Platform;
 using Sedulous.Graphics.FrameGraph;
 using System.Collections;
 using Sedulous.Graphics.SceneGraph;
+using Sedulous.Foundation.Mathematics;
 namespace Sedulous.Graphics;
 
 class GraphicsSubsystem : Subsystem
@@ -82,6 +83,13 @@ class GraphicsSubsystem : Subsystem
 			mUpdateFunctionRegistration = null;
 		}
 
+		if(mRenderFunctionRegistration.HasValue)
+		{
+			context.UnregisterUpdateFunction(mRenderFunctionRegistration.Value);
+			delete mRenderFunctionRegistration.Value.Function;
+			mRenderFunctionRegistration = null;
+		}
+
 		base.OnUnitializing(context);
 	}
 
@@ -100,6 +108,21 @@ class GraphicsSubsystem : Subsystem
 	private void OnRender(IContext.UpdateInfo info)
 	{
 		// begin frame
+
+		var commandBuffer = mCommandQueue.CommandBuffer();
+		commandBuffer.Begin();
+
+		ClearValue clearValue = .(ClearFlags.All, 1, 0);
+		clearValue.ColorValues.Count = mSwapChain.FrameBuffer.ColorTargets.Count;
+		for(int i = 0; i < clearValue.ColorValues.Count; i++)
+			clearValue.ColorValues[i] = Color.CornflowerBlue.ToVector4();
+
+		RenderPassDescription renderPassDescription = RenderPassDescription(mSwapChain.FrameBuffer, clearValue);
+
+		commandBuffer.BeginRenderPass(renderPassDescription);
+		commandBuffer.EndRenderPass();
+		commandBuffer.End();
+		commandBuffer.Commit();
 
 		mFrameGraph.Execute(mCommandQueue);
 

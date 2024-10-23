@@ -1,5 +1,5 @@
 using System;
-namespace Sedulous.SceneGraph;
+namespace Sedulous.Core.SceneGraph;
 
 abstract class ComponentManager : SceneModule
 {

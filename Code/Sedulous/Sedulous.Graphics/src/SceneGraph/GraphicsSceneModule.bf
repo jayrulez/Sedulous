@@ -1,4 +1,4 @@
-using Sedulous.SceneGraph;
+using Sedulous.Core.SceneGraph;
 namespace Sedulous.Graphics.SceneGraph;
 
 class GraphicsSceneModule : SceneModule
