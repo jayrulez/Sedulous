@@ -25,16 +25,16 @@ class SandboxApplication
 	public void Initialized(IContext context)
 	{
 		mUpdateFunctionRegistration = context.RegisterUpdateFunction(.()
-		{
-			Priority = 1,
-			Function = new  => Update,
-			Stage = .FixedUpdate
-		});
+			{
+				Priority = 1,
+				Function = new  => Update,
+				Stage = .FixedUpdate
+			});
 	}
 
 	public void ShuttingDown(IContext context)
 	{
-		if(mUpdateFunctionRegistration.HasValue)
+		if (mUpdateFunctionRegistration.HasValue)
 		{
 			context.UnregisterUpdateFunction(mUpdateFunctionRegistration.Value);
 			delete mUpdateFunctionRegistration.Value.Function;
@@ -46,7 +46,7 @@ class SandboxApplication
 	{
 		info.Context.Logger.LogInformation(scope $"{info.Time.ElapsedTime} : Application Update");
 
-		if(mHost.Input.GetKeyboard().IsKeyPressed(.Escape))
+		if (mHost.Input.GetKeyboard().IsKeyPressed(.Escape))
 		{
 			mHost.Exit();
 		}
