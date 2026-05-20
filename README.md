@@ -1,3 +1,7 @@
+**Note**
+This project was an experiment in making a game framework/engine in the Beef programming language.
+Everything useful from it has been folded into [Sedulous Engine](https://github.com/SedulousWorks/SedulousEngine)
+
 # Sedulous
 Sedulous is a framework that can be used to create games and other applications.
 It is designed to be modular, allowing you to use just the bits you want.
